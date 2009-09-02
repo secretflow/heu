@@ -45,7 +45,7 @@ class PublicKey : public HeObject<PublicKey> {
   PublicKey *dev_pk_;
 
   // Init pk based on n_
-  void Init(MPInt &n, MPInt &g);
+  void Init(MPInt &n, MPInt *g);
   [[nodiscard]] std::string ToString() const override;
 
   bool operator==(const PublicKey &other) const {

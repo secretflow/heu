@@ -28,14 +28,14 @@ void SetCacheTableDensity(size_t density) {
 }
 
 
-void PublicKey::Init(MPInt &n, MPInt &g) {
+void PublicKey::Init(MPInt &n, MPInt *g) {
   n_ = n;
   CGBNWrapper::DevMalloc(this);
   CGBNWrapper::StoreToDev(this);
 
   CGBNWrapper::InitPK(this);
   CGBNWrapper::StoreToHost(this);
-  g = g_;
+  *g = g_;
   half_n_ = n_ / MPInt(2);
 }
 

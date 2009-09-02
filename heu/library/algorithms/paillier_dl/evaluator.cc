@@ -102,9 +102,6 @@ std::vector<Ciphertext> Evaluator::Sub(ConstSpan<Ciphertext> as, ConstSpan<Plain
   for (int i=0; i<bs.size(); i++) {
     Plaintext neg_b;
     bs[i]->Negate(&neg_b);
-    if (neg_b.IsNegative()) {
-      neg_b += pk_.n_;
-    }
     neg_bs_vec.emplace_back(neg_b);
   }
   std::vector<Plaintext *> neg_bs_pt;
@@ -119,9 +116,6 @@ void Evaluator::SubInplace(Span<Ciphertext> as, ConstSpan<Plaintext> bs) const {
   for (int i=0; i<bs.size(); i++) {
     Plaintext neg_b;
     bs[i]->Negate(&neg_b);
-    if (neg_b.IsNegative()) {
-      neg_b += pk_.n_;
-    }
     neg_bs_vec.emplace_back(neg_b);
   }
   std::vector<Plaintext *> neg_bs_pt;

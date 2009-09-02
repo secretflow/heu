@@ -43,7 +43,7 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
   } while (n.BitCount() < key_size);
 
   MPInt g;
-  pk->Init(n, g);
+  pk->Init(n, &g);
   sk->Init(g, p, q);
 }
 

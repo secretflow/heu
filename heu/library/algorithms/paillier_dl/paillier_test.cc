@@ -19,7 +19,7 @@
 
 namespace heu::lib::algorithms::paillier_dl::test {
 
-class ZPaillierTest : public ::testing::Test {
+class DLPaillierTest : public ::testing::Test {
  protected:
   void SetUp() override {
     KeyGenerator::Generate(256, &sk_, &pk_);
@@ -36,7 +36,7 @@ class ZPaillierTest : public ::testing::Test {
   std::shared_ptr<Decryptor> decryptor_;
 };
 
-TEST_F(ZPaillierTest, VectorEncryptDecrypt) {
+TEST_F(DLPaillierTest, VectorEncryptDecrypt) {
   std::vector<MPInt> pts_vec ={Plaintext(-12345), Plaintext(12345)};
   std::vector<MPInt> gpts_vec ={Plaintext(-12345), Plaintext(12345)};
 
@@ -54,7 +54,7 @@ TEST_F(ZPaillierTest, VectorEncryptDecrypt) {
   }
 }
 
-TEST_F(ZPaillierTest, VectorvaluateCiphertextAddCiphertext) {
+TEST_F(DLPaillierTest, VectorvaluateCiphertextAddCiphertext) {
   std::vector<MPInt> pts_vec ={Plaintext(-12345), Plaintext(23456)};
   std::vector<MPInt> gpts_vec ={Plaintext(-12345*2), Plaintext(23456*2)};
 
@@ -78,7 +78,7 @@ TEST_F(ZPaillierTest, VectorvaluateCiphertextAddCiphertext) {
   }
 }
 
-TEST_F(ZPaillierTest, VectorEvaluateCiphertextSubCiphertext) {
+TEST_F(DLPaillierTest, VectorEvaluateCiphertextSubCiphertext) {
   std::vector<MPInt> pts0_vec ={Plaintext(12345), Plaintext(23456)};
   std::vector<MPInt> pts1_vec ={Plaintext(23456), Plaintext(12345)};
   std::vector<MPInt> gpts_vec ={Plaintext(12345-23456), Plaintext(23456-12345)};
@@ -111,7 +111,7 @@ TEST_F(ZPaillierTest, VectorEvaluateCiphertextSubCiphertext) {
   }
 }
 
-TEST_F(ZPaillierTest, VectorEvaluateCiphertextAddPlaintext) {
+TEST_F(DLPaillierTest, VectorEvaluateCiphertextAddPlaintext) {
   std::vector<MPInt> pts_vec ={Plaintext(12345), Plaintext(-23456)};
   std::vector<MPInt> gpts_vec ={Plaintext(12345*2), Plaintext(-23456*2)};
 
@@ -135,7 +135,7 @@ TEST_F(ZPaillierTest, VectorEvaluateCiphertextAddPlaintext) {
   }
 }
 
-TEST_F(ZPaillierTest, VectorEvaluateCiphertextSubPlaintext) {
+TEST_F(DLPaillierTest, VectorEvaluateCiphertextSubPlaintext) {
   std::vector<MPInt> pts0_vec ={Plaintext(12345), Plaintext(23456)};
   std::vector<MPInt> pts1_vec ={Plaintext(23456), Plaintext(12345)};
   std::vector<MPInt> gpts_vec ={Plaintext(12345-23456), Plaintext(23456-12345)};
@@ -163,7 +163,7 @@ TEST_F(ZPaillierTest, VectorEvaluateCiphertextSubPlaintext) {
   }
 }
 
-TEST_F(ZPaillierTest, VectorEvaluateCiphertextMulPlaintext) {
+TEST_F(DLPaillierTest, VectorEvaluateCiphertextMulPlaintext) {
   std::vector<MPInt> pts_vec ={Plaintext(12345), Plaintext(23456)};
   std::vector<MPInt> gpts_vec ={Plaintext(12345*12345), Plaintext(23456*23456)};
 
@@ -187,7 +187,7 @@ TEST_F(ZPaillierTest, VectorEvaluateCiphertextMulPlaintext) {
   }
 }
 
-TEST_F(ZPaillierTest, VectorEvaluateCiphertextNeg) { 
+TEST_F(DLPaillierTest, VectorEvaluateCiphertextNeg) { 
   std::vector<MPInt> pts_vec ={Plaintext(12345), Plaintext(23456)};
   std::vector<MPInt> gpts_vec ={Plaintext(-12345), Plaintext(-23456)};
 
