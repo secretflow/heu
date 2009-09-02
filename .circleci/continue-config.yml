@@ -23,7 +23,12 @@ jobs:
       - checkout
       - run:
           name: Checkout devtools
-          command: git clone https://github.com/secretflow/devtools.git
+          command: git clone https://github.com/secretflow/devtools.git ../devtools
+      - run:
+          name: Setup GCS
+          command: |
+            echo ${gcs_content} > ../gcs.data
+            ../devtools/bazel_cache_setup.py --in_file=../gcs.data --out_file=../gcs.json --min_download
       - run:
           name: "bazel test"
           command: |
@@ -33,7 +38,7 @@ jobs:
             pip install numpy
             bazel test //heu/... --test_timeout=1800 --test_output=errors --verbose_failures; test_status=${PIPESTATUS[0]}
 
-            sh devtools/rename-junit-xml.sh
+            sh ../devtools/rename-junit-xml.sh
             find bazel-bin/ -executable -type f -name "*_test"  -print0 | xargs -0 tar -cvzf test_binary.tar.gz
             find bazel-testlogs/ -type f -name "test.log"  -print0 | xargs -0 tar -cvzf test_logs.tar.gz
 
@@ -57,7 +62,12 @@ jobs:
       - checkout
       - run:
           name: Checkout devtools
-          command: git clone https://github.com/secretflow/devtools.git
+          command: git clone https://github.com/secretflow/devtools.git ../devtools
+      - run:
+          name: Setup GCS
+          command: |
+            echo ${gcs_content} > ../gcs.data
+            ../devtools/bazel_cache_setup.py --in_file=../gcs.data --out_file=../gcs.json --min_download
       - run:
           name: "bazel test"
           command: |
@@ -67,7 +77,7 @@ jobs:
             pip install numpy
             bazel test //heu/library/... //heu/pylib/... --test_timeout=1800 --test_output=errors --verbose_failures; test_status=${PIPESTATUS[0]}
 
-            sh devtools/rename-junit-xml.sh
+            sh ../devtools/rename-junit-xml.sh
             find bazel-bin/ -executable -type f -name "*_test"  -print0 | xargs -0 tar -cvzf test_binary.tar.gz
             find bazel-testlogs/ -type f -name "test.log"  -print0 | xargs -0 tar -cvzf test_logs.tar.gz
 
@@ -80,9 +90,7 @@ jobs:
           path: test_logs.tar.gz
   macOS_ut:
     macos:
-      xcode: 15.0.0
-    environment:
-      HOMEBREW_NO_AUTO_UPDATE: 1
+      xcode: 15.1
     resource_class: macos.m1.large.gen1
     steps:
       - checkout
@@ -99,13 +107,18 @@ jobs:
             pip install numpy
       - run:
           name: Checkout devtools
-          command: git clone https://github.com/secretflow/devtools.git
+          command: git clone https://github.com/secretflow/devtools.git ../devtools
+      - run:
+          name: Setup GCS
+          command: |
+            echo ${gcs_content} > ../gcs.data
+            ../devtools/bazel_cache_setup.py --in_file=../gcs.data --out_file=../gcs.json --min_download
       - run:
           name: "bazel test"
           command: |
             bazel test --ui_event_filters=-info,-debug,-warning --test_timeout=1800 --test_output=errors --verbose_failures -- //heu/... -//heu/experimental/tfhe/...
 
-            sh devtools/rename-junit-xml.sh
+            sh ../devtools/rename-junit-xml.sh
             find bazel-bin/ -perm +111 -type f -name "*_test"  -print0 | xargs -0 tar -cvzf test_binary.tar.gz
             find bazel-testlogs/ -type f -name "test.log"  -print0 | xargs -0 tar -cvzf test_logs.tar.gz
 

@@ -21,7 +21,7 @@
 namespace heu::lib::algorithms::paillier_ic {
 
 yacl::Buffer Ciphertext::Serialize() const {
-  pb_ns::Ciphertext pb_ct;
+  pb_ns::PaillierCiphertext pb_ct;
   *pb_ct.mutable_c() = MPInt2Bigint(c_);
 
   yacl::Buffer buffer(pb_ct.ByteSizeLong());
@@ -31,7 +31,7 @@ yacl::Buffer Ciphertext::Serialize() const {
 }
 
 void Ciphertext::Deserialize(yacl::ByteContainerView in) {
-  pb_ns::Ciphertext pk_ct;
+  pb_ns::PaillierCiphertext pk_ct;
   YACL_ENFORCE(pk_ct.ParseFromArray(in.data(), in.size()),
                "deserialize ciphertext fail");
 

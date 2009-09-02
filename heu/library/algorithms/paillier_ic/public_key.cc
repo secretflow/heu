@@ -14,6 +14,12 @@
 
 #include "heu/library/algorithms/paillier_ic/public_key.h"
 
+#include <cstdint>
+#include <string>
+
+#include "yacl/base/buffer.h"
+#include "yacl/base/byte_container_view.h"
+
 #include "heu/library/algorithms/paillier_ic/pb_utils.h"
 
 namespace heu::lib::algorithms::paillier_ic {
@@ -41,7 +47,7 @@ bool PublicKey::operator!=(const PublicKey& other) const {
 }
 
 yacl::Buffer PublicKey::Serialize() const {
-  pb_ns::PublicKey pk_pb;
+  pb_ns::PaillierPublicKey pk_pb;
   *pk_pb.mutable_n() = MPInt2Bigint(n_);
   *pk_pb.mutable_hs() = MPInt2Bigint(h_s_);
 
@@ -52,7 +58,7 @@ yacl::Buffer PublicKey::Serialize() const {
 }
 
 void PublicKey::Deserialize(yacl::ByteContainerView in) {
-  pb_ns::PublicKey pk_pb;
+  pb_ns::PaillierPublicKey pk_pb;
   YACL_ENFORCE(pk_pb.ParseFromArray(in.data(), in.size()),
                "deserialize public key fail");
 

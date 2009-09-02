@@ -7,6 +7,7 @@ def heu_cpp_deps():
     _com_github_intel_ipcl()
     _com_github_uscilab_cereal()
     _com_github_nvlabs_cgbn()
+    _com_github_intel_ipp()
 
 def _com_github_eigenteam_eigen():
     EIGEN_COMMIT = "66e8f38891841bf88ee976a316c0c78a52f0cee5"
@@ -81,5 +82,21 @@ def _com_github_nvlabs_cgbn():
         ],
         urls = [
             "https://github.com/NVlabs/CGBN/archive/e8b9d265c7b84077d02340b0986f3c91b2eb02fb.tar.gz",
+        ],
+    )
+
+def _com_github_intel_ipp():
+    maybe(
+        http_archive,
+        name = "com_github_intel_ipp",
+        sha256 = "1ecfa70328221748ceb694debffa0106b92e0f9bf6a484f8e8512c2730c7d730",
+        strip_prefix = "ipp-crypto-ippcp_2021.8",
+        build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:ipp.BUILD",
+        patch_args = ["-p1"],
+        patches = [
+            "@com_alipay_sf_heu//third_party/bazel_cpp:patches/ippcp.patch",
+        ],
+        urls = [
+            "https://github.com/intel/ipp-crypto/archive/refs/tags/ippcp_2021.8.tar.gz",
         ],
     )

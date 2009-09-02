@@ -16,13 +16,14 @@
 
 #include <errno.h>
 #include <fcntl.h>
-#include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <sys/file.h>
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
+
+#include <cinttypes>
 
 namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine {
 

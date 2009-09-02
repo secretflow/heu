@@ -4,7 +4,7 @@
 环境准备
 --------------
 
-Python == 3.8
+Python >= 3.8
 
 OS：
  - Centos 7

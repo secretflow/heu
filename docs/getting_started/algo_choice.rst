@@ -58,7 +58,7 @@ Paillier
 算法理论介绍
 ^^^^^^^^^^^^^^^^^^^^
 
-Paillier 算法由 Pascal Paillier 在 1999 年提出，参见：`算法详情 <https://en.wikipedia.org/wiki/Paillier_cryptosystem>`__
+Paillier 算法由 Pascal Paillier 在 1999 年提出，参见：`算法详情（跳转维基百科） <https://en.wikipedia.org/wiki/Paillier_cryptosystem>`__
 
 .. list-table:: Paillier 算法信息
 
@@ -195,7 +195,7 @@ Okamoto-Uchiyama
 算法理论介绍
 ^^^^^^^^^^^^^^^^^^^^
 
-Okamoto-Uchiyama 算法由 Tatsuaki Okamoto 和 Shigenori Uchiyama 在 1998 年提出，参见：`算法详情 <https://en.wikipedia.org/wiki/Okamoto%E2%80%93Uchiyama_cryptosystem>`__
+Okamoto-Uchiyama 算法由 Tatsuaki Okamoto 和 Shigenori Uchiyama 在 1998 年提出，参见：`算法详情（跳转维基百科） <https://en.wikipedia.org/wiki/Okamoto%E2%80%93Uchiyama_cryptosystem>`__
 
 .. list-table:: Okamoto-Uchiyama 算法信息
 
