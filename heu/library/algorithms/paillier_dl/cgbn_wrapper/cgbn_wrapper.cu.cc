@@ -639,11 +639,13 @@ void CGBNWrapper::DevMalloc(PublicKey *pk) {
 }
 
 void CGBNWrapper::DevFree(PublicKey *pk) {
-  CUDA_CHECK(cudaFree(pk->dev_g_));
-  CUDA_CHECK(cudaFree(pk->dev_n_));
-  CUDA_CHECK(cudaFree(pk->dev_nsquare_));
-  CUDA_CHECK(cudaFree(pk->dev_max_int_));
-  CUDA_CHECK(cudaFree(pk->dev_pk_));
+  if（pk->dev_pk_）{
+    CUDA_CHECK(cudaFree(pk->dev_g_));
+    CUDA_CHECK(cudaFree(pk->dev_n_));
+    CUDA_CHECK(cudaFree(pk->dev_nsquare_));
+    CUDA_CHECK(cudaFree(pk->dev_max_int_));
+    CUDA_CHECK(cudaFree(pk->dev_pk_));
+  }
 }
 
 void CGBNWrapper::DevMalloc(SecretKey *sk) {
@@ -659,15 +661,17 @@ void CGBNWrapper::DevMalloc(SecretKey *sk) {
 }
 
 void CGBNWrapper::DevFree(SecretKey *sk) {
-  CUDA_CHECK(cudaFree(sk->dev_g_));
-  CUDA_CHECK(cudaFree(sk->dev_p_));
-  CUDA_CHECK(cudaFree(sk->dev_q_));
-  CUDA_CHECK(cudaFree(sk->dev_psquare_));
-  CUDA_CHECK(cudaFree(sk->dev_qsquare_));
-  CUDA_CHECK(cudaFree(sk->dev_q_inverse_));
-  CUDA_CHECK(cudaFree(sk->dev_hp_));
-  CUDA_CHECK(cudaFree(sk->dev_hq_));
-  CUDA_CHECK(cudaFree(sk->dev_sk_));
+  if（sk->dev_sk_）{
+    CUDA_CHECK(cudaFree(sk->dev_g_));
+    CUDA_CHECK(cudaFree(sk->dev_p_));
+    CUDA_CHECK(cudaFree(sk->dev_q_));
+    CUDA_CHECK(cudaFree(sk->dev_psquare_));
+    CUDA_CHECK(cudaFree(sk->dev_qsquare_));
+    CUDA_CHECK(cudaFree(sk->dev_q_inverse_));
+    CUDA_CHECK(cudaFree(sk->dev_hp_));
+    CUDA_CHECK(cudaFree(sk->dev_hq_));
+    CUDA_CHECK(cudaFree(sk->dev_sk_));
+  }
 }
 
 

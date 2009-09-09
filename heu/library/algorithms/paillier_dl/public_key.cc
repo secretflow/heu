@@ -17,18 +17,7 @@
 
 namespace heu::lib::algorithms::paillier_dl {
 
-namespace {
-size_t kExpUnitBits = 10;
-}  // namespace
-
-void SetCacheTableDensity(size_t density) {
-  NOT_SUPPORT;
-  // YACL_ENFORCE(density > 0, "density must > 0");
-  // kExpUnitBits = density;
-}
-
-
-void PublicKey::Init(MPInt &n, MPInt *g) {
+void PublicKey::Init(const MPInt &n, MPInt *g) {
   n_ = n;
   CGBNWrapper::DevMalloc(this);
   CGBNWrapper::StoreToDev(this);

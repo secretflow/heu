@@ -28,6 +28,11 @@ namespace heu::lib::algorithms::paillier_dl {
 
 class SecretKey : public HeObject<SecretKey> {
  public:
+  ~SecretKey() {
+    CGBNWrapper::DevFree(this);
+  }
+  
+ public:
   MPInt g_;
   MPInt p_;
   MPInt q_;

@@ -33,6 +33,11 @@ void SetCacheTableDensity(size_t density);
 
 class PublicKey : public HeObject<PublicKey> {
  public:
+  ~PublicKey(){
+    CGBNWrapper::DevFree(this);
+  }
+
+ public:
   MPInt g_;
   MPInt n_;
   MPInt nsquare_;
@@ -45,7 +50,7 @@ class PublicKey : public HeObject<PublicKey> {
   PublicKey *dev_pk_;
 
   // Init pk based on n_
-  void Init(MPInt &n, MPInt *g);
+  void Init(const MPInt &n, MPInt *g);
   [[nodiscard]] std::string ToString() const override;
 
   bool operator==(const PublicKey &other) const {
