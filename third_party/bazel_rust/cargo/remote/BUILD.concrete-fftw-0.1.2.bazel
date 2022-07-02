@@ -1,0 +1,72 @@
+"""
+@generated
+cargo-raze crate build file.
+
+DO NOT EDIT! Replaced on runs of cargo-raze
+"""
+
+# buildifier: disable=load
+load("@bazel_skylib//lib:selects.bzl", "selects")
+
+# buildifier: disable=load
+load(
+    "@rules_rust//rust:defs.bzl",
+    "rust_binary",
+    "rust_library",
+    "rust_proc_macro",
+    "rust_test",
+)
+
+package(default_visibility = [
+    # Public for visibility by "@raze__crate__version//" targets.
+    #
+    # Prefer access through "//third_party/bazel_rust/cargo", which limits external
+    # visibility to explicit Cargo.toml dependencies.
+    "//visibility:public",
+])
+
+licenses([
+    "restricted",  # no license
+])
+
+# Generated Targets
+
+rust_library(
+    name = "concrete_fftw",
+    srcs = glob(["**/*.rs"]),
+    crate_features = [
+        "serde",
+        "serialize",
+    ],
+    crate_root = "src/lib.rs",
+    data = [],
+    edition = "2018",
+    rustc_flags = [
+        "--cap-lints=allow",
+    ],
+    tags = [
+        "cargo-raze",
+        "crate-name=concrete-fftw",
+        "manual",
+    ],
+    version = "0.1.2",
+    # buildifier: leave-alone
+    deps = [
+        "@rust__bitflags__1_3_2//:bitflags",
+        "@rust__concrete_fftw_sys__0_1_2//:concrete_fftw_sys",
+        "@rust__lazy_static__1_4_0//:lazy_static",
+        "@rust__num_complex__0_4_0//:num_complex",
+        "@rust__num_traits__0_2_14//:num_traits",
+        "@rust__serde__1_0_130//:serde",
+    ],
+)
+
+# Unsupported target "c2c" with type "test" omitted
+
+# Unsupported target "c2c_aligned" with type "test" omitted
+
+# Unsupported target "r2c" with type "test" omitted
+
+# Unsupported target "r2c_aligned" with type "test" omitted
+
+# Unsupported target "r2r" with type "test" omitted

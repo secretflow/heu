@@ -1,0 +1,25 @@
+load("@pybind11_bazel//:build_defs.bzl", "pybind_extension", "pybind_library")
+load("@rules_python//python:defs.bzl", "py_library", "py_test")
+
+package(default_visibility = ["//visibility:public"])
+
+pybind_extension(
+    name = "phe",
+    srcs = ["phe_bind.cc"],
+    deps = ["//heu/library/phe"],
+)
+
+py_library(
+    name = "phe_binding",
+    data = [
+        ":phe.so",
+    ],
+)
+
+py_test(
+    name = "phe_test",
+    srcs = ["phe_test.py"],
+    deps = [
+        ":phe_binding",
+    ],
+)

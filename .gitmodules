@@ -1,0 +1,3 @@
+[submodule "second_party/yasl"]
+	path = second_party/yasl
+	url = https://github.com/secretflow/yasl.git

@@ -1,0 +1,49 @@
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_library", "rust_static_library")
+load("//third_party/bazel_rust/cargo:crates.bzl", "all_crate_deps")
+load("//third_party/bazel_rust/cargo:rust_cxx_bridge.bzl", "rust_cxx_bridge")
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+rust_library(
+    name = "torus",
+    srcs = glob([
+        "zq/*.rs",
+        "tools/*.rs",
+        "lib.rs",
+    ]),
+    deps = all_crate_deps(package_name = "heu/tfhe"),
+)
+
+rust_static_library(
+    name = "torus_static",
+    srcs = glob([
+        "zq/*.rs",
+        "tools/*.rs",
+        "lib.rs",
+    ]),
+    deps = all_crate_deps(package_name = "heu/tfhe"),
+)
+
+rust_binary(
+    name = "bench_bootstrap",
+    srcs = ["bin/bench_bootstrap.rs"],
+    deps = all_crate_deps(package_name = "heu/tfhe") + [
+        ":torus",
+    ],
+)
+
+cc_library(
+    name = "cxx_torus",
+    deps = [
+        ":ffi.rs",
+    ],
+)
+
+rust_cxx_bridge(
+    name = "ffi.rs",
+    src = "zq/ffi.rs",
+    deps = [
+        ":torus_static",
+    ],
+)

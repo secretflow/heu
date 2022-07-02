@@ -1,0 +1,74 @@
+// Copyright 2022 Ant Group Co., Ltd.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#pragma once
+
+#include <memory>
+
+#include "heu/library/algorithms/util/he_object.h"
+#include "heu/library/algorithms/util/mp_int.h"
+
+namespace heu::lib::algorithms::paillier_f {
+
+namespace internal {
+// Forward declaration
+class Codec;
+}  // namespace internal
+
+// Forward declaration
+class KeyGenerator;
+class Evaluator;
+class Encryptor;
+class Decryptor;
+class SecretKey;
+
+class PublicKey : public HeObject<PublicKey> {
+ public:
+  PublicKey() = default;
+
+  // Valid plaintext range: (max_int_, -max_int_)
+  [[nodiscard]] const MPInt& PlaintextBound() const& { return max_int_; }
+
+  [[nodiscard]] std::string ToString() const override;
+
+  // TODO: other variable members could be calculated based on n_
+  // n_ is the only thing should be serialized
+  MSGPACK_DEFINE(n_, n_square_, g_, max_int_);
+
+ private:
+  explicit PublicKey(const MPInt& n);
+  explicit PublicKey(MPInt&& n);
+
+  // setup bits_, n_square_, g_, max_int_ based on n_
+  void Init();
+
+  friend class KeyGenerator;
+  friend class SecretKey;
+  friend class Encryptor;
+  friend class Decryptor;
+  friend class Evaluator;
+  friend class internal::Codec;
+
+  MPInt n_;         // public modulus n = p * q
+  MPInt n_square_;  // n_ * n_
+  MPInt g_;         // n_ + 1
+
+  // Maximum int that may safely be stored. This can be increased, if you are
+  // happy to redefine "safely" and lower the chance of detecting an integer
+  // overflow.
+  // Bound: (max_int_, -max_int_)
+  MPInt max_int_;  // n_ / 3
+};
+
+}  // namespace heu::lib::algorithms::paillier_f

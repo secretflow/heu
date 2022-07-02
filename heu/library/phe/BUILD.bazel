@@ -1,0 +1,91 @@
+load("@yasl//bazel:yasl.bzl", "yasl_cc_library", "yasl_cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+yasl_cc_library(
+    name = "phe",
+    srcs = ["phe.cc"],
+    hdrs = ["phe.h"],
+    deps = [
+        ":decryptor",
+        ":encryptor",
+        ":evaluator",
+        "//heu/library/phe/encoding",
+    ],
+)
+
+yasl_cc_library(
+    name = "schema",
+    srcs = ["schema.cc"],
+    hdrs = ["schema.h"],
+    deps = [
+        "//heu/library/algorithms/mock",
+        "//heu/library/algorithms/paillier_float",
+        "//heu/library/algorithms/paillier_zahlen",
+    ],
+)
+
+yasl_cc_library(
+    name = "serializable_types",
+    srcs = ["serializable_types.cc"],
+    hdrs = ["serializable_types.h"],
+    deps = [
+        ":schema",
+        ":variant_helper",
+        "@com_github_msgpack_msgpack//:msgpack",
+    ],
+)
+
+yasl_cc_library(
+    name = "variant_helper",
+    hdrs = ["variant_helper.h"],
+)
+
+yasl_cc_library(
+    name = "encryptor",
+    srcs = ["encryptor.cc"],
+    hdrs = ["encryptor.h"],
+    deps = [
+        ":schema",
+        ":serializable_types",
+        ":variant_helper",
+    ],
+)
+
+yasl_cc_library(
+    name = "decryptor",
+    srcs = ["decryptor.cc"],
+    hdrs = ["decryptor.h"],
+    deps = [
+        ":schema",
+        ":serializable_types",
+        ":variant_helper",
+    ],
+)
+
+yasl_cc_library(
+    name = "evaluator",
+    srcs = ["evaluator.cc"],
+    hdrs = ["evaluator.h"],
+    deps = [
+        ":schema",
+        ":serializable_types",
+        ":variant_helper",
+    ],
+)
+
+test_suite(
+    name = "phe_tests",
+)
+
+yasl_cc_test(
+    name = "phe_test",
+    srcs = ["phe_test.cc"],
+    deps = [":phe"],
+)
+
+yasl_cc_test(
+    name = "schema_test",
+    srcs = ["schema_test.cc"],
+    deps = [":phe"],
+)

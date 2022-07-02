@@ -1,0 +1,80 @@
+"""
+@generated
+cargo-raze crate build file.
+
+DO NOT EDIT! Replaced on runs of cargo-raze
+"""
+
+# buildifier: disable=load
+load("@bazel_skylib//lib:selects.bzl", "selects")
+
+# buildifier: disable=load
+load(
+    "@rules_rust//rust:defs.bzl",
+    "rust_binary",
+    "rust_library",
+    "rust_proc_macro",
+    "rust_test",
+)
+
+package(default_visibility = [
+    # Public for visibility by "@raze__crate__version//" targets.
+    #
+    # Prefer access through "//third_party/bazel_rust/cargo", which limits external
+    # visibility to explicit Cargo.toml dependencies.
+    "//visibility:public",
+])
+
+licenses([
+    "notice",  # Apache-2.0 from expression "Apache-2.0 OR MIT"
+])
+
+# Generated Targets
+
+# Unsupported target "bench_main" with type "bench" omitted
+
+rust_library(
+    name = "criterion",
+    srcs = glob(["**/*.rs"]),
+    crate_features = [
+        "cargo_bench_support",
+        "default",
+    ],
+    crate_root = "src/lib.rs",
+    data = [],
+    edition = "2018",
+    proc_macro_deps = [
+        "@rust__serde_derive__1_0_130//:serde_derive",
+    ],
+    rustc_flags = [
+        "--cap-lints=allow",
+    ],
+    tags = [
+        "cargo-raze",
+        "crate-name=criterion",
+        "manual",
+    ],
+    version = "0.3.5",
+    # buildifier: leave-alone
+    deps = [
+        "@rust__atty__0_2_14//:atty",
+        "@rust__cast__0_2_7//:cast",
+        "@rust__clap__2_34_0//:clap",
+        "@rust__criterion_plot__0_4_4//:criterion_plot",
+        "@rust__csv__1_1_6//:csv",
+        "@rust__itertools__0_10_3//:itertools",
+        "@rust__lazy_static__1_4_0//:lazy_static",
+        "@rust__num_traits__0_2_14//:num_traits",
+        "@rust__oorandom__11_1_3//:oorandom",
+        "@rust__plotters__0_3_1//:plotters",
+        "@rust__rayon__1_5_1//:rayon",
+        "@rust__regex__1_5_4//:regex",
+        "@rust__serde__1_0_130//:serde",
+        "@rust__serde_cbor__0_11_2//:serde_cbor",
+        "@rust__serde_json__1_0_72//:serde_json",
+        "@rust__tinytemplate__1_2_1//:tinytemplate",
+        "@rust__walkdir__2_3_2//:walkdir",
+    ],
+)
+
+# Unsupported target "criterion_tests" with type "test" omitted

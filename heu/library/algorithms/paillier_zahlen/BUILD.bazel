@@ -1,0 +1,109 @@
+load("@yasl//bazel:yasl.bzl", "yasl_cc_library", "yasl_cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+test_suite(
+    name = "paillier_zahlen_tests",
+)
+
+yasl_cc_library(
+    name = "paillier_zahlen",
+    hdrs = ["paillier.h"],
+    deps = [
+        ":decryptor",
+        ":encryptor",
+        ":evaluator",
+        ":key_generator",
+    ],
+)
+
+yasl_cc_library(
+    name = "secret_key",
+    srcs = ["secret_key.cc"],
+    hdrs = ["secret_key.h"],
+    deps = [
+        "//heu/library/algorithms/util",
+        "@com_github_msgpack_msgpack//:msgpack",
+    ],
+)
+
+yasl_cc_library(
+    name = "public_key",
+    srcs = ["public_key.cc"],
+    hdrs = ["public_key.h"],
+    deps = [
+        "//heu/library/algorithms/util",
+        "@com_github_msgpack_msgpack//:msgpack",
+    ],
+)
+
+yasl_cc_library(
+    name = "ciphertext",
+    hdrs = ["ciphertext.h"],
+    deps = [
+        "//heu/library/algorithms/util",
+        "@com_github_msgpack_msgpack//:msgpack",
+    ],
+)
+
+yasl_cc_library(
+    name = "key_generator",
+    srcs = ["key_generator.cc"],
+    hdrs = ["key_generator.h"],
+    deps = [
+        ":public_key",
+        ":secret_key",
+    ],
+)
+
+yasl_cc_library(
+    name = "encryptor",
+    srcs = ["encryptor.cc"],
+    hdrs = ["encryptor.h"],
+    deps = [
+        ":ciphertext",
+        ":public_key",
+        ":secret_key",
+        "//heu/library/algorithms/util",
+    ],
+)
+
+yasl_cc_library(
+    name = "decryptor",
+    srcs = ["decryptor.cc"],
+    hdrs = ["decryptor.h"],
+    deps = [
+        ":ciphertext",
+        ":public_key",
+        ":secret_key",
+        "//heu/library/algorithms/util",
+    ],
+)
+
+yasl_cc_library(
+    name = "evaluator",
+    srcs = ["evaluator.cc"],
+    hdrs = ["evaluator.h"],
+    deps = [
+        ":ciphertext",
+        ":encryptor",
+        ":public_key",
+        "//heu/library/algorithms/util",
+    ],
+)
+
+yasl_cc_test(
+    name = "key_generator_test",
+    srcs = ["key_generator_test.cc"],
+    deps = [
+        ":key_generator",
+    ],
+)
+
+yasl_cc_test(
+    name = "paillier_test",
+    srcs = ["paillier_test.cc"],
+    deps = [
+        ":paillier_zahlen",
+    ],
+)

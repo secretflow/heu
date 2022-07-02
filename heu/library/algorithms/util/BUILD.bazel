@@ -1,0 +1,83 @@
+load("@yasl//bazel:yasl.bzl", "yasl_cc_binary", "yasl_cc_library", "yasl_cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+test_suite(
+    name = "he_util_tests",
+)
+
+yasl_cc_library(
+    name = "util",
+    deps = [
+        ":he_assert",
+        ":montgomery_math",
+        ":mp_int",
+    ],
+)
+
+yasl_cc_library(
+    name = "tommath_ext",
+    srcs = ["tommath_ext.cc"],
+    hdrs = ["tommath_ext.h"],
+    deps = [
+        "@com_github_libtom_libtommath//:libtommath",
+        "@yasl//yasl/base:int128",
+    ],
+)
+
+yasl_cc_library(
+    name = "he_object",
+    hdrs = ["he_object.h"],
+    deps = [
+        "@yasl//yasl/base:buffer",
+        "@yasl//yasl/base:byte_container_view",
+    ],
+)
+
+yasl_cc_library(
+    name = "mp_int",
+    srcs = ["mp_int.cc"],
+    hdrs = ["mp_int.h"],
+    deps = [
+        ":he_assert",
+        ":he_object",
+        ":tommath_ext",
+        "@com_github_fmtlib_fmt//:fmtlib",
+        "@com_github_msgpack_msgpack//:msgpack",
+        "@yasl//yasl/base:int128",
+    ],
+)
+
+yasl_cc_library(
+    name = "montgomery_math",
+    srcs = ["montgomery_math.cc"],
+    hdrs = ["montgomery_math.h"],
+    deps = [
+        ":mp_int",
+        "@com_github_libtom_libtommath//:libtommath",
+    ],
+)
+
+yasl_cc_library(
+    name = "he_assert",
+    hdrs = ["he_assert.h"],
+    deps = ["@yasl//yasl/base:exception"],
+)
+
+yasl_cc_test(
+    name = "mp_int_test",
+    srcs = ["mp_int_test.cc"],
+    deps = [
+        ":util",
+        "@com_google_googletest//:gtest",
+    ],
+)
+
+yasl_cc_test(
+    name = "montgomery_math_test",
+    srcs = ["montgomery_math_test.cc"],
+    deps = [
+        ":montgomery_math",
+        "@com_google_googletest//:gtest",
+    ],
+)

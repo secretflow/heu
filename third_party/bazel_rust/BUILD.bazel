@@ -1,0 +1,111 @@
+"""
+@generated
+cargo-raze generated Bazel file.
+
+DO NOT EDIT! Replaced on runs of cargo-raze
+"""
+
+package(default_visibility = ["//visibility:public"])
+
+licenses([
+    "notice",  # See individual crates for specific licenses
+])
+
+# Aliased targets
+alias(
+    name = "colored",
+    actual = "@rust__colored__2_0_0//:colored",
+    tags = [
+        "cargo-raze",
+        "manual",
+    ],
+)
+
+alias(
+    name = "concrete",
+    actual = "@rust__concrete__0_1_11//:concrete",
+    tags = [
+        "cargo-raze",
+        "manual",
+    ],
+)
+
+alias(
+    name = "concrete_boolean",
+    actual = "@rust__concrete_boolean__0_1_0//:concrete_boolean",
+    tags = [
+        "cargo-raze",
+        "manual",
+    ],
+)
+
+alias(
+    name = "criterion",
+    actual = "@rust__criterion__0_3_5//:criterion",
+    tags = [
+        "cargo-raze",
+        "manual",
+    ],
+)
+
+alias(
+    name = "cxx",
+    actual = "@rust__cxx__1_0_65//:cxx",
+    tags = [
+        "cargo-raze",
+        "manual",
+    ],
+)
+
+alias(
+    name = "cargo_bin_cxxbridge",
+    actual = "@rust__cxxbridge_cmd__1_0_65//:cargo_bin_cxxbridge",
+    tags = [
+        "cargo-raze",
+        "manual",
+    ],
+)
+
+alias(
+    name = "cxxbridge_cmd",
+    actual = "@rust__cxxbridge_cmd__1_0_65//:cxxbridge_cmd",
+    tags = [
+        "cargo-raze",
+        "manual",
+    ],
+)
+
+alias(
+    name = "log",
+    actual = "@rust__log__0_4_14//:log",
+    tags = [
+        "cargo-raze",
+        "manual",
+    ],
+)
+
+alias(
+    name = "simple_logger",
+    actual = "@rust__simple_logger__2_1_0//:simple_logger",
+    tags = [
+        "cargo-raze",
+        "manual",
+    ],
+)
+
+alias(
+    name = "tempfile",
+    actual = "@rust__tempfile__3_3_0//:tempfile",
+    tags = [
+        "cargo-raze",
+        "manual",
+    ],
+)
+
+# Export file for Stardoc support
+exports_files(
+    [
+        "crates.bzl",
+    ],
+    visibility = ["//visibility:public"],
+)

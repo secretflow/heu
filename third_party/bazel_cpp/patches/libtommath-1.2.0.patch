@@ -1,0 +1,41 @@
+diff --git a/makefile_include.mk b/makefile_include.mk
+index 7b025e8..a80e155 100644
+--- a/makefile_include.mk
++++ b/makefile_include.mk
+@@ -47,7 +47,7 @@ else
+ endif
+ endif
+ 
+-LTM_CFLAGS += -I./ -Wall -Wsign-compare -Wextra -Wshadow
++LTM_CFLAGS += -fPIC -I./ -Wall -Wsign-compare -Wextra -Wshadow
+ 
+ ifdef SANITIZER
+ LTM_CFLAGS += -fsanitize=undefined -fno-sanitize-recover=all -fno-sanitize=float-divide-by-zero
+
+diff --git a/bn_mp_set_double.c b/bn_mp_set_double.c
+index a42fc70d9086028b43982fd93d5cbc7d8ee89a9b..6f91b64f50340211daf4796fc21d3c72f8347737 100644
+--- a/bn_mp_set_double.c
++++ b/bn_mp_set_double.c
+@@ -3,7 +3,7 @@
+ /* LibTomMath, multiple-precision integer library -- Tom St Denis */
+ /* SPDX-License-Identifier: Unlicense */
+ 
+-#if defined(__STDC_IEC_559__) || defined(__GCC_IEC_559)
++#if defined(__STDC_IEC_559__) || defined(__GCC_IEC_559) || defined(__x86_64__) || defined(_M_X64) || defined(_M_AMD64) || defined(__i386__) || defined(_M_X86) || defined(__aarch64__) || defined(__arm__)
+ mp_err mp_set_double(mp_int *a, double b)
+ {
+    uint64_t frac;
+diff --git a/demo/test.c b/demo/test.c
+index 7b29a4ce94893eb15216c527a508dd1a1aa380b6..9049fa81f91aeae389049885a1f13793d371399a 100644
+--- a/demo/test.c
++++ b/demo/test.c
+@@ -625,7 +625,7 @@ static int test_mp_invmod(void)
+ 
+ }
+ 
+-#if defined(__STDC_IEC_559__) || defined(__GCC_IEC_559)
++#if defined(__STDC_IEC_559__) || defined(__GCC_IEC_559) || defined(__x86_64__) || defined(_M_X64) || defined(_M_AMD64) || defined(__i386__) || defined(_M_X86) || defined(__aarch64__) || defined(__arm__)
+ static int test_mp_set_double(void)
+ {
+    int i;
+

@@ -1,0 +1,38 @@
+load("@yasl//bazel:yasl.bzl", "yasl_cc_library", "yasl_cc_test")
+
+test_suite(
+    name = "he_mock_tests",
+)
+
+yasl_cc_library(
+    name = "mock",
+    srcs = [
+        "decryptor.cc",
+        "encryptor.cc",
+        "evaluator.cc",
+        "key_generator.cc",
+    ],
+    hdrs = [
+        "ciphertext.h",
+        "decryptor.h",
+        "encryptor.h",
+        "evaluator.h",
+        "key_generator.h",
+        "mock.h",
+        "public_key.h",
+        "secret_key.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//heu/library/algorithms/util",
+        "@com_github_msgpack_msgpack//:msgpack",
+    ],
+)
+
+yasl_cc_test(
+    name = "mock_test",
+    srcs = ["mock_test.cc"],
+    deps = [
+        "//heu/library/algorithms/mock",
+    ],
+)

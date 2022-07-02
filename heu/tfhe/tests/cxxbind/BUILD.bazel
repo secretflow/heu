@@ -1,0 +1,16 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+load("//third_party/bazel_rust/cargo:crates.bzl", "all_crate_deps")
+
+test_suite(
+    name = "tfhe_cxxbind_tests",
+)
+
+cc_test(
+    name = "basic",
+    size = "large",
+    srcs = ["basic.cc"],
+    deps = [
+        "//heu/tfhe/src:cxx_torus",
+        "@com_google_googletest//:gtest_main",
+    ],
+)

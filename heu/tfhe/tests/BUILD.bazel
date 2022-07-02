@@ -1,0 +1,10 @@
+load("@rules_rust//rust:defs.bzl", "rust_test", "rust_test_suite")
+load("//third_party/bazel_rust/cargo:crates.bzl", "all_crate_deps")
+
+package(default_visibility = ["//visibility:public"])
+
+rust_test_suite(
+    name = "torus_tests",
+    srcs = glob(["*.rs"]),
+    deps = all_crate_deps(package_name = "heu/tfhe") + ["//heu/tfhe/src:torus"],
+)

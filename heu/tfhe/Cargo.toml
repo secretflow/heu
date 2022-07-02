@@ -1,0 +1,62 @@
+[package]
+name = "torus"
+version = "0.1.0"
+
+[package.metadata.raze]
+# The path at which to write output files.
+#
+# `cargo raze` will generate Bazel-compatible BUILD files into this path.
+workspace_path = "//third_party/bazel_rust/cargo"
+
+package_aliases_dir = "../../third_party/bazel_rust"
+
+gen_workspace_prefix = "rust"
+
+# The set of targets to generate BUILD rules for.
+targets = [
+    "x86_64-apple-darwin",
+    "x86_64-pc-windows-msvc",
+    "x86_64-unknown-linux-gnu",
+]
+
+# The two acceptable options are "Remote" and "Vendored" which
+# is used to indicate whether the user is using a non-vendored or
+# vendored set of dependencies.
+genmode = "Remote"
+default_gen_buildrs = true
+experimental_api = true
+registry = "https://crates-io.proxy.ustclug.org/api/v1/crates/{crate}/{version}/download"
+index_url = "https://mirrors.ustc.edu.cn/crates.io-index"
+
+[profile.test]
+opt-level = 3
+
+[[bench]]
+name = "zq_bench"
+harness = false
+
+### rust dependencies ###
+
+[dependencies]
+concrete = "0.1.11"
+concrete-core = "0.1.10"
+concrete-boolean = "0.1.0"
+colored = "2.0.0"
+log = "0.4.14"
+simple_logger = "2.1.0"
+cxx = "1.0.65"
+
+[dev-dependencies]
+criterion = "0.3.5"
+tempfile = "3.3.0"
+
+[build-dependencies]
+cxxbridge-cmd = "1.0.65"
+
+### special configs for bazel ###
+[package.metadata.raze.crates.concrete-fftw-sys.'*']
+buildrs_additional_environment_variables = { NUM_JOBS = "8", PATH = "/usr/local/bin:/usr/bin:/bin" }
+
+[package.metadata.raze.crates.cxxbridge-cmd.'*']
+compile_data_attr = "[\"src/gen/include/cxx.h\"]"
+extra_aliased_targets = ["cargo_bin_cxxbridge"]

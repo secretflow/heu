@@ -1,0 +1,48 @@
+load("@yasl//bazel:yasl.bzl", "yasl_cc_library", "yasl_cc_test")
+
+yasl_cc_library(
+    name = "paillier_float",
+    srcs = [
+        "decryptor.cc",
+        "encryptor.cc",
+        "evaluator.cc",
+        "internal/codec.cc",
+        "key_gen.cc",
+        "public_key.cc",
+        "secret_key.cc",
+    ],
+    hdrs = [
+        "ciphertext.h",
+        "decryptor.h",
+        "encryptor.h",
+        "evaluator.h",
+        "internal/codec.h",
+        "key_gen.h",
+        "paillier.h",
+        "public_key.h",
+        "secret_key.h",
+    ],
+    linkopts = ["-lm"],  # codec
+    visibility = ["//visibility:public"],
+    deps = [
+        "//heu/library/algorithms/util:mp_int",
+        "@com_github_msgpack_msgpack//:msgpack",
+        "@com_google_absl//absl/types:optional",
+    ],
+)
+
+yasl_cc_test(
+    name = "paillier_test",
+    srcs = ["paillier_test.cc"],
+    deps = [
+        "//heu/library/algorithms/paillier_float",
+    ],
+)
+
+yasl_cc_test(
+    name = "codec_test",
+    srcs = ["internal/codec_test.cc"],
+    deps = [
+        ":paillier_float",
+    ],
+)

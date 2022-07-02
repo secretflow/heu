@@ -1,0 +1,89 @@
+"""
+@generated
+cargo-raze crate build file.
+
+DO NOT EDIT! Replaced on runs of cargo-raze
+"""
+
+# buildifier: disable=load
+load("@bazel_skylib//lib:selects.bzl", "selects")
+
+# buildifier: disable=load
+load(
+    "@rules_rust//rust:defs.bzl",
+    "rust_binary",
+    "rust_library",
+    "rust_proc_macro",
+    "rust_test",
+)
+
+package(default_visibility = [
+    # Public for visibility by "@raze__crate__version//" targets.
+    #
+    # Prefer access through "//third_party/bazel_rust/cargo", which limits external
+    # visibility to explicit Cargo.toml dependencies.
+    "//visibility:public",
+])
+
+licenses([
+    "restricted",  # AGPL-3.0 from expression "AGPL-3.0"
+])
+
+# Generated Targets
+
+# Unsupported target "benchmark" with type "bench" omitted
+
+rust_binary(
+    # Prefix bin name to disambiguate from (probable) collision with lib name
+    # N.B.: The exact form of this is subject to change.
+    name = "cargo_bin_generate_random",
+    srcs = glob(["**/*.rs"]),
+    crate_features = [
+        "multithread",
+        "rayon",
+    ],
+    crate_root = "src/generate_random.rs",
+    data = [],
+    edition = "2018",
+    rustc_flags = [
+        "--cap-lints=allow",
+    ],
+    tags = [
+        "cargo-raze",
+        "crate-name=generate_random",
+        "manual",
+    ],
+    version = "0.1.7",
+    # buildifier: leave-alone
+    deps = [
+        ":concrete_csprng",
+        "@rust__aes_soft__0_6_4//:aes_soft",
+        "@rust__rayon__1_5_1//:rayon",
+    ],
+)
+
+rust_library(
+    name = "concrete_csprng",
+    srcs = glob(["**/*.rs"]),
+    crate_features = [
+        "multithread",
+        "rayon",
+    ],
+    crate_root = "src/lib.rs",
+    data = [],
+    edition = "2018",
+    rustc_flags = [
+        "--cap-lints=allow",
+    ],
+    tags = [
+        "cargo-raze",
+        "crate-name=concrete-csprng",
+        "manual",
+    ],
+    version = "0.1.7",
+    # buildifier: leave-alone
+    deps = [
+        "@rust__aes_soft__0_6_4//:aes_soft",
+        "@rust__rayon__1_5_1//:rayon",
+    ],
+)
