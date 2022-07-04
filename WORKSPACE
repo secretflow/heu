@@ -4,14 +4,12 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 #### for cpp ####
 
-
-# rules_foreign_cc-0.7.1 cannot work on macOS
 http_archive(
     name = "rules_foreign_cc",
-    sha256 = "69023642d5781c68911beda769f91fcbc8ca48711db935a75da7f6536b65047f",
-    strip_prefix = "rules_foreign_cc-0.6.0",
+    sha256 = "bcd0c5f46a49b85b384906daae41d277b3dc0ff27c7c752cc51e43048a58ec83",
+    strip_prefix = "rules_foreign_cc-0.7.1",
     urls = [
-        "https://github.com/bazelbuild/rules_foreign_cc/archive/0.6.0.tar.gz",
+        "https://github.com/bazelbuild/rules_foreign_cc/archive/0.7.1.tar.gz",
     ],
 )
 
@@ -30,9 +28,10 @@ rules_foreign_cc_dependencies(
 
 http_archive(
     name = "rules_python",
-    sha256 = "cd6730ed53a002c56ce4e2f396ba3b3be262fd7cb68339f0377a45e8227fe332",
+    sha256 = "9fcf91dbcc31fde6d1edb15f117246d912c33c36f44cf681976bd886538deba6",
+    strip_prefix = "rules_python-0.8.0",
     urls = [
-        "https://github.com/bazelbuild/rules_python/releases/download/0.5.0/rules_python-0.5.0.tar.gz",
+        "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.8.0.tar.gz",
     ],
 )
 
@@ -50,10 +49,10 @@ http_archive(
 http_archive(
     name = "pybind11",
     build_file = "@pybind11_bazel//:pybind11.BUILD",
-    sha256 = "057fb68dafd972bc13afb855f3b0d8cf0fa1a78ef053e815d9af79be7ff567cb",
-    strip_prefix = "pybind11-2.9.0",
+    sha256 = "6bd528c4dbe2276635dc787b6b1f2e5316cf6b49ee3e150264e455a0d68d19c1",
+    strip_prefix = "pybind11-2.9.2",
     urls = [
-        "https://github.com/pybind/pybind11/archive/refs/tags/v2.9.0.tar.gz",
+        "https://github.com/pybind/pybind11/archive/refs/tags/v2.9.2.tar.gz",
     ],
 )
 
