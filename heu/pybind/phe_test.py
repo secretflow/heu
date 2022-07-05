@@ -148,7 +148,7 @@ class ServerClientCase(unittest.TestCase):
         server_he = phe.setup(pickle.loads(pk_buffer))
         ct3 = server_he.evaluator().sub(pickle.loads(ct1_buffer), pickle.loads(ct2_buffer))
         ct3_buffer = pickle.dumps(ct3)
-        
+
         # client: decrypt
         ct_x = pickle.loads(ct3_buffer)
         self.assertEqual(client_he.decryptor().decrypt_raw(ct_x), 123 - 456)
