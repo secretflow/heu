@@ -9,7 +9,7 @@ filegroup(
 
 make(
     name = "libtommath",
-    copts = ["-O2", "-j"],  # libtommath rely on DCE to compile, increase optimization level to ensure it compiles
+    copts = ["-O2"],  # libtommath rely on DCE to compile, increase optimization level to ensure it compiles
     lib_source = ":all_srcs",
     out_static_libs = ["libtommath.a"],
     targets = ["install"],

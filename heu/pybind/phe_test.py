@@ -133,13 +133,12 @@ class BasicCase(unittest.TestCase):
         # BatchEncoding 的减法慎用，只有当每个元素都是正整数时才可以使用
         self.assertEqual(bc.decode(self.decryptor.decrypt(self.evaluator.sub(ct1, ct2))), (123 - 789, 456 - 101112))
 
-
 class ServerClientCase(unittest.TestCase):
     def test_pickle(self):
         import pickle
 
         # client: encrypt
-        client_he = phe.setup(phe.SchemaType.OU, 2048)
+        client_he = phe.setup(phe.SchemaType.ZPaillier, 2048)
         pk_buffer = pickle.dumps(client_he.public_key())
 
         ct1_buffer = pickle.dumps(client_he.encryptor().encrypt_raw(123))
