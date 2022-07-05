@@ -135,23 +135,23 @@ class BasicCase(unittest.TestCase):
 
 class ServerClientCase(unittest.TestCase):
     def test_pickle(self):
-         import pickle
+        import pickle
 
-         # client: encrypt
-         client_he = phe.setup(phe.SchemaType.ZPaillier, 2048)
-         pk_buffer = pickle.dumps(client_he.public_key())
+        # client: encrypt
+        client_he = phe.setup(phe.SchemaType.ZPaillier, 2048)
+        pk_buffer = pickle.dumps(client_he.public_key())
 
-         ct1_buffer = pickle.dumps(client_he.encryptor().encrypt_raw(123))
-         ct2_buffer = pickle.dumps(client_he.encryptor().encrypt_raw(456))
+        ct1_buffer = pickle.dumps(client_he.encryptor().encrypt_raw(123))
+        ct2_buffer = pickle.dumps(client_he.encryptor().encrypt_raw(456))
 
-         # server: calc ct1 - ct2
-         server_he = phe.setup(pickle.loads(pk_buffer))
-         ct3 = server_he.evaluator().sub(pickle.loads(ct1_buffer), pickle.loads(ct2_buffer))
-         ct3_buffer = pickle.dumps(ct3)
-
-         # client: decrypt
-         ct_x = pickle.loads(ct3_buffer)
-         self.assertEqual(client_he.decryptor().decrypt_raw(ct_x), 123 - 456)
+        # server: calc ct1 - ct2
+        server_he = phe.setup(pickle.loads(pk_buffer))
+        ct3 = server_he.evaluator().sub(pickle.loads(ct1_buffer), pickle.loads(ct2_buffer))
+        ct3_buffer = pickle.dumps(ct3)
+        
+        # client: decrypt
+        ct_x = pickle.loads(ct3_buffer)
+        self.assertEqual(client_he.decryptor().decrypt_raw(ct_x), 123 - 456)
 
 
 if __name__ == '__main__':
