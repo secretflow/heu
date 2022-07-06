@@ -80,10 +80,13 @@ load("@rules_rust//rust:repositories.bzl", "rust_repositories")
 rust_repositories(version = "1.58.1")
 
 ### ref yasl ###
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-local_repository(
+git_repository(
     name = "yasl",
-    path = "{}/second_party/yasl".format(__workspace_dir__),
+    commit = "5ee0e3346597cf6118b4a0f09205a97f535355b7",
+    recursive_init_submodules = True,
+    remote = "https://github.com/secretflow/yasl.git",
 )
 
 load("@yasl//bazel:repositories.bzl", "yasl_deps")
