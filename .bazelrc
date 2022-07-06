@@ -35,12 +35,6 @@ build:ubsan --copt -g
 build:ubsan --copt -fno-omit-frame-pointer
 build:ubsan --linkopt -fsanitize=undefined
 
-#build --remote_cache=http://bazel.cache.alipay.net
-#build --remote_cache=http://bazel-test.cache.alipay.net
-
-#test --remote_cache=http://bazel.cache.alipay.net
-#test --remote_cache=http://bazel-test.cache.alipay.net
-
 test --keep_going
 test --test_output=errors
 test --test_timeout=180
