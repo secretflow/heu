@@ -32,6 +32,6 @@ py_wheel(
     }),
     python_requires = "==3.8.*",
     python_tag = "cp38",
-    version = "0.1.0.beta",
+    version = "0.1.0.b1",
     deps = [":phe_pkg"],
 )
