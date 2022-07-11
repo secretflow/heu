@@ -1,0 +1,7 @@
+sphinx
+sphinx-intl
+sphinx-copybutton
+sphinx-inline-tabs
+furo  # theme
+# matplotlib
+# myst-parser

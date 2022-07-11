@@ -1,0 +1,201 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) Copyright 2022 Ant Group Co., Ltd.
+# This file is distributed under the same license as the HEU package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: HEU \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-01 15:59+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: ../../getting_started/quick_start.rst:2 7506fff3a1184b92a29ccbbe1e5fa7f2
+msgid "快速入门"
+msgstr "Quick start"
+
+#: ../../getting_started/quick_start.rst:4 e8c36ad2bdec4ecfaba1c481aa973a9e
+msgid ""
+"HEU 当前仅可作为加法同态加密 Library 使用，使用前请先参考 :doc:`安装说明 <./installation>` 安装 HEU "
+"Python 包。"
+msgstr ""
+"HEU can only be used as an Additive Homomorphic Encryption (AHE) Library "
+"now. Please refer to :doc:`Installation Instructions <./installation>` to"
+" install HEU before using it"
+
+#: ../../getting_started/quick_start.rst:7 ccfd8d4c250a4111a4685ced972eede4
+msgid "加解密"
+msgstr "Encryption & decryption"
+
+#: ../../getting_started/quick_start.rst:9 f020e0f73bd94734b0061d0f3a3bf5dd
+msgid "HEU 的操作对象有3种："
+msgstr "There are 3 types of objects in HEU:"
+
+#: ../../getting_started/quick_start.rst:11 37d287fcee1346b2b1f2bae2b1f216c1
+msgid "HEU 操作对象"
+msgstr "Object types in HEU"
+
+#: ../../getting_started/quick_start.rst:1 23646a087cfd411fba8de89f451ebced
+msgid "对象"
+msgstr "Objects"
+
+#: ../../getting_started/quick_start.rst:1 7d3330b9b7c24dcf8e3eec1676962e98
+msgid "数据类型"
+msgstr "Data type"
+
+#: ../../getting_started/quick_start.rst:1 ca1fe2e63c47435083e52c2b9440b128
+msgid "描述"
+msgstr "Description"
+
+#: ../../getting_started/quick_start.rst:1 7f14b885d5fd45c2b5c180018b581fe5
+msgid "Cleartext（原文）"
+msgstr "Cleartext"
+
+#: ../../getting_started/quick_start.rst:1 c016f0d6fbcb4d7ab98a00e7ca0ae160
+msgid "python 原生数据类型"
+msgstr "Native data types in python"
+
+#: ../../getting_started/quick_start.rst:1 d4623a95bbed4890b3ecdf5851bb3c6c
+msgid "Python 原生的整数、浮点数"
+msgstr "python native data types, such as int, float"
+
+#: ../../getting_started/quick_start.rst:1 8d021dadf66a41279c46fde40dd6d292
+msgid "Plaintext（明文）"
+msgstr "Plaintext"
+
+#: ../../getting_started/quick_start.rst:1 393d41d888fe4e769c171851e2663688
+msgid "phe.Plaintext"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:1 fb869116d8d74d80837cb835a825546d
+msgid "编码后的原文，一定为整数"
+msgstr "The encoded cleartext, always an integer"
+
+#: ../../getting_started/quick_start.rst:1 4bd983e13c134447b14fe3ceaa5de040
+msgid "Ciphertext（密文）"
+msgstr "Ciphertext"
+
+#: ../../getting_started/quick_start.rst:1 098bc47013064557b44b986b3ab4cada
+msgid "phe.Ciphertext"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:1 f4a16488b6784109916e53dab8cfdd4e
+msgid "密文"
+msgstr "Ciphertext"
+
+#: ../../getting_started/quick_start.rst:18 f60768b39b99458088269aa4113fe5a6
+msgid "三种对象之间的转换方法如下："
+msgstr "The conversion methods between three objects are as follows:"
+
+#: ../../getting_started/quick_start.rst:-1 a1242ca05efd4115b4ebe7015a11f9b9
+msgid "HEU 对象转换关系图示"
+msgstr "HEU object conversion relationship diagram"
+
+#: ../../getting_started/quick_start.rst:25 9aabd4a3a7c242bc80bf0add7b81142c
+msgid "HEU 基本使用展示"
+msgstr "Basic usage of HEU"
+
+#: ../../getting_started/quick_start.rst:43 cafe398d647a4c7b83f1e7da7580660d
+msgid ""
+"``encrypt_raw`` 和 ``decrypt_raw`` "
+"支持高精度，其精度与同态加密算法本身支持的值域范围相同，具体值域因算法而异，但一般都 **远大于** C++ int128 表达范围。"
+msgstr ""
+"The ``encrypt_raw`` and ``decrypt_raw`` interfaces support arbitrary "
+"precision, and the conversion precision is the same as the range of value"
+" supported by HE algorithm itself. The exact range varies from algorithm "
+"to algorithm, but is generally much larger than C++ int128_t's range."
+
+#: ../../getting_started/quick_start.rst:47 dd120d52a1a24b548f845fe69d9008ed
+msgid "编码"
+msgstr "Encoding"
+
+#: ../../getting_started/quick_start.rst:51 213937842b5146539e7891b55ff3c783
+msgid "当前 HEU 提供了两种 ``Encoder``："
+msgstr "Currently HEU provides two kinds of ``Encoders``:"
+
+#: ../../getting_started/quick_start.rst:50 bf97b9e721e643f6ad1a3b6650f3a825
+msgid "``phe.PlainEncoder``: 编码浮点数或整数"
+msgstr "``phe.PlainEncoder`` can encode floats or integers"
+
+#: ../../getting_started/quick_start.rst:51 51cf2fa769de497f99088b0efe6f96c0
+msgid "``phe.BatchEncoder``: 将两个原文（整数）编码到一个明文中"
+msgstr ""
+"``phe.BatchEncoder`` can encode two cleartext (integers) into one "
+"plaintext"
+
+#: ../../getting_started/quick_start.rst:54 60f6223226014063abbebf189a4dc628
+msgid "PlainEncoder"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:56 1773118d525445ed86c9b141c05eb527
+msgid ""
+"``phe.PlainEncoder`` 的原理是将原文乘上一个 scale 转换成明文，因此 scale 大小决定了计算的精度。如果创建 "
+"PlainEncoder 对象时不提供参数，则使用默认的 scale ``1e6``"
+msgstr ""
+"The principle of ``phe.PlainEncoder`` is to multiply the original number "
+"by a scale to convert it into plaintext, so the size of the scale "
+"determines the precision of calculation. If the PlainEncoder object is "
+"created without arguments, the default scale ``1e6`` is used."
+
+#: ../../getting_started/quick_start.rst:58 131784d5dac94c1b931ce2a70e517d16
+msgid "``phe.PlainEncoder`` 有数值大小上限，请确保编码后的明文小于 128 比特"
+msgstr ""
+"``phe.PlainEncoder`` has an upper limit, please make sure the encoded "
+"plaintext is less than 128 bits"
+
+#: ../../getting_started/quick_start.rst:76 ad5ce6ce3d184e27bc3f6034fff67e4b
+msgid "BatchEncoder"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:78 154c9b4a85f048dfb805aabcaa449cea
+msgid ""
+"``phe.BatchEncoder`` 支持将两个原文（Cleartext，int64整数）打包加密到一个明文（Plaintext）中，实现 "
+"SIMD 功能。"
+msgstr ""
+"``phe.BatchEncoder`` supports packing two Cleartexts (int64 numbers) into"
+" one plaintext to achieve SIMD effect."
+
+#: ../../getting_started/quick_start.rst:84 2bac89fad63841abb42ee35c01e0c0f1
+msgid "``phe.BatchEncoder`` 有数值大小上限，每个原文不大于 64 比特"
+msgstr ""
+"``phe.BatchEncoder`` has an upper limit on cleartext size, please make "
+"sure each cleartext is less than 64 bits"
+
+#: ../../getting_started/quick_start.rst:86 25a30d5e996a46499b0ab214e28e2980
+msgid "BatchEncoder 并不完全兼容密态减法，仅当密文中所有元素都是正整数时才可以使用，如果您无法确定元素数值范围，应当避免使用密态减法。"
+msgstr ""
+"BatchEncoder is not fully compatible with cryptographic subtraction. It "
+"can only be used when all elements in ciphertext are positive "
+"integers. If you cannot infer the value range of elements, cryptographic "
+"subtraction should be avoided."
+
+#: ../../getting_started/quick_start.rst:113 a66b313d0c334875a146e16cf218290c
+msgid "持久化"
+msgstr "Persistence"
+
+#: ../../getting_started/quick_start.rst:115 057824f370ef4bc4a33b138d71b69702
+msgid "实际场景中，隐私计算往往涉及多个参与方，这就涉及到对象的序列化和反序列化，HEU 的对象持久化功能依赖 Pickle。"
+msgstr ""
+"In practical scenarios, privacy preserving computing often involves "
+"multiple parties, which requires objects to have serialization and "
+"deserialization capabilities. The object persistence capability in HEU "
+"relies on Pickle."
+
+#: ../../getting_started/quick_start.rst:117 51353ff89d3e425b8a138b6256499644
+msgid ""
+"在一个典型的使用场景中，Client 是数据提供方，Server 是算力提供方，Client 并不信任 Server，因此 Client "
+"可以把数据加密发送给 Server，Server 在密文数据上做计算，并把结果返回给 Client。"
+msgstr ""
+"In a typical usage scenario, the client is data provider and the server "
+"is computing power provider. Assuming that the client does not trust the "
+"server, so the client chooses to encrypt private data first and then send"
+" it to server. The server perform calculations on ciphertext and returns "
+"the result to the client."
+

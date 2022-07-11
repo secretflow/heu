@@ -1,0 +1,27 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) Copyright 2022 Ant Group Co., Ltd.
+# This file is distributed under the same license as the HEU package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: HEU \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-06-28 20:23+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: ../../getting_started/index.rst:3 383117a4c6cf4b42a5fba851ebfd2f6a
+msgid "准备开始"
+msgstr "Getting started"
+
+#: ../../getting_started/index.rst:5 52b15dc929004fab8170256247b725c6
+msgid "您可以按照下面步骤来快速上手 HEU"
+msgstr "The following tutorials will help you get started quickly with HEU."
+
