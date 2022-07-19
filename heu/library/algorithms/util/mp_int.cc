@@ -14,9 +14,13 @@
 
 #include "heu/library/algorithms/util/mp_int.h"
 
+#include "heu/library/algorithms/util/mp_safe_prime_rand.h"
 #include "heu/library/algorithms/util/tommath_ext.h"
 
 namespace heu::lib::algorithms {
+
+const MPInt MPInt::_1_(1);
+const MPInt MPInt::_2_(2);
 
 MPInt::MPInt() { MPINT_ENFORCE_OK(mp_init(&n_)); }
 
@@ -130,30 +134,6 @@ MPInt MPInt::operator/(const MPInt &operand2) const {
   return result;
 }
 
-MPInt MPInt::operator+(const uint32_t &small) const {
-  MPInt result;
-  MPINT_ENFORCE_OK(mp_add_d(&this->n_, small, &result.n_));
-  return result;
-}
-
-MPInt MPInt::operator-(const uint32_t &small) const {
-  MPInt result;
-  MPINT_ENFORCE_OK(mp_sub_d(&this->n_, small, &result.n_));
-  return result;
-}
-
-MPInt MPInt::operator*(const uint32_t &small) const {
-  MPInt result;
-  MPINT_ENFORCE_OK(mp_mul_d(&this->n_, small, &result.n_));
-  return result;
-}
-
-MPInt MPInt::operator/(const uint32_t &small) const {
-  MPInt result;
-  MPINT_ENFORCE_OK(mp_div_d(&this->n_, small, &result.n_, nullptr));
-  return result;
-}
-
 MPInt MPInt::operator<<(size_t operand2) const {
   MPInt result;
   MPINT_ENFORCE_OK(mp_mul_2d(&this->n_, operand2, &result.n_));
@@ -169,6 +149,12 @@ MPInt MPInt::operator>>(size_t operand2) const {
 MPInt MPInt::operator%(const MPInt &operand2) const {
   MPInt result;
   Mod(*this, operand2, &result);
+  return result;
+}
+
+MPInt MPInt::operator-() const {
+  MPInt result;
+  Negate(&result);
   return result;
 }
 
@@ -313,6 +299,11 @@ void MPInt::RandPrimeOver(size_t bit_size, MPInt *x, PrimeType prime_type) {
       mp_prime_rand(&x->n_, trials, bit_size, static_cast<int>(prime_type)));
 }
 
+void MPInt::RandSafePrimeOver(size_t bit_size, MPInt *x) {
+  int trials = mp_prime_rabin_miller_trials(bit_size);
+  mp_safe_prime_rand(&x->n_, trials, bit_size);
+}
+
 bool MPInt::IsPrime() const {
   int trials = mp_prime_rabin_miller_trials(BitCount());
   mp_bool result;
@@ -322,10 +313,6 @@ bool MPInt::IsPrime() const {
 
 void MPInt::Mul(const MPInt &a, const MPInt &b, MPInt *c) {
   MPINT_ENFORCE_OK(mp_mul(&a.n_, &b.n_, &c->n_));
-}
-
-void MPInt::AddScalar(const MPInt &a, uint64_t b, MPInt *c) {
-  MPINT_ENFORCE_OK(mp_add_d(&a.n_, b, &c->n_));
 }
 
 void MPInt::RandomRoundDown(size_t bit_size, MPInt *r) {

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-11 16:44+0800\n"
+"POT-Creation-Date: 2022-07-14 15:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,84 +18,85 @@ msgstr ""
 "Generated-By: Babel 2.10.3\n"
 
 #: ../../getting_started/installation.rst:2
-#: ../../getting_started/installation.rst:16 2de6958335de4168b052aa31d2302456
-#: fe39e0bae2bd4973b5d3bf1a7fc91a81
+#: ../../getting_started/installation.rst:16
 msgid "安装"
 msgstr "Installation"
 
-#: ../../getting_started/installation.rst:5 338b9b89cc454f86b183c81594a4243f
+#: ../../getting_started/installation.rst:5
 msgid "环境准备"
 msgstr "Environment"
 
-#: ../../getting_started/installation.rst:7 bb6eda4850c0411fb9c7d8fea25dc9a9
+#: ../../getting_started/installation.rst:7
 msgid "Python == 3.8"
 msgstr ""
 
-#: ../../getting_started/installation.rst:13 dbd3a380271f4a898f0d6e05fe815db9
+#: ../../getting_started/installation.rst:13
 msgid "OS："
 msgstr ""
 
-#: ../../getting_started/installation.rst:10 4139e0c170444b66904d02c137103712
+#: ../../getting_started/installation.rst:10
 msgid "Centos 7"
 msgstr ""
 
-#: ../../getting_started/installation.rst:11 eb55aee9174b4c98814dc51fba6f85f7
+#: ../../getting_started/installation.rst:11
 msgid "Ubuntu 18.04+"
 msgstr ""
 
-#: ../../getting_started/installation.rst:12 c6f02c8807c34c8d97b63cb37a0797bb
+#: ../../getting_started/installation.rst:12
 msgid "macOS with Intel CPU 11.1+ (macOS Big Sur+)"
 msgstr ""
 
-#: ../../getting_started/installation.rst:35 de4a1ec178794cb997e18ca7a133c10b
+#: ../../getting_started/installation.rst:35
 msgid "通过 Pip 安装"
 msgstr "Installation from PyPI"
 
-#: ../../getting_started/installation.rst:37 471e2978f1364d589b3061ab9fbcf24c
+#: ../../getting_started/installation.rst:37
 msgid "HEU 安装包已经发布到了 PyPi，您可以通过 pip 工具安装 HEU"
 msgstr ""
 "HEU packages are published on PyPi. The preferred tool for installing "
 "packages from PyPI is pip. This tool is provided with all modern versions"
 " of Python."
 
-#: ../../getting_started/installation.rst:45 bdbbe5b5f19243539d89e36d9048e93a
+#: ../../getting_started/installation.rst:45
 msgid "从源码安装"
 msgstr "Installation from source"
 
-#: ../../getting_started/installation.rst:49 582ca9a5d4bb445981cb6b7fbce2521f
+#: ../../getting_started/installation.rst:49
 msgid "如果您需要使用最新测试版本，可以从 `源码 <https://github.com/secretflow/heu>`_ 编译安装。"
 msgstr ""
 "You can install HEU directly from a clone of the `Git repository "
-"<https://github.com/secretflow/heu>`_. Please clone the repo first and "
-"then installing from local source."
+"<https://github.com/secretflow/heu>`_. Please clone the repo first "
+"and then installing from local source."
 
-#: ../../getting_started/installation.rst:53 2f2cd1a55b7f4920839d8e7ea113c281
+#: ../../getting_started/installation.rst:53
 msgid "依赖工具："
 msgstr "Dependency:"
 
-#: ../../getting_started/installation.rst:52 487291c7dd554ef2abd07598f9b795a1
+#: ../../getting_started/installation.rst:52
 msgid "`Bazel <https://docs.bazel.build/versions/main/install.html>`_"
 msgstr ""
 
-#: ../../getting_started/installation.rst:53 dcde95df50b644a4ba216d630c48cc3c
+#: ../../getting_started/installation.rst:53
 msgid "`GCC`"
 msgstr ""
 
-#: ../../getting_started/installation.rst:55 66d8d35d614944cd89cd0cd133a0c158
+#: ../../getting_started/installation.rst:55
 msgid "安装："
 msgstr "Compile and install:"
 
-#: ../../getting_started/installation.rst:66 7a9159e82f004c64948d0ddde47e8475
+#: ../../getting_started/installation.rst:66
 msgid "测试运行"
 msgstr "Test running"
 
-#: ../../getting_started/installation.rst:68 a33c8534a20441f485f66561c1bfcf8d
+#: ../../getting_started/installation.rst:68
 msgid "安装完成后，建议执行以下命令检查 HEU 是否工作正常"
 msgstr "After installation, it is a good idea to test HEU using:"
 
-#: ../../getting_started/installation.rst:74 078bdc8224194dd091b9a1bdc618f2af
-msgid "上述命令，如果没有任何输出，则说明安装成功；反之如果报错，则说明安装未成功，请参考 :doc:`FAQ </faq>`"
+#: ../../getting_started/installation.rst:74
+msgid ""
+"上述命令，如果没有任何输出，则说明安装成功；反之如果报错，则说明安装未成功，请参考 :doc:`FAQ "
+"</getting_started/faq>`"
 msgstr ""
 "For the above command, if there is no output, the installation is "
 "successful; otherwise, if an error is reported, the installation is "
-"unsuccessful. Please refer to :doc:`FAQ </faq>`"
+"unsuccessful. Please refer to :doc:`FAQ </getting_started/faq>`"

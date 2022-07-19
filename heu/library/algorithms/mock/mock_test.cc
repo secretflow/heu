@@ -22,7 +22,7 @@ namespace heu::lib::algorithms::mock::test {
 
 class MockHeTest : public testing::Test {
  protected:
-  void SetUp() override { KeyGenerator::Generate(1024, &sk_, &pk_); }
+  void SetUp() override { KeyGenerator::Generate(2048, &sk_, &pk_); }
 
  protected:
   SecretKey sk_;
@@ -190,7 +190,7 @@ TEST_F(MockHeTest, TestInvertMod) {
 
 class NegateInplaceTest : public ::testing::TestWithParam<int64_t> {
  protected:
-  void SetUp() override { KeyGenerator::Generate(1024, &sk_, &pk_); }
+  void SetUp() override { KeyGenerator::Generate(2048, &sk_, &pk_); }
 
  protected:
   SecretKey sk_;
@@ -220,7 +220,7 @@ TEST_P(NegateInplaceTest, TestNegate) {
 
 class BigNumberTest : public ::testing::TestWithParam<int64_t> {
  protected:
-  void SetUp() override { KeyGenerator::Generate(1024, &sk_, &pk_); }
+  void SetUp() override { KeyGenerator::Generate(2048, &sk_, &pk_); }
 
  protected:
   SecretKey sk_;

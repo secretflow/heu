@@ -23,9 +23,9 @@ void SecretKey::Init() {
   MPInt q_square_inv;
   MPInt::InvertMod(q_square_, p_square_, &q_square_inv);
   q_square_inv_mul_q_square_ =
-      q_square_inv * q_square_;   // [(q^2)^{-1} mod p^2] * q^2
-  phi_p_square_ = p_ * (p_ - 1);  // p(p-1)
-  phi_q_square_ = q_ * (q_ - 1);  // q(q-1)
+      q_square_inv * q_square_;            // [(q^2)^{-1} mod p^2] * q^2
+  phi_p_square_ = p_ * (p_ - MPInt::_1_);  // p(p-1)
+  phi_q_square_ = q_ * (q_ - MPInt::_1_);  // q(q-1)
 }
 
 MPInt SecretKey::PowModNSquareCrt(const MPInt& base, const MPInt& exp) const {

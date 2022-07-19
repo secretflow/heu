@@ -23,7 +23,7 @@ namespace heu::lib::algorithms::paillier_z::test {
 class ZPaillierTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    KeyGenerator::Generate(1024, &sk_, &pk_);
+    KeyGenerator::Generate(2048, &sk_, &pk_);
     evaluator_ = std::make_shared<Evaluator>(pk_);
     decryptor_ = std::make_shared<Decryptor>(pk_, sk_);
     encryptor_ = std::make_shared<Encryptor>(pk_);
@@ -180,7 +180,7 @@ TEST_F(ZPaillierTest, PlaintextEvaluate2) {
 
 class BigNumberTest : public ::testing::TestWithParam<int64_t> {
  protected:
-  void SetUp() override { KeyGenerator::Generate(1024, &sk_, &pk_); }
+  void SetUp() override { KeyGenerator::Generate(2048, &sk_, &pk_); }
 
  protected:
   SecretKey sk_;

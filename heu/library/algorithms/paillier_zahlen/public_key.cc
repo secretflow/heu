@@ -27,7 +27,7 @@ void SetCacheTableDensity(size_t density) {
 
 void PublicKey::Init() {
   n_square_ = n_ * n_;
-  n_half_ = n_ / 2;
+  n_half_ = n_ / MPInt::_2_;
   key_size_ = n_.BitCount();
 
   m_space_ = std::make_shared<MontgomerySpace>(n_square_);

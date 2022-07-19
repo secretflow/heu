@@ -19,7 +19,7 @@ from heu.pybind import phe
 
 class BasicCase(unittest.TestCase):
     def setUp(self) -> None:
-        self.ctx = phe.setup(phe.SchemaType.ZPaillier, 1024)
+        self.ctx = phe.setup(phe.SchemaType.ZPaillier, 2048)
         self.encryptor = self.ctx.encryptor()
         self.decryptor = self.ctx.decryptor()
         self.evaluator = self.ctx.evaluator()

@@ -22,7 +22,7 @@ class PaillierTest : public testing::Test {
  protected:
   void SetUp() override {
     // key_size = 1024, to speed up unittest
-    KeyGenerator::Generate(1024, &sec_key_, &pub_key_);
+    KeyGenerator::Generate(2048, &sec_key_, &pub_key_);
   }
 
  protected:
@@ -156,7 +156,7 @@ TEST_F(PaillierTest, CipherMultiplyDoubleWorks) {
 
 class NegateInplaceTest : public ::testing::TestWithParam<int> {
  protected:
-  void SetUp() override { KeyGenerator::Generate(1024, &sk_, &pk_); }
+  void SetUp() override { KeyGenerator::Generate(2048, &sk_, &pk_); }
 
  protected:
   SecretKey sk_;

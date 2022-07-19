@@ -21,4 +21,4 @@ HEU 的目的是降低同态加密的使用门槛，使得用户无需专业知�
 
    getting_started/index
    references/phe_api
-   faq
+

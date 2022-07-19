@@ -56,4 +56,4 @@ HEU 安装包已经发布到了 PyPi，您可以通过 pip 工具安装 HEU
 
   python -c "from heu import phe"
 
-上述命令，如果没有任何输出，则说明安装成功；反之如果报错，则说明安装未成功，请参考 :doc:`FAQ </faq>`
+上述命令，如果没有任何输出，则说明安装成功；反之如果报错，则说明安装未成功，请参考 :doc:`FAQ </getting_started/faq>`

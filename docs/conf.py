@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('../bazel-bin/heu/pybind'))
 # -- Project information -----------------------------------------------------
 
 project = 'HEU'
-copyright = 'Copyright 2022 Ant Group Co., Ltd.'
+copyright = '2022 Ant Group Co., Ltd'
 author = 'HEU authors'
 
 # The full version, including alpha/beta/rc tags
@@ -63,30 +63,42 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # -- Options for HTML output -------------------------------------------------
 
-html_logo = "images/logo.png"
+html_favicon = '_static/favicon.ico'
 
 html_css_files = [
-    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/fontawesome.min.css",
-    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/solid.min.css",
-    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/brands.min.css",
+    'css/custom.css',
 ]
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "furo"
+html_theme = "pydata_sphinx_theme"
+
+html_context = {
+    "default_mode": "light"
+}
+
 html_theme_options = {
-    "dark_css_variables": {
-        "color-background-primary": "#292929",
+    "logo": {
+        "text": "HEU",
+        "image_light": "logo.png",
+        "image_dark": "logo-dark.png",
     },
-    "footer_icons": [
+    "pygment_light_style": "tango",
+    "pygment_dark_style": "native",
+    "external_links": [
+        {"name": "SecretFlow", "url": "https://secretflow.readthedocs.io/"},
+        {"name": "SPU", "url": "https://spu.readthedocs.io/"},
+    ],
+    "icon_links": [
         {
             "name": "GitHub",
             "url": "https://github.com/secretflow/heu",
-            "html": "",
-            "class": "fa-brands fa-github",
+            "icon": "fab fa-github",
+            "type": "fontawesome",
         },
     ],
+    "footer_items": ["copyright"],
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,

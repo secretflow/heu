@@ -20,3 +20,5 @@ unpack
 
 bazel-*
 docs/_build
+
+.vscode

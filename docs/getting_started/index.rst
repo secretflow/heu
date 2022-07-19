@@ -9,3 +9,4 @@
 
    installation
    quick_start
+   faq

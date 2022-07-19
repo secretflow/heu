@@ -2,6 +2,7 @@ sphinx
 sphinx-intl
 sphinx-copybutton
 sphinx-inline-tabs
-furo  # theme
+pydata-sphinx-theme  # theme
 # matplotlib
 # myst-parser
+sf-heu
