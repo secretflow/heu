@@ -22,8 +22,8 @@ namespace heu::lib::phe {
 
 // If you add a new schema, change this !!
 enum class SchemaType {
-  None,  // Mock He
-  ZPaillier,
+  None,       // Mock He
+  ZPaillier,  // Preferred
   FPaillier,
 };
 

@@ -24,7 +24,7 @@ using algorithms::MPInt;
 class PheTest : public ::testing::TestWithParam<SchemaType> {
  protected:
   void SetUp() override {
-    he_kit_.Setup(GetParam(), 1024);
+    he_kit_.Setup(GetParam(), 2048);
     auto sk_str = he_kit_.GetSecretKey()->ToString();
     EXPECT_GT(sk_str.length(), 10) << sk_str;
     auto pk_str = he_kit_.GetPublicKey()->ToString();
@@ -63,7 +63,7 @@ TEST_P(PheTest, Serialize) {
   // send back to client
   Ciphertext ct2;
   ct2.Deserialize(yasl::ByteContainerView(buffer));
-  EXPECT_EQ(he_kit_.GetDecryptor()->Decrypt(ct1), plain + 666);
+  EXPECT_EQ(he_kit_.GetDecryptor()->Decrypt(ct1), plain + MPInt(666));
 }
 
 TEST_P(PheTest, EncryptZero) {

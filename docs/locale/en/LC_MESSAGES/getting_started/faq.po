@@ -1,0 +1,55 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) Copyright 2022 Ant Group Co., Ltd.
+# This file is distributed under the same license as the HEU package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: HEU \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-01 15:03+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: ../../faq.rst:2 706fec9328f048499f517c4397f2ed8c
+msgid "常见问题"
+msgstr "Frequently asked questions (FAQ)"
+
+#: ../../faq.rst:6 040f34937a3440cca4b5b9125292a0ef
+msgid "部署相关"
+msgstr "Category: Install and deployment"
+
+#: ../../faq.rst:10 2742d4f5a8774d468b7b3cf2e6d572eb
+msgid "HEU 支持 Mac 吗？"
+msgstr "Does HEU support installation on Mac?"
+
+#: ../../faq.rst:11 e6e9a8ff0b74418097759f7a995935c5
+msgid "HEU 支持 Intel 芯片的 macOS，暂不支持 Apple Silicon。"
+msgstr "HEU supports macOS with Intel chips but does not support Apple Silicon."
+
+#: ../../faq.rst:15 4ef03e3d7dfe473a969e8ae55609d8ee
+msgid "Pip 找不到安装包"
+msgstr "Pip cannot find a suitable installation package"
+
+#: ../../faq.rst:16 5769bb25d4d14fb6911ada147c133ca4
+msgid "请依次检查安装环境是否满足要求："
+msgstr "Please check whether the installation environment meets the requirements:"
+
+#: ../../faq.rst:18 852cf06c2c6d4d5ab04bf492cadcc615
+msgid "Python 版本必须为 3.8"
+msgstr "Python version must be 3.8"
+
+#: ../../faq.rst:19 9fbe3bbfdf38412caa415328d8736f54
+msgid "Pip 版本 22.0+"
+msgstr "Pip version must be 22.0+"
+
+#: ../../faq.rst:20 d34763af7bf240a6be160a0cf82574e2
+msgid "如果是 Mac 机器，则只支持 Intel CPU，且 OS 版本 11.1 以上"
+msgstr "If you are using a Mac, make sure that the CPU is made by Intel and OS version is 11.1 or above"
+

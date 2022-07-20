@@ -19,7 +19,7 @@ namespace heu::lib::algorithms::mock {
 void KeyGenerator::Generate(int key_size, SecretKey* sk, PublicKey* pk) {
   sk->key_size_ = key_size;
   pk->key_size_ = key_size;
-  pk->max_int_ = MPInt(1) << (key_size - 2);
+  pk->max_int_ = MPInt::_1_ << (key_size - 2);
 }
 
 }  // namespace heu::lib::algorithms::mock

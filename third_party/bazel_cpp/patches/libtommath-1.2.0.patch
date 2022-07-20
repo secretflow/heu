@@ -1,19 +1,5 @@
-diff --git a/makefile_include.mk b/makefile_include.mk
-index 7b025e8..a80e155 100644
---- a/makefile_include.mk
-+++ b/makefile_include.mk
-@@ -47,7 +47,7 @@ else
- endif
- endif
- 
--LTM_CFLAGS += -I./ -Wall -Wsign-compare -Wextra -Wshadow
-+LTM_CFLAGS += -fPIC -I./ -Wall -Wsign-compare -Wextra -Wshadow
- 
- ifdef SANITIZER
- LTM_CFLAGS += -fsanitize=undefined -fno-sanitize-recover=all -fno-sanitize=float-divide-by-zero
-
 diff --git a/bn_mp_set_double.c b/bn_mp_set_double.c
-index a42fc70d9086028b43982fd93d5cbc7d8ee89a9b..6f91b64f50340211daf4796fc21d3c72f8347737 100644
+index a42fc70..6f91b64 100644
 --- a/bn_mp_set_double.c
 +++ b/bn_mp_set_double.c
 @@ -3,7 +3,7 @@
@@ -26,10 +12,10 @@ index a42fc70d9086028b43982fd93d5cbc7d8ee89a9b..6f91b64f50340211daf4796fc21d3c72
  {
     uint64_t frac;
 diff --git a/demo/test.c b/demo/test.c
-index 7b29a4ce94893eb15216c527a508dd1a1aa380b6..9049fa81f91aeae389049885a1f13793d371399a 100644
+index 7b29a4c..9049fa8 100644
 --- a/demo/test.c
 +++ b/demo/test.c
-@@ -625,7 +625,7 @@ static int test_mp_invmod(void)
+@@ -625,7 +625,7 @@ LBL_ERR:
  
  }
  
@@ -38,4 +24,27 @@ index 7b29a4ce94893eb15216c527a508dd1a1aa380b6..9049fa81f91aeae389049885a1f13793
  static int test_mp_set_double(void)
  {
     int i;
-
+diff --git a/makefile_include.mk b/makefile_include.mk
+index 7b025e8..b480b87 100644
+--- a/makefile_include.mk
++++ b/makefile_include.mk
+@@ -47,7 +47,7 @@ else
+ endif
+ endif
+ 
+-LTM_CFLAGS += -I./ -Wall -Wsign-compare -Wextra -Wshadow
++LTM_CFLAGS += -fPIC -I./ -Wall -Wsign-compare -Wextra -Wshadow
+ 
+ ifdef SANITIZER
+ LTM_CFLAGS += -fsanitize=undefined -fno-sanitize-recover=all -fno-sanitize=float-divide-by-zero
+@@ -123,8 +123,8 @@ else
+    COVERAGE_APP = ./test
+ endif
+ 
+-HEADERS_PUB=tommath.h
+-HEADERS=tommath_private.h tommath_class.h tommath_superclass.h tommath_cutoffs.h $(HEADERS_PUB)
++HEADERS_PUB=tommath.h tommath_private.h tommath_class.h tommath_superclass.h tommath_cutoffs.h
++HEADERS=$(HEADERS_PUB)
+ 
+ #LIBPATH  The directory for libtommath to be installed to.
+ #INCPATH  The directory to install the header files for libtommath.

@@ -36,7 +36,7 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
     MPInt::RandPrimeOver(half, &p, PrimeType::BBS);
     do {
       MPInt::RandPrimeOver(half, &q, PrimeType::BBS);
-      MPInt::Gcd(p - 1, q - 1, &c);
+      MPInt::Gcd(p - MPInt::_1_, q - MPInt::_1_, &c);
     } while (c != MPInt(2) ||
              (p - q).BitCount() < key_size / 2 - kPQDifferenceBitLenSub);
     n = p * q;
@@ -47,12 +47,12 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
     MPInt::RandomLtN(n, &x);
     MPInt::Gcd(x, n, &c);
   } while (c != MPInt(1));
-  h = x * x * -1 % n;
+  h = x * x * -MPInt::_1_ % n;
 
   // fill secret key
   sk->p_ = p;
   sk->q_ = q;
-  sk->lambda_ = p.DecrOne() * q.DecrOne() / 2;
+  sk->lambda_ = p.DecrOne() * q.DecrOne() / MPInt::_2_;
   MPInt::InvertMod(sk->lambda_, n, &sk->mu_);
   sk->Init();
   // fill public key

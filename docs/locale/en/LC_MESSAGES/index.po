@@ -1,0 +1,50 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) Copyright 2022 Ant Group Co., Ltd.
+# This file is distributed under the same license as the HEU package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: HEU \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-06-28 20:55+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: ../../index.rst:18 ecf6a8bb5b3c4670815c268af6254b46
+msgid "Contents"
+msgstr "Contents"
+
+#: ../../index.rst:7 45a7efcdd5e949a1bcb6124cd632f2e8
+msgid "HEU 文档"
+msgstr "HEU Documentation"
+
+#: ../../index.rst:9 ed47a450a6904d8986bc786558ac1757
+msgid ""
+"同态加密计算引擎（homomorphic encryption processing unit, HEU) "
+"是隐语的一个子项目，实现了高性能的同态加密算法。"
+msgstr ""
+"Homomorphic Encryption processing Unit (HEU) is a sub-project of "
+"Secretflow that implements high-performance homomorphic encryption "
+"algorithms."
+
+#: ../../index.rst:11 944d0a6835224482a524dff63ae729f7
+msgid "HEU 的目的是降低同态加密的使用门槛，使得用户无需专业知识就能利用同态加密算法构建任意程序。"
+msgstr ""
+"HEU aims to simplify the use of homomorphic encryption (HE) for data "
+"scientists. Particular care was given to the simplicity of our Python "
+"package in order to make it usable by any data scientist, even those "
+"without prior cryptography knowledge."
+
+#: ../../index.rst:15 7f47750cbea149aeb5ef2ef205e6669f
+msgid "由于 HEU 还处在起步阶段，当前 HEU 仅仅是一个加法同态加密的 library，还不俱备像 SPU 一样执行任意程序的能力。"
+msgstr ""
+"Since HEU is still in its infancy, HEU can only be used as a library and "
+"it is not ready to execute arbitrary programs like SPU."
+

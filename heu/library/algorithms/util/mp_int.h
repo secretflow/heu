@@ -41,6 +41,11 @@ enum class PrimeType : int {
  */
 class MPInt {
  public:
+  // Pre-defined variables ...
+  static const MPInt _1_;
+  static const MPInt _2_;
+
+  // Constructors and functions ...
   MPInt();
   explicit MPInt(int32_t x);
   explicit MPInt(uint32_t x);
@@ -83,12 +88,9 @@ class MPInt {
   MPInt operator*(const MPInt &operand2) const;
   MPInt operator/(const MPInt &operand2) const;
   MPInt operator%(const MPInt &operand2) const;
-  MPInt operator+(const uint32_t &small) const;
-  MPInt operator-(const uint32_t &small) const;
-  MPInt operator*(const uint32_t &small) const;
-  MPInt operator/(const uint32_t &small) const;
   MPInt operator<<(size_t operand2) const;
   MPInt operator>>(size_t operand2) const;
+  MPInt operator-() const;
 
   MPInt operator-=(const MPInt &operand2);
   MPInt operator+=(const MPInt &operand2);
@@ -161,14 +163,14 @@ class MPInt {
   static void RandPrimeOver(size_t bit_size, MPInt *x,
                             PrimeType prime_type = PrimeType::BBS);
 
+  static void RandSafePrimeOver(size_t bit_size, MPInt *x);
+
   [[nodiscard]] bool IsPrime() const;
 
   /**
    * (*c) = a * b
    */
   static void Mul(const MPInt &a, const MPInt &b, MPInt *c);
-
-  static void AddScalar(const MPInt &a, uint64_t b, MPInt *c);
 
   /**
    * Generate a random number

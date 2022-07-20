@@ -25,7 +25,7 @@ class CodecTest : public testing::Test {
   void SetUp() override {
     PublicKey public_key;
     SecretKey secret_key;
-    KeyGenerator::Generate(1024, &secret_key, &public_key);
+    KeyGenerator::Generate(2048, &secret_key, &public_key);
 
     codec_ = std::make_unique<internal::Codec>(public_key);
   }

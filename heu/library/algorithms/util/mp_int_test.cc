@@ -43,11 +43,6 @@ TEST_F(MPIntTest, ArithmeticWorks) {
   EXPECT_TRUE(x2 * x1 == MPInt(37 * 23));
   EXPECT_TRUE(x1 / x2 == MPInt(23 / 37));
   EXPECT_TRUE(x2 / x1 == MPInt(37 / 23));
-
-  EXPECT_TRUE(x1 + 2 == MPInt(25));
-  EXPECT_TRUE(x1 - 2 == MPInt(21));
-  EXPECT_TRUE(x1 * 2 == MPInt(46));
-  EXPECT_TRUE(x1 / 2 == MPInt(11));
 }
 
 TEST_F(MPIntTest, DefaultCtorWorks) {

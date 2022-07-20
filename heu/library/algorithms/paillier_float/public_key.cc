@@ -23,7 +23,7 @@ PublicKey::PublicKey(const MPInt& n) : n_(n) { Init(); }
 PublicKey::PublicKey(MPInt&& n) : n_(std::move(n)) { Init(); }
 
 void PublicKey::Init() {
-  MPInt::AddScalar(n_, 1, &g_);    // g_ = n_ + 1
+  g_ = n_ + MPInt::_1_;
   MPInt::Mul(n_, n_, &n_square_);  // n_square_ = n_ ** 2
   MPInt::Div3(n_, &max_int_);
 }

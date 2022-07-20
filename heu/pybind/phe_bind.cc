@@ -216,7 +216,7 @@ void BindPhe(pybind11::module& m) {
         return ahe;
       },
       py::arg("public_key"), py::return_value_policy::move,
-      "Setup phe environment by already generated public key");
+      "Setup phe environment by an already generated public key");
 
   /****** encoding ******/
   py::class_<phe::PlainEncoder>(m, "PlainEncoder", py::module_local())

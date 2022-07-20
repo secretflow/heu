@@ -1,4 +1,4 @@
-load("@yasl//bazel:yasl.bzl", "yasl_cc_binary", "yasl_cc_library", "yasl_cc_test")
+load("@yasl//bazel:yasl.bzl", "yasl_cc_library", "yasl_cc_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -41,6 +41,7 @@ yasl_cc_library(
     deps = [
         ":he_assert",
         ":he_object",
+        ":mp_safe_prime_rand",
         ":tommath_ext",
         "@com_github_fmtlib_fmt//:fmtlib",
         "@com_github_msgpack_msgpack//:msgpack",
@@ -62,6 +63,18 @@ yasl_cc_library(
     name = "he_assert",
     hdrs = ["he_assert.h"],
     deps = ["@yasl//yasl/base:exception"],
+)
+
+yasl_cc_library(
+    name = "mp_safe_prime_rand",
+    srcs = ["mp_safe_prime_rand.cc"],
+    hdrs = ["mp_safe_prime_rand.h"],
+    deps = [
+        "@com_github_libtom_libtommath//:libtommath",
+        "@yasl//yasl/base:buffer",
+        "@yasl//yasl/base:exception",
+        "@yasl//yasl/utils:scope_guard",
+    ],
 )
 
 yasl_cc_test(
