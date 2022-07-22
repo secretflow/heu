@@ -81,9 +81,8 @@ Ciphertext Evaluator::Negate(const Ciphertext& a) const {
 void Evaluator::NegateInplace(Ciphertext* a) const { *a = Negate(*a); }
 
 Ciphertext Evaluator::Mul(const Ciphertext& a, const MPInt& p) const {
-  // Keep same with Paillier/OU
+  // Keep same with Paillier
   // No need to check size of p because ciphertext overflow is allowed
-
   Ciphertext out;
   out.c_ = a.c_ * p;
   return out;

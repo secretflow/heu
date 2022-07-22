@@ -22,7 +22,7 @@ namespace heu::lib::algorithms::mock {
 class KeyGenerator {
  public:
   /**
-   * Generate OU key pair
+   * Generate PHE key pair
    */
   static void Generate(int key_size, SecretKey* sk, PublicKey* pk);
 };
