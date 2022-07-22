@@ -56,7 +56,7 @@ namespace heu::lib::phe {
 // borrowed from https://en.cppreference.com/w/cpp/utility/variant/visit
 // `Overloaded` is a helper class required by std::visit() to bind a set of
 // lambdas to the overloaded operators(type), one for each specific subtype
-// (e.g. ou::Encryptor).
+// (e.g. paillier_z::Encryptor).
 // [Complexity] std::visit() can call the corresponding lambda according to the
 // stored type in O(1) time since the input number of variants is always one
 template <class... Ts>
