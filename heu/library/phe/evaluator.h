@@ -27,49 +27,63 @@ typedef std::variant<HE_NAMESPACE_LIST(Evaluator)> EvaluatorType;
 
 class Evaluator {
  public:
-  explicit Evaluator(EvaluatorType evaluator_instance)
-      : evaluator_ptr_(std::move(evaluator_instance)) {}
+  explicit Evaluator(EvaluatorType evaluator)
+      : evaluator_ptr_(std::move(evaluator)) {}
 
   // The performance of Randomize() is exactly the same as that of Encrypt().
   void Randomize(Ciphertext* ct) const;
 
   // out = a + b
-  Ciphertext Add(const Ciphertext& a, const Ciphertext& b) const;
-  void AddInplace(Ciphertext* a, const Ciphertext& b) const;
-
-  // out = a + p
-  // Warning: if a, b are in batch encoding form, then p must also be in batch
+  // Note: if a, b are in batch encoding form, then p must also be in batch
   // encoding form
+  Ciphertext Add(const Ciphertext& a, const Ciphertext& b) const;
   Ciphertext Add(const Ciphertext& a, const Plaintext& p) const;
   Ciphertext Add(const Plaintext& p, const Ciphertext& a) const;
+  Plaintext Add(const Plaintext& a, const Plaintext& b) const { return a + b; };
+  void AddInplace(Ciphertext* a, const Ciphertext& b) const;
   void AddInplace(Ciphertext* a, const Plaintext& p) const;
+  void AddInplace(Plaintext* a, const Plaintext& b) const { *a += b; };
 
   // out = a - b
-  // Warning: Subtraction is not supported if a, b are in batch encoding
+  // Warning on batch encoding mode: Subtraction works only if every element in
+  // plaintext/ciphertext is positive integer
   Ciphertext Sub(const Ciphertext& a, const Ciphertext& b) const;
-  void SubInplace(Ciphertext* a, const Ciphertext& b) const;
-
-  // out = a - p
   Ciphertext Sub(const Ciphertext& a, const Plaintext& p) const;
-  // out = p - a
   Ciphertext Sub(const Plaintext& p, const Ciphertext& a) const;
+  Plaintext Sub(const Plaintext& a, const Plaintext& b) const { return a - b; };
+  void SubInplace(Ciphertext* a, const Ciphertext& b) const;
   void SubInplace(Ciphertext* a, const Plaintext& p) const;
+  void SubInplace(Plaintext* a, const Plaintext& b) const { *a -= b; };
 
   // out = a * p
   // Warning 1:
-  // When p = 0, the result is insecure and cannot be sent directly to the peer
-  // and must be Randomize(&out) to obfuscate out.
+  // When p = 0, the result is insecure and cannot be sent directly to the peer.
+  // The result needs to be obfuscated by calling Randomize(&out).
   // If a * 0 is not the last operation, (out will continue to participate in
   // subsequent operations), Randomize can be omitted.
   // Warning 2:
   // Multiplication is not supported if a is in batch encoding form
   Ciphertext Mul(const Ciphertext& a, const Plaintext& p) const;
   Ciphertext Mul(const Plaintext& p, const Ciphertext& a) const;
+  Plaintext Mul(const Plaintext& a, const Plaintext& b) const { return a * b; };
+  template <typename T,
+            typename std::enable_if_t<std::is_integral_v<T>, int> = 0>
+  Ciphertext Mul(const Ciphertext& a, T b) const {
+    return Mul(a, Plaintext(b));
+  }
+  template <typename T,
+            typename std::enable_if_t<std::is_integral_v<T>, int> = 0>
+  Ciphertext Mul(T a, const Ciphertext& b) const {
+    return Mul(Plaintext(a), b);
+  }
   void MulInplace(Ciphertext* a, const Plaintext& p) const;
+  void MulInplace(Plaintext* a, const Plaintext& b) const { *a *= b; };
 
   // out = -a
   Ciphertext Negate(const Ciphertext& a) const;
+  Plaintext Negate(const Plaintext& a) const { return -a; };
   void NegateInplace(Ciphertext* a) const;
+  void NegateInplace(Plaintext* a) const { a->NegInplace(); };
 
  private:
   EvaluatorType evaluator_ptr_;

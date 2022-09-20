@@ -1,9 +1,22 @@
-#include "heu/library/algorithms/util/mp_safe_prime_rand.h"
+// Copyright 2022 Ant Group Co., Ltd.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#include "heu/library/algorithms/util/tommath_ext_features.h"
 
 #include <functional>
-#include <numeric>
-#include <vector>
 
+#include "tommath_private.h"
 #include "yasl/base/buffer.h"
 #include "yasl/base/exception.h"
 #include "yasl/utils/scope_guard.h"
@@ -13,6 +26,7 @@
 #endif
 
 namespace heu::lib::algorithms {
+
 namespace {
 // small_primes is a list of small, prime numbers that allows us to rapidly
 // exclude some fraction of composite candidates when searching for a random
@@ -89,7 +103,7 @@ bool is_pocklington_criterion_satisfied(const mp_int *p) {
 //    to all the elements of `small_primes`. It allows to eliminate trivial
 //    cases quickly, when `q` is obviously no prime, without running an
 //    expensive final primality tests.
-//    If `q` is coprime to all of the `smallPrimes`, then go to the point 3.
+//    If `q` is coprime to all the `smallPrimes`, then go to the point 3.
 //    If not, add `2` and try again. Do it at most 10 times.
 // 3. Check the potentially prime `q`, whether `q = 1 (mod 3)`. This will
 //    happen for 50% of cases.
@@ -112,7 +126,7 @@ bool is_pocklington_criterion_satisfied(const mp_int *p) {
 //    Miller-Rabin and Baillie-PSW for `p`.
 //    If `q` and `p` are found to be prime, return them as a result. If not, go
 //    back to the point 1.
-void mp_safe_prime_rand(mp_int *p, int t, int psize) {
+void mp_ext_safe_prime_rand(mp_int *p, int t, int psize) {
   uint8_t maskAND, maskOR_msb, maskOR_lsb;
   int maskOR_msb_offset;
   mp_bool res;
@@ -120,7 +134,7 @@ void mp_safe_prime_rand(mp_int *p, int t, int psize) {
   uint64_t mod;
 
   /* sanity check the input */
-  YASL_ENFORCE(psize > 1 && t > 0);
+  YASL_ENFORCE(psize > 1 && t > 0, "with psize={}, t={}", psize, t);
 
   int qsize = psize - 1;
   /* calc the byte size */
@@ -211,4 +225,71 @@ void mp_safe_prime_rand(mp_int *p, int t, int psize) {
     MPINT_ENFORCE_OK(mp_prime_is_prime(p, t, &res));
   } while (!res);
 }
+
+void mp_ext_rand_bits(mp_int *out, int64_t bits) {
+  if (bits <= 0) {
+    mp_zero(out);
+    return;
+  }
+
+  int digits = static_cast<int>((bits + MP_DIGIT_BIT - 1) / MP_DIGIT_BIT);
+  MPINT_ENFORCE_OK(mp_grow(out, digits));
+
+  MPINT_ENFORCE_OK(
+      s_mp_rand_source(out->dp, (size_t)digits * sizeof(mp_digit)));
+
+  out->sign = MP_ZPOS;
+  out->used = digits;
+  for (int i = 0; i < digits; ++i) {
+    out->dp[i] &= MP_MASK;
+  }
+
+  int64_t remain_bits = bits % MP_DIGIT_BIT;
+  if (remain_bits > 0) {
+    out->dp[digits - 1] &= (((mp_digit)1 << remain_bits) - 1);
+  }
+
+  for (int i = digits; i < out->alloc; ++i) {
+    out->dp[i] = 0;
+  }
+  mp_clamp(out);
+}
+
+void mp_ext_to_bytes(const mp_int &num, unsigned char *buf, int64_t byte_len,
+                     Endian endian) {
+  YASL_ENFORCE(MP_DIGIT_BIT % 4 == 0, "Unsupported MP_DIGIT_BIT {}",
+               MP_DIGIT_BIT);
+
+  int64_t pos = 0;
+  mp_digit ac = 1;
+  mp_digit cache = 0;
+  int cache_remain = 0;
+
+  for (int digit_idx = 0; pos < byte_len; digit_idx++) {
+    mp_digit x;
+
+    // convert to complement
+    if (num.sign == MP_NEG) {
+      ac += (digit_idx >= num.used) ? MP_MASK : (~num.dp[digit_idx] & MP_MASK);
+      x = ac & MP_MASK;
+      ac >>= MP_DIGIT_BIT;
+    } else {
+      x = (digit_idx >= num.used) ? 0uL : num.dp[digit_idx];
+    }
+
+    // convert complement to bytes
+    cache |= x << cache_remain;
+    cache_remain += MP_DIGIT_BIT;
+    for (; cache_remain >= 8 && pos < byte_len; cache_remain -= 8) {
+      if (endian == Endian::little) {
+        buf[pos] = cache & 255;
+      } else {
+        buf[byte_len - 1 - pos] = cache & 255;
+      }
+      cache >>= 8;
+      pos++;
+    }
+  }
+}
+
 }  // namespace heu::lib::algorithms

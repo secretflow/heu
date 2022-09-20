@@ -1,0 +1,25 @@
+load("@yasl//bazel:yasl.bzl", "yasl_cc_library", "yasl_cc_test")
+load("@pybind11_bazel//:build_defs.bzl", "pybind_extension", "pybind_library")
+
+package(default_visibility = ["//visibility:public"])
+
+pybind_library(
+    name = "phe_binding",
+    srcs = ["bind_phe.cc"],
+    hdrs = ["bind_phe.h"],
+    deps = [
+        ":encoders_binding",
+        "//heu/library/phe",
+        "//heu/pylib/common:py_utils",
+    ],
+)
+
+pybind_library(
+    name = "encoders_binding",
+    srcs = ["bind_encoder.cc"],
+    hdrs = ["bind_encoder.h"],
+    deps = [
+        "//heu/pylib/common:py_encoders",
+        "//heu/pylib/common:py_utils",
+    ],
+)

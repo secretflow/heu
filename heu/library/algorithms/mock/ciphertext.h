@@ -23,12 +23,17 @@ class Ciphertext : public HeObject<Ciphertext> {
  public:
   Ciphertext() = default;
 
-  MPInt c_;
+  [[nodiscard]] std::string ToString() const override { return c_.ToString(); }
 
-  // for msgpack
+  bool operator==(const Ciphertext& other) const { return c_ == other.c_; }
+  bool operator!=(const Ciphertext& other) const {
+    return !this->operator==(other);
+  }
+
   MSGPACK_DEFINE(c_);
 
-  [[nodiscard]] std::string ToString() const override { return c_.ToString(); }
+  // TODO: make this private.
+  MPInt c_;
 };
 
 }  // namespace heu::lib::algorithms::mock

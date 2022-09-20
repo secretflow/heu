@@ -42,6 +42,14 @@ class PublicKey : public HeObject<PublicKey> {
 
   [[nodiscard]] std::string ToString() const override;
 
+  bool operator==(const PublicKey& other) const {
+    return n_ == other.n_ && g_ == other.g_;
+  }
+
+  bool operator!=(const PublicKey& other) const {
+    return !this->operator==(other);
+  }
+
   // TODO: other variable members could be calculated based on n_
   // n_ is the only thing should be serialized
   MSGPACK_DEFINE(n_, n_square_, g_, max_int_);

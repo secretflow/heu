@@ -3,6 +3,8 @@
 
 HEU 当前仅可作为加法同态加密 Library 使用，使用前请先参考 :doc:`安装说明 <./installation>` 安装 HEU Python 包。
 
+.. note:: 本文所讲的内容全部位于 heu.phe 模块中
+
 加解密
 -------------
 
@@ -46,31 +48,55 @@ HEU 基本使用展示
 编码
 -----------------
 
-当前 HEU 提供了两种 ``Encoder``：
- - ``phe.PlainEncoder``: 编码浮点数或整数
- - ``phe.BatchEncoder``: 将两个原文（整数）编码到一个明文中
+当前 HEU 提供了四种 ``Encoder``：
 
-PlainEncoder
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- ``phe.IntegerEncoder``: 编码 128bits 以内的整数
+- ``phe.FloatEncoder``: 编码双精度浮点数
+- ``phe.BigintEncoder``: 编码高精度整数，支持任意精度
+- ``phe.BatchEncoder``: 将两个原文（整数）编码到一个明文中
 
-``phe.PlainEncoder`` 的原理是将原文乘上一个 scale 转换成明文，因此 scale 大小决定了计算的精度。如果创建 PlainEncoder 对象时不提供参数，则使用默认的 scale ``1e6``
+IntegerEncoder 和 FloatEncoder
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. warning:: ``phe.PlainEncoder`` 有数值大小上限，请确保编码后的明文小于 128 比特
+``phe.IntegerEncoder`` 和 ``FloatEncoder`` 原理类似，都是将原文乘上一个 scale 后转换成明文，因此 scale 大小决定了计算的精度。如果创建 ``IntegerEncoder/FloatEncoder`` 对象时不提供参数，则使用默认的 scale ``1e6``
+
+.. warning:: ``phe.IntegerEncoder`` 有数值大小上限，请确保编码后的明文小于 128 比特
+
+.. warning:: ``phe.FloatEncoder`` 有数值大小上限，请确保编码后的明文大小在双精度浮点数（double）表示范围内
 
 .. code-block:: python3
    :linenos:
 
    from heu import phe
 
-   ctx = phe.setup(phe.SchemaType.ZPaillier, 2048)
-   encryptor = ctx.encryptor()
-   evaluator = ctx.evaluator()
-   decryptor = ctx.decryptor()
+   encoder = phe.IntegerEncoder()
+   pt = encoder.encode(3.5)
+   print(type(pt))  # heu.phe.Plaintext
+   print(pt)  # 3000000
+   print(encoder.decode(pt))  # 3
 
-   encoder = phe.PlainEncoder()
-   ct = encryptor.encrypt(encoder.encode(3.5))
-   evaluator.sub_inplace(ct, encoder.encode(1.2))
-   encoder.decode(decryptor.decrypt(ct))  # output 2.3
+   encoder = phe.FloatEncoder()
+   pt = encoder.encode(3.5)
+   print(encoder.decode(pt))  # 3.5
+
+
+BigintEncoder
+^^^^^^^^^^^^^^^
+
+``BigintEncoder`` 类似于 ``IntegerEncoder(scale=1)``，但不受精度限制，支持编码任意精度的整数，为了方便用户使用，BigintEncoder 是隐式的，如果用户没有指定 encoder，都默认使用该 encoder。
+
+.. note:: ``BigintEncoder`` 编码 int128 原文性能非常高，但是超过 128bits 后性能会有显著降低
+
+.. code-block:: python3
+   :linenos:
+
+   from heu import phe
+
+   encoder = phe.BigintEncoder()
+   int64_max = 9223372036854775807
+   pt = encoder.encode(int64_max**10)
+   print(encoder.decode(pt) == int64_max**10)  # True
+
 
 BatchEncoder
 ^^^^^^^^^^^^^^^

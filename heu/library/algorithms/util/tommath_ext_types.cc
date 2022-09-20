@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/library/algorithms/util/tommath_ext.h"
+#include "heu/library/algorithms/util/tommath_ext_types.h"
 
 #include <cstring>  // memset
 

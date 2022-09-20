@@ -60,10 +60,10 @@ class BatchEncoder : public algorithms::HeObject<BatchEncoder> {
     return pt;
   }
 
-  // Get element.
+  // Decode element.
   // return 0 if index is greater or equal to the number encoded in plaintext
   template <typename T, size_t index>
-  typename std::enable_if_t<std::is_integral_v<T>, T> Get(
+  typename std::enable_if_t<std::is_integral_v<T>, T> Decode(
       const algorithms::Plaintext &plaintext) const {
     static_assert(index < 2,
                   "You cannot get more than two elements from one plaintext");

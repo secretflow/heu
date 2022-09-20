@@ -36,11 +36,12 @@ class Ciphertext : public HeObject<Ciphertext> {
  public:
   Ciphertext() = default;
 
-  Ciphertext(MPInt&& c, int exponent = 0)
+  explicit Ciphertext(MPInt&& c, int exponent = 0)
       : c_(std::move(c)), exponent_(exponent) {}
 
-  bool Equals(const Ciphertext& other) const {
-    return (exponent_ == other.exponent_) && (c_.Compare(other.c_) == 0);
+  bool operator==(const Ciphertext& other) const { return c_ == other.c_; }
+  bool operator!=(const Ciphertext& other) const {
+    return !this->operator==(other);
   }
 
   [[nodiscard]] std::string ToString() const override {

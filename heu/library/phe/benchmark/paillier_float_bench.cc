@@ -177,7 +177,8 @@ BENCHMARK(PaillierMulti)->Unit(benchmark::kMillisecond);
 BENCHMARK(PaillierDecrypt)->Unit(benchmark::kMillisecond);
 }  // namespace heu::lib::phe::bench
 
-int main() {
+int main(int argc, char** argv) {
+  benchmark::Initialize(&argc, argv);
   heu::lib::phe::bench::Initialize();
   benchmark::RunSpecifiedBenchmarks();
   return 0;

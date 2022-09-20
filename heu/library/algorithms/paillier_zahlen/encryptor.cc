@@ -25,7 +25,7 @@ Encryptor::Encryptor(const Encryptor &from) : Encryptor(from.pk_) {}
 
 MPInt Encryptor::GetRn() const {
   MPInt r;
-  MPInt::RandomRoundUp(pk_.key_size_ / 2, &r);
+  MPInt::RandomExactBits(pk_.key_size_ / 2, &r);
 
   // (h_s_)^r
   MPInt out;

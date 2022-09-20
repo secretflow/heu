@@ -27,6 +27,15 @@ class SecretKey : public HeObject<SecretKey> {
 
   // for msgpack
   MSGPACK_DEFINE(key_size_);
+
+  bool operator==(const SecretKey &other) const {
+    return key_size_ == other.key_size_;
+  }
+
+  bool operator!=(const SecretKey &other) const {
+    return !this->operator==(other);
+  }
+
   [[nodiscard]] std::string ToString() const override {
     return fmt::format("Mock phe secret key with {} bit length", key_size_);
   }

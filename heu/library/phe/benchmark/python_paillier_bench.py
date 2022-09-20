@@ -19,9 +19,12 @@ K_TEST_SIZE = 10000
 K_KEY_SIZE = 2048
 K_RANDOM_SCALE = 8011
 
+
 class Bencher:
     def __init__(self):
-        self.public_key, self.private_key = paillier.generate_paillier_keypair(n_length=K_KEY_SIZE)
+        self.public_key, self.private_key = paillier.generate_paillier_keypair(
+            n_length=K_KEY_SIZE
+        )
         self.pt_list = [x * K_RANDOM_SCALE for x in range(K_TEST_SIZE)]
         self.ct_sum = self.public_key.encrypt(0)
         self.ct_list = []
@@ -48,7 +51,9 @@ class Bencher:
     def decrypt(self):
         self.pt_list = [self.private_key.decrypt(x) for x in self.ct_list]
 
+
 b = Bencher()
+
 
 @benchmark.register
 @benchmark.option.unit(benchmark.kMillisecond)
@@ -56,11 +61,13 @@ def paillier_encrypt(state):
     while state:
         b.encrypt()
 
+
 @benchmark.register
 @benchmark.option.unit(benchmark.kMillisecond)
 def paillier_add_cipher(state):
     while state:
         b.add_cipher()
+
 
 @benchmark.register
 @benchmark.option.unit(benchmark.kMillisecond)
@@ -68,11 +75,13 @@ def paillier_sub_cipher(state):
     while state:
         b.sub_cipher()
 
+
 @benchmark.register
 @benchmark.option.unit(benchmark.kMillisecond)
 def paillier_add_int(state):
     while state:
         b.add_int()
+
 
 @benchmark.register
 @benchmark.option.unit(benchmark.kMillisecond)
@@ -80,11 +89,13 @@ def paillier_mul_int(state):
     while state:
         b.mul_int()
 
+
 @benchmark.register
 @benchmark.option.unit(benchmark.kMillisecond)
 def paillier_decrypt(state):
     while state:
         b.decrypt()
+
 
 if __name__ == "__main__":
     benchmark.main()

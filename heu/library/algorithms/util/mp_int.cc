@@ -14,8 +14,8 @@
 
 #include "heu/library/algorithms/util/mp_int.h"
 
-#include "heu/library/algorithms/util/mp_safe_prime_rand.h"
-#include "heu/library/algorithms/util/tommath_ext.h"
+#include "heu/library/algorithms/util/tommath_ext_features.h"
+#include "heu/library/algorithms/util/tommath_ext_types.h"
 
 namespace heu::lib::algorithms {
 
@@ -188,6 +188,11 @@ MPInt MPInt::operator<<=(size_t operand2) {
   return *this;
 }
 
+MPInt MPInt::operator>>=(size_t operand2) {
+  MPINT_ENFORCE_OK(mp_div_2d(&this->n_, operand2, &this->n_, nullptr));
+  return *this;
+}
+
 MPInt MPInt::operator|=(const MPInt &operand2) {
   MPINT_ENFORCE_OK(mp_or(&n_, &operand2.n_, &n_));
   return *this;
@@ -278,30 +283,39 @@ std::string MPInt::ToHexString() const { return ToRadixString(16); }
 
 std::string MPInt::ToString() const { return ToRadixString(10); }
 
-void MPInt::Serialize(std::string *str) const {
-  str->clear();
+yasl::Buffer MPInt::Serialize() const {
   size_t size = mp_sbin_size(&n_);
-  str->resize(size);
+  yasl::Buffer buffer(size);
   MPINT_ENFORCE_OK(
-      mp_to_sbin(&n_, (unsigned char *)&((*str)[0]), size, nullptr));
+      mp_to_sbin(&n_, buffer.data<unsigned char>(), size, nullptr));
+  return buffer;
 }
 
-bool MPInt::Deserialize(const std::string &str, MPInt *result) {
-  mp_err error =
-      mp_from_sbin(&result->n_, (const unsigned char *)str.data(), str.size());
-
-  return error == MP_OKAY;
+void MPInt::Deserialize(yasl::ByteContainerView buffer) {
+  MPINT_ENFORCE_OK(mp_from_sbin(&n_, buffer.data(), buffer.size()));
 }
 
-void MPInt::RandPrimeOver(size_t bit_size, MPInt *x, PrimeType prime_type) {
+yasl::Buffer MPInt::ToBytes(size_t byte_len, Endian endian) const {
+  yasl::Buffer buf(byte_len);
+  ToBytes(buf.data<unsigned char>(), byte_len, endian);
+  return buf;
+}
+
+void MPInt::ToBytes(unsigned char *buf, size_t buf_len,
+                    heu::lib::algorithms::Endian endian) const {
+  mp_ext_to_bytes(n_, buf, buf_len, endian);
+}
+
+void MPInt::RandPrimeOver(size_t bit_size, MPInt *out, PrimeType prime_type) {
+  YASL_ENFORCE_GT(bit_size, 80u, "bit_size must > 80");
   int trials = mp_prime_rabin_miller_trials(bit_size);
-  MPINT_ENFORCE_OK(
-      mp_prime_rand(&x->n_, trials, bit_size, static_cast<int>(prime_type)));
-}
 
-void MPInt::RandSafePrimeOver(size_t bit_size, MPInt *x) {
-  int trials = mp_prime_rabin_miller_trials(bit_size);
-  mp_safe_prime_rand(&x->n_, trials, bit_size);
+  if (prime_type == PrimeType::FastSafe) {
+    mp_ext_safe_prime_rand(&out->n_, trials, bit_size);
+  } else {
+    MPINT_ENFORCE_OK(mp_prime_rand(&out->n_, trials, bit_size,
+                                   static_cast<int>(prime_type)));
+  }
 }
 
 bool MPInt::IsPrime() const {
@@ -328,12 +342,11 @@ void MPInt::RandomRoundUp(size_t bit_size, MPInt *r) {
 }
 
 void MPInt::RandomExactBits(size_t bit_size, MPInt *r) {
-  RandomRoundUp(bit_size, r);
-  mp_int *n = &r->n_;
-  MPINT_ENFORCE_OK(mp_mod_2d(n, bit_size, n));
+  mp_ext_rand_bits(&r->n_, bit_size);
 }
 
 void MPInt::RandomMonicExactBits(size_t bit_size, MPInt *r) {
+  YASL_ENFORCE(bit_size > 0, "cannot gen monic random number of size 0");
   do {
     RandomExactBits(bit_size, r);
   } while (r->BitCount() != bit_size);
@@ -341,7 +354,7 @@ void MPInt::RandomMonicExactBits(size_t bit_size, MPInt *r) {
 
 void MPInt::RandomLtN(const MPInt &n, MPInt *r) {
   do {
-    MPInt::RandomRoundDown(n.BitCount(), r);
+    MPInt::RandomExactBits(n.BitCount(), r);
   } while (r->IsNegative() || r->Compare(n) >= 0);
 }
 

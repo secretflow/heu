@@ -1,6 +1,23 @@
 # CHANGELOGS
 
-## [Unreleased]
+## [0.2.0]
+
+- Add to_bytes api
+- Make MPInt.RandomExactBits() faster
+
+## [0.1.2]
+
+- Add hnp.random api
+- The hnp.Shape class supports iteration/pickling/slicing operations now
+
+## [0.1.1]
+
+- [Break change] The encoder was divided into two types: IntegerEncoder and
+  FloatEncoder
+- Add two new encoder type: phe.BigintEncoder and phe.BatchEncoder
+- Python lib: add numpy-like APIs, most of which have been implemented in a
+  parallelized way
+- C++ lib: add support for matrix operations
 
 ## [0.1.0]
 

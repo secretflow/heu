@@ -81,54 +81,160 @@ TEST_F(MPIntTest, NegativeMPIntToStringWorks) {
   EXPECT_EQ(x1.ToHexString(), "-BC614E");
 }
 
-TEST_F(MPIntTest, SerializationAndDeserializationWorks) {
+TEST_F(MPIntTest, SerializeWorks) {
   MPInt x1(1234567890);
   MPInt x2(-1234567890);
-  std::string x1_repr, x2_repr;
 
-  x1.Serialize(&x1_repr);
-  x2.Serialize(&x2_repr);
+  yasl::Buffer x1_repr = x1.Serialize();
+  yasl::Buffer x2_repr = x2.Serialize();
 
   ASSERT_TRUE(x1_repr.size() > 0);
   ASSERT_TRUE(x2_repr.size() > 0);
 
   MPInt x1_value, x2_value;
-  EXPECT_TRUE(MPInt::Deserialize(x1_repr, &x1_value));
-  EXPECT_TRUE(MPInt::Deserialize(x2_repr, &x2_value));
+  x1_value.Deserialize(x1_repr);
+  x2_value.Deserialize(x2_repr);
 
   EXPECT_TRUE(x1.Compare(x1_value) == 0);
   EXPECT_TRUE(x2.Compare(x2_value) == 0);
 }
 
-TEST_F(MPIntTest, RandPrimeOverWorks) {
-  const int bit_size = 256;
-  MPInt x;
-  MPInt::RandPrimeOver(bit_size, &x);
+TEST_F(MPIntTest, MsgpackWorks) {
+  MPInt x1(-1234567890);
 
+  msgpack::sbuffer buf;
+  msgpack::pack(buf, x1);
+  ASSERT_GT(buf.size(), x1.Serialize().size());
+
+  MPInt x2;
+  msgpack::object_handle oh = msgpack::unpack(buf.data(), buf.size());
+  const msgpack::object& obj = oh.get();
+  obj.convert(x2);
+  ASSERT_EQ(x1, x2);
+}
+
+TEST_F(MPIntTest, RandPrimeOverWorks) {
+  // basic test
+  int bit_size = 256;
+  MPInt x;
+  MPInt::RandPrimeOver(bit_size, &x, PrimeType::Normal);
   EXPECT_GE(x.BitCount(), bit_size);
+  EXPECT_TRUE(x.IsPrime());
+
+  MPInt::RandPrimeOver(bit_size, &x, PrimeType::BBS);
+  EXPECT_GE(x.BitCount(), bit_size);
+  EXPECT_TRUE(x.IsPrime());
+  EXPECT_EQ(x % MPInt(4), MPInt(3));
+
+  MPInt::RandPrimeOver(bit_size, &x, PrimeType::FastSafe);
+  EXPECT_GE(x.BitCount(), bit_size);
+  EXPECT_TRUE(x.IsPrime());
+  EXPECT_TRUE((x / MPInt::_2_).IsPrime());
+
+  // test different bit size
+  MPInt::RandPrimeOver(128, &x, PrimeType::FastSafe);
+  EXPECT_TRUE(x.IsPrime());
+  EXPECT_TRUE((x / MPInt::_2_).IsPrime());
+
+  MPInt::RandPrimeOver(512, &x, PrimeType::FastSafe);
+  EXPECT_TRUE(x.IsPrime());
+  EXPECT_TRUE((x / MPInt::_2_).IsPrime());
+
+  MPInt::RandPrimeOver(1024, &x, PrimeType::FastSafe);
+  EXPECT_TRUE(x.IsPrime());
+  EXPECT_TRUE((x / MPInt::_2_).IsPrime());
 }
 
 TEST_F(MPIntTest, RandomWorks) {
-  int bit_size = 240;
-  MPInt r;
-  MPInt::RandomRoundDown(bit_size, &r);  // 240 bits
+  for (int i = 0; i < 10; ++i) {
+    int bit_size = 240;
+    MPInt r;
+    MPInt::RandomRoundDown(bit_size, &r);  // 240 bits
 
-  EXPECT_LE(r.BitCount(), bit_size);
-  // The probability that the first 20 digits are all 0 is less than 2^20
-  EXPECT_GE(r.BitCount(), bit_size - 20);
+    EXPECT_LE(r.BitCount(), bit_size);
+    // The probability that the first 20 digits are all 0 is less than 2^20
+    EXPECT_GE(r.BitCount(), bit_size - 20);
 
-  MPInt::RandomRoundUp(bit_size, &r);  // 240 bits
-  EXPECT_LE(r.BitCount(), bit_size);
-  EXPECT_GE(r.BitCount(), bit_size - 20);
+    MPInt::RandomRoundUp(bit_size, &r);  // 240 bits
+    EXPECT_LE(r.BitCount(), bit_size);
+    EXPECT_GE(r.BitCount(), bit_size - 20);
 
-  bit_size = 105;
-  MPInt::RandomRoundDown(bit_size, &r);  // 60 bits
-  EXPECT_LE(r.BitCount(), 60);
-  EXPECT_GE(r.BitCount(), 60 - 20);
+    bit_size = 105;
+    MPInt::RandomRoundDown(bit_size, &r);  // 60 bits
+    EXPECT_LE(r.BitCount(), 60);
+    EXPECT_GE(r.BitCount(), 60 - 20);
 
-  MPInt::RandomRoundUp(bit_size, &r);  // 120 bits
-  EXPECT_LE(r.BitCount(), 120);
-  EXPECT_GE(r.BitCount(), 120 - 20);
+    MPInt::RandomRoundUp(bit_size, &r);  // 120 bits
+    EXPECT_LE(r.BitCount(), 120);
+    EXPECT_GE(r.BitCount(), 120 - 20);
+
+    MPInt::RandomMonicExactBits(1, &r);
+    EXPECT_EQ(r, MPInt::_1_);
+
+    MPInt::RandomMonicExactBits(2, &r);
+    EXPECT_TRUE(r == MPInt(2) || r == MPInt(3));
+
+    // test RandomExactBits
+    MPInt::RandomExactBits(0, &r);
+    EXPECT_EQ(r.BitCount(), 0);
+
+    std::vector<size_t> cases = {59,  60,  61,   119,  120,
+                                 121, 461, 2048, 3072, 10000};
+    for (const auto& c : cases) {
+      int count = 0;
+      do {
+        MPInt::RandomExactBits(c, &r);
+        ASSERT_LE(r.BitCount(), c);
+        ASSERT_LT(count++, 100)
+            << "RandomExactBits fail after 100 loop, case=" << c;
+      } while (r.BitCount() == c);
+
+      MPInt::RandomMonicExactBits(c, &r);
+      EXPECT_EQ(r.BitCount(), c);
+    }
+  }
+}
+
+TEST_F(MPIntTest, ToBytesWorks) {
+  MPInt a(0x1234);
+  auto buf = a.ToBytes(2, Endian::little);
+  EXPECT_EQ(buf.data<char>()[0], 0x34);
+  EXPECT_EQ(buf.data<char>()[1], 0x12);
+
+  buf = a.ToBytes(2, Endian::big);
+  EXPECT_EQ(buf.data<char>()[0], 0x12);
+  EXPECT_EQ(buf.data<char>()[1], 0x34);
+
+  a = MPInt(0x123456);
+  buf = a.ToBytes(2, Endian::native);
+  EXPECT_EQ(buf.data<uint16_t>()[0], 0x3456);
+
+  a = MPInt(-1);
+  EXPECT_EQ(a.ToBytes(10, Endian::little), a.ToBytes(10, Endian::big));
+}
+
+class MPIntToBytesTest : public ::testing::TestWithParam<int128_t> {};
+
+INSTANTIATE_TEST_SUITE_P(
+    SmallNumbers, MPIntToBytesTest,
+    ::testing::Values(0, 1, -1, 2, -2, 4, -4, 1024, -1024, 100000, -100000,
+                      std::numeric_limits<int32_t>::max() / 2,
+                      -(std::numeric_limits<int32_t>::max() / 2),
+                      std::numeric_limits<int32_t>::max(),
+                      std::numeric_limits<int32_t>::min(),
+                      std::numeric_limits<int64_t>::max() / 2,
+                      -(std::numeric_limits<int64_t>::max() / 2),
+                      std::numeric_limits<int64_t>::max(),
+                      std::numeric_limits<int64_t>::min()));
+
+// There is more tests in python end
+TEST_P(MPIntToBytesTest, NativeWorks) {
+  MPInt num(GetParam());
+  auto buf = num.ToBytes(sizeof(int32_t));
+  EXPECT_EQ(static_cast<int32_t>(GetParam()), buf.data<int32_t>()[0]);
+
+  buf = num.ToBytes(sizeof(int64_t));
+  EXPECT_EQ(static_cast<int64_t>(GetParam()), buf.data<int64_t>()[0]);
 }
 
 }  // namespace heu::lib::algorithms::test

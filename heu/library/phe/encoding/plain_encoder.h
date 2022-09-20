@@ -44,24 +44,27 @@ template <> struct next_size<double> : tag<double> {};
 
 class PlainEncoder : public algorithms::HeObject<PlainEncoder> {
  public:
-  explicit PlainEncoder(int_fast64_t scale = 1e6) : scale_(scale) {}
+  explicit PlainEncoder(int64_t scale = 1e6) : scale_(scale) {}
 
   // Encode cleartext to plaintext
   template <typename T,
             typename std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
-  algorithms::Plaintext Encode(T cleartext) const {
+  [[nodiscard]] algorithms::Plaintext Encode(T cleartext) const {
     return algorithms::Plaintext(static_cast<next_size_t<T>>(cleartext) *
                                  scale_);
   }
 
   // Decode plaintext to cleartext
   template <typename T>
-  typename std::enable_if_t<std::is_arithmetic_v<T>, T> Decode(
+  [[nodiscard]] typename std::enable_if_t<std::is_arithmetic_v<T>, T> Decode(
       const algorithms::Plaintext &plaintext) const {
     return static_cast<T>(plaintext.template As<next_size_t<T>>() / scale_);
   }
 
   MSGPACK_DEFINE(scale_);
+
+  [[nodiscard]] int64_t GetScale() const { return scale_; }
+
   [[nodiscard]] std::string ToString() const override {
     return fmt::format("PlainEncoder(scale={})", scale_);
   }

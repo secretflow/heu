@@ -29,6 +29,14 @@ class PublicKey : public HeObject<PublicKey> {
   // for msgpack
   MSGPACK_DEFINE(key_size_, max_int_);
 
+  bool operator==(const PublicKey &other) const {
+    return key_size_ == other.key_size_ && max_int_ == other.max_int_;
+  }
+
+  bool operator!=(const PublicKey &other) const {
+    return !this->operator==(other);
+  }
+
   [[nodiscard]] std::string ToString() const override {
     return fmt::format("Mock phe public key with {} bit length", key_size_);
   }

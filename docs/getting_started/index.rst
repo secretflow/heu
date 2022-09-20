@@ -9,4 +9,5 @@
 
    installation
    quick_start
+   numpy
    faq

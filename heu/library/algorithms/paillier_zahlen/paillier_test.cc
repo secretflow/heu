@@ -180,12 +180,14 @@ TEST_F(ZPaillierTest, PlaintextEvaluate2) {
 
 class BigNumberTest : public ::testing::TestWithParam<int64_t> {
  protected:
-  void SetUp() override { KeyGenerator::Generate(2048, &sk_, &pk_); }
+  static void SetUpTestSuite() { KeyGenerator::Generate(2048, &sk_, &pk_); }
 
- protected:
-  SecretKey sk_;
-  PublicKey pk_;
+  static SecretKey sk_;
+  static PublicKey pk_;
 };
+
+SecretKey BigNumberTest::sk_;
+PublicKey BigNumberTest::pk_;
 
 // int64 range: [-9223372036854775808, 9223372036854775807]
 INSTANTIATE_TEST_SUITE_P(
