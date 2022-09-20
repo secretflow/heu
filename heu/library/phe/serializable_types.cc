@@ -35,8 +35,8 @@ SerializableVariant<Types...>::SerializableVariant(SchemaType schema_type) {
 
 template <typename... Types>
 yasl::Buffer SerializableVariant<Types...>::Serialize() const {
-  yasl::Buffer payload = std::visit(
-      [](const auto &clazz) { return clazz.Serialize(); }, this->var_);
+  yasl::Buffer payload =
+      visit([](const auto &clazz) { return clazz.Serialize(); });
   size_t idx = var_.index();
 
   // Append idx to the end of payload to reduce memory copying
@@ -60,7 +60,7 @@ void SerializableVariant<Types...>::Deserialize(yasl::ByteContainerView in) {
 
 template <typename... Types>
 std::string SerializableVariant<Types...>::ToString() const {
-  return visit([](auto &clazz) { return clazz.ToString(); });
+  return visit([](const auto &clazz) { return clazz.ToString(); });
 }
 
 template class SerializableVariant<HE_NAMESPACE_LIST(SecretKey)>;

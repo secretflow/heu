@@ -24,12 +24,17 @@ class Ciphertext : public HeObject<Ciphertext> {
   Ciphertext() = default;
   explicit Ciphertext(MPInt c) : c_(std::move(c)) {}
 
+  [[nodiscard]] std::string ToString() const override { return c_.ToString(); }
+
+  bool operator==(const Ciphertext& other) const { return c_ == other.c_; }
+  bool operator!=(const Ciphertext& other) const {
+    return !this->operator==(other);
+  }
+
+  MSGPACK_DEFINE(c_);
+
   // TODO: make this private.
   MPInt c_;
-
-  // for msgpack
-  MSGPACK_DEFINE(c_);
-  [[nodiscard]] std::string ToString() const override { return c_.ToString(); }
 };
 
 }  // namespace heu::lib::algorithms::paillier_z

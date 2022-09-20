@@ -27,7 +27,7 @@ namespace heu::lib::phe {
     secret_key_ = std::make_shared<SecretKey>(std::move(sk));        \
   }
 
-void HeKit::Setup(SchemaType schema_type, size_t key_size) {
+HeKit::HeKit(SchemaType schema_type, size_t key_size) {
   public_key_ = std::make_shared<PublicKey>(schema_type);
   public_key_->visit(HE_DISPATCH(INIT_FIELD_IN_NAMESPACE));
 }
@@ -38,12 +38,12 @@ void HeKit::Setup(SchemaType schema_type, size_t key_size) {
     encryptor_ = std::make_shared<Encryptor>(ns::Encryptor(pk1)); \
   }
 
-void DestinationHeKit::Setup(std::shared_ptr<PublicKey> pk) {
+DestinationHeKit::DestinationHeKit(std::shared_ptr<PublicKey> pk) {
   public_key_ = std::move(pk);
   public_key_->visit(HE_DISPATCH(HE_SPECIAL_SETUP_BY_PK));
 }
 
-void DestinationHeKit::Setup(yasl::ByteContainerView pk_buffer) {
+DestinationHeKit::DestinationHeKit(yasl::ByteContainerView pk_buffer) {
   public_key_ = std::make_shared<PublicKey>();
   public_key_->Deserialize(pk_buffer);
   public_key_->visit(HE_DISPATCH(HE_SPECIAL_SETUP_BY_PK));

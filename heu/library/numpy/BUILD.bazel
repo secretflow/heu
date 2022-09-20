@@ -1,0 +1,93 @@
+load("@yasl//bazel:yasl.bzl", "yasl_cc_binary", "yasl_cc_library", "yasl_cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+yasl_cc_library(
+    name = "numpy",
+    hdrs = ["numpy.h"],
+    deps = [
+        ":decryptor",
+        ":encryptor",
+        ":evaluator",
+        ":random",
+        ":toolbox",
+    ],
+)
+
+yasl_cc_library(
+    name = "matrix",
+    hdrs = [
+        "eigen_traits.h",
+        "matrix.h",
+        "shape.h",
+    ],
+    deps = [
+        "//heu/library/phe",
+        "@com_github_eigenteam_eigen//:eigen3",
+        "@yasl//yasl/utils:parallel",
+    ],
+)
+
+yasl_cc_library(
+    name = "encryptor",
+    srcs = ["encryptor.cc"],
+    hdrs = ["encryptor.h"],
+    deps = [
+        ":matrix",
+        "//heu/library/phe",
+        "@yasl//yasl/utils:parallel",
+    ],
+)
+
+yasl_cc_library(
+    name = "decryptor",
+    srcs = ["decryptor.cc"],
+    hdrs = ["decryptor.h"],
+    deps = [
+        ":matrix",
+        "//heu/library/phe",
+        "@yasl//yasl/utils:parallel",
+    ],
+)
+
+yasl_cc_library(
+    name = "evaluator",
+    srcs = ["evaluator.cc"],
+    hdrs = ["evaluator.h"],
+    deps = [
+        ":matrix",
+        "//heu/library/phe",
+    ],
+)
+
+yasl_cc_library(
+    name = "toolbox",
+    srcs = ["toolbox.cc"],
+    hdrs = ["toolbox.h"],
+    deps = [
+        ":matrix",
+        "//heu/library/phe",
+    ],
+)
+
+yasl_cc_library(
+    name = "random",
+    srcs = ["random.cc"],
+    hdrs = ["random.h"],
+    deps = [
+        ":matrix",
+        "//heu/library/phe",
+    ],
+)
+
+yasl_cc_test(
+    name = "numpy_test",
+    srcs = ["numpy_test.cc"],
+    deps = [":numpy"],
+)
+
+yasl_cc_test(
+    name = "random_test",
+    srcs = ["random_test.cc"],
+    deps = [":random"],
+)

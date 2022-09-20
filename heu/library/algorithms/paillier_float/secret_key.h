@@ -38,6 +38,15 @@ class SecretKey : public HeObject<SecretKey> {
 
  public:
   MSGPACK_DEFINE(x_, lambda_, pk_);
+
+  bool operator==(const SecretKey &other) const {
+    return x_ == other.x_ && lambda_ == other.lambda_ && pk_ == other.pk_;
+  }
+
+  bool operator!=(const SecretKey &other) const {
+    return !this->operator==(other);
+  }
+
   [[nodiscard]] std::string ToString() const override;
 
   friend class KeyGenerator;

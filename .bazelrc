@@ -7,6 +7,8 @@ build --enable_platform_specific_config
 build --cxxopt=-std=c++17
 build --host_cxxopt=-std=c++17
 build --linkopt -fvisibility=hidden
+build --linkopt -lm
+
 
 # platform specific config
 # Bazel will automatic pick platform config since we have enable_platform_specific_config set

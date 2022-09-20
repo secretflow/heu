@@ -41,6 +41,14 @@ class PublicKey : public HeObject<PublicKey> {
   void Init();
   [[nodiscard]] std::string ToString() const override;
 
+  bool operator==(const PublicKey &other) const {
+    return n_ == other.n_ && h_s_ == other.h_s_;
+  }
+
+  bool operator!=(const PublicKey &other) const {
+    return !this->operator==(other);
+  }
+
   // Valid plaintext range: (n_half_, -n_half)
   [[nodiscard]] inline const MPInt &PlaintextBound() const & { return n_half_; }
 };

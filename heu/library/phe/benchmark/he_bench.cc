@@ -29,12 +29,12 @@ constexpr static long kTestSize = 1000;
 constexpr static size_t kKeySize = 2048;
 constexpr int kRandomScale = 8011;
 
-HeKit he;
+std::unique_ptr<HeKit> he;
 MPInt g_plain[kTestSize];
 Ciphertext ciphertext[kTestSize];
 
 void Initialize(SchemaType schema_type) {
-  he.Setup(schema_type, kKeySize);
+  he = std::make_unique<HeKit>(schema_type, kKeySize);
   for (int i = 0; i < kTestSize; ++i) {
     g_plain[i] = MPInt(i * kRandomScale);
   }
@@ -42,7 +42,7 @@ void Initialize(SchemaType schema_type) {
 
 static void Encrypt(benchmark::State& state) {
   // encrypt
-  const auto& encryptor = he.GetEncryptor();
+  const auto& encryptor = he->GetEncryptor();
   for (auto _ : state) {
     for (int i = 0; i < kTestSize; ++i) {
       *(ciphertext + i) = encryptor->Encrypt(g_plain[i]);
@@ -52,7 +52,7 @@ static void Encrypt(benchmark::State& state) {
 
 static void AddCipher(benchmark::State& state) {
   // add (ciphertext + ciphertext)
-  const auto& evaluator = he.GetEvaluator();
+  const auto& evaluator = he->GetEvaluator();
   for (auto _ : state) {
     for (int i = 1; i < kTestSize; ++i) {
       evaluator->AddInplace(&ciphertext[0], ciphertext[i]);
@@ -62,7 +62,7 @@ static void AddCipher(benchmark::State& state) {
 
 static void SubCipher(benchmark::State& state) {
   // sub (ciphertext - ciphertext)
-  const auto& evaluator = he.GetEvaluator();
+  const auto& evaluator = he->GetEvaluator();
   for (auto _ : state) {
     for (int i = 1; i < kTestSize; ++i) {
       evaluator->SubInplace(&ciphertext[0], ciphertext[i]);
@@ -72,7 +72,7 @@ static void SubCipher(benchmark::State& state) {
 
 static void AddInt(benchmark::State& state) {
   // add (ciphertext + plaintext)
-  const auto& evaluator = he.GetEvaluator();
+  const auto& evaluator = he->GetEvaluator();
   for (auto _ : state) {
     for (int i = 1; i < kTestSize; ++i) {
       evaluator->AddInplace(&ciphertext[i], MPInt(i));
@@ -82,7 +82,7 @@ static void AddInt(benchmark::State& state) {
 
 static void SubInt(benchmark::State& state) {
   // add (ciphertext - plaintext)
-  const auto& evaluator = he.GetEvaluator();
+  const auto& evaluator = he->GetEvaluator();
   for (auto _ : state) {
     for (int i = 1; i < kTestSize; ++i) {
       evaluator->SubInplace(&ciphertext[i], MPInt(i));
@@ -92,7 +92,7 @@ static void SubInt(benchmark::State& state) {
 
 static void Multi(benchmark::State& state) {
   // mul (ciphertext * plaintext)
-  const auto& evaluator = he.GetEvaluator();
+  const auto& evaluator = he->GetEvaluator();
   for (auto _ : state) {
     for (int i = 1; i < kTestSize; ++i) {
       evaluator->MulInplace(&ciphertext[i], MPInt(i));
@@ -102,7 +102,7 @@ static void Multi(benchmark::State& state) {
 
 static void Decrypt(benchmark::State& state) {
   // decrypt
-  const auto& decryptor = he.GetDecryptor();
+  const auto& decryptor = he->GetDecryptor();
   for (auto _ : state) {
     for (int i = 0; i < kTestSize; ++i) {
       decryptor->Decrypt(ciphertext[i], g_plain + i);

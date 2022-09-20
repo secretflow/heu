@@ -2,16 +2,29 @@ workspace(name = "com_alipay_sf_heu")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-#### for cpp ####
+### ref yasl ###
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-http_archive(
-    name = "rules_foreign_cc",
-    sha256 = "bcd0c5f46a49b85b384906daae41d277b3dc0ff27c7c752cc51e43048a58ec83",
-    strip_prefix = "rules_foreign_cc-0.7.1",
-    urls = [
-        "https://github.com/bazelbuild/rules_foreign_cc/archive/0.7.1.tar.gz",
-    ],
+SECRETFLOW_GIT = "https://github.com/secretflow"
+
+git_repository(
+    name = "yasl",
+    commit = "b50ed242ec17a28bff3274e5e6d152183d04ed8f",
+    recursive_init_submodules = True,
+    remote = "{}/yasl.git".format(SECRETFLOW_GIT),
 )
+
+load("@yasl//bazel:repositories.bzl", "yasl_deps")
+
+yasl_deps()
+
+#### fetch third-party deps ####
+
+load("//third_party/bazel_cpp:repositories.bzl", "heu_cpp_deps")
+
+heu_cpp_deps()
+
+#### for cpp ####
 
 load(
     "@rules_foreign_cc//foreign_cc:repositories.bzl",
@@ -49,10 +62,10 @@ http_archive(
 http_archive(
     name = "pybind11",
     build_file = "@pybind11_bazel//:pybind11.BUILD",
-    sha256 = "6bd528c4dbe2276635dc787b6b1f2e5316cf6b49ee3e150264e455a0d68d19c1",
-    strip_prefix = "pybind11-2.9.2",
+    sha256 = "eacf582fa8f696227988d08cfc46121770823839fe9e301a20fbce67e7cd70ec",
+    strip_prefix = "pybind11-2.10.0",
     urls = [
-        "https://github.com/pybind/pybind11/archive/refs/tags/v2.9.2.tar.gz",
+        "https://github.com/pybind/pybind11/archive/refs/tags/v2.10.0.tar.gz",
     ],
 )
 
@@ -78,26 +91,6 @@ http_archive(
 load("@rules_rust//rust:repositories.bzl", "rust_repositories")
 
 rust_repositories(version = "1.58.1")
-
-### ref yasl ###
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
-
-git_repository(
-    name = "yasl",
-    commit = "5ee0e3346597cf6118b4a0f09205a97f535355b7",
-    recursive_init_submodules = True,
-    remote = "https://github.com/secretflow/yasl.git",
-)
-
-load("@yasl//bazel:repositories.bzl", "yasl_deps")
-
-yasl_deps()
-
-#### fetch third-party deps ####
-
-load("//third_party/bazel_cpp:repositories.bzl", "heu_cpp_deps")
-
-heu_cpp_deps()
 
 load("//third_party/bazel_rust/cargo:crates.bzl", "rust_fetch_remote_crates")
 

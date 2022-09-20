@@ -38,11 +38,11 @@ TEST_F(PaillierTest, EncryptMPIntWorks) {
   Ciphertext c1 = encryptor.Encrypt(p_10);
   Ciphertext c2 = encryptor.Encrypt(p_10);
 
-  EXPECT_FALSE(c1.Equals(c2));
+  EXPECT_FALSE(c1 == c2);
 
   auto ca = encryptor.EncryptWithAudit(p_10);
 
-  EXPECT_FALSE(c1.Equals(ca.first));
+  EXPECT_FALSE(c1 == ca.first);
 
   // 2. decrypt
   Decryptor decryptor(pub_key_, sec_key_);
@@ -66,7 +66,7 @@ TEST_F(PaillierTest, EncryptDoubleWorks) {
   Ciphertext c1 = encryptor.Encrypt(pi);
   Ciphertext c2 = encryptor.Encrypt(pi);
 
-  EXPECT_FALSE(c1.Equals(c2));
+  EXPECT_FALSE(c1 == c2);
 
   // 2. decrypt
   Decryptor decryptor(pub_key_, sec_key_);

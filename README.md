@@ -1,6 +1,13 @@
 # HEU
 
-homomorphic encryption processing unit (HEU)
+Homomorphic Encryption processing Unit (HEU) is a sub-project of Secretflow that implements high-performance homomorphic encryption algorithms.
+
+The purpose of HEU is to lower the threshold for the use of homomorphic encryption, so that users can use homomorphic encryption algorithms to build privacy-preserving applications without professional cryptography knowledge.
+
+## Documentation
+
+https://heu.readthedocs.io/
+
 
 ## Background
 
@@ -25,20 +32,24 @@ Depending on the computing power, HEU has 4 working modes:
 
 PHE has been basically developed, LHE and FHE are under development
 
-## Build
+## Build & UnitTest
+
+Build all
 
 ```shell
-# build the C++ phe library
-bazel build --verbose_failures //heu/library/phe
 
-# usage example (c++)
-bazel test //heu/library/phe:phe_test
+# build all
+bazel build heu/...
 
-# build the python phe library
-bazel build -c opt //heu:heu_wheel
-pip install bazel-bin/heu/(cat bazel-bin/heu/heu_wheel.name) --force-reinstall
-
-# usage example (python)
-cat heu/pybind/phe_test.py
-bazel test //heu/pybind:phe_test
+# test all (optional)
+bazel test heu/...
 ```
+
+Build python lib
+
+```shell
+# require Python 3.8
+# build and install python library
+sh heu/pylib/reinstall.sh
+```
+

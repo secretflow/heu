@@ -22,3 +22,6 @@ bazel-*
 docs/_build
 
 .vscode
+
+pylib.name
+*.whl

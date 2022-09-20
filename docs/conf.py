@@ -48,7 +48,6 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
-    'sphinx_copybutton',
     "sphinx_inline_tabs",
     # "myst_parser",
 ]
@@ -76,6 +75,10 @@ html_theme = "pydata_sphinx_theme"
 
 html_context = {
     "default_mode": "light"
+}
+
+html_sidebars = {
+    "**": ["search-field", "sidebar-nav-bs"]
 }
 
 html_theme_options = {

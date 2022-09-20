@@ -22,7 +22,7 @@ namespace heu::lib::phe {
 
 class HeKit {
  public:
-  void Setup(SchemaType schema_type, size_t key_size);
+  HeKit(SchemaType schema_type, size_t key_size);
 
   [[nodiscard]] const std::shared_ptr<PublicKey>& GetPublicKey() const {
     return public_key_;
@@ -58,8 +58,8 @@ class HeKit {
 // After setup, only Encryptor and Evaluator are available
 class DestinationHeKit {
  public:
-  void Setup(std::shared_ptr<PublicKey> pk);
-  void Setup(yasl::ByteContainerView pk_buffer);
+  explicit DestinationHeKit(std::shared_ptr<PublicKey> pk);
+  explicit DestinationHeKit(yasl::ByteContainerView pk_buffer);
 
   [[nodiscard]] const std::shared_ptr<PublicKey>& GetPublicKey() const {
     return public_key_;
@@ -73,7 +73,7 @@ class DestinationHeKit {
     return evaluator_;
   }
 
- private:
+ protected:
   std::shared_ptr<PublicKey> public_key_;
   std::shared_ptr<Encryptor> encryptor_;
   std::shared_ptr<Evaluator> evaluator_;

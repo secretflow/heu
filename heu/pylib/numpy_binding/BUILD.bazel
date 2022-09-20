@@ -1,0 +1,47 @@
+load("@yasl//bazel:yasl.bzl", "yasl_cc_library", "yasl_cc_test")
+load("@pybind11_bazel//:build_defs.bzl", "pybind_extension", "pybind_library")
+
+package(default_visibility = ["//visibility:public"])
+
+pybind_library(
+    name = "numpy_binding",
+    srcs = ["bind_numpy.cc"],
+    hdrs = ["bind_numpy.h"],
+    deps = [
+        ":infeed",
+        ":outfeed",
+        ":py_slicer",
+        "//heu/library/numpy",
+        "//heu/pylib/common:py_encoders",
+    ],
+)
+
+pybind_library(
+    name = "infeed",
+    hdrs = ["infeed.h"],
+    deps = [
+        "//heu/library/numpy",
+        "//heu/pylib/common:py_encoders",
+        "//heu/pylib/common:traits",
+    ],
+)
+
+pybind_library(
+    name = "outfeed",
+    hdrs = ["outfeed.h"],
+    deps = [
+        "//heu/library/numpy",
+        "//heu/pylib/common:py_encoders",
+        "//heu/pylib/common:traits",
+    ],
+)
+
+pybind_library(
+    name = "py_slicer",
+    srcs = ["py_slicer.cc"],
+    hdrs = ["py_slicer.h"],
+    deps = [
+        "//heu/library/numpy",
+        "//heu/pylib/common:traits",
+    ],
+)

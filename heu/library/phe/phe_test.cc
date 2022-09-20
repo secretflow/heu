@@ -24,15 +24,14 @@ using algorithms::MPInt;
 class PheTest : public ::testing::TestWithParam<SchemaType> {
  protected:
   void SetUp() override {
-    he_kit_.Setup(GetParam(), 2048);
     auto sk_str = he_kit_.GetSecretKey()->ToString();
-    EXPECT_GT(sk_str.length(), 10) << sk_str;
+    EXPECT_GT(sk_str.length(), 30) << sk_str;
     auto pk_str = he_kit_.GetPublicKey()->ToString();
-    EXPECT_GT(pk_str.length(), 10) << pk_str;
+    EXPECT_GT(pk_str.length(), 30) << pk_str;
   }
 
  protected:
-  HeKit he_kit_;
+  HeKit he_kit_ = HeKit(GetParam(), 2048);
 };
 
 INSTANTIATE_TEST_SUITE_P(EachSchema, PheTest,
@@ -54,8 +53,7 @@ TEST_P(PheTest, Serialize) {
 
   // test serialize public key
   auto buffer_pk = he_kit_.GetPublicKey()->Serialize();
-  DestinationHeKit server;
-  server.Setup(yasl::ByteContainerView(buffer_pk));
+  DestinationHeKit server(buffer_pk);
   server.GetEvaluator()->AddInplace(&ct1, MPInt(666));
   server.GetEvaluator()->Randomize(&ct1);
   buffer = ct1.Serialize();
@@ -232,21 +230,21 @@ TEST_P(PheTest, BatchEncoding) {
   MPInt plain;
   Ciphertext res = evaluator->Add(ct0, batch_encoder.Encode<int64_t>(23, 23));
   decryptor->Decrypt(res, &plain);
-  EXPECT_EQ((batch_encoder.Get<int64_t, 0>(plain)), -123 + 23);
-  EXPECT_EQ((batch_encoder.Get<int64_t, 1>(plain)), 123 + 23);
+  EXPECT_EQ((batch_encoder.Decode<int64_t, 0>(plain)), -123 + 23);
+  EXPECT_EQ((batch_encoder.Decode<int64_t, 1>(plain)), 123 + 23);
 
   res = evaluator->Add(ct0, batch_encoder.Encode<int64_t>(-123, -456));
   decryptor->Decrypt(res, &plain);
-  EXPECT_EQ((batch_encoder.Get<int64_t, 0>(plain)), -123 - 123);
-  EXPECT_EQ((batch_encoder.Get<int64_t, 1>(plain)), 123 - 456);
+  EXPECT_EQ((batch_encoder.Decode<int64_t, 0>(plain)), -123 - 123);
+  EXPECT_EQ((batch_encoder.Decode<int64_t, 1>(plain)), 123 - 456);
 
   res = evaluator->Add(
       ct0, batch_encoder.Encode<int64_t>(std::numeric_limits<int64_t>::max(),
                                          std::numeric_limits<int64_t>::max()));
   decryptor->Decrypt(res, &plain);
-  EXPECT_EQ((batch_encoder.Get<int64_t, 0>(plain)),
+  EXPECT_EQ((batch_encoder.Decode<int64_t, 0>(plain)),
             -123LL + std::numeric_limits<int64_t>::max());
-  EXPECT_EQ((batch_encoder.Get<int64_t, 1>(plain)),
+  EXPECT_EQ((batch_encoder.Decode<int64_t, 1>(plain)),
             std::numeric_limits<int64_t>::lowest() + 122);  // overflow
 
   // test big number
@@ -257,14 +255,14 @@ TEST_P(PheTest, BatchEncoding) {
       ct0, batch_encoder.Encode<int64_t>(std::numeric_limits<int64_t>::max(),
                                          std::numeric_limits<int64_t>::max()));
   decryptor->Decrypt(res, &plain);
-  EXPECT_EQ((batch_encoder.Get<int64_t, 0>(plain)), -1);
-  EXPECT_EQ((batch_encoder.Get<int64_t, 1>(plain)), -2);
+  EXPECT_EQ((batch_encoder.Decode<int64_t, 0>(plain)), -1);
+  EXPECT_EQ((batch_encoder.Decode<int64_t, 1>(plain)), -2);
 
   res = evaluator->Add(ct0, batch_encoder.Encode<int64_t>(-1, 1));
   decryptor->Decrypt(res, &plain);
-  EXPECT_EQ((batch_encoder.Get<int64_t, 0>(plain)),
+  EXPECT_EQ((batch_encoder.Decode<int64_t, 0>(plain)),
             std::numeric_limits<int64_t>::max());
-  EXPECT_EQ((batch_encoder.Get<int64_t, 1>(plain)),
+  EXPECT_EQ((batch_encoder.Decode<int64_t, 1>(plain)),
             std::numeric_limits<int64_t>::lowest());
 }
 

@@ -65,9 +65,22 @@ class SerializableVariant {
     return std::visit(std::forward<Visitor>(vis), var_);
   }
 
+  bool operator==(const SerializableVariant &other) const {
+    return var_ == other.var_;
+  }
+
+  bool operator!=(const SerializableVariant &other) const {
+    return var_ != other.var_;
+  }
+
   [[nodiscard]] yasl::Buffer Serialize() const;
   void Deserialize(yasl::ByteContainerView clazz);
   [[nodiscard]] std::string ToString() const;
+
+  friend std::ostream &operator<<(std::ostream &os,
+                                  const SerializableVariant<Types...> &obj) {
+    return os << obj.ToString();
+  }
 
  private:
   std::variant<Types...> var_;

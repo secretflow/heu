@@ -16,9 +16,9 @@ yasl_cc_library(
 )
 
 yasl_cc_library(
-    name = "tommath_ext",
-    srcs = ["tommath_ext.cc"],
-    hdrs = ["tommath_ext.h"],
+    name = "tommath_ext_types",
+    srcs = ["tommath_ext_types.cc"],
+    hdrs = ["tommath_ext_types.h"],
     deps = [
         "@com_github_libtom_libtommath//:libtommath",
         "@yasl//yasl/base:int128",
@@ -41,8 +41,8 @@ yasl_cc_library(
     deps = [
         ":he_assert",
         ":he_object",
-        ":mp_safe_prime_rand",
-        ":tommath_ext",
+        ":tommath_ext_features",
+        ":tommath_ext_types",
         "@com_github_fmtlib_fmt//:fmtlib",
         "@com_github_msgpack_msgpack//:msgpack",
         "@yasl//yasl/base:int128",
@@ -66,9 +66,9 @@ yasl_cc_library(
 )
 
 yasl_cc_library(
-    name = "mp_safe_prime_rand",
-    srcs = ["mp_safe_prime_rand.cc"],
-    hdrs = ["mp_safe_prime_rand.h"],
+    name = "tommath_ext_features",
+    srcs = ["tommath_ext_features.cc"],
+    hdrs = ["tommath_ext_features.h"],
     deps = [
         "@com_github_libtom_libtommath//:libtommath",
         "@yasl//yasl/base:buffer",

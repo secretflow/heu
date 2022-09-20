@@ -1,0 +1,401 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022 Ant Group Co., Ltd
+# This file is distributed under the same license as the HEU package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: HEU \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-08-25 19:40+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: ../../references/numpy_api.rst:2
+msgid "Numpy 模块"
+msgstr "Numpy Module"
+
+#: ../../references/numpy_api.rst:4
+msgid "请使用 ``from heu import numpy as hnp`` 引入 phe 模块"
+msgstr "Please use ``from heu import numpy as hnp`` to import the numpy module"
+
+#: ../../docstring heu.numpy:1 of
+msgid "a numpy adapter for phe module which provides numpy-like api"
+msgstr ""
+
+#: ../../docstring heu.numpy.CiphertextArray.cols:1
+#: heu.numpy.PlaintextArray.cols:1 heu.numpy.StringArray.cols:1 of
+msgid "Get the number of cols"
+msgstr ""
+
+#: ../../docstring heu.numpy.CiphertextArray.ndim:1
+#: heu.numpy.PlaintextArray.ndim:1 heu.numpy.StringArray.ndim:1 of
+msgid "The array's number of dimensions"
+msgstr ""
+
+#: ../../docstring heu.numpy.CiphertextArray.rows:1
+#: heu.numpy.PlaintextArray.rows:1 heu.numpy.StringArray.rows:1 of
+msgid "Get the number of rows"
+msgstr ""
+
+#: ../../docstring heu.numpy.CiphertextArray.shape:1
+#: heu.numpy.PlaintextArray.shape:1 heu.numpy.StringArray.shape:1 of
+msgid "The array's shape"
+msgstr ""
+
+#: ../../docstring heu.numpy.CiphertextArray.size:1
+#: heu.numpy.PlaintextArray.size:1 heu.numpy.StringArray.size:1 of
+msgid "Number of elements in the array"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.add:1 heu.numpy.PyCapsule.array:1
+#: heu.numpy.PyCapsule.decrypt:1 heu.numpy.PyCapsule.encrypt:1
+#: heu.numpy.PyCapsule.matmul:1 heu.numpy.PyCapsule.mul:1
+#: heu.numpy.PyCapsule.setup:1 heu.numpy.PyCapsule.sub:1
+#: heu.numpy.PyCapsule.sum:1 heu.numpy.PyCapsule.to_numpy:1 of
+msgid "Overloaded function."
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.decrypt:3 of
+msgid ""
+"decrypt(self: heu.numpy.Decryptor, ciphertext: heu.phe.Ciphertext) -> "
+"heu.phe.Plaintext"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.decrypt:5 of
+msgid "Decrypt ciphertext (scalar) to plaintext (scalar)"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.decrypt:7 of
+msgid ""
+"decrypt(self: heu.numpy.Decryptor, ciphertext_array: "
+"heu.numpy.CiphertextArray) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.decrypt:9 of
+msgid "Decrypt ciphertext array to plaintext array"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.encryptor:1 of
+msgid "Get encryptor"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.evaluator:1 of
+msgid "Get evaluator"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.public_key:1 of
+msgid "Get public key"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.encrypt:3 of
+msgid ""
+"encrypt(self: heu.numpy.Encryptor, plaintext: heu.phe.Plaintext) -> "
+"heu.phe.Ciphertext"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.encrypt:5 of
+msgid "Encrypt plaintext (scalar) to ciphertext (scalar)"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.encrypt:7 of
+msgid ""
+"encrypt(self: heu.numpy.Encryptor, plaintext_array: "
+"heu.numpy.PlaintextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.encrypt:9 of
+msgid "Encrypt plaintext array to ciphertext array"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.encrypt_with_audit:1 of
+msgid "Encrypt and build audit string including plaintext/random/ciphertext info"
+msgstr ""
+
+#: ../../docstring heu.numpy.Encryptor.phe:1 of
+msgid "Get the instance of phe.Encryptor for scalar encryption"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.add:3 of
+msgid ""
+"add(self: heu.numpy.Evaluator, arg0: heu.numpy.CiphertextArray, arg1: "
+"heu.numpy.CiphertextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.add:5 of
+msgid ""
+"add(self: heu.numpy.Evaluator, arg0: heu.numpy.CiphertextArray, arg1: "
+"heu.numpy.PlaintextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.add:7 of
+msgid ""
+"add(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, arg1: "
+"heu.numpy.CiphertextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.add:9 of
+msgid ""
+"add(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, arg1: "
+"heu.numpy.PlaintextArray) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.matmul:3 of
+msgid ""
+"matmul(self: heu.numpy.Evaluator, arg0: heu.numpy.CiphertextArray, arg1: "
+"heu.numpy.PlaintextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.matmul:5 of
+msgid ""
+"matmul(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, arg1: "
+"heu.numpy.CiphertextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.matmul:7 of
+msgid ""
+"matmul(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, arg1: "
+"heu.numpy.PlaintextArray) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.mul:3 of
+msgid ""
+"mul(self: heu.numpy.Evaluator, arg0: heu.numpy.CiphertextArray, arg1: "
+"heu.numpy.PlaintextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.mul:5 of
+msgid ""
+"mul(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, arg1: "
+"heu.numpy.CiphertextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.mul:7 of
+msgid ""
+"mul(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, arg1: "
+"heu.numpy.PlaintextArray) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.mul:9 of
+msgid ""
+"mul(self: heu.numpy.Evaluator, arg0: heu.numpy.CiphertextArray, arg1: "
+"heu::lib::numpy::DenseMatrix<__int128>) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.mul:11 of
+msgid ""
+"mul(self: heu.numpy.Evaluator, arg0: "
+"heu::lib::numpy::DenseMatrix<__int128>, arg1: heu.numpy.CiphertextArray) "
+"-> heu.numpy.CiphertextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.sub:3 of
+msgid ""
+"sub(self: heu.numpy.Evaluator, arg0: heu.numpy.CiphertextArray, arg1: "
+"heu.numpy.CiphertextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.sub:5 of
+msgid ""
+"sub(self: heu.numpy.Evaluator, arg0: heu.numpy.CiphertextArray, arg1: "
+"heu.numpy.PlaintextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.sub:7 of
+msgid ""
+"sub(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, arg1: "
+"heu.numpy.CiphertextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.sub:9 of
+msgid ""
+"sub(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, arg1: "
+"heu.numpy.PlaintextArray) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.sum:3 of
+msgid ""
+"sum(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray) -> "
+"heu.phe.Plaintext"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.sum:5 of
+msgid ""
+"sum(self: heu.numpy.Evaluator, arg0: heu.numpy.CiphertextArray) -> "
+"heu.phe.Ciphertext"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.decryptor:1 of
+msgid "Get decryptor"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.secret_key:1 of
+msgid "Get secret key"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.to_bytes:1 of
+msgid "Construct Python bytes containing the raw data bytes in the array."
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.to_bytes:3 of
+msgid ""
+"The endian argument determines the byte order used to represent an "
+"integer. To request the native byte order of the host system, use "
+"sys.byteorder as the byte order value."
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.to_numpy:3 of
+msgid ""
+"to_numpy(self: heu.numpy.PlaintextArray, encoder: heu.phe.BigintEncoder ="
+" BigintEncoder()) -> numpy.ndarray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.to_numpy:5 of
+msgid "Decode plaintext array to numpy ndarray with type 'object'"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.to_numpy:7 of
+msgid ""
+"to_numpy(self: heu.numpy.PlaintextArray, encoder: heu.phe.IntegerEncoder)"
+" -> numpy.ndarray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.to_numpy:9
+#: heu.numpy.PyCapsule.to_numpy:17 of
+msgid "Decode plaintext array to numpy ndarray with type 'int64'"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.to_numpy:11 of
+msgid ""
+"to_numpy(self: heu.numpy.PlaintextArray, encoder: heu.phe.FloatEncoder) "
+"-> numpy.ndarray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.to_numpy:13 of
+msgid "Decode plaintext array to numpy ndarray with type 'float64'"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.to_numpy:15 of
+msgid ""
+"to_numpy(self: heu.numpy.PlaintextArray, encoder: heu.phe.BatchEncoder) "
+"-> numpy.ndarray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.transpose_inplace:1 of
+msgid "Transpose of the array"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:3 of
+msgid ""
+"array(ndarray: numpy.ndarray, encoder: heu.phe.BigintEncoder = "
+"BigintEncoder()) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:5 of
+msgid "Create and encode an array using PyBigintEncoder"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:7 of
+msgid ""
+"array(object: object, encoder: heu.phe.BigintEncoder = BigintEncoder()) "
+"-> heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:9 of
+msgid "Encode a numpy ndarray using PyBigintEncoder"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:11 of
+msgid ""
+"array(ndarray: numpy.ndarray, encoder: heu.phe.IntegerEncoder) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:13 of
+msgid "Create and encode an array using PyIntegerEncoder"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:15 of
+msgid ""
+"array(object: object, encoder: heu.phe.IntegerEncoder) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:17 of
+msgid "Encode a numpy ndarray using PyIntegerEncoder"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:19 of
+msgid ""
+"array(ndarray: numpy.ndarray, encoder: heu.phe.FloatEncoder) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:21 of
+msgid "Create and encode an array using PyFloatEncoder"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:23 of
+msgid ""
+"array(object: object, encoder: heu.phe.FloatEncoder) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:25 of
+msgid "Encode a numpy ndarray using PyFloatEncoder"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:27 of
+msgid ""
+"array(ndarray: numpy.ndarray, encoder: heu.phe.BatchEncoder) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:29 of
+msgid "Create and encode an array using PyBatchEncoder"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:31 of
+msgid ""
+"array(object: object, encoder: heu.phe.BatchEncoder) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:33 of
+msgid "Encode a numpy ndarray using PyBatchEncoder"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.setup:3 of
+msgid ""
+"setup(schema_type: heu.phe.SchemaType = <SchemaType.ZPaillier: 1>, "
+"key_size: int = 2048) -> heu.numpy.HeKit"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.setup:5 of
+msgid "Setup phe (numpy) environment by schema type and key size"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.setup:7 of
+msgid ""
+"setup(schema_string: str = 'z-paillier', key_size: int = 2048) -> "
+"heu.numpy.HeKit"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.setup:9 of
+msgid "Setup phe (numpy) environment by schema string and key size"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.setup:11 of
+msgid "setup(public_key: heu.phe.PublicKey) -> heu.numpy.DestinationHeKit"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.setup:13 of
+msgid "Setup phe (numpy) environment by an already generated public key"
+msgstr ""
+

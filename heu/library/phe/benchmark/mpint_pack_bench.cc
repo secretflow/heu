@@ -50,9 +50,8 @@ static void BM_MPIntPackingUsingSerialize(benchmark::State& state) {
   double bytes_written = 0;
   for (auto _ : state) {
     for (auto& mp_int : mp_ints) {
-      std::string str;
-      mp_int.Serialize(&str);
-      bytes_written += static_cast<double>(str.length());
+      auto buf = mp_int.Serialize();
+      bytes_written += static_cast<double>(buf.size());
     }
   }
   state.counters["bytes_written"] = bytes_written;
