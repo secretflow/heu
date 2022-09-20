@@ -82,6 +82,9 @@ py_wheel(
     }),
     python_requires = "==3.8.*",
     python_tag = "cp38",
+    requires = [
+        "numpy>=1.23.2",
+    ],
     strip_path_prefixes = ["heu/pylib"],
     version = "0.2.0b0",
     deps = [":phe_pkg"],
