@@ -1,5 +1,7 @@
 # HEU
 
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/secretflow/heu/tree/beta.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/secretflow/heu/tree/beta)
+
 Homomorphic Encryption processing Unit (HEU) is a sub-project of Secretflow that implements high-performance homomorphic encryption algorithms.
 
 The purpose of HEU is to lower the threshold for the use of homomorphic encryption, so that users can use homomorphic encryption algorithms to build privacy-preserving applications without professional cryptography knowledge.
