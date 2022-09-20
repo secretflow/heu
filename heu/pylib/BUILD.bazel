@@ -86,6 +86,6 @@ py_wheel(
         "numpy>=1.23.2",
     ],
     strip_path_prefixes = ["heu/pylib"],
-    version = "0.2.0b0",
+    version = "0.2.0b1",
     deps = [":phe_pkg"],
 )
