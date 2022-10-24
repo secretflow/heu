@@ -7,11 +7,15 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 SECRETFLOW_GIT = "https://github.com/secretflow"
 
+
+OPENSOURCE_YASL_VERSION = "b50ed242ec17a28bff3274e5e6d152183d04ed8f"
+
 git_repository(
     name = "yasl",
-    commit = "b50ed242ec17a28bff3274e5e6d152183d04ed8f",
     recursive_init_submodules = True,
     remote = "{}/yasl.git".format(SECRETFLOW_GIT),
+    commit =
+        OPENSOURCE_YASL_VERSION,
 )
 
 load("@yasl//bazel:repositories.bzl", "yasl_deps")

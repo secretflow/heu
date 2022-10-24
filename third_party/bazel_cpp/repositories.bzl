@@ -1,11 +1,13 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
+
 def heu_cpp_deps():
     _com_github_msgpack_msgpack()
     _com_github_libtom_libtommath()
     _com_github_eigenteam_eigen()
-
+    _com_github_madler_zlib()
+    _com_github_microsoft_seal()
 
 def _com_github_libtom_libtommath():
     maybe(
@@ -15,7 +17,9 @@ def _com_github_libtom_libtommath():
         type = "tar.gz",
         strip_prefix = "libtommath-1.2.0",
         patch_args = ["-p1"],
-        patches = ["@com_alipay_sf_heu//third_party/bazel_cpp:patches/libtommath-1.2.0.patch"],
+        patches = [
+            "@com_alipay_sf_heu//third_party/bazel_cpp:patches/libtommath-1.2.0.patch",
+        ],
         urls = [
             "https://github.com/libtom/libtommath/archive/v1.2.0.tar.gz",
         ],
@@ -45,4 +49,35 @@ def _com_github_eigenteam_eigen():
         urls = [
             "https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz",
         ],
+    )
+
+def _com_github_madler_zlib():
+    maybe(
+        http_archive,
+        name = "zlib",
+        build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:zlib.BUILD",
+        strip_prefix = "zlib-1.2.12",
+        sha256 = "d8688496ea40fb61787500e863cc63c9afcbc524468cedeb478068924eb54932",
+        type = ".tar.gz",
+        urls = [
+            "https://github.com/madler/zlib/archive/refs/tags/v1.2.12.tar.gz",
+        ],
+    )
+
+def _com_github_microsoft_seal():
+    maybe(
+        http_archive,
+        name = "com_github_microsoft_seal",
+        sha256 = "85a63188a5ccc8d61b0adbb92e84af9b7223fc494d33260fa17a121433790a0e",
+        strip_prefix = "SEAL-3.6.6",
+        type = "tar.gz",
+        patch_args = ["-p1"],
+        patches = [
+            "@com_alipay_sf_heu//third_party/bazel_cpp:patches/seal.patch",
+            "@com_alipay_sf_heu//third_party/bazel_cpp:patches/seal-evaluator.patch",
+        ],
+        urls = [
+            "https://github.com/microsoft/SEAL/archive/refs/tags/v3.6.6.tar.gz",
+        ],
+        build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:seal.BUILD",
     )

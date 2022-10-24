@@ -17,9 +17,9 @@
 
 #include "gtest/gtest.h"
 
-#include "heu/tfhe/src/zq/ffi.rs.h"
+#include "heu/experimental/tfhe/src/zq/ffi.rs.h"
 
-namespace heu::tfhe::cxxbind {
+namespace heu::expt::tfhe::cxxbind {
 
 class TfheCxxTest : public testing::Test {};
 
@@ -49,4 +49,4 @@ TEST_F(TfheCxxTest, AccumulatorWorks) {
   ASSERT_EQ(decryptor->decrypt(*sum), sum_expected * 7);
 }
 
-}  // namespace heu::tfhe::cxxbind
+}  // namespace heu::expt::tfhe::cxxbind
