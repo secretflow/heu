@@ -24,12 +24,12 @@ from heu import phe
 class BasicCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.ctx = hnp.setup(phe.SchemaType.Mock, 2048)
-        cls.encryptor = cls.ctx.encryptor()
-        cls.decryptor = cls.ctx.decryptor()
-        cls.evaluator = cls.ctx.evaluator()
+        cls.kit = hnp.setup(phe.SchemaType.Mock, 2048)
+        cls.encryptor = cls.kit.encryptor()
+        cls.decryptor = cls.kit.decryptor()
+        cls.evaluator = cls.kit.evaluator()
 
-    def assert_array_equal(self, harr, nparr, edr=phe.BigintEncoder()):
+    def assert_array_equal(self, harr, nparr, edr=phe.BigintDecoder()):
         if isinstance(harr, hnp.CiphertextArray):
             harr = self.decryptor.decrypt(harr)
 
@@ -39,9 +39,9 @@ class BasicCase(unittest.TestCase):
         )
 
     def test_parse_and_str(self):
-        harr = hnp.array([[1, 2, 3], [4, 5, 6]])
+        harr = self.kit.array([[1, 2, 3], [4, 5, 6]])
         self.assertEqual(str(harr), "[[1 2 3]\n [4 5 6]]")
-        harr = hnp.array([[1, 2, 3], [4, 5, 6]], phe.IntegerEncoder(scale=10))
+        harr = hnp.array([[1, 2, 3], [4, 5, 6]], self.kit.integer_encoder(scale=10))
         self.assertEqual(str(harr), "[[10 20 30]\n [40 50 60]]")
 
     def test_io(self):
@@ -62,35 +62,39 @@ class BasicCase(unittest.TestCase):
                 f"hnp is {pyarr}, input is {input}",
             )
 
-        do_test(666, phe.IntegerEncoder())
-        do_test(666, phe.FloatEncoder())
-        do_test(666, phe.BigintEncoder())
+        do_test(666, phe.IntegerEncoder(self.kit.get_schema()))
+        do_test(666, phe.FloatEncoder(self.kit.get_schema()))
+        do_test(666, phe.BigintEncoder(self.kit.get_schema()))
 
-        do_test([1, 2, 3], phe.IntegerEncoder())
-        do_test([[1, 2, 3], [4, 5, 6]], phe.IntegerEncoder())
-        do_test([[10], [20]], phe.IntegerEncoder())
+        do_test([1, 2, 3], phe.IntegerEncoder(self.kit.get_schema()))
+        do_test([[1, 2, 3], [4, 5, 6]], phe.IntegerEncoder(self.kit.get_schema()))
+        do_test([[10], [20]], phe.IntegerEncoder(self.kit.get_schema()))
 
-        do_test([100.1], phe.FloatEncoder())
-        do_test([[1.1, 2.4], [3.6, 8]], phe.FloatEncoder())
+        do_test([100.1], phe.FloatEncoder(self.kit.get_schema()))
+        do_test([[1.1, 2.4], [3.6, 8]], phe.FloatEncoder(self.kit.get_schema()))
 
-        do_test([1, 2, 3], phe.BigintEncoder())
-        do_test([[92233720368547758070]], phe.BigintEncoder())
-        do_test([47509577600241629199431517033180053701475], phe.BigintEncoder())
+        do_test([1, 2, 3], phe.BigintEncoder(self.kit.get_schema()))
+        do_test([[92233720368547758070]], phe.BigintEncoder(self.kit.get_schema()))
         do_test(
-            [[47509577600241629199431517033180053701475], [12]], phe.BigintEncoder()
+            [47509577600241629199431517033180053701475],
+            phe.BigintEncoder(self.kit.get_schema()),
+        )
+        do_test(
+            [[47509577600241629199431517033180053701475], [12]],
+            phe.BigintEncoder(self.kit.get_schema()),
         )
 
-        do_test([1, 2], phe.BatchEncoder())
-        do_test([[10, 11], [12, 13], [15, 16]], phe.BatchEncoder())
+        do_test([1, 2], phe.BatchEncoder(self.kit.get_schema()))
+        do_test([[10, 11], [12, 13], [15, 16]], phe.BatchEncoder(self.kit.get_schema()))
 
     def test_encoder_parallel(self):
-        edr = phe.IntegerEncoder()
+        edr = self.kit.integer_encoder()
         for idx in range(10):
             input = np.random.randint(-10000, 10000, (100, 100))
             harr = hnp.array(input, edr)
             self.assert_array_equal(harr, input, edr)
 
-        edr = phe.FloatEncoder(scale=10**8)
+        edr = self.kit.float_encoder(scale=10 ** 8)
         for idx in range(50):
             input = np.random.rand(100, 100)
             harr = hnp.array(input, edr)
@@ -99,20 +103,20 @@ class BasicCase(unittest.TestCase):
                 np.allclose(pyarr, input), f"hnp is \n{pyarr}\ninput is \n{input}"
             )
 
-        edr = phe.BigintEncoder()
+        edr = self.kit.bigint_encoder()
         for idx in range(50):
             input = np.random.randint(-10000, 10000, (100, 100))
             harr = hnp.array(input, edr)
             self.assert_array_equal(harr, input, edr)
 
-        edr = phe.BatchEncoder()
+        edr = self.kit.batch_encoder()
         for idx in range(50):
             input = np.random.randint(-10000, 10000, (5000, 2))
             harr = hnp.array(input, edr)
             self.assert_array_equal(harr, input, edr)
 
     def test_encrypt_with_audit(self):
-        pt1 = hnp.array([[1], [3]])
+        pt1 = self.kit.array([[1], [3]])
         ct1, audit = self.encryptor.encrypt_with_audit(pt1)
         self.assert_array_equal(self.decryptor.decrypt(ct1), np.array([[1], [3]]))
 
@@ -123,8 +127,8 @@ class BasicCase(unittest.TestCase):
         self.assertGreater(len(a2[0, 0]), 1)
 
     def test_evaluate(self):
-        pt1 = hnp.array([[1, 2], [3, 4]])
-        pt2 = hnp.array([[4, 5], [6, 7]])
+        pt1 = self.kit.array([[1, 2], [3, 4]])
+        pt2 = self.kit.array([[4, 5], [6, 7]])
         self.assertEqual(pt2.rows, 2)
         self.assertEqual(pt2.cols, 2)
         self.assertEqual(tuple(pt2.shape), (2, 2))
@@ -184,33 +188,38 @@ class BasicCase(unittest.TestCase):
 
         # sum
         pt3 = self.evaluator.sum(pt1)
-        self.assertEqual(pt3, phe.Plaintext(10))
+        self.assertEqual(pt3, phe.Plaintext(self.kit.get_schema(), 10))
         ct3 = self.evaluator.sum(ct1)
-        self.assertEqual(self.decryptor.phe.decrypt(ct3), phe.Plaintext(10))
+        self.assertEqual(
+            self.decryptor.phe.decrypt(ct3), phe.Plaintext(self.kit.get_schema(), 10)
+        )
         pt3 = self.evaluator.sum(pt2)
-        self.assertEqual(pt3, phe.Plaintext(22))
+        self.assertEqual(pt3, phe.Plaintext(self.kit.get_schema(), 22))
         ct3 = self.evaluator.sum(ct2)
-        self.assertEqual(self.decryptor.phe.decrypt(ct3), phe.Plaintext(22))
+        self.assertEqual(
+            self.decryptor.phe.decrypt(ct3), phe.Plaintext(self.kit.get_schema(), 22)
+        )
 
     def test_matmul(self):
         nparr1 = np.random.randint(-10000, 10000, (64,))
-        harr1 = hnp.array(nparr1)
+        harr1 = self.kit.array(nparr1)
         nparr2 = np.random.randint(-10000, 10000, (64, 256))
-        harr2 = hnp.array(nparr2)
+        harr2 = self.kit.array(nparr2)
         self.assert_array_equal(self.evaluator.matmul(harr1, harr2), nparr1 @ nparr2)
 
-        harr2.transpose_inplace()
-        self.assert_array_equal(self.evaluator.matmul(harr2, harr1), nparr2.T @ nparr1)
+        # todo: impl transpose
+        # harr2.transpose_inplace()
+        # self.assert_array_equal(self.evaluator.matmul(harr2, harr1), nparr2.T @ nparr1)
 
         nparr2 = np.random.randint(-10000, 10000, (64,))
-        harr2 = hnp.array(nparr2)
+        harr2 = self.kit.array(nparr2)
         self.assert_array_equal(self.evaluator.matmul(harr1, harr2), nparr1 @ nparr2)
 
     def test_evaluate_parallel(self):
         nparr1 = np.random.randint(-10000, 10000, (100, 100))
-        harr1 = hnp.array(nparr1)
+        harr1 = self.kit.array(nparr1)
         nparr2 = np.random.randint(-10000, 10000, (100, 100))
-        harr2 = self.encryptor.encrypt(hnp.array(nparr2))
+        harr2 = self.encryptor.encrypt(self.kit.array(nparr2))
 
         # to_bytes
         self.assertEqual(nparr1.dtype, np.int64)
@@ -223,7 +232,10 @@ class BasicCase(unittest.TestCase):
             self.evaluator.mul(harr1, harr1), np.multiply(nparr1, nparr1)
         )
         self.assert_array_equal(self.evaluator.matmul(harr1, harr1), nparr1 @ nparr1)
-        self.assertEqual(self.evaluator.sum(harr1), phe.Plaintext(nparr1.sum()))
+        self.assertEqual(
+            self.evaluator.sum(harr1),
+            phe.Plaintext(self.kit.get_schema(), int(nparr1.sum())),
+        )
 
         # ct - pt
         self.assert_array_equal((self.evaluator.add(harr2, harr1)), nparr2 + nparr1)
@@ -234,7 +246,7 @@ class BasicCase(unittest.TestCase):
         self.assert_array_equal((self.evaluator.matmul(harr2, harr1)), nparr2 @ nparr1)
         self.assertEqual(
             self.decryptor.decrypt(self.evaluator.sum(harr2)),
-            phe.Plaintext(nparr2.sum()),
+            phe.Plaintext(self.kit.get_schema(), int(nparr2.sum())),
         )
 
         # pt - ct
@@ -251,9 +263,9 @@ class BasicCase(unittest.TestCase):
 
     def test_serialize(self):
         # client: encrypt and send
-        pk_buffer = pickle.dumps(self.ctx.public_key())
-        pt_buffer = pickle.dumps(hnp.array([[16, 19], [36, 43]]))
-        ct_buffer = pickle.dumps(self.encryptor.encrypt(hnp.array([1, 2])))
+        pk_buffer = pickle.dumps(self.kit.public_key())
+        pt_buffer = pickle.dumps(self.kit.array([[16, 19], [36, 43]]))
+        ct_buffer = pickle.dumps(self.encryptor.encrypt(self.kit.array([1, 2])))
 
         # server: calc ct1 - ct2
         server_he = hnp.setup(pickle.loads(pk_buffer))
@@ -271,7 +283,7 @@ class BasicCase(unittest.TestCase):
 
     def test_slice_get(self):
         nparr = np.arange(49).reshape((7, 7))
-        harr = hnp.array(nparr)
+        harr = self.kit.array(nparr)
 
         self.assert_array_equal(harr[5:1, 1], nparr[5:1, 1])
         self.assert_array_equal(harr[4:, [1, 2, 2, 3]], nparr[4:, [1, 2, 2, 3]])
@@ -284,7 +296,7 @@ class BasicCase(unittest.TestCase):
         self.assert_array_equal(harr[:], nparr[:])
 
         nparr = np.array([0, 1, 2, 3, 4, 5, 6, 7])
-        harr = hnp.array(nparr)
+        harr = self.kit.array(nparr)
         self.assertEqual(tuple(harr.shape), (8,))
         self.assert_array_equal(harr[[1, 2, 3]], nparr[[1, 2, 3]])
         self.assert_array_equal(harr[:], nparr[:])
@@ -304,10 +316,10 @@ class BasicCase(unittest.TestCase):
     def test_slice_set(self):
         # 2d <- 2d case
         nparr = np.arange(49).reshape((7, 7))
-        harr = hnp.array(nparr)
+        harr = self.kit.array(nparr)
 
         nppatch = np.arange(16).reshape((4, 4))
-        hpatch = hnp.array(nppatch)
+        hpatch = self.kit.array(nppatch)
         nparr[1:5, [0, 1, 5, 6]] = nppatch
         harr[1:5, [0, 1, 5, 6]] = hpatch
         self.assert_array_equal(harr, nparr)
@@ -317,7 +329,7 @@ class BasicCase(unittest.TestCase):
 
         # 2d <- 1d case
         nppatch = np.arange(7)
-        hpatch = hnp.array(nppatch)
+        hpatch = self.kit.array(nppatch)
         nparr[0, :] = nppatch
         harr[0, :] = hpatch
         self.assert_array_equal(harr, nparr)
@@ -328,29 +340,31 @@ class BasicCase(unittest.TestCase):
 
         # 2d <- scalar case
         nparr[1, 1] = 100
-        harr[1, 1] = phe.Plaintext(100)
+        harr[1, 1] = phe.Plaintext(self.kit.get_schema(), 100)
         self.assert_array_equal(harr, nparr)
 
         # 1d <- 1d case
         nparr = nparr[6, :]
         harr = harr[6, :]
         nppatch = np.arange(2)
-        hpatch = hnp.array(nppatch)
+        hpatch = self.kit.array(nppatch)
         nparr[[2, 5]] = nppatch
         harr[[2, 5]] = hpatch
         self.assert_array_equal(harr, nparr)
 
         # 1d <- scalar case
         nparr[-1] = 666
-        harr[-1] = phe.Plaintext(666)
+        harr[-1] = phe.Plaintext(self.kit.get_schema(), 666)
         self.assert_array_equal(harr, nparr)
 
     def test_ciphertext_slice_2d(self):
         nparr = np.arange(49).reshape((7, 7))
-        harr = hnp.array(nparr)
+        harr = self.kit.array(nparr)
         carr = self.encryptor.encrypt(harr)
         # scalar case
-        carr[6, 6] = self.encryptor.phe.encrypt(phe.Plaintext(666))
+        carr[6, 6] = self.encryptor.phe.encrypt(
+            phe.Plaintext(self.kit.get_schema(), 666)
+        )
         carr[6, 6] = self.encryptor.phe.encrypt_raw(1000)
         nparr[6, 6] = 1000
         # block case
@@ -371,7 +385,7 @@ class BasicCase(unittest.TestCase):
 
     def test_ciphertext_slice_1d(self):
         nparr = np.arange(100)
-        harr = hnp.array(nparr)
+        harr = self.kit.array(nparr)
         carr = self.encryptor.encrypt(harr)
         # scalar case
         carr[-100] = self.encryptor.phe.encrypt_raw(1000)
@@ -383,14 +397,18 @@ class BasicCase(unittest.TestCase):
         self.assert_array_equal(harr, nparr)
 
     def test_shape_and_random(self):
-        m1 = hnp.random.randint(phe.Plaintext(-100), phe.Plaintext(100), (10,))
+        m1 = hnp.random.randint(
+            phe.Plaintext(self.kit.get_schema(), -100),
+            phe.Plaintext(self.kit.get_schema(), 100),
+            (10,),
+        )
         self.assertEqual(m1.ndim, 1)
         self.assertEqual(tuple(m1.shape), (10,))
 
         buf = pickle.dumps(hnp.Shape(10, 20, 30))
         sp = pickle.loads(buf)[:2]
         self.assertTrue(isinstance(sp, hnp.Shape))
-        m1 = hnp.random.randbits(2048, sp)
+        m1 = hnp.random.randbits(self.kit.get_schema(), 2048, sp)
         self.assertEqual(m1.ndim, 2)
         self.assertEqual(tuple(m1.shape), (10, 20))
 

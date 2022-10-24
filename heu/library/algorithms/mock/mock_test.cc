@@ -39,10 +39,11 @@ TEST_F(MockHeTest, Serialize) {
 
   auto sk_buffer = sk_.Serialize();
 
-  MPInt m0(-12345);
+  Plaintext m0;
+  m0.Set(-12345);
   Ciphertext ct = encryptor.Encrypt(m0);
 
-  MPInt dc;
+  Plaintext dc;
   Decryptor decryptor(pk_, sk_);
   decryptor.Decrypt(ct, &dc);
   EXPECT_EQ(dc, m0);
@@ -61,59 +62,60 @@ TEST_F(MockHeTest, CiphertextEvaluate) {
   Evaluator evaluator(pk_);
   Decryptor decryptor(pk_, sk_);
 
-  MPInt m0(-12345);
+  Plaintext m0;
+  m0.Set(-12345);
   Ciphertext ct0 = encryptor.Encrypt(m0);
 
   Ciphertext res;
-  MPInt plain;
+  Plaintext plain;
 
   res = evaluator.Add(ct0, ct0);
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-12345 * 2));
-  res = evaluator.Mul(ct0, MPInt(2));
+  EXPECT_EQ(plain.Get<int64_t>(), -12345 * 2);
+  res = evaluator.Mul(ct0, Plaintext(2));
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-12345 * 2));
+  EXPECT_EQ(plain.Get<int64_t>(), (-12345 * 2));
 
   evaluator.Randomize(&res);
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-12345 * 2));
+  EXPECT_EQ(plain.Get<int64_t>(), (-12345 * 2));
 
-  MPInt m1(123);
+  Plaintext m1(123);
   Ciphertext ct1 = encryptor.Encrypt(m1);
 
   res = evaluator.Add(ct1, ct1);
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123 * 2));
-  res = evaluator.Mul(ct1, MPInt(2));
+  EXPECT_EQ(plain.Get<int64_t>(), (123 * 2));
+  res = evaluator.Mul(ct1, Plaintext(2));
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123 * 2));
+  EXPECT_EQ(plain.Get<int64_t>(), (123 * 2));
 
   res = evaluator.Add(ct0, ct1);
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-12345 + 123));
+  EXPECT_EQ(plain.Get<int64_t>(), (-12345 + 123));
 
   // mul
   ct1 = encryptor.Encrypt(m1);
-  res = evaluator.Mul(ct1, MPInt(1));
+  res = evaluator.Mul(ct1, Plaintext(1));
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123));
+  EXPECT_EQ(plain.Get<int64_t>(), (123));
 
   ct1 = encryptor.Encrypt(m1);
-  res = evaluator.Mul(ct1, MPInt(0));
+  res = evaluator.Mul(ct1, Plaintext(0));
   decryptor.Decrypt(res, &plain);
-  EXPECT_TRUE(plain.IsZero());
+  EXPECT_EQ(plain.Get<int64_t>(), 0);
   decryptor.Decrypt(res, &plain);
-  EXPECT_TRUE(plain.IsZero());
+  EXPECT_EQ(plain.Get<int64_t>(), 0);
 
   ct1 = encryptor.Encrypt(m1);
-  res = evaluator.Mul(ct1, MPInt(-1));
+  res = evaluator.Mul(ct1, Plaintext(-1));
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123));
+  EXPECT_EQ(plain, Plaintext(-123));
 
   ct1 = encryptor.Encrypt(m1);
-  res = evaluator.Mul(ct1, MPInt(-2));
+  res = evaluator.Mul(ct1, Plaintext(-2));
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123 * 2));
+  EXPECT_EQ(plain, Plaintext(-123 * 2));
 }
 
 TEST_F(MockHeTest, PlaintextEvaluate1) {
@@ -122,26 +124,26 @@ TEST_F(MockHeTest, PlaintextEvaluate1) {
   Decryptor decryptor(pk_, sk_);
 
   // base (m0) 为正数
-  MPInt m0(123);
+  Plaintext m0(123);
   Ciphertext ct0 = encryptor.Encrypt(m0);
 
   Ciphertext res;
-  MPInt plain;
-  res = evaluator.Add(ct0, MPInt(23));
+  Plaintext plain;
+  res = evaluator.Add(ct0, Plaintext(23));
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123 + 23));
+  EXPECT_EQ(plain, Plaintext(123 + 23));
 
-  res = evaluator.Add(ct0, MPInt(6543212));
+  res = evaluator.Add(ct0, Plaintext(6543212));
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123 + 6543212));
+  EXPECT_EQ(plain, Plaintext(123 + 6543212));
 
-  res = evaluator.Add(ct0, MPInt(-123));
+  res = evaluator.Add(ct0, Plaintext(-123));
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(0));
+  EXPECT_EQ(plain, Plaintext(0));
 
-  res = evaluator.Add(ct0, MPInt(-456));
+  res = evaluator.Add(ct0, Plaintext(-456));
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123 - 456));
+  EXPECT_EQ(plain, Plaintext(123 - 456));
 }
 
 TEST_F(MockHeTest, PlaintextEvaluate2) {
@@ -150,42 +152,36 @@ TEST_F(MockHeTest, PlaintextEvaluate2) {
   Decryptor decryptor(pk_, sk_);
 
   // base (m0) 为负数
-  MPInt m0(-123);
+  Plaintext m0(-123);
   Ciphertext ct0 = encryptor.Encrypt(m0);
 
-  MPInt plain;
-  Ciphertext res = evaluator.Add(ct0, MPInt(23));
+  Plaintext plain;
+  Ciphertext res = evaluator.Add(ct0, Plaintext(23));
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123 + 23));
+  EXPECT_EQ(plain, Plaintext(-123 + 23));
 
-  res = evaluator.Add(ct0, MPInt(std::numeric_limits<int64_t>::max()));
+  res = evaluator.Add(ct0, Plaintext(std::numeric_limits<int64_t>::max()));
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123 + std::numeric_limits<int64_t>::max()));
+  EXPECT_EQ(plain, Plaintext(-123 + std::numeric_limits<int64_t>::max()));
 
-  res = evaluator.Add(ct0, MPInt(-123));
+  res = evaluator.Add(ct0, Plaintext(-123));
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123 * 2));
+  EXPECT_EQ(plain, Plaintext(-123 * 2));
 
-  res = evaluator.Add(ct0, MPInt(-456));
+  res = evaluator.Add(ct0, Plaintext(-456));
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123 - 456));
+  EXPECT_EQ(plain, Plaintext(-123 - 456));
 
   // test big number
-  ct0 = encryptor.Encrypt(MPInt(std::numeric_limits<int64_t>::lowest()));
-  res = evaluator.Add(ct0, MPInt(std::numeric_limits<int64_t>::max()));
+  ct0 = encryptor.Encrypt(Plaintext(std::numeric_limits<int64_t>::lowest()));
+  res = evaluator.Add(ct0, Plaintext(std::numeric_limits<int64_t>::max()));
   decryptor.Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-1));
+  EXPECT_EQ(plain, Plaintext(-1));
 
-  res = evaluator.Add(ct0, MPInt(-1));
+  res = evaluator.Add(ct0, Plaintext(-1));
   decryptor.Decrypt(res, &plain);
-  // MPInt 本身不会溢出，AsInt64() 溢出
-  EXPECT_EQ(plain.As<int64_t>(), std::numeric_limits<int64_t>::max());
-}
-
-TEST_F(MockHeTest, TestInvertMod) {
-  MPInt a(667);
-  MPInt::InvertMod(a, MPInt(561613), &a);
-  EXPECT_EQ(842, a.As<double>());
+  // Plaintext 本身不会溢出，AsInt64() 溢出
+  EXPECT_EQ(plain.Get<int64_t>(), std::numeric_limits<int64_t>::max());
 }
 
 class NegateInplaceTest : public ::testing::TestWithParam<int64_t> {
@@ -208,14 +204,14 @@ TEST_P(NegateInplaceTest, TestNegate) {
   Decryptor decryptor(pk_, sk_);
 
   Ciphertext ct0;
-  MPInt plain;
+  Plaintext plain;
   int in = GetParam();
 
   // 负数
-  ct0 = encryptor.Encrypt(MPInt(in));
+  ct0 = encryptor.Encrypt(Plaintext(in));
   evaluator.NegateInplace(&ct0);
   decryptor.Decrypt(ct0, &plain);
-  EXPECT_EQ(plain, MPInt(-in));
+  EXPECT_EQ(plain, Plaintext(-in));
 }
 
 class BigNumberTest : public ::testing::TestWithParam<int64_t> {
@@ -241,15 +237,15 @@ TEST_P(BigNumberTest, SubTest) {
   int64_t x = GetParam();
   int64_t share_a = std::numeric_limits<int64_t>::max();
 
-  MPInt x_mp(x);
-  MPInt r_mp(share_a);
+  Plaintext x_mp(x);
+  Plaintext r_mp(share_a);
 
   Ciphertext x_encrypted = encryptor.Encrypt(x_mp);
 
   evaluator.SubInplace(&x_encrypted, r_mp);
-  MPInt raw;
+  Plaintext raw;
   decryptor.Decrypt(x_encrypted, &raw);
-  int64_t share_b = raw.As<int64_t>();
+  int64_t share_b = raw.Get<int64_t>();
 
   EXPECT_EQ(share_a + share_b, x);
 }

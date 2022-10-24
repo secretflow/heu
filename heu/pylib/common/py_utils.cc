@@ -61,20 +61,26 @@ py::int_ PyUtils::CppInt128ToPyInt(int128_t num_128) {
 }
 
 // NOT thread safe
-phe::Plaintext PyUtils::PyIntToPlaintext(const py::int_& p) {
+phe::Plaintext PyUtils::PyIntToPlaintext(phe::SchemaType schema,
+                                         const py::int_& p) {
   auto [v, overflow] = PyIntToCppInt128(p);
-  return overflow ? phe::Plaintext(py::str(static_cast<py::object>(p)), 10)
-                  : phe::Plaintext(v);
+  if (overflow) {
+    phe::Plaintext pt(schema);
+    pt.SetValue(py::str(static_cast<py::object>(p)), 10);
+    return pt;
+  } else {
+    return phe::Plaintext(schema, v);
+  }
 }
 
 // NOT thread safe
 py::int_ PyUtils::PlaintextToPyInt(const phe::Plaintext& mp) {
   if (mp.BitCount() < 64) {  // Up to 63bit regardless of sign bit
-    return {mp.As<int64_t>()};
+    return {mp.GetValue<int64_t>()};
   }
 
   if (mp.BitCount() < 127) {
-    return CppInt128ToPyInt(mp.As<int128_t>());
+    return CppInt128ToPyInt(mp.GetValue<int128_t>());
   }
 
   return py::reinterpret_steal<py::int_>(

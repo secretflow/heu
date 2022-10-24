@@ -10,35 +10,17 @@ yasl_cc_library(
         ":decryptor",
         ":encryptor",
         ":evaluator",
+        ":key_def",
         "//heu/library/phe/encoding",
     ],
 )
 
 yasl_cc_library(
-    name = "schema",
-    srcs = ["schema.cc"],
-    hdrs = ["schema.h"],
+    name = "key_def",
+    hdrs = ["key_def.h"],
     deps = [
-        "//heu/library/algorithms/mock",
-        "//heu/library/algorithms/paillier_float",
-        "//heu/library/algorithms/paillier_zahlen",
+        "//heu/library/phe/base:serializable_types",
     ],
-)
-
-yasl_cc_library(
-    name = "serializable_types",
-    srcs = ["serializable_types.cc"],
-    hdrs = ["serializable_types.h"],
-    deps = [
-        ":schema",
-        ":variant_helper",
-        "@com_github_msgpack_msgpack//:msgpack",
-    ],
-)
-
-yasl_cc_library(
-    name = "variant_helper",
-    hdrs = ["variant_helper.h"],
 )
 
 yasl_cc_library(
@@ -46,9 +28,7 @@ yasl_cc_library(
     srcs = ["encryptor.cc"],
     hdrs = ["encryptor.h"],
     deps = [
-        ":schema",
-        ":serializable_types",
-        ":variant_helper",
+        "//heu/library/phe/base",
     ],
 )
 
@@ -57,9 +37,7 @@ yasl_cc_library(
     srcs = ["decryptor.cc"],
     hdrs = ["decryptor.h"],
     deps = [
-        ":schema",
-        ":serializable_types",
-        ":variant_helper",
+        "//heu/library/phe/base",
     ],
 )
 
@@ -68,9 +46,7 @@ yasl_cc_library(
     srcs = ["evaluator.cc"],
     hdrs = ["evaluator.h"],
     deps = [
-        ":schema",
-        ":serializable_types",
-        ":variant_helper",
+        "//heu/library/phe/base",
     ],
 )
 
@@ -79,13 +55,19 @@ test_suite(
 )
 
 yasl_cc_test(
-    name = "phe_test",
-    srcs = ["phe_test.cc"],
+    name = "encryptor_test",
+    srcs = ["encryptor_test.cc"],
     deps = [":phe"],
 )
 
 yasl_cc_test(
-    name = "schema_test",
-    srcs = ["schema_test.cc"],
+    name = "evaluator_test",
+    srcs = ["evaluator_test.cc"],
+    deps = [":phe"],
+)
+
+yasl_cc_test(
+    name = "phe_test",
+    srcs = ["phe_test.cc"],
     deps = [":phe"],
 )

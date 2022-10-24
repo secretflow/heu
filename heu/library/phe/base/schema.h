@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include "msgpack.hpp"
+
 #include "heu/library/algorithms/mock/mock.h"
 #include "heu/library/algorithms/paillier_float/paillier.h"
 #include "heu/library/algorithms/paillier_zahlen/paillier.h"
@@ -22,7 +24,7 @@ namespace heu::lib::phe {
 
 // If you add a new schema, change this !!
 enum class SchemaType {
-  None,       // Mock He
+  Mock,       // Mock He
   ZPaillier,  // Preferred
   FPaillier,
 };
@@ -32,6 +34,7 @@ enum class SchemaType {
 std::vector<SchemaType> GetAllSchema();
 SchemaType ParseSchemaType(const std::string& schema_string);
 std::string SchemaToString(SchemaType schema_type);
+std::ostream& operator<<(std::ostream& os, SchemaType st);
 
 // If you add a new schema, change this !!
 // SchemaType is in the same order as HE_FOR_EACH
@@ -45,4 +48,13 @@ invoke(::heu::lib::algorithms::paillier_f, ##__VA_ARGS__)
 #define HE_COMBINE_NS_TYPE(ns, type) ns::type
 #define HE_NAMESPACE_LIST(type) HE_FOR_EACH(HE_COMBINE_NS_TYPE, type)
 
+// If you add a new schema, change this !!
+#define PLAINTEXT_FOR_EACH(invoke, ...)                 \
+  invoke(::heu::lib::algorithms, MPInt, ##__VA_ARGS__), \
+      invoke(::heu::lib::algorithms::mock, Plaintext, ##__VA_ARGS__)
+
+#define HE_PLAINTEXT_TYPES PLAINTEXT_FOR_EACH(HE_COMBINE_NS_TYPE)
+
 }  // namespace heu::lib::phe
+
+MSGPACK_ADD_ENUM(heu::lib::phe::SchemaType);

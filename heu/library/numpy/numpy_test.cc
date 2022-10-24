@@ -42,21 +42,29 @@ void DoAssertMatrixEq(const DenseMatrix<T> &m1, const DenseMatrix<T> &m2) {
   }
 
 template <typename T = PMatrix>
-T GenMatrix(int rows, int cols, int64_t start = 0) {
+T GenMatrix(phe::SchemaType schema, int rows, int cols, int64_t start = 0) {
   T pts(rows, cols);
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
-      pts(i, j) = typename T::value_type(start++);
+      if constexpr (std::is_same_v<typename T::value_type, phe::Plaintext>) {
+        pts(i, j) = typename T::value_type(schema, start++);
+      } else {
+        pts(i, j) = typename T::value_type(start++);
+      }
     }
   }
   return pts;
 }
 
 template <typename T = PMatrix>
-T GenVector(int len, int64_t start = 0) {
+T GenVector(phe::SchemaType schema, int len, int64_t start = 0) {
   T pts(len, 1, 1);
   for (int i = 0; i < len; ++i) {
-    pts(i, 0) = typename T::value_type(start++);
+    if constexpr (std::is_same_v<typename T::value_type, phe::Plaintext>) {
+      pts(i, 0) = typename T::value_type(schema, start++);
+    } else {
+      pts(i, 0) = typename T::value_type(start++);
+    }
   }
 
   return pts;
@@ -86,7 +94,7 @@ class NumpyTest : public ::testing::Test {
 };
 
 TEST_F(NumpyTest, PtSerializeWorks) {
-  auto pts1 = GenVector(100);
+  auto pts1 = GenVector(he_kit_.GetSchemaType(), 100);
 
   // buffer serialize
   auto buf = pts1.Serialize();
@@ -107,7 +115,8 @@ TEST_F(NumpyTest, PtSerializeWorks) {
 }
 
 TEST_F(NumpyTest, CtSerializeWorks) {
-  auto cts1 = he_kit_.GetEncryptor()->Encrypt(GenMatrix(10, 30));
+  auto cts1 = he_kit_.GetEncryptor()->Encrypt(
+      GenMatrix(he_kit_.GetSchemaType(), 10, 30));
 
   std::stringstream ss;
   msgpack::pack(ss, cts1);
@@ -119,8 +128,8 @@ TEST_F(NumpyTest, CtSerializeWorks) {
 }
 
 TEST_F(NumpyTest, EvalWorks) {
-  auto pts1 = GenMatrix(30, 10);
-  auto pts2 = GenMatrix(30, 10);
+  auto pts1 = GenMatrix(he_kit_.GetSchemaType(), 30, 10);
+  auto pts2 = GenMatrix(he_kit_.GetSchemaType(), 30, 10);
   auto cts1 = he_kit_.GetEncryptor()->Encrypt(pts1);
   auto cts2 = he_kit_.GetEncryptor()->Encrypt(pts2);
 
@@ -163,36 +172,33 @@ TEST_F(NumpyTest, EvalWorks) {
 
   cts3 = he_kit_.GetEvaluator()->Mul(pts1, cts2);
   AssertMatrixEq(he_kit_.GetDecryptor()->Decrypt(cts3), pts_multiplies);
-
-  cts3 = he_kit_.GetEvaluator()->Mul(GenMatrix<DenseMatrix<int128_t>>(30, 10),
-                                     cts2);
-  AssertMatrixEq(he_kit_.GetDecryptor()->Decrypt(cts3), pts_multiplies);
-
-  cts3 = he_kit_.GetEvaluator()->Mul(cts1,
-                                     GenMatrix<DenseMatrix<int128_t>>(30, 10));
-  AssertMatrixEq(he_kit_.GetDecryptor()->Decrypt(cts3), pts_multiplies);
 }
 
 TEST_F(NumpyTest, EvalDimWorks) {
-  auto pts_sum = he_kit_.GetEvaluator()->Add(GenMatrix(2, 2), GenMatrix(2, 2));
+  auto pts_sum =
+      he_kit_.GetEvaluator()->Add(GenMatrix(he_kit_.GetSchemaType(), 2, 2),
+                                  GenMatrix(he_kit_.GetSchemaType(), 2, 2));
   EXPECT_EQ(pts_sum.ndim(), 2);
 
-  pts_sum = he_kit_.GetEvaluator()->Add(GenMatrix(1, 1), GenMatrix(1, 1));
+  pts_sum =
+      he_kit_.GetEvaluator()->Add(GenMatrix(he_kit_.GetSchemaType(), 1, 1),
+                                  GenMatrix(he_kit_.GetSchemaType(), 1, 1));
   EXPECT_EQ(pts_sum.ndim(), 2);
 
-  pts_sum = he_kit_.GetEvaluator()->Add(GenVector(10), GenVector(10));
+  pts_sum = he_kit_.GetEvaluator()->Add(GenVector(he_kit_.GetSchemaType(), 10),
+                                        GenVector(he_kit_.GetSchemaType(), 10));
   EXPECT_EQ(pts_sum.ndim(), 1);
 }
 
 TEST_F(NumpyTest, SumWorks) {
-  auto m = GenMatrix(30, 30);
+  auto m = GenMatrix(he_kit_.GetSchemaType(), 30, 30);
   auto sum = he_kit_.GetEvaluator()->Sum(m);
-  EXPECT_EQ(sum, algorithms::Plaintext(899 * 900 / 2));
+  EXPECT_EQ(sum.GetValue<int64_t>(), 899 * 900 / 2);
 
   auto m2 = he_kit_.GetEncryptor()->Encrypt(m);
   auto sum2 = he_kit_.GetEvaluator()->Sum(m2);
-  EXPECT_EQ(he_kit_.GetDecryptor()->Decrypt(sum2),
-            algorithms::Plaintext(899 * 900 / 2));
+  EXPECT_EQ(he_kit_.GetDecryptor()->Decrypt(sum2).GetValue<int64_t>(),
+            899 * 900 / 2);
 }
 
 class MatmulTest : public ::testing::TestWithParam<std::tuple<int, int, int>> {
@@ -214,18 +220,18 @@ TEST_P(MatmulTest, MatmulWorks) {
   int k = std::get<1>(GetParam());
   int m = std::get<2>(GetParam());
   auto in1 = GenMatrix<Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic>>(
-      n, k, 10);
-  auto pts1 = GenMatrix(n, k, 10);
+      he_kit_.GetSchemaType(), n, k, 10);
+  auto pts1 = GenMatrix(he_kit_.GetSchemaType(), n, k, 10);
 
   auto in2 = GenMatrix<Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic>>(
-      k, m, 5);
-  auto pts2 = GenMatrix(k, m, 5);
+      he_kit_.GetSchemaType(), k, m, 5);
+  auto pts2 = GenMatrix(he_kit_.GetSchemaType(), k, m, 5);
 
   Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic> ans_tmp = in1 * in2;
   PMatrix ans(ans_tmp.rows(), ans_tmp.cols());
   for (int i = 0; i < ans_tmp.rows(); ++i) {
     for (int j = 0; j < ans_tmp.cols(); ++j) {
-      ans(i, j) = phe::Plaintext(ans_tmp(i, j));
+      ans(i, j) = phe::Plaintext(he_kit_.GetSchemaType(), ans_tmp(i, j));
     }
   }
 
@@ -241,15 +247,6 @@ TEST_P(MatmulTest, MatmulWorks) {
   // pt * ct
   auto cts2 = he_kit_.GetEncryptor()->Encrypt(pts2);
   cts3 = he_kit_.GetEvaluator()->MatMul(pts1, cts2);
-  AssertMatrixEq(ans, he_kit_.GetDecryptor()->Decrypt(cts3));
-
-  auto its1 = GenMatrix<DenseMatrix<int128_t>>(n, k, 10);
-  auto its2 = GenMatrix<DenseMatrix<int128_t>>(k, m, 5);
-  // ct * int128
-  cts3 = he_kit_.GetEvaluator()->MatMul(cts1, its2);
-  AssertMatrixEq(ans, he_kit_.GetDecryptor()->Decrypt(cts3));
-  // int128 * ct
-  cts3 = he_kit_.GetEvaluator()->MatMul(its1, cts2);
   AssertMatrixEq(ans, he_kit_.GetDecryptor()->Decrypt(cts3));
 }
 

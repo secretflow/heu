@@ -19,24 +19,24 @@
 #include "benchmark/benchmark.h"
 #include "fmt/format.h"
 
+#include "heu/library/phe/encoding/encoding.h"
 #include "heu/library/phe/phe.h"
 
 namespace heu::lib::phe::bench {
-
-using algorithms::MPInt;
 
 constexpr static long kTestSize = 1000;
 constexpr static size_t kKeySize = 2048;
 constexpr int kRandomScale = 8011;
 
 std::unique_ptr<HeKit> he;
-MPInt g_plain[kTestSize];
+Plaintext g_plain[kTestSize];
 Ciphertext ciphertext[kTestSize];
 
 void Initialize(SchemaType schema_type) {
   he = std::make_unique<HeKit>(schema_type, kKeySize);
+  auto edr = he->GetEncoder<PlainEncoder>(1);
   for (int i = 0; i < kTestSize; ++i) {
-    g_plain[i] = MPInt(i * kRandomScale);
+    g_plain[i] = edr.Encode(i * kRandomScale);
   }
 }
 
@@ -73,9 +73,10 @@ static void SubCipher(benchmark::State& state) {
 static void AddInt(benchmark::State& state) {
   // add (ciphertext + plaintext)
   const auto& evaluator = he->GetEvaluator();
+  auto edr = he->GetEncoder<PlainEncoder>(1);
   for (auto _ : state) {
     for (int i = 1; i < kTestSize; ++i) {
-      evaluator->AddInplace(&ciphertext[i], MPInt(i));
+      evaluator->AddInplace(&ciphertext[i], edr.Encode(i));
     }
   }
 }
@@ -83,9 +84,10 @@ static void AddInt(benchmark::State& state) {
 static void SubInt(benchmark::State& state) {
   // add (ciphertext - plaintext)
   const auto& evaluator = he->GetEvaluator();
+  auto edr = he->GetEncoder<PlainEncoder>(1);
   for (auto _ : state) {
     for (int i = 1; i < kTestSize; ++i) {
-      evaluator->SubInplace(&ciphertext[i], MPInt(i));
+      evaluator->SubInplace(&ciphertext[i], edr.Encode(i));
     }
   }
 }
@@ -93,9 +95,10 @@ static void SubInt(benchmark::State& state) {
 static void Multi(benchmark::State& state) {
   // mul (ciphertext * plaintext)
   const auto& evaluator = he->GetEvaluator();
+  auto edr = he->GetEncoder<PlainEncoder>(1);
   for (auto _ : state) {
     for (int i = 1; i < kTestSize; ++i) {
-      evaluator->MulInplace(&ciphertext[i], MPInt(i));
+      evaluator->MulInplace(&ciphertext[i], edr.Encode(i));
     }
   }
 }
@@ -111,10 +114,10 @@ static void Decrypt(benchmark::State& state) {
 }
 
 static void Run(SchemaType schema_type) {
-  printf("\n++++++++++++++   ");
-  printf("Running benchmark with schema_type = %s",
-         SchemaToString(schema_type).c_str());
-  printf("   ++++++++++++++\n");
+  fmt::print("\n++++++++++++++   ");
+  fmt::print("Running benchmark with schema_type = {}", schema_type);
+  fmt::print("   ++++++++++++++\n");
+
   Initialize(schema_type);
   BENCHMARK(Encrypt)->Unit(benchmark::kMillisecond);
   BENCHMARK(AddCipher)->Unit(benchmark::kMillisecond);

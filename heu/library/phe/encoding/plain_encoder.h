@@ -15,7 +15,7 @@
 #pragma once
 
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
+#include "heu/library/phe/base/plaintext.h"
 
 namespace heu::lib::phe {
 
@@ -44,32 +44,42 @@ template <> struct next_size<double> : tag<double> {};
 
 class PlainEncoder : public algorithms::HeObject<PlainEncoder> {
  public:
-  explicit PlainEncoder(int64_t scale = 1e6) : scale_(scale) {}
+  explicit PlainEncoder(SchemaType schema, int64_t scale = 1e6)
+      : schema_(schema), scale_(scale) {}
+
+  // deserialize from buffer.
+  static PlainEncoder LoadFrom(yasl::ByteContainerView in) {
+    return PlainEncoder(in);
+  }
 
   // Encode cleartext to plaintext
   template <typename T,
             typename std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
-  [[nodiscard]] algorithms::Plaintext Encode(T cleartext) const {
-    return algorithms::Plaintext(static_cast<next_size_t<T>>(cleartext) *
-                                 scale_);
+  [[nodiscard]] Plaintext Encode(T cleartext) const {
+    return Plaintext(schema_, static_cast<next_size_t<T>>(cleartext) * scale_);
   }
 
   // Decode plaintext to cleartext
   template <typename T>
   [[nodiscard]] typename std::enable_if_t<std::is_arithmetic_v<T>, T> Decode(
-      const algorithms::Plaintext &plaintext) const {
-    return static_cast<T>(plaintext.template As<next_size_t<T>>() / scale_);
+      const Plaintext &plaintext) const {
+    return static_cast<T>(plaintext.template GetValue<next_size_t<T>>() /
+                          scale_);
   }
 
-  MSGPACK_DEFINE(scale_);
+  MSGPACK_DEFINE(schema_, scale_);
 
   [[nodiscard]] int64_t GetScale() const { return scale_; }
+  SchemaType GetSchema() const { return schema_; }
 
   [[nodiscard]] std::string ToString() const override {
-    return fmt::format("PlainEncoder(scale={})", scale_);
+    return fmt::format("PlainEncoder(schema={}, scale={})", schema_, scale_);
   }
 
  private:
+  explicit PlainEncoder(yasl::ByteContainerView in) { Deserialize(in); }
+
+  SchemaType schema_;
   int_fast64_t scale_;
 };
 

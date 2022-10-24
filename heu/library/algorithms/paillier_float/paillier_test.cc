@@ -151,7 +151,8 @@ TEST_F(PaillierTest, CipherMultiplyDoubleWorks) {
   MPInt product;
   decryptor.Decrypt(c1, &product);
 
-  EXPECT_EQ(product.As<int64_t>(), static_cast<int64_t>(p1.As<double>() * p2));
+  EXPECT_EQ(product.Get<int64_t>(),
+            static_cast<int64_t>(p1.Get<double>() * p2));
 }
 
 class NegateInplaceTest : public ::testing::TestWithParam<int> {

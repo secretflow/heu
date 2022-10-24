@@ -14,10 +14,7 @@
 
 #pragma once
 
-#include "pybind11/pybind11.h"
-
-namespace heu::pylib {
-
-void PyBindEncoders(pybind11::module& m);
-
-}  // namespace heu::pylib
+#include "heu/pylib/phe_binding/py_batch_encoder.h"
+#include "heu/pylib/phe_binding/py_bigint_encoder.h"
+#include "heu/pylib/phe_binding/py_float_encoder.h"
+#include "heu/pylib/phe_binding/py_integer_encoder.h"

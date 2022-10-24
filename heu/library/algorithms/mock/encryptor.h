@@ -17,6 +17,7 @@
 #include <utility>
 
 #include "heu/library/algorithms/mock/ciphertext.h"
+#include "heu/library/algorithms/mock/plaintext.h"
 #include "heu/library/algorithms/mock/public_key.h"
 
 namespace heu::lib::algorithms::mock {
@@ -27,10 +28,10 @@ class Encryptor {
 
   [[nodiscard]] Ciphertext EncryptZero() const;
 
-  [[nodiscard]] Ciphertext Encrypt(const MPInt& m) const;
+  [[nodiscard]] Ciphertext Encrypt(const Plaintext& m) const;
 
   [[nodiscard]] std::pair<Ciphertext, std::string> EncryptWithAudit(
-      const MPInt& m) const;
+      const Plaintext& m) const;
 
   [[nodiscard]] const PublicKey& public_key() const { return pk_; }
 

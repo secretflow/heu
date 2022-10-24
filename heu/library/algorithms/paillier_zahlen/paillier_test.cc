@@ -175,7 +175,7 @@ TEST_F(ZPaillierTest, PlaintextEvaluate2) {
   res = evaluator_->Add(ct0, MPInt(-1));
   decryptor_->Decrypt(res, &plain);
   // note: MPInt itself does not overflow, but AsInt64() overflows
-  EXPECT_EQ(plain.As<int64_t>(), std::numeric_limits<int64_t>::max());
+  EXPECT_EQ(plain.Get<int64_t>(), std::numeric_limits<int64_t>::max());
 }
 
 class BigNumberTest : public ::testing::TestWithParam<int64_t> {
@@ -230,7 +230,7 @@ TEST_P(BigNumberTest, SubTest) {
   evaluator.SubInplace(&x_encrypted, r_mp);
   MPInt raw;
   decryptor.Decrypt(x_encrypted, &raw);
-  int64_t share_b = raw.As<int64_t>();
+  int64_t share_b = raw.Get<int64_t>();
 
   EXPECT_EQ(share_a + share_b, x);
 }

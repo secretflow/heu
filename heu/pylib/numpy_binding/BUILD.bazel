@@ -12,7 +12,7 @@ pybind_library(
         ":outfeed",
         ":py_slicer",
         "//heu/library/numpy",
-        "//heu/pylib/common:py_encoders",
+        "//heu/pylib/phe_binding:py_encoders",
     ],
 )
 
@@ -21,8 +21,8 @@ pybind_library(
     hdrs = ["infeed.h"],
     deps = [
         "//heu/library/numpy",
-        "//heu/pylib/common:py_encoders",
         "//heu/pylib/common:traits",
+        "//heu/pylib/phe_binding:py_encoders",
     ],
 )
 
@@ -31,8 +31,8 @@ pybind_library(
     hdrs = ["outfeed.h"],
     deps = [
         "//heu/library/numpy",
-        "//heu/pylib/common:py_encoders",
         "//heu/pylib/common:traits",
+        "//heu/pylib/phe_binding:py_encoders",
     ],
 )
 

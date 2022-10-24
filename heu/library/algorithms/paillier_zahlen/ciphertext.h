@@ -19,6 +19,8 @@
 
 namespace heu::lib::algorithms::paillier_z {
 
+using Plaintext = MPInt;
+
 class Ciphertext : public HeObject<Ciphertext> {
  public:
   Ciphertext() = default;

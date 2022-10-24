@@ -19,6 +19,7 @@ yasl_cc_library(
         "evaluator.h",
         "key_generator.h",
         "mock.h",
+        "plaintext.h",
         "public_key.h",
         "secret_key.h",
     ],

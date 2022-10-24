@@ -58,7 +58,7 @@ class MPInt {
   explicit MPInt(int128_t x);
   explicit MPInt(uint128_t x);
   explicit MPInt(double x);
-  MPInt(const std::string &num, int radix);
+
   MPInt(MPInt &&other) noexcept;
   MPInt(const MPInt &other);
 
@@ -95,15 +95,20 @@ class MPInt {
   MPInt operator<<(size_t operand2) const;
   MPInt operator>>(size_t operand2) const;
   MPInt operator-() const;
+  MPInt operator&(const MPInt &operand2) const;
+  MPInt operator|(const MPInt &operand2) const;
+  MPInt operator^(const MPInt &operand2) const;
 
-  MPInt operator-=(const MPInt &operand2);
   MPInt operator+=(const MPInt &operand2);
+  MPInt operator-=(const MPInt &operand2);
   MPInt operator*=(const MPInt &operand2);
   MPInt operator/=(const MPInt &operand2);
   MPInt operator%=(const MPInt &operand2);
   MPInt operator<<=(size_t operand2);
   MPInt operator>>=(size_t operand2);
+  MPInt operator&=(const MPInt &operand2);
   MPInt operator|=(const MPInt &operand2);
+  MPInt operator^=(const MPInt &operand2);
 
   friend std::ostream &operator<<(std::ostream &os, const MPInt &an_int);
 
@@ -133,7 +138,12 @@ class MPInt {
   [[nodiscard]] MPInt Abs() const;
 
   template <typename T>
-  [[nodiscard]] T As() const;
+  [[nodiscard]] T Get() const;
+
+  template <typename T>
+  void Set(T value);
+
+  void Set(const std::string &num, int radix);
 
   // compare a to b
   // Returns:
@@ -258,10 +268,6 @@ class MPInt {
 
   friend class MontgomerySpace;
 };
-
-// 目前所有算法 Plaintext 等价于 MPInt，所以添加一个别名到此处
-// Cleartext --(encoding)--> Plaintext --(encrypt)--> Ciphertext
-using Plaintext = MPInt;
 
 }  // namespace heu::lib::algorithms
 

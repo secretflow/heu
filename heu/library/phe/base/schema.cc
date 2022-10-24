@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/library/phe/schema.h"
+#include "heu/library/phe/base/schema.h"
 
 #include "absl/strings/ascii.h"
 
 namespace heu::lib::phe {
 
 static std::map<SchemaType, std::vector<std::string>> kSchemaTypeToString = {
-    {SchemaType::None, {"none", "mock", "plain"}},
+    {SchemaType::Mock, {"none", "mock", "plain"}},
     {SchemaType::ZPaillier,
      {"z-paillier", "zpaillier", "paillier", "paillier_z", "paillier_zahlen"}},
     {SchemaType::FPaillier,
@@ -49,6 +49,10 @@ SchemaType ParseSchemaType(const std::string& schema_string) {
 
 std::string SchemaToString(SchemaType schema_type) {
   return kSchemaTypeToString[schema_type][0];
+}
+
+std::ostream& operator<<(std::ostream& os, SchemaType st) {
+  return os << SchemaToString(st);
 }
 
 }  // namespace heu::lib::phe

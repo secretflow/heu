@@ -17,7 +17,7 @@ This project consists of two parts:
 
 HE Library (currently implemented): This project can be used as a high-performance and complete homomorphic encryption library, which integrates almost all homomorphic encryption algorithms in the industry. At the same time, HEU encapsulates each algorithm and provides a uniform interface. You can switch between different HE algorithms at any time without modifying business code.
 
-HE device (in work): As a component of Secretflow, HEU abstracts the homomorphic encryption algorithms into a programmable device, making it easy for users to flexibly build applications using the homomorphic encryption technology without professional knowledge. HEU (device) aims to build a complete computing solution through HE, that is, based on HE, any type of computing can be completed. Compared with PPU, HEU's computation is purely local without any network communication, so HEU and PPU are complementary
+HE device (in work): Get a component of Secretflow, HEU abstracts the homomorphic encryption algorithms into a programmable device, making it easy for users to flexibly build applications using the homomorphic encryption technology without professional knowledge. HEU (device) aims to build a complete computing solution through HE, that is, based on HE, any type of computing can be completed. Compared with PPU, HEU's computation is purely local without any network communication, so HEU and PPU are complementary
 
 Depending on the computing power, HEU has 4 working modes:
 

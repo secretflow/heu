@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <experimental/type_traits>
 #include <utility>
 
 #include "pybind11/pybind11.h"
@@ -35,11 +36,15 @@ class PyUtils {
 
   // py::int_ -> phe::Plaintext
   // no bit size limit
-  static heu::lib::phe::Plaintext PyIntToPlaintext(const pybind11::int_& p);
+  static heu::lib::phe::Plaintext PyIntToPlaintext(lib::phe::SchemaType schema,
+                                                   const pybind11::int_& p);
 
   // phe::Plaintext -> py::int_
   // no bit size limit
   static pybind11::int_ PlaintextToPyInt(const heu::lib::phe::Plaintext& mp);
+
+  template <typename T>
+  using MEMBER_FUNC_TYPE = decltype(T::LoadFrom(yasl::ByteContainerView()));
 
   template <typename T>
   static decltype(auto) PickleSupport() {
@@ -49,9 +54,14 @@ class PyUtils {
           return pybind11::bytes(buffer.template data<char>(), buffer.size());
         },
         [](const pybind11::bytes& buffer) {  // __setstate__
-          T obj;
-          obj.Deserialize(static_cast<std::string_view>(buffer));
-          return obj;
+          if constexpr (std::experimental::is_detected_v<MEMBER_FUNC_TYPE, T>) {
+            // T has a static LoadFrom() function
+            return T::LoadFrom(static_cast<std::string_view>(buffer));
+          } else {
+            T obj;
+            obj.Deserialize(static_cast<std::string_view>(buffer));
+            return obj;
+          }
         });
   }
 

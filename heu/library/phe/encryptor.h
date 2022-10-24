@@ -17,8 +17,9 @@
 #include <utility>
 #include <variant>
 
-#include "heu/library/phe/schema.h"
-#include "heu/library/phe/serializable_types.h"
+#include "heu/library/phe/base/plaintext.h"
+#include "heu/library/phe/base/schema.h"
+#include "heu/library/phe/base/serializable_types.h"
 
 namespace heu::lib::phe {
 
@@ -26,8 +27,8 @@ typedef std::variant<HE_NAMESPACE_LIST(Encryptor)> EncryptorType;
 
 class Encryptor {
  public:
-  explicit Encryptor(EncryptorType encryptor_ptr)
-      : encryptor_ptr_(std::move(encryptor_ptr)) {}
+  explicit Encryptor(SchemaType schema_type, EncryptorType encryptor_ptr)
+      : schema_type_(schema_type), encryptor_ptr_(std::move(encryptor_ptr)) {}
 
   // Get Enc(0)
   Ciphertext EncryptZero() const;
@@ -35,7 +36,10 @@ class Encryptor {
   std::pair<Ciphertext, std::string> EncryptWithAudit(
       const Plaintext& clazz) const;
 
+  SchemaType GetSchemaType() const;
+
  private:
+  SchemaType schema_type_;
   EncryptorType encryptor_ptr_;
 };
 

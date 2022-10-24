@@ -12,14 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/library/phe/serializable_types.h"
+#include "heu/library/phe/base/serializable_types.h"
+
+#include "heu/library/phe/base/variant_helper.h"
 
 namespace heu::lib::phe {
 
 #define HE_EMPLACE_INSTANCE(ns, clazz) (ns::clazz())
 #define DEFINITION_VTABLE(clazz)                                             \
   template <>                                                                \
-  const std::variant<HE_NAMESPACE_LIST(clazz)>                               \
+  const std::variant<std::monostate, HE_NAMESPACE_LIST(clazz)>               \
       SerializableVariant<HE_NAMESPACE_LIST(clazz)>::schema2ns_vtable_[] = { \
           HE_FOR_EACH(HE_EMPLACE_INSTANCE, clazz)}
 
@@ -28,6 +30,11 @@ DEFINITION_VTABLE(Ciphertext);
 DEFINITION_VTABLE(PublicKey);
 DEFINITION_VTABLE(SecretKey);
 
+template <>
+const std::variant<std::monostate, HE_PLAINTEXT_TYPES>
+    SerializableVariant<HE_PLAINTEXT_TYPES>::schema2ns_vtable_[] = {
+        HE_FOR_EACH(HE_EMPLACE_INSTANCE, Plaintext)};
+
 template <typename... Types>
 SerializableVariant<Types...>::SerializableVariant(SchemaType schema_type) {
   var_ = schema2ns_vtable_[static_cast<int>(schema_type)];
@@ -35,8 +42,9 @@ SerializableVariant<Types...>::SerializableVariant(SchemaType schema_type) {
 
 template <typename... Types>
 yasl::Buffer SerializableVariant<Types...>::Serialize() const {
-  yasl::Buffer payload =
-      visit([](const auto &clazz) { return clazz.Serialize(); });
+  yasl::Buffer payload = Visit([](const auto &clazz) -> yasl::Buffer {
+    FOR_EACH_TYPE(clazz) { return clazz.Serialize(); }
+  });
   size_t idx = var_.index();
 
   // Append idx to the end of payload to reduce memory copying
@@ -44,6 +52,35 @@ yasl::Buffer SerializableVariant<Types...>::Serialize() const {
   payload.resize(static_cast<int64_t>(payload_sz + sizeof(idx)));
   *reinterpret_cast<size_t *>(payload.data<uint8_t>() + payload_sz) = idx;
   return payload;
+}
+
+#define EMPLACE_CASE(n)                         \
+  case n:                                       \
+    if constexpr (max_idx >= (n)) {             \
+      var_.template emplace<n>();               \
+    } else {                                    \
+      YASL_THROW("Bug: illegal variant index"); \
+    }                                           \
+    break
+
+template <typename... Types>
+void SerializableVariant<Types...>::EmplaceInstance(size_t idx) {
+  // total types: Types + monostate
+  constexpr size_t max_idx = sizeof...(Types);
+  static_assert(max_idx <= 6,
+                "For developer: please add more switch-case branches");
+
+  switch (idx) {  // O(n)
+    EMPLACE_CASE(0);
+    EMPLACE_CASE(1);
+    EMPLACE_CASE(2);
+    EMPLACE_CASE(3);
+    EMPLACE_CASE(4);
+    EMPLACE_CASE(5);
+    EMPLACE_CASE(6);
+    default:
+      YASL_THROW("Bug: please contact developers to fix problem");
+  }
 }
 
 template <typename... Types>
@@ -54,17 +91,29 @@ void SerializableVariant<Types...>::Deserialize(yasl::ByteContainerView in) {
       *reinterpret_cast<const size_t *>(in.data() + in.size() - sizeof(size_t));
   yasl::ByteContainerView payload(in.data(), in.size() - sizeof(size_t));
 
-  var_ = schema2ns_vtable_[idx];
-  visit([&](auto &clazz) { clazz.Deserialize(payload); });
+  EmplaceInstance(idx);
+  Visit([&](auto &clazz) { FOR_EACH_TYPE(clazz) clazz.Deserialize(payload); });
+}
+
+template <typename... Types>
+bool SerializableVariant<Types...>::IsCompatible(SchemaType schema_type) const {
+  return var_.index() ==
+         schema2ns_vtable_[static_cast<int>(schema_type)].index();
 }
 
 template <typename... Types>
 std::string SerializableVariant<Types...>::ToString() const {
-  return visit([](const auto &clazz) { return clazz.ToString(); });
+  return Visit(Overloaded{
+      // the std::monostate is also stringable, so we don't use FOR_EACH_TYPE
+      [](const std::monostate &) {
+        return std::string("<uninitialized variable (no schema info)>");
+      },
+      [](const auto &clazz) -> std::string { return clazz.ToString(); }});
 }
 
 template class SerializableVariant<HE_NAMESPACE_LIST(SecretKey)>;
 template class SerializableVariant<HE_NAMESPACE_LIST(PublicKey)>;
 template class SerializableVariant<HE_NAMESPACE_LIST(Ciphertext)>;
+template class SerializableVariant<HE_PLAINTEXT_TYPES>;
 
 }  // namespace heu::lib::phe

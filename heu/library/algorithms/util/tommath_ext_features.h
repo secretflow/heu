@@ -17,14 +17,9 @@
 #include "tommath.h"
 #include "yasl/base/buffer.h"
 
-namespace heu::lib::algorithms {
+#include "heu/library/algorithms/util/endian.h"
 
-// borrow from c++20 stl
-enum class Endian {
-  little = __ORDER_LITTLE_ENDIAN__,
-  big = __ORDER_BIG_ENDIAN__,
-  native = __BYTE_ORDER__,  // alias for little or big
-};
+namespace heu::lib::algorithms {
 
 // Reference: https://eprint.iacr.org/2003/186.pdf
 // libtommath style

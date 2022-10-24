@@ -12,22 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/pylib/common/py_encoders.h"
+#pragma once
 
-namespace heu::pylib {
+namespace heu::lib::algorithms {
 
-std::string PyIntegerEncoder::ToString() const {
-  return fmt::format("IntegerEncoder(scale={})", encoder_.GetScale());
-}
+// borrow from c++20 stl
+enum class Endian {
+  little = __ORDER_LITTLE_ENDIAN__,
+  big = __ORDER_BIG_ENDIAN__,
+  native = __BYTE_ORDER__,  // alias for little or big
+};
 
-std::string PyFloatEncoder::ToString() const {
-  return fmt::format("FloatEncoder(scale={})", encoder_.GetScale());
-}
-
-std::string PyBigintEncoder::ToString() const {
-  return fmt::format("BigintEncoder()");
-}
-
-std::string PyBatchEncoder::ToString() const { return encoder_.ToString(); }
-
-}  // namespace heu::pylib
+}  // namespace heu::lib::algorithms

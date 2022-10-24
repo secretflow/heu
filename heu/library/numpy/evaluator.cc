@@ -129,8 +129,6 @@ IMPLEMENT_DENSE_OP(Sub, PMatrix, phe::Plaintext, phe::Plaintext);
 IMPLEMENT_DENSE_OP(Mul, CMatrix, phe::Ciphertext, phe::Plaintext);
 IMPLEMENT_DENSE_OP(Mul, CMatrix, phe::Plaintext, phe::Ciphertext);
 IMPLEMENT_DENSE_OP(Mul, PMatrix, phe::Plaintext, phe::Plaintext);
-IMPLEMENT_DENSE_OP(Mul, CMatrix, phe::Ciphertext, int128_t);
-IMPLEMENT_DENSE_OP(Mul, CMatrix, int128_t, phe::Ciphertext);
 
 template <typename RET, typename M1, typename M2>
 RET Evaluator::DoMatMul(const M1& mx, const M2& my, int64_t out_dim) const {
@@ -195,14 +193,6 @@ auto Evaluator::MatMul(const DenseMatrix<TX>& x, const DenseMatrix<TY>& y) const
 template CMatrix Evaluator::MatMul(const CMatrix& x, const PMatrix& y) const;
 template CMatrix Evaluator::MatMul(const PMatrix& x, const CMatrix& y) const;
 template PMatrix Evaluator::MatMul(const PMatrix& x, const PMatrix& y) const;
-template CMatrix Evaluator::MatMul(const CMatrix& x,
-                                   const DenseMatrix<int128_t>& y) const;
-template CMatrix Evaluator::MatMul(const DenseMatrix<int128_t>& x,
-                                   const CMatrix& y) const;
-template CMatrix Evaluator::MatMul(const CMatrix& x,
-                                   const DenseMatrix<int64_t>& y) const;
-template CMatrix Evaluator::MatMul(const DenseMatrix<int64_t>& x,
-                                   const CMatrix& y) const;
 
 template <typename T>
 T Evaluator::Sum(const DenseMatrix<T>& x) const {

@@ -29,10 +29,11 @@ PMatrix Random::RandInt(const phe::Plaintext& min, const phe::Plaintext& max,
   return res;
 }
 
-PMatrix Random::RandBits(size_t bits, const Shape& size) {
+PMatrix Random::RandBits(phe::SchemaType schema, size_t bits,
+                         const Shape& size) {
   PMatrix res(size);
   res.ForEach([&](int64_t, int64_t, phe::Plaintext* item) {
-    phe::Plaintext::RandomExactBits(bits, item);
+    phe::Plaintext::RandomExactBits(schema, bits, item);
   });
   return res;
 }
