@@ -144,7 +144,7 @@ impl<'a> CxxEvaluator<'a> {
     }
 }
 
-#[cxx::bridge(namespace = "heu::tfhe")]
+#[cxx::bridge(namespace = "heu::expt::tfhe")]
 mod ffi {
     pub(crate) struct TFheKeys {
         public_key: Box<PublicKey>,

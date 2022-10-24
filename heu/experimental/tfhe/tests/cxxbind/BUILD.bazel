@@ -10,7 +10,7 @@ cc_test(
     size = "large",
     srcs = ["basic.cc"],
     deps = [
-        "//heu/tfhe/src:cxx_torus",
+        "//heu/experimental/tfhe/src:cxx_torus",
         "@com_google_googletest//:gtest_main",
     ],
 )
