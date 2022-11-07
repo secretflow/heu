@@ -8,18 +8,61 @@ pybind_library(
     srcs = ["bind_phe.cc"],
     hdrs = ["bind_phe.h"],
     deps = [
-        ":encoders_binding",
+        ":py_encoders",
         "//heu/library/phe",
         "//heu/pylib/common:py_utils",
     ],
 )
 
 pybind_library(
-    name = "encoders_binding",
-    srcs = ["bind_encoder.cc"],
-    hdrs = ["bind_encoder.h"],
+    name = "py_encoders",
+    hdrs = [
+        "py_encoders.h",
+    ],
     deps = [
-        "//heu/pylib/common:py_encoders",
+        ":py_batch_encoder",
+        ":py_bigint_encoder",
+        ":py_float_encoder",
+        ":py_integer_encoder",
+    ],
+)
+
+pybind_library(
+    name = "py_batch_encoder",
+    srcs = ["py_batch_encoder.cc"],
+    hdrs = ["py_batch_encoder.h"],
+    deps = [
+        "//heu/library/phe/encoding",
+        "//heu/pylib/common:py_utils",
+    ],
+)
+
+pybind_library(
+    name = "py_bigint_encoder",
+    srcs = ["py_bigint_encoder.cc"],
+    hdrs = ["py_bigint_encoder.h"],
+    deps = [
+        "//heu/library/phe/encoding",
+        "//heu/pylib/common:py_utils",
+    ],
+)
+
+pybind_library(
+    name = "py_float_encoder",
+    srcs = ["py_float_encoder.cc"],
+    hdrs = ["py_float_encoder.h"],
+    deps = [
+        "//heu/library/phe/encoding",
+        "//heu/pylib/common:py_utils",
+    ],
+)
+
+pybind_library(
+    name = "py_integer_encoder",
+    srcs = ["py_integer_encoder.cc"],
+    hdrs = ["py_integer_encoder.h"],
+    deps = [
+        "//heu/library/phe/encoding",
         "//heu/pylib/common:py_utils",
     ],
 )

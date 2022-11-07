@@ -23,19 +23,23 @@ Ciphertext Encryptor::EncryptZero() const {
 }
 
 Ciphertext Encryptor::Encrypt(const Plaintext& m) const {
-  return std::visit(
-      [&](const auto& clazz) { return Ciphertext(clazz.Encrypt(m)); },
-      encryptor_ptr_);
+  return std::visit(HE_DISPATCH(HE_METHOD_RET_1, Encryptor, Ciphertext, Encrypt,
+                                Plaintext, m),
+                    encryptor_ptr_);
 }
 
 std::pair<Ciphertext, std::string> Encryptor::EncryptWithAudit(
     const Plaintext& m) const {
-  return std::visit(
-      [&](const auto& clazz) -> std::pair<Ciphertext, std::string> {
-        auto ca = clazz.EncryptWithAudit(m);
-        return {Ciphertext(std::move(ca.first)), std::move(ca.second)};
-      },
-      encryptor_ptr_);
+#define FUNC(ns)                                                         \
+  [&](const ns::Encryptor& eval) -> std::pair<Ciphertext, std::string> { \
+    auto ca = eval.EncryptWithAudit(m.As<ns::Plaintext>());              \
+    return {Ciphertext(std::move(ca.first)), std::move(ca.second)};      \
+  }
+
+  return std::visit(HE_DISPATCH(FUNC), encryptor_ptr_);
+#undef FUNC
 }
+
+SchemaType Encryptor::GetSchemaType() const { return schema_type_; }
 
 }  // namespace heu::lib::phe

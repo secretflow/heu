@@ -100,12 +100,12 @@ void Codec::Decode(const EncodedNumber& in, double* x) const {
     MPInt::Pow(kBaseCache, in.exponent, &factor);
     MPInt::Mul(mantissa, factor, &value);
 
-    *x = value.As<double>();
+    *x = value.Get<double>();
   } else {
     MPInt divisor;
     MPInt::Pow(kBaseCache, -in.exponent, &divisor);
 
-    *x = mantissa.As<double>() / divisor.As<double>();
+    *x = mantissa.Get<double>() / divisor.Get<double>();
   }
 }
 

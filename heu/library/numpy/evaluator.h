@@ -40,11 +40,9 @@ class Evaluator : public phe::Evaluator {
   CMatrix Mul(const CMatrix& x, const PMatrix& y) const;
   CMatrix Mul(const PMatrix& x, const CMatrix& y) const;
   PMatrix Mul(const PMatrix& x, const PMatrix& y) const;
-  CMatrix Mul(const CMatrix& x, const DenseMatrix<int128_t>& y) const;
-  CMatrix Mul(const DenseMatrix<int128_t>& x, const CMatrix& y) const;
 
   // dense matrix mul
-  // supported types: P@P, P@C, C@P, C@int64/128, int64/128@C
+  // supported types: P@P, P@C, C@P
   // not supported: C@C
   template <typename TX, typename TY>
   auto MatMul(const DenseMatrix<TX>& x, const DenseMatrix<TY>& y) const

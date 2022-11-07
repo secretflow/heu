@@ -47,54 +47,58 @@ class BasicCase(unittest.TestCase):
             170141183460469231731687303715884105727,
         ]
         for c in case:
-            pt = phe.Plaintext(c)
+            pt = phe.Plaintext(self.ctx.get_schema(), c)
             self.assertEqual(str(pt), str(c))
             self.assertEqual(int(pt), c)
-            pt *= phe.Plaintext(123456)
+            pt *= phe.Plaintext(self.ctx.get_schema(), 123456)
             self.assertEqual(int(pt), c * 123456)
 
         # to_bytes
         max_bytes = 16
         for c in case:
             self.assertEqual(
-                phe.Plaintext(c).to_bytes(max_bytes, "big"),
+                phe.Plaintext(self.ctx.get_schema(), c).to_bytes(max_bytes, "big"),
                 c.to_bytes(max_bytes, "big", signed=True),
             )
             self.assertEqual(
-                phe.Plaintext(c).to_bytes(max_bytes, "little"),
+                phe.Plaintext(self.ctx.get_schema(), c).to_bytes(
+                    max_bytes, "little"
+                ),
                 c.to_bytes(max_bytes, "little", signed=True),
             )
 
         # below are big number cases
         case = [random.getrandbits(2**i) for i in range(4, 14) for _ in range(100)]
         for c in case:
-            pt = phe.Plaintext(c)
+            pt = phe.Plaintext(self.ctx.get_schema(), c)
             self.assertEqual(str(pt), str(c))
             self.assertEqual(int(pt), c)
             self.assertTrue(pt == pt)
             self.assertTrue(pt <= pt)
             self.assertTrue(pt >= pt)
-            pt *= phe.Plaintext(123456789)
+            pt *= phe.Plaintext(self.ctx.get_schema(), 123456789)
             self.assertEqual(int(pt), c * 123456789)
 
         for c in case:
-            pt = phe.Plaintext(-c)
+            pt = phe.Plaintext(self.ctx.get_schema(), -c)
             self.assertEqual(str(pt), "-" + str(c))
             self.assertEqual(int(pt), -c)
             self.assertTrue(pt == pt)
             self.assertTrue(pt <= pt)
             self.assertTrue(pt >= pt)
-            self.assertTrue(pt < phe.Plaintext(0))
+            self.assertTrue(pt < phe.Plaintext(self.ctx.get_schema(), 0))
 
         max_bytes = 2**14 // 8
         for c in case:
             self.assertEqual(
-                phe.Plaintext(c).to_bytes(max_bytes, "big"),
+                phe.Plaintext(self.ctx.get_schema(), c).to_bytes(max_bytes, "big"),
                 c.to_bytes(max_bytes, "big", signed=True),
                 f"c is {c}",
             )
             self.assertEqual(
-                phe.Plaintext(c).to_bytes(max_bytes, "little"),
+                phe.Plaintext(self.ctx.get_schema(), c).to_bytes(
+                    max_bytes, "little"
+                ),
                 c.to_bytes(max_bytes, "little", signed=True),
                 f"c is {c}",
             )
@@ -111,7 +115,7 @@ class BasicCase(unittest.TestCase):
         )
         self.assertEqual(self.decryptor.decrypt_raw(self.evaluator.negate(ct1)), -123)
 
-        pt1 = phe.Plaintext(100)
+        pt1 = phe.Plaintext(self.ctx.get_schema(), 100)
         self.assertEqual(
             self.decryptor.decrypt_raw(self.evaluator.add(ct1, pt1)), 123 + 100
         )
@@ -121,22 +125,24 @@ class BasicCase(unittest.TestCase):
 
         # max case
         max_p = int(self.ctx.public_key().plaintext_bound()) - 1
-        self.assertGreater(max_p, 2**128)  # max_p is much much larger than int128_t
+        self.assertGreater(max_p, 2**128)  # max_p is much, much larger than int128_t
         max_ct = self.encryptor.encrypt_raw(max_p)
-        max_ct = self.evaluator.sub(max_ct, phe.Plaintext(1))
+        max_ct = self.evaluator.sub(
+            max_ct, phe.Plaintext(self.ctx.get_schema(), 1)
+        )
         self.assertEqual(self.decryptor.decrypt_raw(max_ct), max_p - 1)
 
     def test_add_inplace(self):
         sum = self.encryptor.encrypt_raw(0)
         for i in range(100):
-            self.evaluator.add_inplace(
-                sum, self.encryptor.encrypt_raw(i)
-            )  # Ciphertext + Ciphertext
-        self.evaluator.add_inplace(sum, phe.Plaintext(100))  # Ciphertext + Plaintext
+            # Ciphertext + Ciphertext
+            self.evaluator.add_inplace(sum, self.encryptor.encrypt_raw(i))
+        # Ciphertext + Plaintext
+        self.evaluator.add_inplace(sum, phe.Plaintext(self.ctx.get_schema(), 100))
         self.assertEqual(self.decryptor.decrypt_raw(sum), 5050)
 
     def test_encoding(self):
-        edr = phe.IntegerEncoder()
+        edr = phe.IntegerEncoder(self.ctx.get_schema())
         self.assertTrue("IntegerEncoder" in str(edr))  # test ToString()
 
         # int case
@@ -158,7 +164,7 @@ class BasicCase(unittest.TestCase):
         self.assertEqual(edr.decode(self.decryptor.decrypt(cta[0])), 123456)
 
         # float case
-        edr = phe.FloatEncoder()
+        edr = phe.FloatEncoder(self.ctx.get_schema())
         self.assertTrue("FloatEncoder" in str(edr))
         pt1 = edr.encode(123456.789)
         pt2 = edr.encode(987654.321)
@@ -171,7 +177,7 @@ class BasicCase(unittest.TestCase):
         )
 
         # int128 case
-        edr = phe.IntegerEncoder(1)
+        edr = phe.IntegerEncoder(self.ctx.get_schema(), 1)
         self.assertTrue("IntegerEncoder" in str(edr))
         n1 = 47509577600241629199431517033180053701
         pt1 = edr.encode(n1)
@@ -188,7 +194,7 @@ class BasicCase(unittest.TestCase):
         )
 
         # bigint case
-        edr = phe.BigintEncoder()
+        edr = phe.BigintEncoder(self.ctx.get_schema())
         self.assertTrue("BigintEncoder" in str(edr))
 
         n1 = 12345
@@ -218,7 +224,7 @@ class BasicCase(unittest.TestCase):
         )
 
     def test_batch_encoding(self):
-        bc = phe.BatchEncoder()
+        bc = self.ctx.batch_encoder()
         pt1 = bc.encode(123, 456)
         pt2 = bc.encode(789, 101112)
 

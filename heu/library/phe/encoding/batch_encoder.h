@@ -18,6 +18,7 @@
 
 #include "heu/library/algorithms/util/he_object.h"
 #include "heu/library/algorithms/util/mp_int.h"
+#include "heu/library/phe/base/plaintext.h"
 
 namespace heu::lib::phe {
 
@@ -26,8 +27,12 @@ class BatchEncoder : public algorithms::HeObject<BatchEncoder> {
   // During batch encoding, if the lower digits overflow, the upper digits will
   // be affected. The default parameter 32 bit padding supports approximately 2
   // billion addition operations
-  explicit BatchEncoder(size_t batch_encoding_padding = 32)
-      : encoding_padding_(batch_encoding_padding) {}
+  explicit BatchEncoder(SchemaType schema, size_t batch_encoding_padding = 32)
+      : schema_(schema), encoding_padding_(batch_encoding_padding) {}
+
+  static BatchEncoder LoadFrom(yasl::ByteContainerView buf) {
+    return BatchEncoder(buf);
+  }
 
   // todo: When the project is migrated to C++20, it can be replaced with
   // concept.
@@ -43,7 +48,7 @@ class BatchEncoder : public algorithms::HeObject<BatchEncoder> {
   template <typename T,
             typename std::enable_if_t<
                 std::is_signed_v<T> && std::is_integral_v<T>, int> = 0>
-  algorithms::Plaintext Encode(T first, T second) const {
+  Plaintext Encode(T first, T second) const {
     typedef typename std::make_unsigned<T>::type unsigned_t;
     return Encode<unsigned_t>(*reinterpret_cast<unsigned_t *>(&first),
                               *reinterpret_cast<unsigned_t *>(&second));
@@ -53,10 +58,10 @@ class BatchEncoder : public algorithms::HeObject<BatchEncoder> {
   template <typename T,
             typename std::enable_if_t<
                 std::is_unsigned_v<T> && std::is_integral_v<T>, int> = 0>
-  algorithms::Plaintext Encode(T first, T second) const {
-    algorithms::Plaintext pt(second);
+  Plaintext Encode(T first, T second) const {
+    Plaintext pt(schema_, second);
     pt <<= sizeof(second) * CHAR_BIT + encoding_padding_;
-    pt |= algorithms::MPInt(first);
+    pt |= Plaintext(schema_, first);
     return pt;
   }
 
@@ -64,21 +69,28 @@ class BatchEncoder : public algorithms::HeObject<BatchEncoder> {
   // return 0 if index is greater or equal to the number encoded in plaintext
   template <typename T, size_t index>
   typename std::enable_if_t<std::is_integral_v<T>, T> Decode(
-      const algorithms::Plaintext &plaintext) const {
+      const Plaintext &plaintext) const {
     static_assert(index < 2,
                   "You cannot get more than two elements from one plaintext");
-    algorithms::Plaintext pt =
+    Plaintext pt =
         plaintext >> index * (sizeof(T) * CHAR_BIT + encoding_padding_);
-    return pt.As<T>();
+    return pt.template GetValue<T>();
   }
 
-  MSGPACK_DEFINE(encoding_padding_);
+  MSGPACK_DEFINE(schema_, encoding_padding_);
+
+  SchemaType GetSchema() const { return schema_; }
+  size_t GetPaddingSize() const { return encoding_padding_; }
+
   [[nodiscard]] std::string ToString() const override {
-    return fmt::format("BatchEncoder(padding={}, max_batch=2)",
-                       encoding_padding_);
+    return fmt::format("BatchEncoder(schema={}, padding={}, max_batch=2)",
+                       schema_, encoding_padding_);
   }
 
  private:
+  explicit BatchEncoder(yasl::ByteContainerView buf) { Deserialize(buf); }
+
+  SchemaType schema_;
   size_t encoding_padding_;
 };
 

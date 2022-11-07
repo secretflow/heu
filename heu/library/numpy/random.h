@@ -23,7 +23,8 @@ class Random {
   static PMatrix RandInt(const phe::Plaintext &min, const phe::Plaintext &max,
                          const Shape &size);
 
-  static PMatrix RandBits(size_t bits, const Shape &size);
+  static PMatrix RandBits(phe::SchemaType schema, size_t bits,
+                          const Shape &size);
 };
 
 }  // namespace heu::lib::numpy

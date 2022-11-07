@@ -20,13 +20,3 @@ pybind_library(
         "@yasl//yasl/base:int128",
     ],
 )
-
-pybind_library(
-    name = "py_encoders",
-    srcs = ["py_encoders.cc"],
-    hdrs = ["py_encoders.h"],
-    deps = [
-        ":py_utils",
-        "//heu/library/phe/encoding",
-    ],
-)

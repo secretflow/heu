@@ -21,10 +21,10 @@
 #include "heu/library/numpy/numpy.h"
 #include "heu/library/numpy/random.h"
 #include "heu/library/numpy/toolbox.h"
-#include "heu/pylib/common/py_encoders.h"
 #include "heu/pylib/numpy_binding/infeed.h"
 #include "heu/pylib/numpy_binding/outfeed.h"
 #include "heu/pylib/numpy_binding/py_slicer.h"
+#include "heu/pylib/phe_binding//py_encoders.h"
 
 namespace heu::pylib {
 
@@ -62,6 +62,61 @@ void BindToNumpy(py::class_<hnp::PMatrix>& clazz, ARGS&&... args) {
       fmt::format("Decode plaintext array to numpy ndarray with type '{}'",
                   std::string(py::str(py::dtype(T::DefaultPyTypeFormat))))
           .c_str());
+}
+
+template <typename T>
+void BindArrayForModule(pybind11::module& m) {
+  m.def("array", &EncodeNdarray<T>, py::arg("ndarray"), py::arg("encoder"),
+        fmt::format("Create and encode an array using {}", py::type_id<T>())
+            .c_str());
+  m.def(
+      "array", &ParseEncodeNdarray<T>, py::arg("object"), py::arg("encoder"),
+      fmt::format("Encode a numpy ndarray using {}", py::type_id<T>()).c_str());
+}
+
+template <typename T, typename PY_CLASS>
+void BindArrayForClass(PY_CLASS& m) {
+  using EncoderT = decltype(std::declval<T&>().Instance(phe::SchemaType()));
+
+  m.def(
+      "array",
+      [](const phe::HeKitPublicBase& self, const py::array& ndarray,
+         const T& encoder) {
+        return EncodeNdarray<EncoderT>(ndarray,
+                                       encoder.Instance(self.GetSchemaType()));
+      },
+      py::arg("ndarray"), py::arg("encoder"),
+      fmt::format("Create and encode an array using {}", py::type_id<T>())
+          .c_str());
+  m.def(
+      "array",
+      [](const phe::HeKitPublicBase& self, const py::object& ptr,
+         const T& encoder) {
+        return ParseEncodeNdarray<EncoderT>(
+            ptr, encoder.Instance(self.GetSchemaType()));
+      },
+      py::arg("object"), py::arg("encoder"),
+      fmt::format("Encode a numpy ndarray using {}", py::type_id<T>()).c_str());
+
+  // bind default
+  if constexpr (std::is_same_v<T, PyBigintEncoderParams>) {
+    m.def(
+        "array",
+        [](const phe::HeKitPublicBase& self, const py::array& ndarray) {
+          return EncodeNdarray<EncoderT>(ndarray,
+                                         PyBigintEncoder(self.GetSchemaType()));
+        },
+        py::arg("ndarray"),
+        "Create and encode an array using default BigintEncoder");
+    m.def(
+        "array",
+        [](const phe::HeKitPublicBase& self, const py::object& ptr) {
+          return ParseEncodeNdarray<EncoderT>(
+              ptr, PyBigintEncoder(self.GetSchemaType()));
+        },
+        py::arg("object"),
+        "Encode a numpy ndarray using default BigintEncoder");
+  }
 }
 
 }  // namespace
@@ -104,13 +159,14 @@ void PyBindNumpy(pybind11::module& m) {
   // bind pmatrix
   auto pmatrix = py::class_<hnp::PMatrix>(m, "PlaintextArray");
   BindMatrixCommon(pmatrix);
-  BindToNumpy<PyBigintEncoder>(pmatrix, py::arg("encoder") = PyBigintEncoder());
+  BindToNumpy<PyBigintDecoder>(pmatrix, py::arg("encoder") = PyBigintDecoder());
   BindToNumpy<PyIntegerEncoder>(pmatrix, py::arg("encoder"));
   BindToNumpy<PyFloatEncoder>(pmatrix, py::arg("encoder"));
   BindToNumpy<PyBatchEncoder>(pmatrix, py::arg("encoder"));
   pmatrix
-      .def("transpose_inplace", &hnp::PMatrix::TransposeInplace,
-           "Transpose of the array")
+      // todo: TransposeInplace impl
+      //      .def("transpose_inplace", &hnp::PMatrix::TransposeInplace,
+      //           "Transpose of the array")
       .def(
           "to_bytes",
           [](const hnp::PMatrix& pm, size_t bytes_per_int,
@@ -131,32 +187,12 @@ void PyBindNumpy(pybind11::module& m) {
   auto strmatrix = py::class_<hnp::DenseMatrix<std::string>>(m, "StringArray");
   BindMatrixCommon(strmatrix);
 
-  // Bind encoder: PyBigintEncoder
-  m.def("array", &EncodeNdarray<PyBigintEncoder>, py::arg("ndarray"),
-        py::arg("encoder") = PyBigintEncoder(),
-        "Create and encode an array using PyBigintEncoder");
-  m.def("array", &ParseEncodeNdarray<PyBigintEncoder>, py::arg("object"),
-        py::arg("encoder") = PyBigintEncoder(),
-        "Encode a numpy ndarray using PyBigintEncoder");
-
-  // Bind encoder: PyIntegerEncoder
-  m.def("array", &EncodeNdarray<PyIntegerEncoder>, py::arg("ndarray"),
-        py::arg("encoder"),
-        "Create and encode an array using PyIntegerEncoder");
-  m.def("array", &ParseEncodeNdarray<PyIntegerEncoder>, py::arg("object"),
-        py::arg("encoder"), "Encode a numpy ndarray using PyIntegerEncoder");
-
-  // Bind encoder: PyFloatEncoder
-  m.def("array", &EncodeNdarray<PyFloatEncoder>, py::arg("ndarray"),
-        py::arg("encoder"), "Create and encode an array using PyFloatEncoder");
-  m.def("array", &ParseEncodeNdarray<PyFloatEncoder>, py::arg("object"),
-        py::arg("encoder"), "Encode a numpy ndarray using PyFloatEncoder");
-
-  // Bind encoder: PyBatchEncoder
-  m.def("array", &EncodeNdarray<PyBatchEncoder>, py::arg("ndarray"),
-        py::arg("encoder"), "Create and encode an array using PyBatchEncoder");
-  m.def("array", &ParseEncodeNdarray<PyBatchEncoder>, py::arg("object"),
-        py::arg("encoder"), "Encode a numpy ndarray using PyBatchEncoder");
+  // Bind hnp.array()
+  // Usage: hnp.array([1, 2, 3], he_kit.bigint_encoder())
+  BindArrayForModule<PyBigintEncoder>(m);
+  BindArrayForModule<PyIntegerEncoder>(m);
+  BindArrayForModule<PyFloatEncoder>(m);
+  BindArrayForModule<PyBatchEncoder>(m);
 
   // random generator
   py::class_<hnp::Random>(m, "random")
@@ -164,21 +200,24 @@ void PyBindNumpy(pybind11::module& m) {
                   py::arg("max"), py::arg("shape"),
                   "Return a random integer array from the “discrete uniform” "
                   "distribution in interval [min, max)")
-      .def_static("randbits", &hnp::Random::RandBits, py::arg("bits"),
-                  py::arg("shape"),
+      .def_static("randbits", &hnp::Random::RandBits, py::arg("schema"),
+                  py::arg("bits"), py::arg("shape"),
                   "Return a random integer array where each element is 'bits' "
                   "bits long");
 
   /****** key management ******/
   // api for sk_keeper party
-  py::class_<hnp::HeKit>(m, "HeKit")
+  auto he_kit = py::class_<hnp::HeKit, phe::HeKitSecretBase>(m, "HeKit");
+  he_kit
       .def(py::init<phe::HeKit>(),
            "Init hnp::HeKit from a created phe::HeKit context")
-      .def("public_key", &hnp::HeKit::GetPublicKey, "Get public key")
-      .def("secret_key", &hnp::HeKit::GetSecretKey, "Get secret key")
       .def("encryptor", &hnp::HeKit::GetEncryptor, "Get encryptor")
       .def("decryptor", &hnp::HeKit::GetDecryptor, "Get decryptor")
       .def("evaluator", &hnp::HeKit::GetEvaluator, "Get evaluator");
+  BindArrayForClass<PyBigintEncoderParams>(he_kit);
+  BindArrayForClass<PyIntegerEncoderParams>(he_kit);
+  BindArrayForClass<PyFloatEncoderParams>(he_kit);
+  BindArrayForClass<PyBatchEncoderParams>(he_kit);
 
   m.def(
       "setup",
@@ -200,13 +239,18 @@ void PyBindNumpy(pybind11::module& m) {
       "Setup phe (numpy) environment by schema string and key size");
 
   // api for evaluator party
-  py::class_<hnp::DestinationHeKit>(m, "DestinationHeKit")
+  auto dhe_kit = py::class_<hnp::DestinationHeKit, phe::HeKitPublicBase>(
+      m, "DestinationHeKit");
+  dhe_kit
       .def(py::init<phe::DestinationHeKit>(),
            "Init hnp::DestinationHeKit from already created "
            "phe::DestinationHeKit context")
-      .def("public_key", &hnp::DestinationHeKit::GetPublicKey, "Get public key")
       .def("encryptor", &hnp::DestinationHeKit::GetEncryptor, "Get encryptor")
       .def("evaluator", &hnp::DestinationHeKit::GetEvaluator, "Get evaluator");
+  BindArrayForClass<PyBigintEncoderParams>(dhe_kit);
+  BindArrayForClass<PyIntegerEncoderParams>(dhe_kit);
+  BindArrayForClass<PyFloatEncoderParams>(dhe_kit);
+  BindArrayForClass<PyBatchEncoderParams>(dhe_kit);
 
   m.def(
       "setup",
@@ -287,12 +331,6 @@ void PyBindNumpy(pybind11::module& m) {
                       &hnp::Evaluator::Mul, py::const_))
       .def("mul", py::overload_cast<const hnp::PMatrix&, const hnp::PMatrix&>(
                       &hnp::Evaluator::Mul, py::const_))
-      .def("mul", py::overload_cast<const hnp::CMatrix&,
-                                    const hnp::DenseMatrix<int128_t>&>(
-                      &hnp::Evaluator::Mul, py::const_))
-      .def("mul", py::overload_cast<const hnp::DenseMatrix<int128_t>&,
-                                    const hnp::CMatrix&>(&hnp::Evaluator::Mul,
-                                                         py::const_))
 
       .def("matmul", &hnp::Evaluator::MatMul<phe::Ciphertext, phe::Plaintext>)
       .def("matmul", &hnp::Evaluator::MatMul<phe::Plaintext, phe::Ciphertext>)

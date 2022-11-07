@@ -1,5 +1,10 @@
 # CHANGELOGS
 
+- HEU supports a variety of big integer arithmetic libraries now
+- [Break change] When creating an Encoder instance, you need to pass in schema
+  information, because different schemas may be based on completely different
+  integer operation libraries.
+
 ## [0.2.0]
 
 - Add to_bytes api

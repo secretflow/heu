@@ -25,8 +25,8 @@ class Ciphertext : public HeObject<Ciphertext> {
 
   [[nodiscard]] std::string ToString() const override { return c_.ToString(); }
 
-  bool operator==(const Ciphertext& other) const { return c_ == other.c_; }
-  bool operator!=(const Ciphertext& other) const {
+  bool operator==(const Ciphertext &other) const { return c_ == other.c_; }
+  bool operator!=(const Ciphertext &other) const {
     return !this->operator==(other);
   }
 

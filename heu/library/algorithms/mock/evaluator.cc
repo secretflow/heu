@@ -28,17 +28,17 @@ void Evaluator::AddInplace(Ciphertext* a, const Ciphertext& b) const {
   *a = Add(*a, b);
 }
 
-Ciphertext Evaluator::Add(const Ciphertext& a, const MPInt& p) const {
-  YASL_ENFORCE(p.CompareAbs(pk_.PlaintextBound()) < 0,
+Ciphertext Evaluator::Add(const Ciphertext& a, const Plaintext& p) const {
+  YASL_ENFORCE(p.real_pt_.CompareAbs(pk_.PlaintextBound().real_pt_) < 0,
                "plaintext number out of range, message={}, max (abs)={}",
                p.ToHexString(), pk_.PlaintextBound());
 
   Ciphertext out;
-  out.c_ = a.c_ + p;
+  out.c_ = a.c_ + p.real_pt_;
   return out;
 }
 
-void Evaluator::AddInplace(Ciphertext* a, const MPInt& p) const {
+void Evaluator::AddInplace(Ciphertext* a, const Plaintext& p) const {
   *a = Add(*a, p);
 }
 
@@ -52,23 +52,23 @@ void Evaluator::SubInplace(Ciphertext* a, const Ciphertext& b) const {
   *a = Sub(*a, b);
 }
 
-Ciphertext Evaluator::Sub(const Ciphertext& a, const MPInt& p) const {
-  YASL_ENFORCE(p.CompareAbs(pk_.PlaintextBound()) < 0,
+Ciphertext Evaluator::Sub(const Ciphertext& a, const Plaintext& p) const {
+  YASL_ENFORCE(p.real_pt_.CompareAbs(pk_.PlaintextBound().real_pt_) < 0,
                "plaintext number out of range, message={}, max (abs)={}",
-               p.ToHexString(), pk_.PlaintextBound());
+               p.real_pt_.ToHexString(), pk_.PlaintextBound());
 
   Ciphertext out;
-  out.c_ = a.c_ - p;
+  out.c_ = a.c_ - p.real_pt_;
   return out;
 }
 
-void Evaluator::SubInplace(Ciphertext* a, const MPInt& p) const {
+void Evaluator::SubInplace(Ciphertext* a, const Plaintext& p) const {
   *a = Sub(*a, p);
 }
 
-Ciphertext Evaluator::Sub(const MPInt& p, const Ciphertext& a) const {
+Ciphertext Evaluator::Sub(const Plaintext& p, const Ciphertext& a) const {
   Ciphertext out;
-  out.c_ = p - a.c_;
+  out.c_ = p.real_pt_ - a.c_;
   return out;
 }
 
@@ -80,15 +80,15 @@ Ciphertext Evaluator::Negate(const Ciphertext& a) const {
 
 void Evaluator::NegateInplace(Ciphertext* a) const { *a = Negate(*a); }
 
-Ciphertext Evaluator::Mul(const Ciphertext& a, const MPInt& p) const {
+Ciphertext Evaluator::Mul(const Ciphertext& a, const Plaintext& p) const {
   // Keep same with Paillier
   // No need to check size of p because ciphertext overflow is allowed
   Ciphertext out;
-  out.c_ = a.c_ * p;
+  out.c_ = a.c_ * p.real_pt_;
   return out;
 }
 
-void Evaluator::MulInplace(Ciphertext* a, const MPInt& p) const {
+void Evaluator::MulInplace(Ciphertext* a, const Plaintext& p) const {
   *a = Mul(*a, p);
 }
 

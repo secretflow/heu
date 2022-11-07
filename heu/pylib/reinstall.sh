@@ -20,6 +20,6 @@ bazel build -c opt //heu/pylib
 heu_wheel=$(<bazel-bin/heu/pylib/pylib.name)
 heu_wheel_path="bazel-bin/heu/pylib/${heu_wheel}"
 
-python3 -m pip install $heu_wheel_path --force-reinstall
+python3 -m pip install $heu_wheel_path --force-reinstall --no-deps
 # check import ok
 python -c "import heu"

@@ -17,9 +17,9 @@
 #include <utility>
 #include <variant>
 
-#include "heu/library/phe/schema.h"
-#include "heu/library/phe/serializable_types.h"
-#include "heu/library/phe/variant_helper.h"
+#include "heu/library/phe/base/plaintext.h"
+#include "heu/library/phe/base/schema.h"
+#include "heu/library/phe/base/serializable_types.h"
 
 namespace heu::lib::phe {
 
@@ -27,8 +27,8 @@ typedef std::variant<HE_NAMESPACE_LIST(Evaluator)> EvaluatorType;
 
 class Evaluator {
  public:
-  explicit Evaluator(EvaluatorType evaluator)
-      : evaluator_ptr_(std::move(evaluator)) {}
+  explicit Evaluator(SchemaType schema_type, EvaluatorType evaluator)
+      : schema_type_(schema_type), evaluator_ptr_(std::move(evaluator)) {}
 
   // The performance of Randomize() is exactly the same as that of Encrypt().
   void Randomize(Ciphertext* ct) const;
@@ -66,16 +66,6 @@ class Evaluator {
   Ciphertext Mul(const Ciphertext& a, const Plaintext& p) const;
   Ciphertext Mul(const Plaintext& p, const Ciphertext& a) const;
   Plaintext Mul(const Plaintext& a, const Plaintext& b) const { return a * b; };
-  template <typename T,
-            typename std::enable_if_t<std::is_integral_v<T>, int> = 0>
-  Ciphertext Mul(const Ciphertext& a, T b) const {
-    return Mul(a, Plaintext(b));
-  }
-  template <typename T,
-            typename std::enable_if_t<std::is_integral_v<T>, int> = 0>
-  Ciphertext Mul(T a, const Ciphertext& b) const {
-    return Mul(Plaintext(a), b);
-  }
   void MulInplace(Ciphertext* a, const Plaintext& p) const;
   void MulInplace(Plaintext* a, const Plaintext& b) const { *a *= b; };
 
@@ -85,7 +75,10 @@ class Evaluator {
   void NegateInplace(Ciphertext* a) const;
   void NegateInplace(Plaintext* a) const { a->NegInplace(); };
 
+  SchemaType GetSchemaType() const;
+
  private:
+  SchemaType schema_type_;
   EvaluatorType evaluator_ptr_;
 };
 

@@ -20,16 +20,17 @@ namespace heu::lib::numpy::test {
 
 auto CountValue(const PMatrix &m) {
   std::unordered_map<int, int> res;
-  m.ForEach(
-      [&](int64_t, int64_t, const phe::Plaintext &pt) { res[pt.As<int>()]++; },
-      false);
+  m.ForEach([&](int64_t, int64_t,
+                const phe::Plaintext &pt) { res[pt.GetValue<int>()]++; },
+            false);
   return res;
 }
 
 TEST(NumpyRandom, RandIntWorks) {
   auto DoTest = [](int min, int max) {
-    auto m =
-        Random::RandInt(phe::Plaintext(min), phe::Plaintext(max), {100, 100});
+    auto m = Random::RandInt(phe::Plaintext(phe::SchemaType::ZPaillier, min),
+                             phe::Plaintext(phe::SchemaType::ZPaillier, max),
+                             {100, 100});
     auto res = CountValue(m);
     ASSERT_TRUE(res[min - 1] == 0);
     ASSERT_TRUE(res[min] > 0);
@@ -45,11 +46,11 @@ TEST(NumpyRandom, RandIntWorks) {
 }
 
 TEST(NumpyRandom, RandBitsWorks) {
-  auto m = Random::RandBits(10, {1});
+  auto m = Random::RandBits(phe::SchemaType::ZPaillier, 10, {1});
   ASSERT_LE(m(0).BitCount(), 10) << m;
 
   auto DoTest = [](const Shape &s) {
-    auto m = Random::RandBits(7, s);
+    auto m = Random::RandBits(phe::SchemaType::ZPaillier, 7, s);
     auto res = CountValue(m);
     ASSERT_TRUE(res[0] > 0);
     ASSERT_TRUE(res[127] > 0);

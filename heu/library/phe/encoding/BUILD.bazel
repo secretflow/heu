@@ -22,6 +22,7 @@ yasl_cc_library(
     deps = [
         "//heu/library/algorithms/util:he_object",
         "//heu/library/algorithms/util:mp_int",
+        "//heu/library/phe/base",
     ],
 )
 
@@ -40,6 +41,7 @@ yasl_cc_library(
     deps = [
         "//heu/library/algorithms/util:he_object",
         "//heu/library/algorithms/util:mp_int",
+        "//heu/library/phe/base",
     ],
 )
 

@@ -50,7 +50,7 @@ class MontgomeryMathTest
     EXPECT_EQ(mp_exptmod(&ta_, &tb_, &tc_, &td_), MP_OKAY);
 
     // final compare
-    EXPECT_EQ(md_.As<int64_t>(), mp_get_i64(&td_));
+    EXPECT_EQ(md_.Get<int64_t>(), mp_get_i64(&td_));
   }
 
  protected:

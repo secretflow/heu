@@ -16,10 +16,14 @@
 
 namespace heu::lib::algorithms::mock {
 
-void Decryptor::Decrypt(const Ciphertext& ct, MPInt* out) const {
-  *out = ct.c_;
+void Decryptor::Decrypt(const Ciphertext& ct, Plaintext* out) const {
+  out->Set(ct.c_);
 }
 
-MPInt Decryptor::Decrypt(const Ciphertext& ct) const { return ct.c_; }
+Plaintext Decryptor::Decrypt(const Ciphertext& ct) const {
+  Plaintext pt;
+  pt.Set(ct.c_);
+  return pt;
+}
 
 }  // namespace heu::lib::algorithms::mock

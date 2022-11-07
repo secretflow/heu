@@ -15,9 +15,10 @@
 #pragma once
 #include <variant>
 
-#include "heu/library/phe/schema.h"
-#include "heu/library/phe/serializable_types.h"
-#include "heu/library/phe/variant_helper.h"
+#include "heu/library/phe/base/plaintext.h"
+#include "heu/library/phe/base/schema.h"
+#include "heu/library/phe/base/serializable_types.h"
+#include "heu/library/phe/base/variant_helper.h"
 
 namespace heu::lib::phe {
 
@@ -25,13 +26,16 @@ typedef std::variant<HE_NAMESPACE_LIST(Decryptor)> DecryptorType;
 
 class Decryptor {
  public:
-  explicit Decryptor(DecryptorType decryptor_ptr)
-      : decryptor_ptr_(std::move(decryptor_ptr)) {}
+  explicit Decryptor(SchemaType schema_type, DecryptorType decryptor_ptr)
+      : schema_type_(schema_type), decryptor_ptr_(std::move(decryptor_ptr)) {}
 
   void Decrypt(const Ciphertext& ct, Plaintext* out) const;
   [[nodiscard]] Plaintext Decrypt(const Ciphertext& ct) const;
 
+  SchemaType GetSchemaType() const;
+
  private:
+  SchemaType schema_type_;
   DecryptorType decryptor_ptr_;
 };
 

@@ -17,17 +17,34 @@
 
 #include "yasl/base/byte_container_view.h"
 
-#include "heu/library/phe/schema.h"
+#include "heu/library/phe/base/schema.h"
 
 namespace heu::lib::phe {
+
+// Check type T in Ts list
+template <typename T, typename... Ts>
+struct type_in
+    : std::disjunction<
+          std::is_same<std::remove_cv_t<std::remove_reference_t<T>>, Ts>...> {};
+
+template <class... T>
+inline constexpr bool type_in_v = type_in<T...>::value;
+
+template <typename T, typename... Ts>
+struct peel_type
+    : std::enable_if_t<type_in_v<T, Ts...>,
+                       std::remove_cv<std::remove_reference_t<T>>> {};
+
+template <typename... Ts>
+using peel_type_t = typename peel_type<Ts...>::type;
 
 // There are some compilation issues if directly inherit from std::variant,
 // so we use combination method currently.
 template <typename... Types>
 class SerializableVariant {
  public:
-  template <typename T>
-  explicit SerializableVariant(T &&t) : var_(std::forward<T>(t)) {}
+  template <typename T, std::enable_if_t<type_in_v<T, Types...>, int> = 0>
+  explicit SerializableVariant(T &&value) : var_(std::forward<T>(value)) {}
   explicit SerializableVariant(SchemaType schema_type);
 
   SerializableVariant() noexcept = default;
@@ -38,30 +55,59 @@ class SerializableVariant {
   SerializableVariant &operator=(SerializableVariant &&other) noexcept =
       default;
 
+  // convert and assign
+  template <typename T, std::enable_if_t<type_in_v<T, Types...>, int> = 0>
+  SerializableVariant &operator=(T &&value) {
+    var_ = std::forward<T>(value);
+    return *this;
+  }
+
+  bool IsCompatible(SchemaType schema_type) const;
+  template <class T>
+  bool IsHoldType() const {
+    return std::holds_alternative<T>(var_);
+  }
+
   template <typename T>
-  constexpr T &get() {
-    return std::get<T>(var_);
+  constexpr peel_type_t<T, Types...> &As() & {
+    return std::get<peel_type_t<T, Types...>>(var_);
   };
 
   template <typename T>
-  constexpr T &&get() && {
-    return std::get<T>(std::move(var_));
+  constexpr peel_type_t<T, Types...> &&As() && {
+    return std::get<peel_type_t<T, Types...>>(std::move(var_));
   };
 
   template <typename T>
-  constexpr const T &get() const {
-    return std::get<T>(var_);
+  constexpr const peel_type_t<T, Types...> &As() const {
+    return std::get<peel_type_t<T, Types...>>(var_);
+  };
+
+  template <typename T, std::enable_if_t<type_in_v<T, Types...>, int> = 0>
+  constexpr const peel_type_t<T, Types...> &AsTypeLike(
+      const T & /*like*/) const {
+    return As<T>();
+  };
+
+  template <typename T, std::enable_if_t<type_in_v<T, Types...>, int> = 0>
+  constexpr peel_type_t<T, Types...> &AsTypeLike(T & /*like*/) {
+    return As<T>();
+  };
+
+  template <typename T, std::enable_if_t<type_in_v<T, Types...>, int> = 0>
+  constexpr peel_type_t<T, Types...> *AsTypeLike(T * /*like*/) {
+    return &As<T>();
   };
 
   // Please make sure SchemaType is set before calling visit()
   template <class Visitor>
-  constexpr decltype(auto) visit(Visitor &&vis) {
+  constexpr decltype(auto) Visit(Visitor &&vis) {
     return std::visit(std::forward<Visitor>(vis), var_);
   }
 
   // Please make sure SchemaType is set before calling visit()
   template <class Visitor>
-  constexpr decltype(auto) visit(Visitor &&vis) const {
+  constexpr decltype(auto) Visit(Visitor &&vis) const {
     return std::visit(std::forward<Visitor>(vis), var_);
   }
 
@@ -82,27 +128,14 @@ class SerializableVariant {
     return os << obj.ToString();
   }
 
- private:
-  std::variant<Types...> var_;
-  const static std::variant<Types...> schema2ns_vtable_[sizeof...(Types)];
+ protected:
+  void EmplaceInstance(size_t idx);
+
+  std::variant<std::monostate, Types...> var_;
+  const static std::variant<std::monostate, Types...> schema2ns_vtable_[];
 };
 
-using Plaintext = algorithms::Plaintext;
+using MPInt = algorithms::MPInt;
 using Ciphertext = SerializableVariant<HE_NAMESPACE_LIST(Ciphertext)>;
-
-using SecretKey = SerializableVariant<HE_NAMESPACE_LIST(SecretKey)>;
-
-// using PublicKey = SerializableVariant<HE_NAMESPACE_LIST(PublicKey)>;
-class PublicKey : public SerializableVariant<HE_NAMESPACE_LIST(PublicKey)> {
- public:
-  using SerializableVariant<HE_NAMESPACE_LIST(PublicKey)>::SerializableVariant;
-
-  // Valid plaintext range: (PlaintextBound(), -PlaintextBound())
-  [[nodiscard]] const Plaintext &PlaintextBound() const & {
-    return this->visit([](const auto &clazz) -> const Plaintext & {
-      return clazz.PlaintextBound();
-    });
-  }
-};
 
 }  // namespace heu::lib::phe

@@ -29,8 +29,8 @@ struct NumTraits<Plaintext> : GenericNumTraits<Plaintext> {
   typedef Plaintext NonInteger;
   typedef Plaintext Nested;
 
-  static inline Real epsilon() { return Real(0); }
-  static inline Real dummy_precision() { return Real(0); }
+//  static inline Real epsilon() { return Real(0); }
+//  static inline Real dummy_precision() { return Real(0); }
   static inline int digits10() { return 0; }
 
   enum {

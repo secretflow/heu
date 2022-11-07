@@ -19,8 +19,8 @@
 
 #include "heu/library/numpy/matrix.h"
 #include "heu/library/phe/phe.h"
-#include "heu/pylib/common/py_encoders.h"
 #include "heu/pylib/common/traits.h"
+#include "heu/pylib/phe_binding//py_encoders.h"
 
 namespace heu::pylib {
 

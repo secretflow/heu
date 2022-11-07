@@ -63,7 +63,7 @@ TEST_F(MPIntTest, CtorWorks) {
 TEST_F(MPIntTest, InvertModWorks) {
   MPInt a(667);
   MPInt::InvertMod(a, MPInt(561613), &a);
-  EXPECT_EQ(842, a.As<double>());
+  EXPECT_EQ(842, a.Get<double>());
 }
 
 TEST_F(MPIntTest, ToStringWorks) {

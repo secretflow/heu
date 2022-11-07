@@ -20,8 +20,8 @@
 
 #include "heu/library/numpy/matrix.h"
 #include "heu/library/phe/phe.h"
-#include "heu/pylib/common/py_encoders.h"
 #include "heu/pylib/common/traits.h"
+#include "heu/pylib/phe_binding/py_encoders.h"
 
 namespace heu::pylib {
 
@@ -35,7 +35,7 @@ py::array DecodeNdarray(
     const lib::numpy::PMatrix &in,
     const std::enable_if_t<std::is_same_v<Encoder_t, PyIntegerEncoder> ||
                                std::is_same_v<Encoder_t, PyFloatEncoder> ||
-                               std::is_same_v<Encoder_t, PyBigintEncoder>,
+                               std::is_same_v<Encoder_t, PyBigintDecoder>,
                            Encoder_t> &encoder) {
   auto rows = in.rows();
   auto cols = in.cols();
@@ -81,7 +81,7 @@ py::array DecodeNdarray(
     };
   }
 
-  if constexpr (std::is_same_v<Encoder_t, PyBigintEncoder> != 0) {
+  if constexpr (std::is_base_of_v<Encoder_t, PyBigintDecoder>) {
     pfunc(0, in.size());
   } else {
     yasl::parallel_for(0, in.size(), kHeOpGrainSize, pfunc);

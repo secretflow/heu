@@ -30,14 +30,21 @@ class BatchEncoderTest : public testing::Test {
     EXPECT_EQ((batch_encoder_.Decode<T, 0>(pt2)), static_cast<T>(a + 2));
     EXPECT_EQ((batch_encoder_.Decode<T, 1>(pt2)), static_cast<T>(b + 1));
 
-    pt2 = pt * algorithms::Plaintext(1000);
+    pt2 = pt * Plaintext(SchemaType::ZPaillier, 1000);
     EXPECT_EQ((batch_encoder_.Decode<T, 0>(pt2)), static_cast<T>(a * 1000));
     EXPECT_EQ((batch_encoder_.Decode<T, 1>(pt2)), static_cast<T>(b * 1000));
   }
 
  protected:
-  BatchEncoder batch_encoder_;
+  BatchEncoder batch_encoder_{SchemaType::ZPaillier};
 };
+
+TEST_F(BatchEncoderTest, SerializeWorks) {
+  BatchEncoder be1(SchemaType::FPaillier, 12);
+  BatchEncoder be2 = BatchEncoder::LoadFrom(be1.Serialize());
+  EXPECT_EQ(be2.GetSchema(), SchemaType::FPaillier);
+  EXPECT_EQ(be2.GetPaddingSize(), 12);
+}
 
 TEST_F(BatchEncoderTest, EncodingWorks) {
   EncodingTest<uint8_t>(1, 6);
@@ -59,7 +66,7 @@ TEST_F(BatchEncoderTest, EncodingWorks) {
 TEST_F(BatchEncoderTest, PlusWorks) {
   auto pt = batch_encoder_.Encode<int64_t>(0, 0);
   auto buf = batch_encoder_.Serialize();
-  BatchEncoder new_batch_encoder;
+  BatchEncoder new_batch_encoder(SchemaType::ZPaillier);
   new_batch_encoder.Deserialize(yasl::ByteContainerView(buf));
 
   int64_t sum_a = 0, sum_b = 0;

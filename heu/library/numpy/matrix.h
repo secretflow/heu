@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #pragma once
-
 #include "yasl/base/exception.h"
 #define eigen_assert(X) YASL_ENFORCE((X))
 
@@ -223,6 +222,7 @@ MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
   template <typename T>
   using MEMBER_FUNC_TYPE = decltype(std::declval<T&>().Serialize());
 
+  // Check if T has a member function .Serialize()
   template <typename T>
   constexpr bool kHasSerializeFunction =
       std::experimental::is_detected_v<MEMBER_FUNC_TYPE, T>;

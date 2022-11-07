@@ -16,19 +16,28 @@
 
 namespace heu::lib::phe {
 
-#define HE_SPECIAL_T1_MPINT_VOID(ns, clazz, func, type1, in1, mpint_var) \
-  [&](const ns::clazz& eval) { eval.func(in1.get<ns::type1>(), mpint_var); }
-
 void Decryptor::Decrypt(const Ciphertext& ct, Plaintext* out) const {
-  std::visit(HE_DISPATCH(HE_SPECIAL_T1_MPINT_VOID, Decryptor, Decrypt,
-                         Ciphertext, ct, out),
-             decryptor_ptr_);
+#define FUNC(ns)                                                             \
+  [&](const ns::Decryptor& decryptor) {                                      \
+    if (!out->IsHoldType<ns::Plaintext>()) {                                 \
+      ns::Plaintext inner_pt;                                                \
+      decryptor.Decrypt(ct.As<ns::Ciphertext>(), &inner_pt);                 \
+      *out = std::move(inner_pt);                                            \
+    } else {                                                                 \
+      decryptor.Decrypt(ct.As<ns::Ciphertext>(), &out->As<ns::Plaintext>()); \
+    }                                                                        \
+  }
+
+  std::visit(HE_DISPATCH(FUNC), decryptor_ptr_);
+#undef FUNC
 }
 
 Plaintext Decryptor::Decrypt(const Ciphertext& ct) const {
-  return std::visit(HE_DISPATCH(HE_METHOD_T1_RET, Decryptor, Plaintext, Decrypt,
+  return std::visit(HE_DISPATCH(HE_METHOD_RET_1, Decryptor, Plaintext, Decrypt,
                                 Ciphertext, ct),
                     decryptor_ptr_);
 }
+
+SchemaType Decryptor::GetSchemaType() const { return schema_type_; }
 
 }  // namespace heu::lib::phe

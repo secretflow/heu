@@ -16,6 +16,7 @@
 
 #include "heu/library/algorithms/mock/ciphertext.h"
 #include "heu/library/algorithms/mock/encryptor.h"
+#include "heu/library/algorithms/mock/plaintext.h"
 #include "heu/library/algorithms/mock/public_key.h"
 
 namespace heu::lib::algorithms::mock {
@@ -32,21 +33,21 @@ class Evaluator {
   Ciphertext Add(const Ciphertext& a, const Ciphertext& b) const;
   void AddInplace(Ciphertext* a, const Ciphertext& b) const;
   // out = a + p
-  Ciphertext Add(const Ciphertext& a, const MPInt& p) const;
-  void AddInplace(Ciphertext* a, const MPInt& p) const;
+  Ciphertext Add(const Ciphertext& a, const Plaintext& p) const;
+  void AddInplace(Ciphertext* a, const Plaintext& p) const;
 
   // out = a - b
   Ciphertext Sub(const Ciphertext& a, const Ciphertext& b) const;
   void SubInplace(Ciphertext* a, const Ciphertext& b) const;
   // out = a - p
-  Ciphertext Sub(const Ciphertext& a, const MPInt& p) const;
-  void SubInplace(Ciphertext* a, const MPInt& p) const;
+  Ciphertext Sub(const Ciphertext& a, const Plaintext& p) const;
+  void SubInplace(Ciphertext* a, const Plaintext& p) const;
   // out = p - a
-  Ciphertext Sub(const MPInt& p, const Ciphertext& a) const;
+  Ciphertext Sub(const Plaintext& p, const Ciphertext& a) const;
 
   // out = a * p
-  Ciphertext Mul(const Ciphertext& a, const MPInt& p) const;
-  void MulInplace(Ciphertext* a, const MPInt& p) const;
+  Ciphertext Mul(const Ciphertext& a, const Plaintext& p) const;
+  void MulInplace(Ciphertext* a, const Plaintext& p) const;
 
   // out = -a
   Ciphertext Negate(const Ciphertext& a) const;

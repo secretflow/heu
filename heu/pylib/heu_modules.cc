@@ -15,8 +15,8 @@
 #include "pybind11/pybind11.h"
 
 #include "heu/pylib/numpy_binding/bind_numpy.h"
-#include "heu/pylib/phe_binding/bind_encoder.h"
 #include "heu/pylib/phe_binding/bind_phe.h"
+#include "heu/pylib/phe_binding/py_encoders.h"
 
 namespace heu::pylib {
 
@@ -29,7 +29,10 @@ PYBIND11_MODULE(heu, m) {
   auto phe = m.def_submodule(
       "phe", "A high-performance partial homomorphic encryption library");
   PyBindPhe(phe);
-  PyBindEncoders(phe);
+  BindPyIntegerEncoder(phe);
+  BindPyFloatEncoder(phe);
+  BindPyBigintEncoder(phe);
+  BindPyBatchEncoder(phe);
 
   auto hnp = m.def_submodule(
       "numpy", "a numpy adapter for phe module which provides numpy-like api");

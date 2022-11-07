@@ -17,6 +17,7 @@
 #include <utility>
 
 #include "heu/library/algorithms/mock/ciphertext.h"
+#include "heu/library/algorithms/mock/plaintext.h"
 #include "heu/library/algorithms/mock/public_key.h"
 #include "heu/library/algorithms/mock/secret_key.h"
 
@@ -26,8 +27,8 @@ class Decryptor {
  public:
   explicit Decryptor(PublicKey _, SecretKey sk) : sk_(std::move(sk)) {}
 
-  void Decrypt(const Ciphertext& ct, MPInt* out) const;
-  [[nodiscard]] MPInt Decrypt(const Ciphertext& ct) const;
+  void Decrypt(const Ciphertext& ct, Plaintext* out) const;
+  [[nodiscard]] Plaintext Decrypt(const Ciphertext& ct) const;
 
   [[nodiscard]] const SecretKey& secret_key() const { return sk_; }
 

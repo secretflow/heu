@@ -23,6 +23,8 @@
 
 namespace heu::lib::algorithms::paillier_f {
 
+using Plaintext = MPInt;
+
 // Forward declaration
 class PublicKey;
 class Evaluator;

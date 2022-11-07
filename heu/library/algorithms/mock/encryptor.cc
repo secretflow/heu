@@ -22,21 +22,21 @@ Ciphertext Encryptor::EncryptZero() const {
   return res;
 }
 
-Ciphertext Encryptor::Encrypt(const MPInt& m) const {
-  YASL_ENFORCE(m.CompareAbs(pk_.PlaintextBound()) < 0,
+Ciphertext Encryptor::Encrypt(const Plaintext& m) const {
+  YASL_ENFORCE(m.real_pt_.CompareAbs(pk_.PlaintextBound().real_pt_) < 0,
                "message number out of range, message={}, max (abs)={}",
-               m.ToHexString(), pk_.PlaintextBound());
+               m.real_pt_.ToHexString(), pk_.PlaintextBound());
 
   Ciphertext res;
-  res.c_ = m;
+  res.c_ = m.real_pt_;
   return res;
 }
 
 std::pair<Ciphertext, std::string> Encryptor::EncryptWithAudit(
-    const MPInt& m) const {
+    const Plaintext& m) const {
   Ciphertext res;
-  res.c_ = m;
-  return {res, "mock"};
+  res.c_ = m.real_pt_;
+  return {res, fmt::format("mock:{}", m.real_pt_.ToString())};
 }
 
 }  // namespace heu::lib::algorithms::mock

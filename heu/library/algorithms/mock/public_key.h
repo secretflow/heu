@@ -16,15 +16,15 @@
 
 #include <string>
 
+#include "heu/library/algorithms/mock/plaintext.h"
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::mock {
 
 class PublicKey : public HeObject<PublicKey> {
  public:
   size_t key_size_ = 0;
-  MPInt max_int_;
+  Plaintext max_int_;
 
   // for msgpack
   MSGPACK_DEFINE(key_size_, max_int_);
@@ -42,7 +42,7 @@ class PublicKey : public HeObject<PublicKey> {
   }
 
   // Valid plaintext range: (max_int_, -max_int_)
-  [[nodiscard]] const MPInt &PlaintextBound() const & { return max_int_; }
+  [[nodiscard]] const Plaintext &PlaintextBound() const & { return max_int_; }
 };
 
 }  // namespace heu::lib::algorithms::mock

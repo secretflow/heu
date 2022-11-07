@@ -43,15 +43,6 @@ MPInt::MPInt(double x) {
   MPINT_ENFORCE_OK(mp_set_double(&n_, x));
 }
 
-// [mum]: Why not use std::string_view?
-// A std::string_view doesn't provide a conversion to a const char* because
-// it doesn't store a null-terminated string. It stores a pointer to the
-// first element, and the length of the string, basically.
-MPInt::MPInt(const std::string &num, int radix) {
-  MPINT_ENFORCE_OK(mp_init(&n_));
-  MPINT_ENFORCE_OK(mp_read_radix(&n_, num.c_str(), radix));
-}
-
 MPInt::MPInt(MPInt &&other) noexcept {
   // /* the infamous mp_int structure */
   // typedef struct {
@@ -158,13 +149,31 @@ MPInt MPInt::operator-() const {
   return result;
 }
 
-MPInt MPInt::operator-=(const MPInt &operand2) {
-  MPINT_ENFORCE_OK(mp_sub(&n_, &operand2.n_, &n_));
-  return *this;
+MPInt MPInt::operator&(const MPInt &operand2) const {
+  MPInt result;
+  MPINT_ENFORCE_OK(mp_and(&n_, &operand2.n_, &result.n_));
+  return result;
+}
+
+MPInt MPInt::operator|(const MPInt &operand2) const {
+  MPInt result;
+  MPINT_ENFORCE_OK(mp_or(&n_, &operand2.n_, &result.n_));
+  return result;
+}
+
+MPInt MPInt::operator^(const MPInt &operand2) const {
+  MPInt result;
+  MPINT_ENFORCE_OK(mp_xor(&n_, &operand2.n_, &result.n_));
+  return result;
 }
 
 MPInt MPInt::operator+=(const MPInt &operand2) {
   MPINT_ENFORCE_OK(mp_add(&n_, &operand2.n_, &n_));
+  return *this;
+}
+
+MPInt MPInt::operator-=(const MPInt &operand2) {
+  MPINT_ENFORCE_OK(mp_sub(&n_, &operand2.n_, &n_));
   return *this;
 }
 
@@ -193,8 +202,18 @@ MPInt MPInt::operator>>=(size_t operand2) {
   return *this;
 }
 
+MPInt MPInt::operator&=(const MPInt &operand2) {
+  MPINT_ENFORCE_OK(mp_and(&n_, &operand2.n_, &n_));
+  return *this;
+}
+
 MPInt MPInt::operator|=(const MPInt &operand2) {
   MPINT_ENFORCE_OK(mp_or(&n_, &operand2.n_, &n_));
+  return *this;
+}
+
+MPInt MPInt::operator^=(const MPInt &operand2) {
+  MPINT_ENFORCE_OK(mp_xor(&n_, &operand2.n_, &n_));
   return *this;
 }
 
@@ -209,63 +228,147 @@ MPInt MPInt::Abs() const {
 }
 
 template <>
-int8_t MPInt::As() const {
+int8_t MPInt::Get() const {
   return mp_get_i8(&n_);
 }
 
 template <>
-int16_t MPInt::As() const {
+int16_t MPInt::Get() const {
   return mp_get_i16(&n_);
 }
 
 template <>
-int32_t MPInt::As() const {
+int32_t MPInt::Get() const {
   return mp_get_i32(&n_);
 }
 
 template <>
-int64_t MPInt::As() const {
+int64_t MPInt::Get() const {
   return mp_get_i64(&n_);
 }
 
 template <>
-int128_t MPInt::As() const {
+int128_t MPInt::Get() const {
   return mp_get_i128(&n_);
 }
 
 template <>
-uint8_t MPInt::As() const {
+uint8_t MPInt::Get() const {
   return mp_get_mag_u8(&n_);
 }
 
 template <>
-uint16_t MPInt::As() const {
+uint16_t MPInt::Get() const {
   return mp_get_mag_u16(&n_);
 }
 
 template <>
-uint32_t MPInt::As() const {
+uint32_t MPInt::Get() const {
   return mp_get_mag_u32(&n_);
 }
 
 template <>
-uint64_t MPInt::As() const {
+uint64_t MPInt::Get() const {
   return mp_get_mag_u64(&n_);
 }
 
 template <>
-uint128_t MPInt::As() const {
+uint128_t MPInt::Get() const {
   return mp_get_mag_u128(&n_);
 }
 
 template <>
-float MPInt::As() const {
+float MPInt::Get() const {
   return static_cast<float>(mp_get_double(&n_));
 }
 
 template <>
-double MPInt::As() const {
+double MPInt::Get() const {
   return mp_get_double(&n_);
+}
+
+template <>
+MPInt MPInt::Get() const {
+  return *this;
+}
+
+template <>
+void MPInt::Set(int8_t value) {
+  mp_set_i8(&n_, value);
+}
+
+template <>
+void MPInt::Set(int16_t value) {
+  mp_set_i16(&n_, value);
+}
+
+template <>
+void MPInt::Set(int32_t value) {
+  mp_set_i32(&n_, value);
+}
+
+template <>
+void MPInt::Set(int64_t value) {
+  MPINT_ENFORCE_OK(mp_grow(&n_, 2));
+  mp_set_i64(&n_, value);
+}
+
+template <>
+void MPInt::Set(int128_t value) {
+  MPINT_ENFORCE_OK(mp_grow(&n_, 3));
+  mp_set_i128(&n_, value);
+}
+
+template <>
+void MPInt::Set(uint8_t value) {
+  mp_set_u8(&n_, value);
+}
+
+template <>
+void MPInt::Set(uint16_t value) {
+  mp_set_u16(&n_, value);
+}
+
+template <>
+void MPInt::Set(uint32_t value) {
+  mp_set_u32(&n_, value);
+}
+
+template <>
+void MPInt::Set(uint64_t value) {
+  MPINT_ENFORCE_OK(mp_grow(&n_, 2));
+  mp_set_u64(&n_, value);
+}
+
+template <>
+void MPInt::Set(uint128_t value) {
+  MPINT_ENFORCE_OK(mp_grow(&n_, 3));
+  mp_set_u128(&n_, value);
+}
+
+template <>
+void MPInt::Set(float value) {
+  MPINT_ENFORCE_OK(mp_grow(&n_, 2));
+  MPINT_ENFORCE_OK(mp_set_double(&n_, value));
+}
+
+template <>
+void MPInt::Set(double value) {
+  MPINT_ENFORCE_OK(mp_grow(&n_, 2));
+  MPINT_ENFORCE_OK(mp_set_double(&n_, value));
+}
+
+template <>
+void MPInt::Set(MPInt value) {
+  *this = std::move(value);
+}
+
+// [mum]: Why not use std::string_view?
+// A std::string_view doesn't provide a conversion to a const char* because
+// it doesn't store a null-terminated string. It stores a pointer to the
+// first element, and the length of the string, basically.
+void MPInt::Set(const std::string &num, int radix) {
+  MPINT_ENFORCE_OK(mp_read_radix(&n_, num.c_str(), radix));
 }
 
 std::string MPInt::ToRadixString(int radix) const {
