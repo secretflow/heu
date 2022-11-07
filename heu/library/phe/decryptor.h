@@ -34,7 +34,7 @@ class Decryptor {
 
   SchemaType GetSchemaType() const;
 
- private:
+ protected:
   SchemaType schema_type_;
   DecryptorType decryptor_ptr_;
 };

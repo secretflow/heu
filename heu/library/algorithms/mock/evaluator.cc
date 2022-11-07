@@ -14,82 +14,154 @@
 
 #include "heu/library/algorithms/mock/evaluator.h"
 
+#include "fmt/ranges.h"
+
 namespace heu::lib::algorithms::mock {
 
+#ifdef IMPL_SCALAR_SPI
 void Evaluator::Randomize(Ciphertext* ct) const { (void)ct; }
 
-Ciphertext Evaluator::Add(const Ciphertext& a, const Ciphertext& b) const {
-  Ciphertext out;
-  out.c_ = a.c_ + b.c_;
-  return out;
-}
-
-void Evaluator::AddInplace(Ciphertext* a, const Ciphertext& b) const {
-  *a = Add(*a, b);
-}
-
-Ciphertext Evaluator::Add(const Ciphertext& a, const Plaintext& p) const {
-  YASL_ENFORCE(p.real_pt_.CompareAbs(pk_.PlaintextBound().real_pt_) < 0,
+void CheckRange(const PublicKey& pk, const Ciphertext&, const Plaintext& p) {
+  YASL_ENFORCE(p.bn_.CompareAbs(pk.PlaintextBound().bn_) < 0,
                "plaintext number out of range, message={}, max (abs)={}",
-               p.ToHexString(), pk_.PlaintextBound());
-
-  Ciphertext out;
-  out.c_ = a.c_ + p.real_pt_;
-  return out;
+               p.ToHexString(), pk.PlaintextBound());
 }
 
-void Evaluator::AddInplace(Ciphertext* a, const Plaintext& p) const {
-  *a = Add(*a, p);
-}
-
-Ciphertext Evaluator::Sub(const Ciphertext& a, const Ciphertext& b) const {
-  Ciphertext out;
-  out.c_ = a.c_ - b.c_;
-  return out;
-}
-
-void Evaluator::SubInplace(Ciphertext* a, const Ciphertext& b) const {
-  *a = Sub(*a, b);
-}
-
-Ciphertext Evaluator::Sub(const Ciphertext& a, const Plaintext& p) const {
-  YASL_ENFORCE(p.real_pt_.CompareAbs(pk_.PlaintextBound().real_pt_) < 0,
+void CheckRange(const PublicKey& pk, const Plaintext& p, const Ciphertext&) {
+  YASL_ENFORCE(p.bn_.CompareAbs(pk.PlaintextBound().bn_) < 0,
                "plaintext number out of range, message={}, max (abs)={}",
-               p.real_pt_.ToHexString(), pk_.PlaintextBound());
-
-  Ciphertext out;
-  out.c_ = a.c_ - p.real_pt_;
-  return out;
+               p.ToHexString(), pk.PlaintextBound());
 }
 
-void Evaluator::SubInplace(Ciphertext* a, const Plaintext& p) const {
-  *a = Sub(*a, p);
-}
+void CheckRange(const PublicKey& pk, const Ciphertext&, const Ciphertext&) {}
+void CheckRange(const PublicKey& pk, const Plaintext&, const Plaintext&) {}
 
-Ciphertext Evaluator::Sub(const Plaintext& p, const Ciphertext& a) const {
-  Ciphertext out;
-  out.c_ = p.real_pt_ - a.c_;
-  return out;
-}
+#define SCALAR_FUNCTION_IMPL(NAME, RET, T1, OP, T2)     \
+  RET Evaluator::NAME(const T1& a, const T2& b) const { \
+    CheckRange(pk_, a, b);                              \
+    return RET(a.bn_ OP b.bn_);                         \
+  }
+
+// Keep same with Paillier
+// No need to check size of plaintext because ciphertext overflow is allowed
+#define SCALAR_FUNCTION_IMPL_MUL(RET, T1, OP, T2)      \
+  RET Evaluator::Mul(const T1& a, const T2& b) const { \
+    return RET(a.bn_ OP b.bn_);                        \
+  }
+
+SCALAR_FUNCTION_IMPL(Add, Ciphertext, Ciphertext, +, Ciphertext);
+SCALAR_FUNCTION_IMPL(Add, Ciphertext, Ciphertext, +, Plaintext);
+SCALAR_FUNCTION_IMPL(Add, Ciphertext, Plaintext, +, Ciphertext);
+SCALAR_FUNCTION_IMPL(Add, Plaintext, Plaintext, +, Plaintext);
+
+SCALAR_FUNCTION_IMPL(Sub, Ciphertext, Ciphertext, -, Ciphertext);
+SCALAR_FUNCTION_IMPL(Sub, Ciphertext, Ciphertext, -, Plaintext);
+SCALAR_FUNCTION_IMPL(Sub, Ciphertext, Plaintext, -, Ciphertext);
+SCALAR_FUNCTION_IMPL(Sub, Plaintext, Plaintext, -, Plaintext);
+
+SCALAR_FUNCTION_IMPL_MUL(Ciphertext, Ciphertext, *, Plaintext);
+SCALAR_FUNCTION_IMPL_MUL(Ciphertext, Plaintext, *, Ciphertext);
+SCALAR_FUNCTION_IMPL_MUL(Plaintext, Plaintext, *, Plaintext);
+
+#define SCALAR_INPLACE_FUNCTION_IMPL(NAME, T1, OP, T2) \
+  void Evaluator::NAME(T1* a, const T2& b) const {     \
+    CheckRange(pk_, *a, b);                            \
+    a->bn_ OP b.bn_;                                   \
+  }
+
+#define SCALAR_INPLACE_FUNCTION_IMPL_MUL(T1, OP, T2) \
+  void Evaluator::MulInplace(T1* a, const T2& b) const { a->bn_ OP b.bn_; }
+
+SCALAR_INPLACE_FUNCTION_IMPL(AddInplace, Ciphertext, +=, Ciphertext);
+SCALAR_INPLACE_FUNCTION_IMPL(AddInplace, Ciphertext, +=, Plaintext);
+SCALAR_INPLACE_FUNCTION_IMPL(AddInplace, Plaintext, +=, Plaintext);
+
+SCALAR_INPLACE_FUNCTION_IMPL(SubInplace, Ciphertext, -=, Ciphertext);
+SCALAR_INPLACE_FUNCTION_IMPL(SubInplace, Ciphertext, -=, Plaintext);
+SCALAR_INPLACE_FUNCTION_IMPL(SubInplace, Plaintext, -=, Plaintext);
+
+SCALAR_INPLACE_FUNCTION_IMPL_MUL(Ciphertext, *=, Plaintext);
+SCALAR_INPLACE_FUNCTION_IMPL_MUL(Plaintext, *=, Plaintext)
 
 Ciphertext Evaluator::Negate(const Ciphertext& a) const {
   Ciphertext out;
-  a.c_.Negate(&out.c_);
+  a.bn_.Negate(&out.bn_);
   return out;
 }
 
 void Evaluator::NegateInplace(Ciphertext* a) const { *a = Negate(*a); }
 
-Ciphertext Evaluator::Mul(const Ciphertext& a, const Plaintext& p) const {
-  // Keep same with Paillier
-  // No need to check size of p because ciphertext overflow is allowed
-  Ciphertext out;
-  out.c_ = a.c_ * p.real_pt_;
-  return out;
+#endif
+
+#ifdef IMPL_VECTORIZED_SPI
+void Evaluator::Randomize(Span<Ciphertext> ct) const { /* nothing to do */
 }
 
-void Evaluator::MulInplace(Ciphertext* a, const Plaintext& p) const {
-  *a = Mul(*a, p);
+#define SIMD_FUNCTION_IMPL(NAME, RET, T1, OP, T2)                             \
+  std::vector<RET> Evaluator::NAME(ConstSpan<T1> a, ConstSpan<T2> b) const {  \
+    YASL_ENFORCE(a.size() == b.size(),                                        \
+                 "Function {}: array not equal, a={}, b={}", #NAME, a.size(), \
+                 b.size());                                                   \
+                                                                              \
+    std::vector<RET> res;                                                     \
+    res.reserve(a.size());                                                    \
+    for (size_t i = 0; i < a.size(); ++i) {                                   \
+      res.emplace_back(a[i]->bn_ OP b[i]->bn_);                               \
+    }                                                                         \
+                                                                              \
+    return res;                                                               \
+  }
+
+SIMD_FUNCTION_IMPL(Add, Ciphertext, Ciphertext, +, Ciphertext);
+SIMD_FUNCTION_IMPL(Add, Ciphertext, Ciphertext, +, Plaintext);
+SIMD_FUNCTION_IMPL(Add, Ciphertext, Plaintext, +, Ciphertext);
+SIMD_FUNCTION_IMPL(Add, Plaintext, Plaintext, +, Plaintext);
+
+SIMD_FUNCTION_IMPL(Sub, Ciphertext, Ciphertext, -, Ciphertext);
+SIMD_FUNCTION_IMPL(Sub, Ciphertext, Ciphertext, -, Plaintext);
+SIMD_FUNCTION_IMPL(Sub, Ciphertext, Plaintext, -, Ciphertext);
+SIMD_FUNCTION_IMPL(Sub, Plaintext, Plaintext, -, Plaintext);
+
+SIMD_FUNCTION_IMPL(Mul, Ciphertext, Ciphertext, *, Plaintext);
+SIMD_FUNCTION_IMPL(Mul, Ciphertext, Plaintext, *, Ciphertext);
+SIMD_FUNCTION_IMPL(Mul, Plaintext, Plaintext, *, Plaintext);
+
+#define SIMD_INPLACE_FUNCTION_IMPL(NAME, T1, OP, T2)                          \
+  void Evaluator::NAME(Span<T1> a, ConstSpan<T2> b) const {                   \
+    YASL_ENFORCE(a.size() == b.size(),                                        \
+                 "Function {}: array not equal, a={}, b={}", #NAME, a.size(), \
+                 b.size());                                                   \
+    for (size_t i = 0; i < a.size(); ++i) {                                   \
+      a[i]->bn_ OP b[i]->bn_;                                                 \
+    }                                                                         \
+  }
+
+SIMD_INPLACE_FUNCTION_IMPL(AddInplace, Ciphertext, +=, Ciphertext);
+SIMD_INPLACE_FUNCTION_IMPL(AddInplace, Ciphertext, +=, Plaintext);
+SIMD_INPLACE_FUNCTION_IMPL(AddInplace, Plaintext, +=, Plaintext);
+
+SIMD_INPLACE_FUNCTION_IMPL(SubInplace, Ciphertext, -=, Ciphertext);
+SIMD_INPLACE_FUNCTION_IMPL(SubInplace, Ciphertext, -=, Plaintext);
+SIMD_INPLACE_FUNCTION_IMPL(SubInplace, Plaintext, -=, Plaintext);
+
+SIMD_INPLACE_FUNCTION_IMPL(MulInplace, Ciphertext, *=, Plaintext);
+SIMD_INPLACE_FUNCTION_IMPL(MulInplace, Plaintext, *=, Plaintext)
+
+std::vector<Ciphertext> Evaluator::Negate(ConstSpan<Ciphertext> a) const {
+  std::vector<Ciphertext> res;
+  res.reserve(a.size());
+  for (size_t i = 0; i < a.size(); ++i) {
+    res.emplace_back(-a[i]->bn_);
+  }
+  return res;
 }
+
+void Evaluator::NegateInplace(Span<Ciphertext> a) const {
+  for (const auto& item : a) {
+    item->bn_.NegInplace();
+  }
+};
+
+#endif
 
 }  // namespace heu::lib::algorithms::mock

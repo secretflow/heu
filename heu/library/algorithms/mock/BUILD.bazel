@@ -1,39 +1,110 @@
 load("@yasl//bazel:yasl.bzl", "yasl_cc_library", "yasl_cc_test")
 
+package(default_visibility = ["//visibility:public"])
+
 test_suite(
     name = "he_mock_tests",
 )
 
 yasl_cc_library(
     name = "mock",
-    srcs = [
-        "decryptor.cc",
-        "encryptor.cc",
-        "evaluator.cc",
-        "key_generator.cc",
-    ],
     hdrs = [
-        "ciphertext.h",
-        "decryptor.h",
-        "encryptor.h",
-        "evaluator.h",
-        "key_generator.h",
         "mock.h",
-        "plaintext.h",
-        "public_key.h",
-        "secret_key.h",
     ],
-    visibility = ["//visibility:public"],
+    deps = [
+        ":decryptor",
+        ":encryptor",
+        ":evaluator",
+        ":key_generator",
+    ],
+)
+
+yasl_cc_library(
+    name = "plaintext",
+    hdrs = ["plaintext.h"],
     deps = [
         "//heu/library/algorithms/util",
         "@com_github_msgpack_msgpack//:msgpack",
     ],
 )
 
-yasl_cc_test(
-    name = "mock_test",
-    srcs = ["mock_test.cc"],
+yasl_cc_library(
+    name = "ciphertext",
+    hdrs = ["ciphertext.h"],
     deps = [
-        "//heu/library/algorithms/mock",
+        "//heu/library/algorithms/util",
+        "@com_github_msgpack_msgpack//:msgpack",
+    ],
+)
+
+yasl_cc_library(
+    name = "secret_key",
+    hdrs = ["secret_key.h"],
+    deps = [
+        "//heu/library/algorithms/util",
+        "@com_github_msgpack_msgpack//:msgpack",
+    ],
+)
+
+yasl_cc_library(
+    name = "public_key",
+    hdrs = ["public_key.h"],
+    deps = [
+        ":plaintext",
+        "//heu/library/algorithms/util",
+        "@com_github_msgpack_msgpack//:msgpack",
+    ],
+)
+
+yasl_cc_library(
+    name = "key_generator",
+    srcs = ["key_generator.cc"],
+    hdrs = ["key_generator.h"],
+    deps = [
+        ":public_key",
+        ":secret_key",
+    ],
+)
+
+yasl_cc_library(
+    name = "choose_spi",
+    hdrs = ["switch_spi.h"],
+)
+
+yasl_cc_library(
+    name = "encryptor",
+    srcs = ["encryptor.cc"],
+    hdrs = ["encryptor.h"],
+    deps = [
+        ":choose_spi",
+        ":ciphertext",
+        ":plaintext",
+        ":public_key",
+    ],
+)
+
+yasl_cc_library(
+    name = "decryptor",
+    srcs = ["decryptor.cc"],
+    hdrs = ["decryptor.h"],
+    deps = [
+        ":choose_spi",
+        ":ciphertext",
+        ":plaintext",
+        ":public_key",
+        ":secret_key",
+    ],
+)
+
+yasl_cc_library(
+    name = "evaluator",
+    srcs = ["evaluator.cc"],
+    hdrs = ["evaluator.h"],
+    deps = [
+        ":choose_spi",
+        ":ciphertext",
+        ":encryptor",
+        ":plaintext",
+        ":public_key",
     ],
 )

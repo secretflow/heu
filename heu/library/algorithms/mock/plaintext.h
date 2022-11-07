@@ -20,178 +20,200 @@ namespace heu::lib::algorithms::mock {
 
 class Plaintext {
  public:
+  // [SPI: Critical]
   explicit Plaintext() = default;
 
+  // init with primitive value
+  // T could be (u)int8/16/32/64/128
   template <typename T>
   explicit Plaintext(T value) {
     Set(value);
   }
 
   // Plaintext -> primitive type
-  // T could be (u)int8/16/32/64/128 and MPInt
+  // T could be (u)int8/16/32/64/128
+  // [SPI: Critical]
   template <typename T>
   [[nodiscard]] T Get() const {
     if constexpr (std::is_same_v<T, MPInt>) {
-      return real_pt_;  // do convert to MPInt
+      return bn_;  // do convert to MPInt
     }
 
-    return real_pt_.template Get<T>();
+    return bn_.template Get<T>();
   }
 
+  // Set primitive value
+  // T could be (u)int8/16/32/64/128
+  // [SPI: Critical]
   template <typename T>
   void Set(T value) {
-    real_pt_.template Set(value);
+    bn_.template Set(value);
   }
 
-  void Set(const std::string &num, int radix) { real_pt_.Set(num, radix); }
+  // [SPI: Critical]
+  void Set(const std::string &num, int radix) { bn_.Set(num, radix); }
 
-  [[nodiscard]] yasl::Buffer Serialize() const { return real_pt_.Serialize(); }
+  // [SPI: Critical]
+  [[nodiscard]] yasl::Buffer Serialize() const { return bn_.Serialize(); }
 
-  void Deserialize(yasl::ByteContainerView buffer) {
-    real_pt_.Deserialize(buffer);
-  }
+  // [SPI: Critical]
+  void Deserialize(yasl::ByteContainerView buffer) { bn_.Deserialize(buffer); }
 
-  [[nodiscard]] std::string ToString() const { return real_pt_.ToString(); }
+  // [SPI: Critical]
+  [[nodiscard]] std::string ToString() const { return bn_.ToString(); }
+  // [SPI: Important]
   friend std::ostream &operator<<(std::ostream &os, const Plaintext &pt) {
     return os << pt.ToString();
   }
 
-  [[nodiscard]] std::string ToHexString() const {
-    return real_pt_.ToHexString();
-  }
+  // [SPI: Critical]
+  [[nodiscard]] std::string ToHexString() const { return bn_.ToHexString(); }
 
+  // [SPI: Critical]
   yasl::Buffer ToBytes(size_t byte_len, Endian endian = Endian::native) const {
-    return real_pt_.ToBytes(byte_len, endian);
+    return bn_.ToBytes(byte_len, endian);
   }
 
+  // [SPI: Critical]
   void ToBytes(unsigned char *buf, size_t buf_len,
                Endian endian = Endian::native) const {
-    real_pt_.ToBytes(buf, buf_len, endian);
+    bn_.ToBytes(buf, buf_len, endian);
   }
 
-  size_t BitCount() const { return real_pt_.BitCount(); }
+  size_t BitCount() const { return bn_.BitCount(); }  // [SPI: Critical]
 
-  Plaintext operator-() const { return Wrap(-real_pt_); }
-  void NegInplace() { real_pt_.NegInplace(); }
+  Plaintext operator-() const { return Wrap(-bn_); }  // [SPI: Critical]
+  void NegInplace() { bn_.NegInplace(); }             // [SPI: Critical]
 
+  // [SPI: Critical]
   Plaintext operator+(const Plaintext &op2) const {
-    return Wrap(real_pt_ + op2.real_pt_);
+    return Wrap(bn_ + op2.bn_);
   }
+  // [SPI: Critical]
   Plaintext operator-(const Plaintext &op2) const {
-    return Wrap(real_pt_ - op2.real_pt_);
+    return Wrap(bn_ - op2.bn_);
   }
+  // [SPI: Critical]
   Plaintext operator*(const Plaintext &op2) const {
-    return Wrap(real_pt_ * op2.real_pt_);
+    return Wrap(bn_ * op2.bn_);
   }
+  // [SPI: Important]
   Plaintext operator/(const Plaintext &op2) const {
-    return Wrap(real_pt_ / op2.real_pt_);
+    return Wrap(bn_ / op2.bn_);
   }
+  // [SPI: Important]
   Plaintext operator%(const Plaintext &op2) const {
-    return Wrap(real_pt_ % op2.real_pt_);
+    return Wrap(bn_ % op2.bn_);
   }
+  // [SPI: Important]
   Plaintext operator&(const Plaintext &op2) const {
-    return Wrap(real_pt_ & op2.real_pt_);
+    return Wrap(bn_ & op2.bn_);
   }
+  // [SPI: Important]
   Plaintext operator|(const Plaintext &op2) const {
-    return Wrap(real_pt_ | op2.real_pt_);
+    return Wrap(bn_ | op2.bn_);
   }
+  // [SPI: Important]
   Plaintext operator^(const Plaintext &op2) const {
-    return Wrap(real_pt_ ^ op2.real_pt_);
+    return Wrap(bn_ ^ op2.bn_);
   }
 
-  Plaintext operator<<(size_t op2) const { return Wrap(real_pt_ << op2); }
-  Plaintext operator>>(size_t op2) const { return Wrap(real_pt_ >> op2); }
+  // [SPI: Important]
+  Plaintext operator<<(size_t op2) const { return Wrap(bn_ << op2); }
+  // [SPI: Important]
+  Plaintext operator>>(size_t op2) const { return Wrap(bn_ >> op2); }
 
+  // [SPI: Critical]
   Plaintext operator+=(const Plaintext &op2) {
-    real_pt_ += op2.real_pt_;
+    bn_ += op2.bn_;
     return *this;
   }
 
+  // [SPI: Critical]
   Plaintext operator-=(const Plaintext &op2) {
-    real_pt_ -= op2.real_pt_;
+    bn_ -= op2.bn_;
     return *this;
   }
 
+  // [SPI: Critical]
   Plaintext operator*=(const Plaintext &op2) {
-    real_pt_ *= op2.real_pt_;
+    bn_ *= op2.bn_;
     return *this;
   }
 
+  // [SPI: Important]
   Plaintext operator/=(const Plaintext &op2) {
-    real_pt_ /= op2.real_pt_;
+    bn_ /= op2.bn_;
     return *this;
   }
 
+  // [SPI: Important]
   Plaintext operator%=(const Plaintext &op2) {
-    real_pt_ %= op2.real_pt_;
+    bn_ %= op2.bn_;
     return *this;
   }
 
+  // [SPI: Important]
   Plaintext operator&=(const Plaintext &op2) {
-    real_pt_ &= op2.real_pt_;
+    bn_ &= op2.bn_;
     return *this;
   }
 
+  // [SPI: Important]
   Plaintext operator|=(const Plaintext &op2) {
-    real_pt_ |= op2.real_pt_;
+    bn_ |= op2.bn_;
     return *this;
   }
 
+  // [SPI: Important]
   Plaintext operator^=(const Plaintext &op2) {
-    real_pt_ ^= op2.real_pt_;
+    bn_ ^= op2.bn_;
     return *this;
   }
 
+  // [SPI: Important]
   Plaintext operator<<=(size_t op2) {
-    real_pt_ <<= op2;
+    bn_ <<= op2;
     return *this;
   }
 
+  // [SPI: Important]
   Plaintext operator>>=(size_t op2) {
-    real_pt_ >>= op2;
+    bn_ >>= op2;
     return *this;
   }
 
-  bool operator>(const Plaintext &other) const {
-    return real_pt_ > other.real_pt_;
-  }
+  // [SPI: Important]
+  bool operator>(const Plaintext &other) const { return bn_ > other.bn_; }
+  // [SPI: Important]
+  bool operator<(const Plaintext &other) const { return bn_ < other.bn_; }
+  // [SPI: Important]
+  bool operator>=(const Plaintext &other) const { return bn_ >= other.bn_; }
+  // [SPI: Important]
+  bool operator<=(const Plaintext &other) const { return bn_ <= other.bn_; }
+  // [SPI: Important]
+  bool operator==(const Plaintext &other) const { return bn_ == other.bn_; }
+  // [SPI: Important]
+  bool operator!=(const Plaintext &other) const { return bn_ != other.bn_; }
 
-  bool operator<(const Plaintext &other) const {
-    return real_pt_ < other.real_pt_;
-  }
-
-  bool operator>=(const Plaintext &other) const {
-    return real_pt_ >= other.real_pt_;
-  }
-
-  bool operator<=(const Plaintext &other) const {
-    return real_pt_ <= other.real_pt_;
-  }
-
-  bool operator==(const Plaintext &other) const {
-    return real_pt_ == other.real_pt_;
-  }
-
-  bool operator!=(const Plaintext &other) const {
-    return real_pt_ != other.real_pt_;
-  }
-
-  MSGPACK_DEFINE(real_pt_);
-  MPInt real_pt_;  // you should make this field private
+  MSGPACK_DEFINE(bn_);
+  MPInt bn_;  // It would be better if this field is private.
 
   // static helper functions
+  // [SPI: Critical]
   static void RandomExactBits(size_t bit_size, Plaintext *r) {
-    MPInt::RandomExactBits(bit_size, &r->real_pt_);
+    MPInt::RandomExactBits(bit_size, &r->bn_);
   }
 
+  // [SPI: Critical]
   static void RandomLtN(const Plaintext &n, Plaintext *r) {
-    MPInt::RandomLtN(n.real_pt_, &r->real_pt_);
+    MPInt::RandomLtN(n.bn_, &r->bn_);
   }
 
  private:
   Plaintext Wrap(MPInt value) const {
     Plaintext me;
-    me.real_pt_ = value;
+    me.bn_ = value;
     return me;
   }
 };

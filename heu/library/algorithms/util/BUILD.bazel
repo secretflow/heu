@@ -9,16 +9,16 @@ test_suite(
 yasl_cc_library(
     name = "util",
     deps = [
-        ":endian",
         ":he_assert",
         ":montgomery_math",
         ":mp_int",
+        ":spi_traits",
     ],
 )
 
 yasl_cc_library(
-    name = "endian",
-    hdrs = ["endian.h"],
+    name = "spi_traits",
+    hdrs = ["spi_traits.h"],
 )
 
 yasl_cc_library(
@@ -76,7 +76,7 @@ yasl_cc_library(
     srcs = ["tommath_ext_features.cc"],
     hdrs = ["tommath_ext_features.h"],
     deps = [
-        ":endian",
+        ":spi_traits",
         "@com_github_libtom_libtommath//:libtommath",
         "@yasl//yasl/base:buffer",
         "@yasl//yasl/base:exception",

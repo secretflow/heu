@@ -27,8 +27,7 @@ class Decryptor : public phe::Decryptor {
       : phe::Decryptor(std::move(decryptor)) {}
 
   using phe::Decryptor::Decrypt;
-  DenseMatrix<phe::Plaintext> Decrypt(
-      const DenseMatrix<phe::Ciphertext>& in) const;
+  PMatrix Decrypt(const CMatrix& in) const;
 };
 
 }  // namespace heu::lib::numpy

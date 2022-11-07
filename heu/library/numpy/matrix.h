@@ -183,12 +183,14 @@ class DenseMatrix : public algorithms::HeObject<DenseMatrix<T>> {
     }
   }
 
-  // Only support Plaintext matrix,
-  // if T = Ciphertext, there is compile error in Eigen
-  // todo: can we support Ciphertext matrix ?
-  void TransposeInplace() {
+  // there is compiling error in TransposeInplace(), so we only provide
+  // Transpose()
+  DenseMatrix<T> Transpose() {
     YASL_ENFORCE(ndim_ == 2, "you cannot transpose a {}d-tensor", ndim_);
-    m_.transposeInPlace();
+    DenseMatrix<T> res;
+    res.m_ = m_.transpose();
+    res.ndim_ = ndim_;
+    return res;
   }
 
   [[nodiscard]] std::string ToString() const override {
@@ -219,13 +221,9 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
   namespace adaptor {
 
-  template <typename T>
-  using MEMBER_FUNC_TYPE = decltype(std::declval<T&>().Serialize());
-
   // Check if T has a member function .Serialize()
   template <typename T>
-  constexpr bool kHasSerializeFunction =
-      std::experimental::is_detected_v<MEMBER_FUNC_TYPE, T>;
+  using kHasSerializeMethod = decltype(std::declval<T&>().Serialize());
 
   template <typename T>
   struct pack<heu::lib::numpy::DenseMatrix<T>> {
@@ -247,7 +245,8 @@ MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
 
       for (Eigen::Index j = 0; j < cols; j++) {
         for (Eigen::Index i = 0; i < rows; i++) {
-          if constexpr (kHasSerializeFunction<T>) {
+          if constexpr (std::experimental::is_detected_v<kHasSerializeMethod,
+                                                         T>) {
             o.pack(std::string_view(m(i, j).Serialize()));
           } else {
             o.pack(m(i, j));
@@ -284,7 +283,8 @@ MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
       msgpack::object* p = inner_obj.via.array.ptr;
       for (Eigen::Index j = 0; j < cols; j++) {
         for (Eigen::Index i = 0; i < rows; i++) {
-          if constexpr (kHasSerializeFunction<T>) {
+          if constexpr (std::experimental::is_detected_v<kHasSerializeMethod,
+                                                         T>) {
             m(i, j).Deserialize(p++->template as<std::string_view>());
           } else {
             m(i, j) = p++->template as<T>();

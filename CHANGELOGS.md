@@ -1,9 +1,10 @@
 # CHANGELOGS
 
 - HEU supports a variety of big integer arithmetic libraries now
+- PHE algorithms: Add vectorized SPI support
 - [Break change] When creating an Encoder instance, you need to pass in schema
   information, because different schemas may be based on completely different
-  integer operation libraries.
+  integer operation libraries. Please see upgrade guide doc for details.
 
 ## [0.2.0]
 

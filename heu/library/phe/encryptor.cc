@@ -14,30 +14,58 @@
 
 #include "heu/library/phe/encryptor.h"
 
+#include "heu/library/phe/base/predefined_functions.h"
+
 namespace heu::lib::phe {
 
+// EncryptZero //
+
+DEFINE_INVOKE_METHOD_RET_0(Ciphertext, EncryptZero)
+
 Ciphertext Encryptor::EncryptZero() const {
+  return std::visit([](const auto& clazz) { return DoCallEncryptZero(clazz); },
+                    encryptor_ptr_);
+}
+
+// Encrypt //
+
+DEFINE_INVOKE_METHOD_RET_1(Ciphertext, Encrypt)
+
+Ciphertext Encryptor::Encrypt(const Plaintext& m) const {
   return std::visit(
-      [](const auto& clazz) { return Ciphertext(clazz.EncryptZero()); },
+      HE_DISPATCH(DO_INVOKE_METHOD_RET_1, Encryptor, Encrypt, Plaintext, m),
       encryptor_ptr_);
 }
 
-Ciphertext Encryptor::Encrypt(const Plaintext& m) const {
-  return std::visit(HE_DISPATCH(HE_METHOD_RET_1, Encryptor, Ciphertext, Encrypt,
-                                Plaintext, m),
-                    encryptor_ptr_);
+// EncryptWithAudit //
+
+template <typename CLAZZ, typename PT>
+using kHasScalarEncryptWithAudit =
+    decltype(std::declval<const CLAZZ&>().EncryptWithAudit(PT()));
+
+template <typename CLAZZ, typename PT>
+auto DoCallEncryptWithAudit(const CLAZZ& sub_clazz, const PT& in1)
+    -> std::enable_if_t<
+        std::experimental::is_detected_v<kHasScalarEncryptWithAudit, CLAZZ, PT>,
+        std::pair<Ciphertext, std::string>> {
+  auto ca = sub_clazz.EncryptWithAudit(in1);
+  return {Ciphertext(std::move(ca.first)), std::move(ca.second)};
+}
+
+template <typename CLAZZ, typename PT>
+auto DoCallEncryptWithAudit(const CLAZZ& sub_clazz, const PT& in1)
+    -> std::enable_if_t<!std::experimental::is_detected_v<
+                            kHasScalarEncryptWithAudit, CLAZZ, PT>,
+                        std::pair<Ciphertext, std::string>> {
+  auto ca = sub_clazz.EncryptWithAudit(absl::MakeConstSpan<>({&in1}));
+  return {Ciphertext(std::move(ca.first[0])), std::move(ca.second[0])};
 }
 
 std::pair<Ciphertext, std::string> Encryptor::EncryptWithAudit(
     const Plaintext& m) const {
-#define FUNC(ns)                                                         \
-  [&](const ns::Encryptor& eval) -> std::pair<Ciphertext, std::string> { \
-    auto ca = eval.EncryptWithAudit(m.As<ns::Plaintext>());              \
-    return {Ciphertext(std::move(ca.first)), std::move(ca.second)};      \
-  }
-
-  return std::visit(HE_DISPATCH(FUNC), encryptor_ptr_);
-#undef FUNC
+  return std::visit(HE_DISPATCH(DO_INVOKE_METHOD_RET_1, Encryptor,
+                                EncryptWithAudit, Plaintext, m),
+                    encryptor_ptr_);
 }
 
 SchemaType Encryptor::GetSchemaType() const { return schema_type_; }

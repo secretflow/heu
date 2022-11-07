@@ -10,7 +10,8 @@ API 手册
 模块列表
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    phe_api
    numpy_api
+   upgrade_guide

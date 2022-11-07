@@ -16,27 +16,70 @@
 
 namespace heu::lib::algorithms::mock {
 
+#ifdef IMPL_SCALAR_SPI
 Ciphertext Encryptor::EncryptZero() const {
   Ciphertext res;
-  res.c_ = MPInt(0);
+  res.bn_ = MPInt(0);
   return res;
 }
 
 Ciphertext Encryptor::Encrypt(const Plaintext& m) const {
-  YASL_ENFORCE(m.real_pt_.CompareAbs(pk_.PlaintextBound().real_pt_) < 0,
+  YASL_ENFORCE(m.bn_.CompareAbs(pk_.PlaintextBound().bn_) < 0,
                "message number out of range, message={}, max (abs)={}",
-               m.real_pt_.ToHexString(), pk_.PlaintextBound());
+               m.bn_.ToHexString(), pk_.PlaintextBound());
 
   Ciphertext res;
-  res.c_ = m.real_pt_;
+  res.bn_ = m.bn_;
   return res;
 }
 
 std::pair<Ciphertext, std::string> Encryptor::EncryptWithAudit(
     const Plaintext& m) const {
+  YASL_ENFORCE(m.bn_.CompareAbs(pk_.PlaintextBound().bn_) < 0,
+               "message number out of range, message={}, max (abs)={}",
+               m.bn_.ToHexString(), pk_.PlaintextBound());
+
   Ciphertext res;
-  res.c_ = m.real_pt_;
-  return {res, fmt::format("mock:{}", m.real_pt_.ToString())};
+  res.bn_ = m.bn_;
+  return {res, fmt::format("mock:{}", m.bn_.ToString())};
 }
+#endif
+
+#ifdef IMPL_VECTORIZED_SPI
+std::vector<Ciphertext> Encryptor::EncryptZero(int64_t size) const {
+  return std::vector<Ciphertext>(size, Ciphertext(MPInt(0)));
+}
+
+std::vector<Ciphertext> Encryptor::Encrypt(ConstSpan<Plaintext> pts) const {
+  std::vector<Ciphertext> res;
+  res.reserve(pts.size());
+  for (size_t i = 0; i < pts.size(); ++i) {
+    YASL_ENFORCE(pts[i]->bn_.CompareAbs(pk_.PlaintextBound().bn_) < 0,
+                 "message number out of range, pts={}, max (abs)={}",
+                 pts[i]->bn_.ToHexString(), pk_.PlaintextBound());
+
+    res.emplace_back(pts[i]->bn_);
+  }
+  return res;
+}
+
+std::pair<std::vector<Ciphertext>, std::vector<std::string>>
+Encryptor::EncryptWithAudit(ConstSpan<Plaintext> pts) const {
+  std::vector<Ciphertext> res_c;
+  res_c.reserve(pts.size());
+  std::vector<std::string> res_s(pts.size());
+
+  for (size_t i = 0; i < pts.size(); ++i) {
+    YASL_ENFORCE(pts[i]->bn_.CompareAbs(pk_.PlaintextBound().bn_) < 0,
+                 "message number out of range, pts={}, max (abs)={}",
+                 pts[i]->bn_.ToHexString(), pk_.PlaintextBound());
+
+    res_c.emplace_back(pts[i]->bn_);
+    res_s.at(i) = fmt::format("mock:{}", pts[i]->bn_.ToString());
+  }
+
+  return {res_c, res_s};
+}
+#endif
 
 }  // namespace heu::lib::algorithms::mock

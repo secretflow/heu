@@ -44,7 +44,7 @@ class PyUtils {
   static pybind11::int_ PlaintextToPyInt(const heu::lib::phe::Plaintext& mp);
 
   template <typename T>
-  using MEMBER_FUNC_TYPE = decltype(T::LoadFrom(yasl::ByteContainerView()));
+  using kHasLoadFromMethod = decltype(T::LoadFrom(yasl::ByteContainerView()));
 
   template <typename T>
   static decltype(auto) PickleSupport() {
@@ -54,7 +54,7 @@ class PyUtils {
           return pybind11::bytes(buffer.template data<char>(), buffer.size());
         },
         [](const pybind11::bytes& buffer) {  // __setstate__
-          if constexpr (std::experimental::is_detected_v<MEMBER_FUNC_TYPE, T>) {
+          if constexpr (std::experimental::is_detected_v<kHasLoadFromMethod, T>) {
             // T has a static LoadFrom() function
             return T::LoadFrom(static_cast<std::string_view>(buffer));
           } else {

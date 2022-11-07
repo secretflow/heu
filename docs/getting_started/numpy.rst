@@ -75,20 +75,20 @@ I/O
    :linenos:
 
    # Init from nested lists
-   harr = hnp.array([[1, 2, 3], [4, 5, 6]], phe.IntegerEncoder())
+   harr = kit.array([[1, 2, 3], [4, 5, 6]], phe.IntegerEncoderParams())
    print(harr)
    # [[1000000 2000000 3000000]
    #  [4000000 5000000 6000000]]
 
    # Init using default encoder (phe.BigintEncoder())
-   harr = hnp.array([[1, 2, 3], [4, 5, 6]])
+   harr = kit.array([[1, 2, 3], [4, 5, 6]])
    print(harr)
    # [[1 2 3]
    #  [4 5 6]]
 
    # Init from numpy.ndarray
    import numpy as np
-   harr = hnp.array(np.arange(10).reshape(2, 5))
+   harr = kit.array(np.arange(10).reshape(2, 5))
    print(harr)
    # [[0 1 2 3 4]
    #  [5 6 7 8 9]]
@@ -101,10 +101,15 @@ I/O
 
    .. code-block:: python3
 
-      edr = phe.IntegerEncoder(1)  # create an encoder with scale=1
+      # create an encoder with scale=1
+      edr = phe.IntegerEncoder(phe.SchemaType.ZPaillier, 1)
       hnp.array(np.arange(100), edr)
+
+      # or create a encoder using an equivalent form
+      kit.array(np.arange(100), phe.IntegerEncoderParams(1))
+
       # or just use default encoder
-      hnp.array(np.arange(100))
+      kit.array(np.arange(100))
 
 
 辅助函数
@@ -116,9 +121,11 @@ HEU 提供了一些辅助函数用以快速创建 hnp.PlaintextArray 对象。
    :linenos:
 
    # generate a random matrix with shape 10x10 in interval [-100, 100)
-   hnp.random.randint(phe.Plaintext(-100), phe.Plaintext(100), (10, 10))
+   min = phe.Plaintext(phe.SchemaType.ZPaillier, -100)
+   max = phe.Plaintext(phe.SchemaType.ZPaillier, 100)
+   hnp.random.randint(min, max, (10, 10))
    # generate a random matrix with shape 2x2 where each element is 2048 bits long
-   hnp.random.randbits(2048, (2, 2))
+   hnp.random.randbits(phe.SchemaType.ZPaillier, 2048, (2, 2))
 
 
 输出
@@ -131,13 +138,13 @@ HEU 提供了一些辅助函数用以快速创建 hnp.PlaintextArray 对象。
 .. code-block:: python3
    :linenos:
 
-   edr = phe.FloatEncoder()
+   edr = phe.FloatEncoder(phe.SchemaType.ZPaillier)
    harr = hnp.array([1.1, 2.1], edr)
    nparr = harr.to_numpy(edr)
    print(nparr) # [1.1 2.1]
    print(type(nparr)) # <class 'numpy.ndarray'>
 
-与 **hnp.array()** 一样，如果 **to_numpy()** 不指定编码器，则默认使用 ``phe.BigintEncoder()``。
+与 **hnp.array()** 一样，如果 **to_numpy()** 不指定编码器，则默认使用 ``BigintEncoder``。
 
 
 加解密和运算
@@ -152,7 +159,7 @@ HEU 提供了一些辅助函数用以快速创建 hnp.PlaintextArray 对象。
    :linenos:
 
    # encrypt
-   ct_arr = encryptor.encrypt(hnp.array([1, 2, 3, 4]))
+   ct_arr = encryptor.encrypt(kit.array([1, 2, 3, 4]))
    # decrypt
    pt_arr = decryptor.decrypt(ct_arr)
    # evaluate
@@ -168,9 +175,8 @@ HEU 提供了一些辅助函数用以快速创建 hnp.PlaintextArray 对象。
 
       .. code-block:: python3
 
-         edr = phe.FloatEncoder()
-         arr1 = hnp.array([1.4], edr)
-         arr2 = hnp.array([2])
+         arr1 = kit.array([1.4], phe.FloatEncoderParams())
+         arr2 = kit.array([2])
          print(evaluator.mul(arr1, arr2).to_numpy(edr))  # [2.8]
 
    #. 在结果转为明文或原文后手动除以 scale
@@ -178,11 +184,11 @@ HEU 提供了一些辅助函数用以快速创建 hnp.PlaintextArray 对象。
       .. code-block:: python3
 
          scale = 100
-         edr = phe.FloatEncoder(scale)
+         edr = phe.FloatEncoder(phe.SchemaType.ZPaillier, scale)
          res = evaluator.mul(hnp.array([1.4], edr), hnp.array([2.5], edr))
          print(res.to_numpy(edr) / scale)  # [3.5]
          # or
-         print(res.to_numpy(phe.FloatEncoder(scale**2)))  # [3.5]
+         print(res.to_numpy(kit.float_encoder(scale**2)))  # [3.5]
 
 
 切片
@@ -194,7 +200,7 @@ HEU 提供了一些辅助函数用以快速创建 hnp.PlaintextArray 对象。
    :linenos:
 
    # 1d array
-   arr = hnp.array([1, 2, 3, 4, 5, 6, 7])
+   arr = kit.array([1, 2, 3, 4, 5, 6, 7])
    arr[1]
    arr[-1]
    arr[1:5]  # Slice elements from index 1 to index 5
@@ -207,7 +213,7 @@ HEU 提供了一些辅助函数用以快速创建 hnp.PlaintextArray 对象。
 
    # 2d array
    nparr = np.arange(49).reshape((7, 7))
-   harr = hnp.array(nparr)
+   harr = kit.array(nparr)
 
    harr[5:1, 1]
    harr[4:, [1, 2, 2, 3]]
@@ -233,15 +239,14 @@ hnp 的切片 key 支持 scalar，sequence，slice 类型，其中 sequence 是 
 
       # case 1
       narr = np.arange(49).reshape((7, 7))
-      harr = hnp.array(narr)
+      harr = kit.array(narr)
 
       harr[[1, 2], [0, -1]]  # returns a 2x2 matrix
       narr[[1, 2], [0, -1]]  # returns a 2-len vector
 
       # case 2
       narr = np.array([0, 1, 2, 3, 4, 5, 6, 7])
-      harr = hnp.array(narr)
+      harr = kit.array(narr)
       harr[(0,)]  # got 1d array: [0]
       narr[(0,)]  # got scalar: 0
-
 

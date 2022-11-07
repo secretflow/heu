@@ -8,7 +8,7 @@
 
 HEU 支持 Mac 吗？
 """"""""""""""""""""""""""""""""
-HEU 支持 Intel 芯片的 macOS，暂不支持 Apple Silicon。
+支持，HEU 同时支持基于 Intel 和 Apple Silicon CPU 的 macOS。
 
 
 Pip 找不到安装包
@@ -17,4 +17,4 @@ Pip 找不到安装包
 
 #. Python 版本必须为 3.8
 #. Pip 版本 22.0+
-#. 如果是 Mac 机器，则只支持 Intel CPU，且 OS 版本 11.1 以上
+#. 操作系统版本是否满足要求，详见 :doc:`安装文档<./installation>`

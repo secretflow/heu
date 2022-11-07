@@ -25,28 +25,6 @@ namespace heu::lib::phe {
     YASL_THROW("variable uninitialized (no schema info)");                    \
   } else
 
-// functions with 1 args //
-
-#define HE_METHOD_VOID_1(ns, clazz, func, type1, out1) \
-  [&](const ns::clazz& eval) { eval.func(&out1->As<ns::type1>()); }
-
-#define HE_METHOD_RET_1(ns, clazz, ret, func, type1, in1) \
-  [&](const ns::clazz& eval) -> ret {                     \
-    return ret(eval.func(in1.As<ns::type1>()));           \
-  }
-
-// functions with 2 args //
-
-#define HE_METHOD_VOID_2(ns, clazz, func, type1, out1, type2, in2) \
-  [&](const ns::clazz& eval) {                                     \
-    eval.func(&out1->As<ns::type1>(), in2.As<ns::type2>());        \
-  }
-
-#define HE_METHOD_RET_2(ns, clazz, ret, func, type1, in1, type2, in2) \
-  [&](const ns::clazz& eval) -> ret {                                 \
-    return ret(eval.func(in1.As<ns::type1>(), in2.As<ns::type2>()));  \
-  }
-
 // borrowed from https://en.cppreference.com/w/cpp/utility/variant/visit
 // `Overloaded` is a helper class required by std::visit() to bind a set of
 // lambdas to the overloaded operators(type), one for each specific subtype
@@ -65,7 +43,7 @@ Overloaded(Ts...) -> Overloaded<Ts...>;
 // of different types.
 
 #define HE_DISPATCH_RET(T, ...)                        \
-  Overloaded {                                         \
+  ::heu::lib::phe::Overloaded {                        \
     [](const std::monostate&) -> T {                   \
       YASL_THROW("illegal variable (no schema info)"); \
     },                                                 \

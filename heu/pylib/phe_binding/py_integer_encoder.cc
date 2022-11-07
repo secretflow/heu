@@ -42,7 +42,9 @@ void BindPyIntegerEncoder(pybind11::module &m) {
       .def(py::init<int64_t>(), py::arg("scale") = (int64_t)1e6,
            "parameters for IntegerEncoder")
       .def("__str__", &PyIntegerEncoderParams::ToString)
-      .def("__repr__", &PyIntegerEncoderParams::ToString);
+      .def("__repr__", &PyIntegerEncoderParams::ToString)
+      .def("instance", &PyIntegerEncoderParams::Instance,
+           "Create IntegerEncoder instance");
 
   py::class_<PyIntegerEncoder>(m, "IntegerEncoder")
       .def(py::init<lib::phe::SchemaType, int64_t>(), py::arg("schema"),

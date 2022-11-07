@@ -20,17 +20,35 @@
 #include "heu/library/algorithms/mock/plaintext.h"
 #include "heu/library/algorithms/mock/public_key.h"
 #include "heu/library/algorithms/mock/secret_key.h"
+#include "heu/library/algorithms/mock/switch_spi.h"
+#include "heu/library/algorithms/util/spi_traits.h"
 
 namespace heu::lib::algorithms::mock {
 
 class Decryptor {
  public:
+  // [SPI: Critical]
   explicit Decryptor(PublicKey _, SecretKey sk) : sk_(std::move(sk)) {}
 
+// To algorithm developers:
+// The Decryptor class supports two different interfaces:
+// IMPL_SCALAR_SPI and IMPL_VECTORIZED_SPI. You only need to choose either SPI
+// to implementation, you can completely remove the other SPI, including
+// function declaration and function implementation.
+// Please see switch_spi.h for details.
+#ifdef IMPL_SCALAR_SPI
+  // [SPI: Critical]
   void Decrypt(const Ciphertext& ct, Plaintext* out) const;
+  // [SPI: Critical]
   [[nodiscard]] Plaintext Decrypt(const Ciphertext& ct) const;
+#endif
 
-  [[nodiscard]] const SecretKey& secret_key() const { return sk_; }
+#ifdef IMPL_VECTORIZED_SPI
+  // [SPI: Critical]
+  std::vector<Plaintext> Decrypt(ConstSpan<Ciphertext> cts) const;
+  // [SPI: Critical]
+  void Decrypt(ConstSpan<Ciphertext> in_cts, Span<Plaintext> out_pts) const;
+#endif
 
  private:
   SecretKey sk_;
