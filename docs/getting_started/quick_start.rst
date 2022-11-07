@@ -19,7 +19,7 @@ HEU 的操作对象有3种：
 
 三种对象之间的转换方法如下：
 
-.. image:: /images/obj_type.png
+.. image:: _img/obj_type.png
    :scale: 30%
    :alt: HEU 对象转换关系图示
    :align: center
@@ -31,10 +31,10 @@ HEU 基本使用展示
 
    from heu import phe
 
-   ctx = phe.setup(phe.SchemaType.ZPaillier, 2048)
-   encryptor = ctx.encryptor()
-   evaluator = ctx.evaluator()
-   decryptor = ctx.decryptor()
+   kit = phe.setup(phe.SchemaType.ZPaillier, 2048)
+   encryptor = kit.encryptor()
+   evaluator = kit.evaluator()
+   decryptor = kit.decryptor()
 
    c1 = encryptor.encrypt_raw(3)
    c2 = encryptor.encrypt_raw(5)
@@ -55,6 +55,29 @@ HEU 基本使用展示
 - ``phe.BigintEncoder``: 编码高精度整数，支持任意精度
 - ``phe.BatchEncoder``: 将两个原文（整数）编码到一个明文中
 
+创建 Encoder 的方法（以``phe.IntegerEncoder``为例）
+
+方法一：
+
+.. code-block:: python3
+
+   encoder = phe.IntegerEncoder(phe.SchemaType.ZPaillier)
+
+方法二：
+
+.. code-block:: python3
+
+   kit = phe.setup(phe.SchemaType.ZPaillier, 2048)
+   encoder = phe.IntegerEncoder(kit.get_schema())
+
+方法三：
+
+.. code-block:: python3
+
+   kit = phe.setup(phe.SchemaType.ZPaillier, 2048)
+   encoder = kit.integer_encoder()
+
+
 IntegerEncoder 和 FloatEncoder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -69,13 +92,13 @@ IntegerEncoder 和 FloatEncoder
 
    from heu import phe
 
-   encoder = phe.IntegerEncoder()
+   encoder = phe.IntegerEncoder(phe.SchemaType.ZPaillier)
    pt = encoder.encode(3.5)
    print(type(pt))  # heu.phe.Plaintext
    print(pt)  # 3000000
    print(encoder.decode(pt))  # 3
 
-   encoder = phe.FloatEncoder()
+   encoder = phe.FloatEncoder(phe.SchemaType.ZPaillier)
    pt = encoder.encode(3.5)
    print(encoder.decode(pt))  # 3.5
 
@@ -92,7 +115,7 @@ BigintEncoder
 
    from heu import phe
 
-   encoder = phe.BigintEncoder()
+   encoder = phe.BigintEncoder(phe.SchemaType.ZPaillier)
    int64_max = 9223372036854775807
    pt = encoder.encode(int64_max**10)
    print(encoder.decode(pt) == int64_max**10)  # True
@@ -103,7 +126,7 @@ BatchEncoder
 
 ``phe.BatchEncoder`` 支持将两个原文（Cleartext，int64整数）打包加密到一个明文（Plaintext）中，实现 SIMD 功能。
 
-.. image:: /images/batch_encoding.png
+.. image:: _img/batch_encoding.png
    :scale: 30%
    :align: center
 
@@ -116,12 +139,12 @@ BatchEncoder
 
    from heu import phe
 
-   ctx = phe.setup(phe.SchemaType.ZPaillier, 2048)
-   encryptor = ctx.encryptor()
-   evaluator = ctx.evaluator()
-   decryptor = ctx.decryptor()
+   kit = phe.setup(phe.SchemaType.ZPaillier, 2048)
+   encryptor = kit.encryptor()
+   evaluator = kit.evaluator()
+   decryptor = kit.decryptor()
 
-   bc = phe.BatchEncoder()
+   bc = kit.batch_encoder()
    pt1 = bc.encode(123, 456)
    pt2 = bc.encode(789, 101112)
 
@@ -143,7 +166,7 @@ BatchEncoder
 
 在一个典型的使用场景中，Client 是数据提供方，Server 是算力提供方，Client 并不信任 Server，因此 Client 可以把数据加密发送给 Server，Server 在密文数据上做计算，并把结果返回给 Client。
 
-.. image:: /images/heu_client_server.png
+.. image:: _img/heu_client_server.png
    :scale: 30%
    :align: center
 

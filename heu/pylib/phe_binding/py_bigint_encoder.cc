@@ -47,7 +47,9 @@ void BindPyBigintEncoder(pybind11::module &m) {
   py::class_<PyBigintEncoderParams>(m, "BigintEncoderParams")
       .def(py::init<>(), "parameters for BigintEncoder")
       .def("__str__", &PyBigintEncoderParams::ToString)
-      .def("__repr__", &PyBigintEncoderParams::ToString);
+      .def("__repr__", &PyBigintEncoderParams::ToString)
+      .def("instance", &PyBigintEncoderParams::Instance,
+           "Create BigintEncoder instance");
 
   // PyBigintDecoder does not depend on the schema_type parameter, so sometimes
   // PyBigintDecoder can be used as the default parameter of functions for
@@ -58,7 +60,16 @@ void BindPyBigintEncoder(pybind11::module &m) {
       .def("__repr__",
            [](const PyBigintDecoder &) { return "BigintDecoder()"; })
       .def("decode", &PyBigintEncoder::DecodeAsPyObj, py::arg("plaintext"),
-           "Decode plaintext to python int number");
+           "Decode plaintext to python int number")
+      .doc() =
+      "BigintDecoder is used to decode plaintext into Python integers.\n\n"
+      "BigintEncoder is the most commonly used Encoder type. Creating an "
+      "BigintEncoder instance depends on schema info, however, schema info is "
+      "only needed for encoding, that is, decoding does not depend on schema. "
+      "To make the BigintEncoder implicitly usable when decoding, we split out "
+      "the decoding part called BigintDecoder, which does not rely on any "
+      "initialization parameters and can create instances anywhere, making it "
+      "easier to use";
 
   py::class_<PyBigintEncoder, PyBigintDecoder>(m, "BigintEncoder")
       .def(py::init<lib::phe::SchemaType>(), py::arg("schema"),

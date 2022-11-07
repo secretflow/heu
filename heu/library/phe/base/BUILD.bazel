@@ -41,7 +41,10 @@ yasl_cc_library(
 
 yasl_cc_library(
     name = "variant_helper",
-    hdrs = ["variant_helper.h"],
+    hdrs = [
+        "predefined_functions.h",
+        "variant_helper.h",
+    ],
 )
 
 test_suite(

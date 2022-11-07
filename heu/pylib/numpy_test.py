@@ -94,7 +94,7 @@ class BasicCase(unittest.TestCase):
             harr = hnp.array(input, edr)
             self.assert_array_equal(harr, input, edr)
 
-        edr = self.kit.float_encoder(scale=10 ** 8)
+        edr = phe.FloatEncoder(self.kit.get_schema(), scale=10 ** 8)
         for idx in range(50):
             input = np.random.rand(100, 100)
             harr = hnp.array(input, edr)
@@ -103,17 +103,16 @@ class BasicCase(unittest.TestCase):
                 np.allclose(pyarr, input), f"hnp is \n{pyarr}\ninput is \n{input}"
             )
 
-        edr = self.kit.bigint_encoder()
+        # BigintEncoder, this is default
         for idx in range(50):
             input = np.random.randint(-10000, 10000, (100, 100))
-            harr = hnp.array(input, edr)
-            self.assert_array_equal(harr, input, edr)
+            harr = self.kit.array(input)
+            self.assert_array_equal(harr, input)
 
-        edr = self.kit.batch_encoder()
         for idx in range(50):
             input = np.random.randint(-10000, 10000, (5000, 2))
-            harr = hnp.array(input, edr)
-            self.assert_array_equal(harr, input, edr)
+            harr = self.kit.array(input, phe.BatchEncoderParams())
+            self.assert_array_equal(harr, input, self.kit.batch_encoder())
 
     def test_encrypt_with_audit(self):
         pt1 = self.kit.array([[1], [3]])
@@ -207,9 +206,8 @@ class BasicCase(unittest.TestCase):
         harr2 = self.kit.array(nparr2)
         self.assert_array_equal(self.evaluator.matmul(harr1, harr2), nparr1 @ nparr2)
 
-        # todo: impl transpose
-        # harr2.transpose_inplace()
-        # self.assert_array_equal(self.evaluator.matmul(harr2, harr1), nparr2.T @ nparr1)
+        harr2 = harr2.transpose()
+        self.assert_array_equal(self.evaluator.matmul(harr2, harr1), nparr2.T @ nparr1)
 
         nparr2 = np.random.randint(-10000, 10000, (64,))
         harr2 = self.kit.array(nparr2)

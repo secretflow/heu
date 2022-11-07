@@ -23,26 +23,35 @@ namespace heu::lib::algorithms::mock {
 
 class PublicKey : public HeObject<PublicKey> {
  public:
-  size_t key_size_ = 0;
-  Plaintext max_int_;
-
-  // for msgpack
-  MSGPACK_DEFINE(key_size_, max_int_);
-
+  // [SPI: Important]
   bool operator==(const PublicKey &other) const {
     return key_size_ == other.key_size_ && max_int_ == other.max_int_;
   }
 
+  // [SPI: Important]
   bool operator!=(const PublicKey &other) const {
     return !this->operator==(other);
   }
 
+  // [SPI: Critical]
   [[nodiscard]] std::string ToString() const override {
     return fmt::format("Mock phe public key with {} bit length", key_size_);
   }
 
   // Valid plaintext range: (max_int_, -max_int_)
+  // [SPI: Critical]
   [[nodiscard]] const Plaintext &PlaintextBound() const & { return max_int_; }
+
+  // If you don't inherit from HeObject, please implement the following
+  // functions.
+  // Functions inherited from HeObject:
+  // yasl::Buffer Serialize() const;                // [SPI: Critical]
+  // void Deserialize(yasl::ByteContainerView in);  // [SPI: Critical]
+
+  // for msgpack
+  MSGPACK_DEFINE(key_size_, max_int_);
+  size_t key_size_ = 0;
+  Plaintext max_int_;
 };
 
 }  // namespace heu::lib::algorithms::mock

@@ -17,28 +17,35 @@
 #include <string>
 
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::mock {
 
 class SecretKey : public HeObject<SecretKey> {
  public:
-  size_t key_size_ = 0;
-
-  // for msgpack
-  MSGPACK_DEFINE(key_size_);
-
+  // [SPI: Important]
   bool operator==(const SecretKey &other) const {
     return key_size_ == other.key_size_;
   }
 
+  // [SPI: Important]
   bool operator!=(const SecretKey &other) const {
     return !this->operator==(other);
   }
 
+  // [SPI: Critical]
   [[nodiscard]] std::string ToString() const override {
     return fmt::format("Mock phe secret key with {} bit length", key_size_);
   }
+
+  // If you don't inherit from HeObject, please implement the following
+  // functions.
+  // Functions inherited from HeObject:
+  // yasl::Buffer Serialize() const;                // [SPI: Critical]
+  // void Deserialize(yasl::ByteContainerView in);  // [SPI: Critical]
+
+  // for msgpack
+  MSGPACK_DEFINE(key_size_);
+  size_t key_size_ = 0;
 };
 
 }  // namespace heu::lib::algorithms::mock

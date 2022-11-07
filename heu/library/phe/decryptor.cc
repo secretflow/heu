@@ -14,28 +14,51 @@
 
 #include "heu/library/phe/decryptor.h"
 
+#include "heu/library/phe/base/predefined_functions.h"
+
 namespace heu::lib::phe {
 
+template <typename CLAZZ, typename TYPE1, typename TYPE2>
+using kHasScalarDecryptVoid = decltype(std::declval<const CLAZZ&>().Decrypt(
+    TYPE1(), std::declval<TYPE2*>()));
+
+template <typename CLAZZ, typename TYPE1, typename TYPE2>
+auto DoCallDecrypt(const CLAZZ& sub_clazz, const TYPE1& in1, TYPE2* out2)
+    -> std::enable_if_t<std::experimental::is_detected_v<kHasScalarDecryptVoid,
+                                                         CLAZZ, TYPE1, TYPE2>> {
+  (sub_clazz.Decrypt(in1, out2));
+}
+
+template <typename CLAZZ, typename TYPE1, typename TYPE2>
+auto DoCallDecrypt(const CLAZZ& sub_clazz, const TYPE1& in1, TYPE2* out2)
+    -> std::enable_if_t<!std::experimental::is_detected_v<
+        kHasScalarDecryptVoid, CLAZZ, TYPE1, TYPE2>> {
+  (sub_clazz.Decrypt(absl::MakeConstSpan({&in1}), absl::MakeSpan(&out2, 1)));
+}
+
 void Decryptor::Decrypt(const Ciphertext& ct, Plaintext* out) const {
-#define FUNC(ns)                                                             \
-  [&](const ns::Decryptor& decryptor) {                                      \
-    if (!out->IsHoldType<ns::Plaintext>()) {                                 \
-      ns::Plaintext inner_pt;                                                \
-      decryptor.Decrypt(ct.As<ns::Ciphertext>(), &inner_pt);                 \
-      *out = std::move(inner_pt);                                            \
-    } else {                                                                 \
-      decryptor.Decrypt(ct.As<ns::Ciphertext>(), &out->As<ns::Plaintext>()); \
-    }                                                                        \
+#define FUNC(ns)                                                    \
+  [&](const ns::Decryptor& decryptor) {                             \
+    if (!out->IsHoldType<ns::Plaintext>()) {                        \
+      ns::Plaintext inner_pt;                                       \
+      DoCallDecrypt(decryptor, ct.As<ns::Ciphertext>(), &inner_pt); \
+      *out = std::move(inner_pt);                                   \
+    } else {                                                        \
+      DoCallDecrypt(decryptor, ct.As<ns::Ciphertext>(),             \
+                    &out->As<ns::Plaintext>());                     \
+    }                                                               \
   }
 
   std::visit(HE_DISPATCH(FUNC), decryptor_ptr_);
 #undef FUNC
 }
 
+DEFINE_INVOKE_METHOD_RET_1(Plaintext, Decrypt);
+
 Plaintext Decryptor::Decrypt(const Ciphertext& ct) const {
-  return std::visit(HE_DISPATCH(HE_METHOD_RET_1, Decryptor, Plaintext, Decrypt,
-                                Ciphertext, ct),
-                    decryptor_ptr_);
+  return std::visit(
+      HE_DISPATCH(DO_INVOKE_METHOD_RET_1, Decryptor, Decrypt, Ciphertext, ct),
+      decryptor_ptr_);
 }
 
 SchemaType Decryptor::GetSchemaType() const { return schema_type_; }

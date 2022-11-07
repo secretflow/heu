@@ -40,7 +40,9 @@ void BindPyFloatEncoder(pybind11::module &m) {
       .def(py::init<int64_t>(), py::arg("scale") = (int64_t)1e6,
            "parameters for FloatEncoder")
       .def("__str__", &PyFloatEncoderParams::ToString)
-      .def("__repr__", &PyFloatEncoderParams::ToString);
+      .def("__repr__", &PyFloatEncoderParams::ToString)
+      .def("instance", &PyFloatEncoderParams::Instance,
+           "Create FloatEncoder instance");
 
   py::class_<PyFloatEncoder>(m, "FloatEncoder")
       .def(py::init<lib::phe::SchemaType, int64_t>(), py::arg("schema"),

@@ -14,7 +14,15 @@
 
 #pragma once
 
+#include "absl/types/span.h"
+
 namespace heu::lib::algorithms {
+
+template <typename T>
+using Span = absl::Span<T* const>;
+
+template <typename T>
+using ConstSpan = absl::Span<const T* const>;
 
 // borrow from c++20 stl
 enum class Endian {

@@ -19,21 +19,45 @@
 #include "heu/library/algorithms/mock/ciphertext.h"
 #include "heu/library/algorithms/mock/plaintext.h"
 #include "heu/library/algorithms/mock/public_key.h"
+#include "heu/library/algorithms/mock/switch_spi.h"
+#include "heu/library/algorithms/util/spi_traits.h"
 
 namespace heu::lib::algorithms::mock {
 
 class Encryptor {
  public:
+  // [SPI: Critical]
   explicit Encryptor(PublicKey pk) : pk_(std::move(pk)) {}
 
+// To algorithm developers:
+// The Encryptor class supports two different interfaces:
+// IMPL_SCALAR_SPI and IMPL_VECTORIZED_SPI. You only need to choose either SPI
+// to implementation, you can completely remove the other SPI, including
+// function declaration and function implementation.
+// Please see switch_spi.h for details.
+#ifdef IMPL_SCALAR_SPI
+  // [SPI: Critical]
   [[nodiscard]] Ciphertext EncryptZero() const;
 
+  // [SPI: Critical]
   [[nodiscard]] Ciphertext Encrypt(const Plaintext& m) const;
 
+  // [SPI: Important]
   [[nodiscard]] std::pair<Ciphertext, std::string> EncryptWithAudit(
       const Plaintext& m) const;
+#endif
 
-  [[nodiscard]] const PublicKey& public_key() const { return pk_; }
+#ifdef IMPL_VECTORIZED_SPI
+  // [SPI: Critical]
+  [[nodiscard]] std::vector<Ciphertext> EncryptZero(int64_t size) const;
+
+  // [SPI: Critical]
+  std::vector<Ciphertext> Encrypt(ConstSpan<Plaintext> pts) const;
+
+  // [SPI: Important]
+  std::pair<std::vector<Ciphertext>, std::vector<std::string>> EncryptWithAudit(
+      ConstSpan<Plaintext> pts) const;
+#endif
 
  private:
   PublicKey pk_;

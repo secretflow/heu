@@ -23,6 +23,8 @@
 
 namespace heu::lib::algorithms::paillier_f {
 
+// todo: define custom Plaintext class.
+//  paillier_float's plaintext is not MPInt, it can be a float
 using Plaintext = MPInt;
 
 // Forward declaration

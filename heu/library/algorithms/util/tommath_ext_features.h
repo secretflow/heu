@@ -17,7 +17,7 @@
 #include "tommath.h"
 #include "yasl/base/buffer.h"
 
-#include "heu/library/algorithms/util/endian.h"
+#include "heu/library/algorithms/util/spi_traits.h"
 
 namespace heu::lib::algorithms {
 

@@ -102,6 +102,7 @@ html_theme_options = {
         },
     ],
     "footer_items": ["copyright"],
+    "page_sidebar_items": ["page-toc"],
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,

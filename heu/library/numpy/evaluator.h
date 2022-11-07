@@ -37,24 +37,19 @@ class Evaluator : public phe::Evaluator {
   PMatrix Sub(const PMatrix& x, const PMatrix& y) const;
 
   // dense cwise mul
+  CMatrix Mul(const CMatrix& x, const CMatrix& y) const;
   CMatrix Mul(const CMatrix& x, const PMatrix& y) const;
   CMatrix Mul(const PMatrix& x, const CMatrix& y) const;
   PMatrix Mul(const PMatrix& x, const PMatrix& y) const;
 
   // dense matrix mul
-  // supported types: P@P, P@C, C@P
-  // not supported: C@C
-  template <typename TX, typename TY>
-  auto MatMul(const DenseMatrix<TX>& x, const DenseMatrix<TY>& y) const
-      -> DenseMatrix<decltype(phe::Evaluator::Mul(TX(), TY()))>;
+  CMatrix MatMul(const CMatrix& x, const PMatrix& y) const;
+  CMatrix MatMul(const PMatrix& x, const CMatrix& y) const;
+  PMatrix MatMul(const PMatrix& x, const PMatrix& y) const;
 
   // reduce add
   template <typename T>
   T Sum(const DenseMatrix<T>& x) const;  // x is PMatrix or CMatrix
-
- private:
-  template <typename RET, typename M1, typename M2>
-  RET DoMatMul(const M1& mx, const M2& my, int64_t out_dim) const;
 };
 
 }  // namespace heu::lib::numpy

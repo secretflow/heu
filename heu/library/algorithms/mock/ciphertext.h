@@ -19,21 +19,35 @@
 
 namespace heu::lib::algorithms::mock {
 
+// SPI: Do not change class name.
 class Ciphertext : public HeObject<Ciphertext> {
  public:
+  // [SPI: Critical]
   Ciphertext() = default;
+  explicit Ciphertext(const MPInt &c) : bn_(c) {}
 
-  [[nodiscard]] std::string ToString() const override { return c_.ToString(); }
+  // [SPI: Critical]
+  [[nodiscard]] std::string ToString() const override { return bn_.ToString(); }
+  // [SPI: Important]
+  friend std::ostream &operator<<(std::ostream &os, const Ciphertext &c) {
+    return os << c.ToString();
+  }
 
-  bool operator==(const Ciphertext &other) const { return c_ == other.c_; }
+  // [SPI: Important]
+  bool operator==(const Ciphertext &other) const { return bn_ == other.bn_; }
+  // [SPI: Important]
   bool operator!=(const Ciphertext &other) const {
     return !this->operator==(other);
   }
 
-  MSGPACK_DEFINE(c_);
+  // If you don't inherit from HeObject, please implement the following
+  // functions.
+  // Functions inherited from HeObject:
+  // yasl::Buffer Serialize() const;                // [SPI: Critical]
+  // void Deserialize(yasl::ByteContainerView in);  // [SPI: Critical]
 
-  // TODO: make this private.
-  MPInt c_;
+  MSGPACK_DEFINE(bn_);
+  MPInt bn_;  // It would be better if this field is private.
 };
 
 }  // namespace heu::lib::algorithms::mock

@@ -37,7 +37,9 @@ void BindPyBatchEncoder(pybind11::module &m) {
       .def(py::init<size_t>(), py::arg("padding_size") = 32,
            "parameters for BigintEncoder")
       .def("__str__", &PyBatchEncoderParams::ToString)
-      .def("__repr__", &PyBatchEncoderParams::ToString);
+      .def("__repr__", &PyBatchEncoderParams::ToString)
+      .def("instance", &PyBatchEncoderParams::Instance,
+           "Create BatchEncoder instance");
 
   py::class_<PyBatchEncoder>(m, "BatchEncoder")
       .def(py::init<lib::phe::SchemaType, size_t>(), py::arg("schema"),

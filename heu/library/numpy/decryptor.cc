@@ -16,12 +16,51 @@
 
 namespace heu::lib::numpy {
 
-DenseMatrix<phe::Plaintext> Decryptor::Decrypt(
-    const DenseMatrix<phe::Ciphertext>& in) const {
-  PMatrix out(in.rows(), in.cols(), in.ndim());
-  in.ForEach([&](int64_t row, int64_t col, const phe::Ciphertext& ct) {
-    out(row, col) = phe::Decryptor::Decrypt(ct);
+template <typename CLAZZ, typename CT>
+using kHasVectorizedDecrypt = decltype(std::declval<const CLAZZ&>().Decrypt(
+    absl::Span<const CT* const>()));
+
+// CT is each algorithm's Ciphertext
+template <typename CLAZZ, typename CT>
+auto DoCallDecrypt(const CLAZZ& sub_decryptor, const CMatrix& in, PMatrix* out)
+    -> std::enable_if_t<
+        std::experimental::is_detected_v<kHasVectorizedDecrypt, CLAZZ, CT>> {
+  yasl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
+    std::vector<const CT*> cts;
+    cts.reserve(end - beg);
+    for (int64_t i = beg; i < end; ++i) {
+      cts.push_back(&(in.data()[i].As<CT>()));
+    }
+    auto res = sub_decryptor.Decrypt(cts);
+    for (int64_t i = beg; i < end; ++i) {
+      out->data()[i] = std::move(res[i - beg]);
+    }
   });
+}
+
+// CT is each algorithm's Ciphertext
+template <typename CLAZZ, typename CT>
+auto DoCallDecrypt(const CLAZZ& sub_decryptor, const CMatrix& in, PMatrix* out)
+    -> std::enable_if_t<
+        !std::experimental::is_detected_v<kHasVectorizedDecrypt, CLAZZ, CT>> {
+  yasl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
+    for (int64_t i = beg; i < end; ++i) {
+      out->data()[i] = sub_decryptor.Decrypt(in.data()[i].As<CT>());
+    }
+  });
+}
+
+PMatrix Decryptor::Decrypt(const CMatrix& in) const {
+  PMatrix out(in.rows(), in.cols(), in.ndim());
+
+#define FUNC(ns)                                                           \
+  [&](const ns::Decryptor& sub_decryptor) {                                \
+    DoCallDecrypt<ns::Decryptor, ns::Ciphertext>(sub_decryptor, in, &out); \
+  }
+
+  std::visit(HE_DISPATCH(FUNC), decryptor_ptr_);
+#undef FUNC
+
   return out;
 }
 

@@ -9,7 +9,7 @@ Python == 3.8
 OS：
  - Centos 7
  - Ubuntu 18.04+
- - macOS with Intel CPU 11.1+ (macOS Big Sur+)
+ - macOS 11.1+ (macOS Big Sur+)
 
 
 安装

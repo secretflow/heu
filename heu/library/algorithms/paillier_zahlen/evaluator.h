@@ -30,34 +30,46 @@ class Evaluator {
   void Randomize(Ciphertext* ct) const;
 
   // out = a + b
-  Ciphertext Add(const Ciphertext& a, const Ciphertext& b) const;
-  void AddInplace(Ciphertext* a, const Ciphertext& b) const;
-  // out = a + p
   // Warning: if a, b are in batch encoding form, then p must also be in batch
   // encoding form
-  Ciphertext Add(const Ciphertext& a, const MPInt& p) const;
-  void AddInplace(Ciphertext* a, const MPInt& p) const;
+  Ciphertext Add(const Ciphertext& a, const Ciphertext& b) const;
+  Ciphertext Add(const Ciphertext& a, const Plaintext& b) const;
+  Plaintext Add(const Plaintext& a, const Plaintext& b) const { return a + b; };
+  Ciphertext Add(const Plaintext& a, const Ciphertext& b) const {
+    return Add(b, a);
+  }
+
+  void AddInplace(Ciphertext* a, const Ciphertext& b) const;
+  void AddInplace(Ciphertext* a, const Plaintext& p) const;
+  void AddInplace(Plaintext* a, const Plaintext& b) const { *a += b; }
 
   // out = a - b
   // Warning: Subtraction is not supported if a, b are in batch encoding
   Ciphertext Sub(const Ciphertext& a, const Ciphertext& b) const;
+  Ciphertext Sub(const Ciphertext& a, const Plaintext& b) const;
+  Ciphertext Sub(const Plaintext& a, const Ciphertext& b) const;
+  Plaintext Sub(const Plaintext& a, const Plaintext& b) const { return a - b; };
+
   void SubInplace(Ciphertext* a, const Ciphertext& b) const;
-  // out = a - p
-  Ciphertext Sub(const Ciphertext& a, const MPInt& p) const;
-  void SubInplace(Ciphertext* a, const MPInt& p) const;
-  // out = p - a
-  Ciphertext Sub(const MPInt& p, const Ciphertext& a) const;
+  void SubInplace(Ciphertext* a, const Plaintext& p) const;
+  void SubInplace(Plaintext* a, const Plaintext& b) const { *a -= b; }
 
   // out = a * p
   // Warning 1:
   // When p = 0, the result is insecure and cannot be sent directly to the peer
-  // and must be Randomize(&out) to obfuscate out.
+  // and must call Randomize(&out) first to obfuscate out.
   // If a * 0 is not the last operation, (out will continue to participate in
   // subsequent operations), Randomize can be omitted.
   // Warning 2:
   // Multiplication is not supported if a is in batch encoding form
   Ciphertext Mul(const Ciphertext& a, const MPInt& p) const;
+  Plaintext Mul(const Plaintext& a, const Plaintext& b) const { return a * b; };
+  Ciphertext Mul(const Plaintext& a, const Ciphertext& b) const {
+    return Mul(b, a);
+  }
+
   void MulInplace(Ciphertext* a, const MPInt& p) const;
+  void MulInplace(Plaintext* a, const Plaintext& b) const { *a *= b; };
 
   // out = -a
   Ciphertext Negate(const Ciphertext& a) const;

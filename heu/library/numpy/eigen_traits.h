@@ -29,18 +29,18 @@ struct NumTraits<Plaintext> : GenericNumTraits<Plaintext> {
   typedef Plaintext NonInteger;
   typedef Plaintext Nested;
 
-//  static inline Real epsilon() { return Real(0); }
-//  static inline Real dummy_precision() { return Real(0); }
+  //  static inline Real epsilon() { return Real(0); }
+  //  static inline Real dummy_precision() { return Real(0); }
   static inline int digits10() { return 0; }
 
   enum {
-    IsInteger = 0,
+    IsInteger = 1,
     IsSigned = 1,
     IsComplex = 0,
     RequireInitialization = 1,
     ReadCost = 1,
-    AddCost = 1,
-    MulCost = 5,
+    AddCost = 3,
+    MulCost = 10,
   };
 };
 
@@ -57,9 +57,9 @@ struct NumTraits<Ciphertext> : GenericNumTraits<Ciphertext> {
     IsSigned = 0,
     IsComplex = 0,
     RequireInitialization = 1,
-    ReadCost = 1,
-    AddCost = 100,
-    MulCost = 5000,
+    ReadCost = 2,
+    AddCost = 1000,
+    MulCost = 50000,
   };
 };
 

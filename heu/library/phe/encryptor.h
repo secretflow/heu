@@ -38,7 +38,7 @@ class Encryptor {
 
   SchemaType GetSchemaType() const;
 
- private:
+ protected:
   SchemaType schema_type_;
   EncryptorType encryptor_ptr_;
 };
