@@ -1,6 +1,7 @@
 sphinx
 sphinx-intl
 sphinx-copybutton
+sphinx-togglebutton
 sphinx-inline-tabs
 pydata-sphinx-theme  # theme
 # matplotlib

@@ -49,6 +49,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
     "sphinx_inline_tabs",
+    "sphinx_togglebutton",
     # "myst_parser",
 ]
 

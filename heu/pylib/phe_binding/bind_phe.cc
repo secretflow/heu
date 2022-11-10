@@ -32,11 +32,13 @@ void PyBindPhe(pybind11::module& m) {
                                                 PyExc_RuntimeError);
 
   /****** Basic types ******/
-  py::enum_<phe::SchemaType>(m, "SchemaType")
-      .value("Mock", phe::SchemaType::Mock, "No encryption, only for debugging")
-      .value("ZPaillier", phe::SchemaType::ZPaillier)
-      .value("FPaillier", phe::SchemaType::FPaillier)
-      .export_values();
+  auto st_bind = py::enum_<phe::SchemaType>(m, "SchemaType");
+  for (const auto& schema : phe::GetAllSchema()) {
+    st_bind.value(phe::SchemaToString(schema).c_str(), schema);
+  }
+  st_bind.export_values();
+  m.def("parse_schema_type", &phe::ParseSchemaType,
+        "Parse schema string. (string -> SchemaType)");
 
   py::class_<phe::Plaintext>(m, "Plaintext")
       .def(py::init([](const phe::SchemaType& schema_type, const py::int_& p) {
@@ -155,7 +157,15 @@ void PyBindPhe(pybind11::module& m) {
           },
           py::arg("scale") = (int64_t)1e6,
           "Get an instance of IntegerEncoder, equal to "
-          "`phe.IntegerEncoder(schema, scale)`");
+          "`phe.IntegerEncoder(schema, scale)`")
+      .def(
+          "plaintext",
+          [](const phe::HeKitPublicBase& kpb, const py::int_& p) {
+            return PyUtils::PyIntToPlaintext(kpb.GetSchemaType(), p);
+          },
+          py::arg("int_num"),
+          "Create a plaintext from int without bit size limit, equal to "
+          "heu.phe.Plaintext(schema, int_num)");
 
   py::class_<phe::HeKitSecretBase, phe::HeKitPublicBase>(m, "HeKitSecretBase")
       .def("secret_key", &phe::HeKit::GetSecretKey, "Get secret key");

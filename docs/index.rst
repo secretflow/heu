@@ -12,7 +12,7 @@ HEU 的目的是降低同态加密的使用门槛，使得用户无需专业知�
 
 .. image:: ./images/heu_arch.png
 
-由于 HEU 还处在起步阶段，当前 HEU 仅仅是一个加法同态加密的 library，还不俱备像 SPU 一样执行任意程序的能力。
+由于 HEU 还处在起步阶段，当前 HEU 仅仅是一个加法同态加密的 library，还不具备像 SPU 一样执行任意程序的能力。
 
 
 .. toctree::
@@ -20,5 +20,6 @@ HEU 的目的是降低同态加密的使用门槛，使得用户无需专业知�
    :caption: Contents
 
    getting_started/index
+   development/index
    references/index
 

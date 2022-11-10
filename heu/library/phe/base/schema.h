@@ -22,11 +22,13 @@
 
 namespace heu::lib::phe {
 
+// [SPI: Please register your algorithm here] || progress: (1 of 4)
 // If you add a new schema, change this !!
 enum class SchemaType {
   Mock,       // Mock He
   ZPaillier,  // Preferred
   FPaillier,
+  // YOUR_ALGO,
 };
 
 // SchemaType <-> String
@@ -34,8 +36,10 @@ enum class SchemaType {
 std::vector<SchemaType> GetAllSchema();
 SchemaType ParseSchemaType(const std::string& schema_string);
 std::string SchemaToString(SchemaType schema_type);
+std::vector<std::string> GetSchemaAliases(SchemaType schema_type);
 std::ostream& operator<<(std::ostream& os, SchemaType st);
 
+// [SPI: Please register your algorithm here] || progress: (2 of 4)
 // If you add a new schema, change this !!
 // SchemaType is in the same order as HE_FOR_EACH
 // clang-format off
@@ -43,15 +47,20 @@ std::ostream& operator<<(std::ostream& os, SchemaType st);
   invoke(::heu::lib::algorithms::mock, ##__VA_ARGS__),       \
   invoke(::heu::lib::algorithms::paillier_z, ##__VA_ARGS__), \
 invoke(::heu::lib::algorithms::paillier_f, ##__VA_ARGS__)
+
+// [SPI: Please register your algorithm here] || progress: (3 of 4)
+// If you add a new schema, change this !!
+// If the Plaintext class is reused with other algorithms, there is no need to
+// repeat the registration here. For example, paillier_z and paillier_f both use
+// MPInt to store plaintext, so MPInt only appears once.
+#define PLAINTEXT_FOR_EACH(invoke, ...)                 \
+  invoke(::heu::lib::algorithms, MPInt, ##__VA_ARGS__), \
+  invoke(::heu::lib::algorithms::mock, Plaintext, ##__VA_ARGS__)
+  // invoke(::heu::lib::algorithms::your_algo, Plaintext, ##__VA_ARGS__)
 // clang-format on
 
 #define HE_COMBINE_NS_TYPE(ns, type) ns::type
 #define HE_NAMESPACE_LIST(type) HE_FOR_EACH(HE_COMBINE_NS_TYPE, type)
-
-// If you add a new schema, change this !!
-#define PLAINTEXT_FOR_EACH(invoke, ...)                 \
-  invoke(::heu::lib::algorithms, MPInt, ##__VA_ARGS__), \
-      invoke(::heu::lib::algorithms::mock, Plaintext, ##__VA_ARGS__)
 
 #define HE_PLAINTEXT_TYPES PLAINTEXT_FOR_EACH(HE_COMBINE_NS_TYPE)
 

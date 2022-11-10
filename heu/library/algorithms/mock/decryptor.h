@@ -28,7 +28,7 @@ namespace heu::lib::algorithms::mock {
 class Decryptor {
  public:
   // [SPI: Critical]
-  explicit Decryptor(PublicKey _, SecretKey sk) : sk_(std::move(sk)) {}
+  explicit Decryptor(const PublicKey& _, const SecretKey& sk) : sk_(sk) {}
 
 // To algorithm developers:
 // The Decryptor class supports two different interfaces:

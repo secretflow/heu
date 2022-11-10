@@ -18,12 +18,24 @@
 
 namespace heu::lib::phe {
 
-static std::map<SchemaType, std::vector<std::string>> kSchemaTypeToString = {
-    {SchemaType::Mock, {"none", "mock", "plain"}},
-    {SchemaType::ZPaillier,
-     {"z-paillier", "zpaillier", "paillier", "paillier_z", "paillier_zahlen"}},
-    {SchemaType::FPaillier,
-     {"f-paillier", "fpaillier", "paillier_f", "paillier_float"}},
+// [SPI: Please register your algorithm here] || progress: (4 of 4)
+// Please add aliases to your algorithm, note that aliases should not be
+// duplicated with other algorithms.
+// Aliases are case-sensitive.
+// The first alias of each schema will be bound to Python SchemaType enum, it is
+// recommended to have the same name as the C++ enum
+// 请给您的算法添加别名，别名区分大小写，注意别名不能与其它算法重复
+// 第一个别名将被绑定到 Python SchemaType enum 中，建议与 C++ enum 同名
+static const std::map<SchemaType, std::vector<std::string>>
+    kSchemaTypeToString = {
+        {SchemaType::Mock, {"Mock", "none", "mock", "plain"}},
+        {SchemaType::ZPaillier,
+         {"ZPaillier", "z-paillier", "zpaillier", "paillier", "paillier_z",
+          "paillier_zahlen"}},
+        {SchemaType::FPaillier,
+         {"FPaillier", "f-paillier", "fpaillier", "paillier_f",
+          "paillier_float"}},
+        // {SchemaType::YOUR_ALGO, {"YOUR_ALGO", "your_algorithm"}},
 };
 
 std::vector<SchemaType> GetAllSchema() {
@@ -48,7 +60,11 @@ SchemaType ParseSchemaType(const std::string& schema_string) {
 }
 
 std::string SchemaToString(SchemaType schema_type) {
-  return kSchemaTypeToString[schema_type][0];
+  return kSchemaTypeToString.at(schema_type)[0];
+}
+
+std::vector<std::string> GetSchemaAliases(SchemaType schema_type) {
+  return kSchemaTypeToString.at(schema_type);
 }
 
 std::ostream& operator<<(std::ostream& os, SchemaType st) {

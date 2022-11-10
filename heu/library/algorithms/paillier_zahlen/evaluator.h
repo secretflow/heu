@@ -24,8 +24,6 @@ class Evaluator {
  public:
   explicit Evaluator(const PublicKey& pk) : pk_(pk), encryptor_(pk) {}
 
-  const Encryptor& GetEncryptor() const { return encryptor_; }
-
   // The performance of Randomize() is exactly the same as that of Encrypt().
   void Randomize(Ciphertext* ct) const;
 
