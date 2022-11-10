@@ -20,42 +20,67 @@
 
 namespace heu::lib::phe::test {
 
-class PheTest : public ::testing::Test {};
+class SchemaTest : public ::testing::Test {};
 
 // Test: Make sure `SchemaType` is in the same order as `HE_FOR_EACH`
-TEST_F(PheTest, SchemaEqualsMacro) {
+TEST_F(SchemaTest, SchemaEqualsMacro) {
   Ciphertext ciphertext0(SchemaType::Mock);
   ciphertext0.Visit([](auto obj) {
-    bool same =
-        (std::is_same<decltype(obj), algorithms::mock::Ciphertext>::value);
-    EXPECT_TRUE(same);
+    EXPECT_TRUE((std::is_same_v<decltype(obj), algorithms::mock::Ciphertext>));
   });
 
   Ciphertext ciphertext2(SchemaType::FPaillier);
   ciphertext2.Visit([](auto obj) {
-    bool same = (std::is_same<decltype(obj),
-                              algorithms::paillier_f::Ciphertext>::value);
-    EXPECT_TRUE(same);
+    EXPECT_TRUE(
+        (std::is_same_v<decltype(obj), algorithms::paillier_f::Ciphertext>));
   });
 
   Ciphertext ciphertext3(SchemaType::ZPaillier);
   ciphertext3.Visit([](auto obj) {
-    bool same = (std::is_same<decltype(obj),
-                              algorithms::paillier_z::Ciphertext>::value);
-    EXPECT_TRUE(same);
+    EXPECT_TRUE(
+        (std::is_same_v<decltype(obj), algorithms::paillier_z::Ciphertext>));
   });
 };
 
-TEST_F(PheTest, SchemaParse) {
+// This test cannot replace SchemaTest.SchemaEqualsMacro
+// Since the IsCompatible() method is based on HE_FOR_EACH macro too.
+TEST_F(SchemaTest, HeMacroWorks) {
+#define TEST_NAMESPACE_LIST(ns) \
+  Ciphertext(ns::Ciphertext()).IsCompatible(static_cast<SchemaType>(i++))
+
+  int i = 0;
+  std::vector<bool> res = {HE_FOR_EACH(TEST_NAMESPACE_LIST)};
+  ASSERT_EQ(res.size(), GetAllSchema().size())
+      << "HE_FOR_EACH not equal to SchemaType";
+  for (const auto& item : res) {
+    ASSERT_TRUE(item);
+  }
+}
+
+TEST_F(SchemaTest, AliasesUnique) {
+  std::unordered_set<std::string> alias_set;
+  int count = 0;
+  for (const auto& schema : GetAllSchema()) {
+    for (const auto& alias : GetSchemaAliases(schema)) {
+      ++count;
+      ASSERT_TRUE(alias_set.count(alias) == 0);
+      alias_set.insert(alias);
+    }
+  }
+
+  ASSERT_EQ(alias_set.size(), count);
+}
+
+TEST_F(SchemaTest, SchemaParse) {
   EXPECT_EQ(ParseSchemaType("mock"), SchemaType::Mock);
   EXPECT_EQ(ParseSchemaType("plain"), SchemaType::Mock);
   EXPECT_EQ(ParseSchemaType("paillier"), SchemaType::ZPaillier);
   EXPECT_EQ(ParseSchemaType("fpaillier"), SchemaType::FPaillier);
   EXPECT_THROW(ParseSchemaType("abc"), yasl::RuntimeError);
 
-  EXPECT_EQ(SchemaToString(SchemaType::Mock), "none");
-  EXPECT_EQ(SchemaToString(SchemaType::ZPaillier), "z-paillier");
-  EXPECT_EQ(SchemaToString(SchemaType::FPaillier), "f-paillier");
+  EXPECT_EQ(SchemaToString(SchemaType::Mock), "Mock");
+  EXPECT_EQ(SchemaToString(SchemaType::ZPaillier), "ZPaillier");
+  EXPECT_EQ(SchemaToString(SchemaType::FPaillier), "FPaillier");
 }
 
 }  // namespace heu::lib::phe::test

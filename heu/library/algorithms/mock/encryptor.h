@@ -27,7 +27,7 @@ namespace heu::lib::algorithms::mock {
 class Encryptor {
  public:
   // [SPI: Critical]
-  explicit Encryptor(PublicKey pk) : pk_(std::move(pk)) {}
+  explicit Encryptor(const PublicKey& pk) : pk_(pk) {}
 
 // To algorithm developers:
 // The Encryptor class supports two different interfaces:
@@ -43,6 +43,8 @@ class Encryptor {
   [[nodiscard]] Ciphertext Encrypt(const Plaintext& m) const;
 
   // [SPI: Important]
+  // Input: plaintext
+  // Output: pair of <ciphertext, audit_string>
   [[nodiscard]] std::pair<Ciphertext, std::string> EncryptWithAudit(
       const Plaintext& m) const;
 #endif
@@ -55,6 +57,8 @@ class Encryptor {
   std::vector<Ciphertext> Encrypt(ConstSpan<Plaintext> pts) const;
 
   // [SPI: Important]
+  // Input: plaintext
+  // Output: pair of <ciphertext list, audit_string list>
   std::pair<std::vector<Ciphertext>, std::vector<std::string>> EncryptWithAudit(
       ConstSpan<Plaintext> pts) const;
 #endif

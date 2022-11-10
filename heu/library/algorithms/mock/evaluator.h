@@ -28,8 +28,6 @@ class Evaluator {
   // [SPI: Critical]
   explicit Evaluator(const PublicKey& pk) : pk_(pk), encryptor_(pk) {}
 
-  const Encryptor& GetEncryptor() const { return encryptor_; }
-
 // To algorithm developers:
 // The Evaluator class supports two different interfaces:
 // IMPL_SCALAR_SPI and IMPL_VECTORIZED_SPI. You only need to choose either SPI

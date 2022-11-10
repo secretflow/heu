@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-29 11:41+0800\n"
+"POT-Creation-Date: 2022-11-07 18:53+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -154,28 +154,28 @@ msgstr ""
 " you can pass a scale=1 encoder to it, or just use the default "
 "``phe.BigintEncoder`` encoder directly"
 
-#: ../../getting_started/numpy.rst:111
+#: ../../getting_started/numpy.rst:116
 msgid "辅助函数"
 msgstr "Helper functions"
 
-#: ../../getting_started/numpy.rst:113
+#: ../../getting_started/numpy.rst:118
 msgid "HEU 提供了一些辅助函数用以快速创建 hnp.PlaintextArray 对象。"
 msgstr ""
 "HEU provides some helper functions to help you create "
 "**hnp.PlaintextArray** quickly."
 
-#: ../../getting_started/numpy.rst:125
+#: ../../getting_started/numpy.rst:132
 msgid "输出"
 msgstr "Outfeed"
 
-#: ../../getting_started/numpy.rst:127
+#: ../../getting_started/numpy.rst:134
 msgid "**hnp.PlaintextArray** 提供了 **to_numpy()** 接口用于将明文转换成原文，同理，转换的过程依赖编码器。"
 msgstr ""
 "The **hnp.PlaintextArray** interface provides a **to_numpy()** interface "
 "for converting plaintext to cleartext. Similarly, the conversion process "
 "depends on an encoder."
 
-#: ../../getting_started/numpy.rst:129
+#: ../../getting_started/numpy.rst:136
 msgid ""
 "编码器同时拥有编码和解码功能，一般来说， **to_numpy()** 需要传入与 **hnp.array()** "
 "相同的编码器对象，否则可能导致解码后的原文不正确"
@@ -184,23 +184,21 @@ msgstr ""
 " **to_numpy()** needs to pass in the same encoder as **hnp.array()**, "
 "otherwise the decoded cleartext maybe incorrect"
 
-#: ../../getting_started/numpy.rst:140
-msgid ""
-"与 **hnp.array()** 一样，如果 **to_numpy()** 不指定编码器，则默认使用 "
-"``phe.BigintEncoder()``。"
+#: ../../getting_started/numpy.rst:147
+msgid "与 **hnp.array()** 一样，如果 **to_numpy()** 不指定编码器，则默认使用 ``BigintEncoder``。"
 msgstr ""
 "Like **hnp.array()**, if **to_numpy()** does not feed an encoder, the "
-"``phe.BigintEncoder()`` is used by default."
+"``BigintEncoder`` is used by default."
 
-#: ../../getting_started/numpy.rst:144
+#: ../../getting_started/numpy.rst:151
 msgid "加解密和运算"
 msgstr "Encryption Decryption and Evaluation"
 
-#: ../../getting_started/numpy.rst:147
+#: ../../getting_started/numpy.rst:154
 msgid "基本操作"
 msgstr "Basic operations"
 
-#: ../../getting_started/numpy.rst:149
+#: ../../getting_started/numpy.rst:156
 msgid ""
 "**encryptor** 和 **decryptor** 分别提供了加密和解密接口，**evaluator** "
 "提供了明文、密文运算的能力，用法如下："
@@ -209,7 +207,7 @@ msgstr ""
 "capability respectively. The **evaluator** provides the capability of "
 "plaintext and ciphertext operations, the usage is as follows:"
 
-#: ../../getting_started/numpy.rst:165
+#: ../../getting_started/numpy.rst:172
 msgid ""
 "同态加密的密文无法做 truncation，因此如果 plaintext/ciphertext 是经过 scale 的，则乘法会导致 scale "
 "变成两倍，这时可以用以下两种方式解决："
@@ -218,27 +216,27 @@ msgstr ""
 "plaintext/ciphertext is scaled, the multiplication will cause the scale "
 "to be double. The following are two suggestions to solve this problem:"
 
-#: ../../getting_started/numpy.rst:167
+#: ../../getting_started/numpy.rst:174
 msgid "保证乘法的其中一个乘数的 scale 为 1"
 msgstr "Guarantee one of the multipliers have a scale of 1"
 
-#: ../../getting_started/numpy.rst:176
+#: ../../getting_started/numpy.rst:182
 msgid "在结果转为明文或原文后手动除以 scale"
 msgstr ""
 "Manually divide a scale after the result is converted to "
 "plaintext/cleartext"
 
-#: ../../getting_started/numpy.rst:189
+#: ../../getting_started/numpy.rst:195
 msgid "切片"
 msgstr "Slice"
 
-#: ../../getting_started/numpy.rst:191
+#: ../../getting_started/numpy.rst:197
 msgid "**hnp.PlaintextArray** 和 **hnp.CiphertextArray** 支持切片，示例如下："
 msgstr ""
 "The **hnp.PlaintextArray** and **hnp.CiphertextArray** support slicing, "
 "examples are as follows:"
 
-#: ../../getting_started/numpy.rst:222
+#: ../../getting_started/numpy.rst:228
 msgid ""
 "hnp 的切片 key 支持 scalar，sequence，slice 类型，其中 sequence 是 list，tuple "
 "等类型的统称。如果 key 是 scalar，则切片在该维度上降维，如果 key 是 sequence 和 slice，则切片保留维度，举例来说："
@@ -249,21 +247,21 @@ msgstr ""
 "dimension, and if the key is a sequence or a slice, the slice retains the"
 " dimension, for example:"
 
-#: ../../getting_started/numpy.rst:224
+#: ../../getting_started/numpy.rst:230
 msgid "harr[sequence/slice, sequence/slice]: 结果为 matrix"
 msgstr "harr[sequence/slice, sequence/slice]: Slice is a matrix"
 
-#: ../../getting_started/numpy.rst:225
+#: ../../getting_started/numpy.rst:231
 msgid "harr[sequence/slice, scalar] or harr[scalar, sequence/slice]: 结果为 vector"
 msgstr ""
 "harr[sequence/slice, scalar] or harr[scalar, sequence/slice]: Slice is a "
 "vector"
 
-#: ../../getting_started/numpy.rst:226
+#: ../../getting_started/numpy.rst:232
 msgid "harr[scalar, scalar]: 结果为 scalar"
 msgstr "harr[scalar, scalar]: Slice is a scalar"
 
-#: ../../getting_started/numpy.rst:229
+#: ../../getting_started/numpy.rst:235
 msgid "hnp 切片的用法与 numpy 类似，但并不完全一样，以下是结果不一致的地方"
 msgstr ""
 "The usage of hnp array slicing is similar to numpy, but not exactly the "

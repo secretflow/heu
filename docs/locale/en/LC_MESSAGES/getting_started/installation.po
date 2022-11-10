@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-14 15:27+0800\n"
+"POT-Creation-Date: 2022-11-07 18:53+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,7 +43,7 @@ msgid "Ubuntu 18.04+"
 msgstr ""
 
 #: ../../getting_started/installation.rst:12
-msgid "macOS with Intel CPU 11.1+ (macOS Big Sur+)"
+msgid "macOS 11.1+ (macOS Big Sur+)"
 msgstr ""
 
 #: ../../getting_started/installation.rst:35

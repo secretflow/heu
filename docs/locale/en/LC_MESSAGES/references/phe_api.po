@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-25 16:01+0800\n"
+"POT-Creation-Date: 2022-11-09 18:58+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,21 +45,44 @@ msgstr ""
 msgid "Batch encode two cleartexts into one plaintext"
 msgstr ""
 
-#: ../../docstring heu.phe.BigintEncoder:1 heu.phe.FloatEncoder:1
-#: heu.phe.IntegerEncoder:1 of
-msgid "Encode cleartext into plaintext."
+#: ../../docstring heu.phe.PyCapsule.instance:1 of
+msgid "Create BatchEncoder instance"
 msgstr ""
 
-#: ../../docstring heu.phe.BigintEncoder:3 of
-msgid "PyBigintEncoder supports arbitrary precision integers"
+#: ../../docstring heu.phe.BigintDecoder:1 of
+msgid "BigintDecoder is used to decode plaintext into Python integers."
+msgstr ""
+
+#: ../../docstring heu.phe.BigintDecoder:3 of
+msgid ""
+"BigintEncoder is the most commonly used Encoder type. Creating an "
+"BigintEncoder instance depends on schema info, however, schema info is "
+"only needed for encoding, that is, decoding does not depend on schema. To"
+" make the BigintEncoder implicitly usable when decoding, we split out the"
+" decoding part called BigintDecoder, which does not rely on any "
+"initialization parameters and can create instances anywhere, making it "
+"easier to use"
 msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.decode:1 of
 msgid "Decode plaintext to python int number"
 msgstr ""
 
+#: ../../docstring heu.phe.BigintEncoder:1 heu.phe.FloatEncoder:1
+#: heu.phe.IntegerEncoder:1 of
+msgid "Encode cleartext into plaintext."
+msgstr ""
+
+#: ../../docstring heu.phe.BigintEncoder:3 of
+msgid "BigintEncoder supports arbitrary precision integers"
+msgstr ""
+
 #: ../../docstring heu.phe.PyCapsule.encode:1 of
 msgid "Encode python int number into plaintext"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.instance:1 of
+msgid "Create BigintEncoder instance"
 msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.decrypt:1 of
@@ -76,10 +99,6 @@ msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.evaluator:1 of
 msgid "Get evaluator"
-msgstr ""
-
-#: ../../docstring heu.phe.PyCapsule.public_key:1 of
-msgid "Get public key"
 msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.encrypt:1 of
@@ -198,8 +217,48 @@ msgstr ""
 msgid "Encode an int128 number into plaintext"
 msgstr ""
 
+#: ../../docstring heu.phe.PyCapsule.instance:1 of
+msgid "Create FloatEncoder instance"
+msgstr ""
+
 #: ../../docstring heu.phe.PyCapsule.decryptor:1 of
 msgid "Get decryptor"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.batch_encoder:1 of
+msgid ""
+"Get an instance of BatchEncoder, equal to `phe.BatchEncoder(schema, "
+"padding_size)`"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.bigint_encoder:1 of
+msgid "Get an instance of BigintEncoder, equal to `phe.BigintEncoder(schema)`"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.float_encoder:1 of
+msgid ""
+"Get an instance of FloatEncoder, equal to `phe.FloatEncoder(schema, "
+"scale)`"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.get_schema:1 of
+msgid "Get schema type"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.integer_encoder:1 of
+msgid ""
+"Get an instance of IntegerEncoder, equal to `phe.IntegerEncoder(schema, "
+"scale)`"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.plaintext:1 of
+msgid ""
+"Create a plaintext from int without bit size limit, equal to "
+"heu.phe.Plaintext(schema, int_num)"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.public_key:1 of
+msgid "Get public key"
 msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.secret_key:1 of
@@ -230,6 +289,18 @@ msgid ""
 "fractional part)"
 msgstr ""
 
+#: ../../docstring heu.phe.PyCapsule.instance:1 of
+msgid "Create IntegerEncoder instance"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.bit_count:1 of
+msgid "Bit size of this plaintext"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.is_compatible:1 of
+msgid "Is this plaintext compatible with schema type 'x'"
+msgstr ""
+
 #: ../../docstring heu.phe.PyCapsule.to_bytes:1 of
 msgid "Return an array of bytes representing an integer."
 msgstr ""
@@ -252,7 +323,7 @@ msgid "Members:"
 msgstr ""
 
 #: ../../docstring heu.phe.SchemaType:3 of
-msgid "Mock : No encryption, only for debugging"
+msgid "Mock"
 msgstr ""
 
 #: ../../docstring heu.phe.SchemaType:5 of

@@ -24,7 +24,6 @@ class Evaluator {
  public:
   explicit Evaluator(const PublicKey& pk) : pk_(pk), encryptor_(pk) {}
 
- public:
   void Randomize(Ciphertext* ct) const;
 
   // c = a + b

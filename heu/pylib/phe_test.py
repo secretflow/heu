@@ -24,6 +24,13 @@ class BasicCase(unittest.TestCase):
         self.decryptor = self.ctx.decryptor()
         self.evaluator = self.ctx.evaluator()
 
+    def test_schema(self):
+        self.assertEqual(phe.SchemaType.ZPaillier, phe.parse_schema_type("z-paillier"))
+        self.assertEqual(phe.SchemaType.ZPaillier, phe.parse_schema_type("paillier"))
+        self.assertEqual(phe.SchemaType.Mock, phe.parse_schema_type("plain"))
+        self.assertEqual(phe.SchemaType.Mock, phe.parse_schema_type("none"))
+        self.assertEqual(phe.SchemaType.Mock, phe.parse_schema_type("mock"))
+
     def test_plaintext(self):
         case = [
             0,
@@ -68,7 +75,7 @@ class BasicCase(unittest.TestCase):
             )
 
         # below are big number cases
-        case = [random.getrandbits(2**i) for i in range(4, 14) for _ in range(100)]
+        case = [random.getrandbits(2 ** i) for i in range(4, 14) for _ in range(100)]
         for c in case:
             pt = phe.Plaintext(self.ctx.get_schema(), c)
             self.assertEqual(str(pt), str(c))
@@ -88,7 +95,7 @@ class BasicCase(unittest.TestCase):
             self.assertTrue(pt >= pt)
             self.assertTrue(pt < phe.Plaintext(self.ctx.get_schema(), 0))
 
-        max_bytes = 2**14 // 8
+        max_bytes = 2 ** 14 // 8
         for c in case:
             self.assertEqual(
                 phe.Plaintext(self.ctx.get_schema(), c).to_bytes(max_bytes, "big"),
@@ -125,7 +132,7 @@ class BasicCase(unittest.TestCase):
 
         # max case
         max_p = int(self.ctx.public_key().plaintext_bound()) - 1
-        self.assertGreater(max_p, 2**128)  # max_p is much, much larger than int128_t
+        self.assertGreater(max_p, 2 ** 128)  # max_p is much, much larger than int128_t
         max_ct = self.encryptor.encrypt_raw(max_p)
         max_ct = self.evaluator.sub(
             max_ct, phe.Plaintext(self.ctx.get_schema(), 1)
