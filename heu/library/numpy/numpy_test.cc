@@ -99,31 +99,17 @@ TEST_F(NumpyTest, PtSerializeWorks) {
   // buffer serialize
   auto buf = pts1.Serialize();
   ASSERT_GT(buf.size(), 0);
-  DenseMatrix<phe::Plaintext> pts2;
-  pts2.Deserialize(buf);
+  DenseMatrix<phe::Plaintext> pts2 = DenseMatrix<phe::Plaintext>::LoadFrom(buf);
   AssertMatrixEq(pts1, pts2);
-
-  // msgpack serialize
-  std::stringstream ss;
-  msgpack::pack(ss, pts2);
-
-  msgpack::object_handle oh;
-  msgpack::unpack(oh, ss.str().data(), ss.str().size());
-  auto pts3 = oh.get().as<decltype(pts2)>();
-  AssertMatrixEq(pts1, pts3);
-  AssertMatrixEq(pts2, pts3);
 }
 
 TEST_F(NumpyTest, CtSerializeWorks) {
   auto cts1 = he_kit_.GetEncryptor()->Encrypt(
       GenMatrix(he_kit_.GetSchemaType(), 10, 30));
 
-  std::stringstream ss;
-  msgpack::pack(ss, cts1);
-
-  msgpack::object_handle oh;
-  msgpack::unpack(oh, ss.str().data(), ss.str().size());
-  auto cts2 = oh.get().as<decltype(cts1)>();
+  auto buf = cts1.Serialize();
+  std::string str = std::string(buf.data<char>(), buf.size());
+  auto cts2 = DenseMatrix<phe::Ciphertext>::LoadFrom(str);
   AssertMatrixEq(cts1, cts2);
 }
 

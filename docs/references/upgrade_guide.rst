@@ -82,7 +82,7 @@ Scalar 操作
    # Create plaintext matrix (solution 2)
    # Before: pt = hnp.array([1, 2, 3], phe.IntegerEncoder())
    # Now:
-   pt = hnp.array([1, 2, 3], kit.IntegerEncoder(scale=100))
+   pt = hnp.array([1, 2, 3], kit.integer_encoder(scale=100))
    # Or:
    pt = hnp.array([1, 2, 3], phe.IntegerEncoder(kit.get_schema(), scale=100))
    # Or:

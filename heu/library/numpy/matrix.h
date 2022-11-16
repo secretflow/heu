@@ -28,13 +28,16 @@
 
 namespace heu::lib::numpy {
 
+// Check if T has a member function .Serialize()
+template <typename T>
+using kHasSerializeMethod = decltype(std::declval<T&>().Serialize());
+
 // Vector is cheated as an n*1 matrix
 template <typename T>
-class DenseMatrix : public algorithms::HeObject<DenseMatrix<T>> {
+class DenseMatrix {
  public:
   typedef T value_type;
 
-  DenseMatrix() = default;  // for msgpack
   DenseMatrix(Eigen::Index rows, Eigen::Index cols, int64_t ndim = 2)
       : m_(rows, cols), ndim_(ndim) {
     YASL_ENFORCE(ndim <= 2, "HEU tensor dimension cannot exceed 2");
@@ -71,8 +74,6 @@ class DenseMatrix : public algorithms::HeObject<DenseMatrix<T>> {
                          const ColIndices& col_indices,
                          bool squeeze_row = false,
                          bool squeeze_col = false) const {
-    DenseMatrix<T> res;
-    res.ndim_ = ndim_;
     const auto& view = m_(row_indices, col_indices);
 
     if (ndim_ == 1) {
@@ -87,29 +88,30 @@ class DenseMatrix : public algorithms::HeObject<DenseMatrix<T>> {
     int64_t min_dim = view.rows() > 1 ? 1 : 0 + view.cols() > 1 ? 1 : 0;
     if ((!squeeze_row && !squeeze_col) or ndim_ == min_dim) {
       // no squeeze or nothing to squeeze
-      res.m_ = view;
-      return res;
+      return {view, ndim_};
     }
 
     int64_t new_dim = ndim_;
     if (squeeze_col && view.cols() <= 1) {
       // vertical vector or scalar
       new_dim -= 1;
-      res.m_ = view;
-
       if (squeeze_row && view.rows() <= 1) {
         new_dim -= 1;  // scalar
       }
+
+      YASL_ENFORCE(new_dim >= min_dim,
+                   "internal error: a bug occurred during squeeze");
+      return {view, new_dim};
     } else if (squeeze_row && view.rows() <= 1) {
       // horizontal vector or scalar
       new_dim -= 1;
-      res.m_ = view.transpose();  // convert to vertical vector
+
+      YASL_ENFORCE(new_dim >= min_dim,
+                   "internal error: a bug occurred during squeeze");
+      return {view.transpose(), new_dim};
     }
 
-    YASL_ENFORCE(new_dim >= min_dim,
-                 "internal error: a bug occurred during squeeze");
-    res.ndim_ = new_dim;
-    return res;
+    YASL_THROW_LOGIC_ERROR("GetItem should not reach here");
   }
 
   template <typename RowIndices, typename ColIndices>
@@ -187,13 +189,10 @@ class DenseMatrix : public algorithms::HeObject<DenseMatrix<T>> {
   // Transpose()
   DenseMatrix<T> Transpose() {
     YASL_ENFORCE(ndim_ == 2, "you cannot transpose a {}d-tensor", ndim_);
-    DenseMatrix<T> res;
-    res.m_ = m_.transpose();
-    res.ndim_ = ndim_;
-    return res;
+    return {m_.transpose(), ndim_};
   }
 
-  [[nodiscard]] std::string ToString() const override {
+  [[nodiscard]] std::string ToString() const {
     std::stringstream ss;
     ss << m_.format(Eigen::IOFormat(Eigen::StreamPrecision, 0, " ", "\n", "[",
                                     "]", "[", "]"));
@@ -206,7 +205,87 @@ class DenseMatrix : public algorithms::HeObject<DenseMatrix<T>> {
 
   const auto& EigenMatrix() const { return m_; }
 
+  [[nodiscard]] yasl::Buffer Serialize() const {
+    msgpack::sbuffer buffer;
+    msgpack::packer<msgpack::sbuffer> o(buffer);
+
+    // Since element T is not POD, so we cannot pack underlying buffer
+    // directly
+    o.pack_array(4);
+    Eigen::Index rows = this->rows();
+    Eigen::Index cols = this->cols();
+    int64_t ndim = this->ndim();
+
+    o.pack(rows);
+    o.pack(cols);
+    o.pack(ndim);
+    o.pack_array(this->size());
+
+    for (Eigen::Index j = 0; j < cols; j++) {
+      for (Eigen::Index i = 0; i < rows; i++) {
+        if constexpr (std::experimental::is_detected_v<kHasSerializeMethod,
+                                                       T>) {
+          o.pack(std::string_view(m_(i, j).Serialize()));
+        } else {
+          o.pack(m_(i, j));
+        }
+      }
+    }
+
+    auto sz = buffer.size();
+    return {buffer.release(), sz, [](void* ptr) { free(ptr); }};
+  }
+
+  static DenseMatrix<T> LoadFrom(yasl::ByteContainerView in) {
+    auto msg =
+        msgpack::unpack(reinterpret_cast<const char*>(in.data()), in.size());
+    msgpack::object o = msg.get();
+
+    if (o.type != msgpack::type::ARRAY) {
+      throw msgpack::type_error();
+    }
+    if (o.via.array.size != 4) {
+      throw msgpack::type_error();
+    }
+
+    Eigen::Index rows = o.via.array.ptr[0].as<Eigen::Index>();
+    Eigen::Index cols = o.via.array.ptr[1].as<Eigen::Index>();
+    auto dim = o.via.array.ptr[2].as<int64_t>();
+    heu::lib::numpy::DenseMatrix<T> res(rows, cols, dim);
+
+    auto inner_obj = o.via.array.ptr[3];
+    if (inner_obj.type != msgpack::type::ARRAY ||
+        inner_obj.via.array.size != res.size()) {
+      throw msgpack::type_error();
+    }
+
+    msgpack::object* p = inner_obj.via.array.ptr;
+    for (Eigen::Index j = 0; j < cols; j++) {
+      for (Eigen::Index i = 0; i < rows; i++) {
+        if constexpr (std::experimental::is_detected_v<kHasSerializeMethod,
+                                                       T>) {
+          res(i, j).Deserialize(p++->template as<std::string_view>());
+        } else {
+          res(i, j) = p++->template as<T>();
+        }
+      }
+    }
+
+    return res;
+  }
+
  private:
+  DenseMatrix(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> m, int64_t ndim)
+      : m_(std::move(m)), ndim_(ndim) {
+    YASL_ENFORCE(ndim <= 2, "HEU tensor dimension cannot exceed 2");
+    if (ndim == 1) {
+      YASL_ENFORCE(m_.cols() == 1, "vector's cols must be 1");
+    } else if (ndim == 0) {
+      YASL_ENFORCE(m_.rows() == 1 && m_.cols() == 1,
+                   "scalar's shape must be 1x1");
+    }
+  }
+
   Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> m_;
   int64_t ndim_;
 };
@@ -215,86 +294,3 @@ using PMatrix = DenseMatrix<phe::Plaintext>;
 using CMatrix = DenseMatrix<phe::Ciphertext>;
 
 }  // namespace heu::lib::numpy
-
-// Msgpack adapter
-namespace msgpack {
-MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
-  namespace adaptor {
-
-  // Check if T has a member function .Serialize()
-  template <typename T>
-  using kHasSerializeMethod = decltype(std::declval<T&>().Serialize());
-
-  template <typename T>
-  struct pack<heu::lib::numpy::DenseMatrix<T>> {
-    template <typename Stream>
-    msgpack::packer<Stream>& operator()(
-        msgpack::packer<Stream>& o,
-        const heu::lib::numpy::DenseMatrix<T>& m) const {
-      // Since element T is not POD, so we cannot pack underlying buffer
-      // directly
-      o.pack_array(4);
-      Eigen::Index rows = m.rows();
-      Eigen::Index cols = m.cols();
-      int64_t ndim = m.ndim();
-
-      o.pack(rows);
-      o.pack(cols);
-      o.pack(ndim);
-      o.pack_array(m.size());
-
-      for (Eigen::Index j = 0; j < cols; j++) {
-        for (Eigen::Index i = 0; i < rows; i++) {
-          if constexpr (std::experimental::is_detected_v<kHasSerializeMethod,
-                                                         T>) {
-            o.pack(std::string_view(m(i, j).Serialize()));
-          } else {
-            o.pack(m(i, j));
-          }
-        }
-      }
-
-      return o;
-    }
-  };
-
-  template <typename T>
-  struct convert<heu::lib::numpy::DenseMatrix<T>> {
-    const msgpack::object& operator()(
-        const msgpack::object& o, heu::lib::numpy::DenseMatrix<T>& m) const {
-      if (o.type != msgpack::type::ARRAY) {
-        throw msgpack::type_error();
-      }
-      if (o.via.array.size != 4) {
-        throw msgpack::type_error();
-      }
-
-      Eigen::Index rows = o.via.array.ptr[0].as<Eigen::Index>();
-      Eigen::Index cols = o.via.array.ptr[1].as<Eigen::Index>();
-      auto dim = o.via.array.ptr[2].as<int64_t>();
-      m = heu::lib::numpy::DenseMatrix<T>(rows, cols, dim);
-
-      auto inner_obj = o.via.array.ptr[3];
-      if (inner_obj.type != msgpack::type::ARRAY ||
-          inner_obj.via.array.size != m.size()) {
-        throw msgpack::type_error();
-      }
-
-      msgpack::object* p = inner_obj.via.array.ptr;
-      for (Eigen::Index j = 0; j < cols; j++) {
-        for (Eigen::Index i = 0; i < rows; i++) {
-          if constexpr (std::experimental::is_detected_v<kHasSerializeMethod,
-                                                         T>) {
-            m(i, j).Deserialize(p++->template as<std::string_view>());
-          } else {
-            m(i, j) = p++->template as<T>();
-          }
-        }
-      }
-      return o;
-    }
-  };
-
-  }  // namespace adaptor
-}
-}  // namespace msgpack

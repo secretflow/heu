@@ -8,7 +8,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 SECRETFLOW_GIT = "https://github.com/secretflow"
 
 
-OPENSOURCE_YASL_VERSION = "b50ed242ec17a28bff3274e5e6d152183d04ed8f"
+OPENSOURCE_YASL_VERSION = "a1cd56d69261a0e2e4d369b0d29a4ca629ed9bc9"
 
 git_repository(
     name = "yasl",
