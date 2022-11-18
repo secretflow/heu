@@ -105,6 +105,27 @@ void BindArrayForClass(PyClassT& m, const PyArgT& edr_arg) {
       fmt::format("Encode a numpy ndarray using {}",
                   py::type_id<EncoderParamT>())
           .c_str());
+
+  m.def(
+      "array",
+      [](const phe::HeKitPublicBase& self, const py::array& ndarray,
+         const EncoderT& encoder) {
+        return EncodeNdarray<EncoderT>(ndarray, encoder);
+      },
+      py::arg("ndarray"), py::arg("encoder"),
+      fmt::format("Create and encode an array using {}, same with hnp.array()",
+                  py::type_id<EncoderT>())
+          .c_str());
+  m.def(
+      "array",
+      [](const phe::HeKitPublicBase& self, const py::object& ptr,
+         const EncoderT& encoder) {
+        return ParseEncodeNdarray<EncoderT>(ptr, encoder);
+      },
+      py::arg("object"), py::arg("encoder"),
+      fmt::format("Encode a numpy ndarray using {}, same with hnp.array()",
+                  py::type_id<EncoderT>())
+          .c_str());
 }
 
 }  // namespace
@@ -199,10 +220,10 @@ void PyBindNumpy(pybind11::module& m) {
       .def("decryptor", &hnp::HeKit::GetDecryptor, "Get decryptor")
       .def("evaluator", &hnp::HeKit::GetEvaluator, "Get evaluator");
   BindArrayForClass<PyBigintEncoderParams>(
-      he_kit, py::arg("encoder") = PyBigintEncoderParams());
-  BindArrayForClass<PyIntegerEncoderParams>(he_kit, py::arg("encoder"));
-  BindArrayForClass<PyFloatEncoderParams>(he_kit, py::arg("encoder"));
-  BindArrayForClass<PyBatchEncoderParams>(he_kit, py::arg("encoder"));
+      he_kit, py::arg("encoder_params") = PyBigintEncoderParams());
+  BindArrayForClass<PyIntegerEncoderParams>(he_kit, py::arg("encoder_params"));
+  BindArrayForClass<PyFloatEncoderParams>(he_kit, py::arg("encoder_params"));
+  BindArrayForClass<PyBatchEncoderParams>(he_kit, py::arg("encoder_params"));
 
   m.def(
       "setup",
@@ -233,10 +254,10 @@ void PyBindNumpy(pybind11::module& m) {
       .def("encryptor", &hnp::DestinationHeKit::GetEncryptor, "Get encryptor")
       .def("evaluator", &hnp::DestinationHeKit::GetEvaluator, "Get evaluator");
   BindArrayForClass<PyBigintEncoderParams>(
-      dhe_kit, py::arg("encoder") = PyBigintEncoderParams());
-  BindArrayForClass<PyIntegerEncoderParams>(dhe_kit, py::arg("encoder"));
-  BindArrayForClass<PyFloatEncoderParams>(dhe_kit, py::arg("encoder"));
-  BindArrayForClass<PyBatchEncoderParams>(dhe_kit, py::arg("encoder"));
+      dhe_kit, py::arg("encoder_params") = PyBigintEncoderParams());
+  BindArrayForClass<PyIntegerEncoderParams>(dhe_kit, py::arg("encoder_params"));
+  BindArrayForClass<PyFloatEncoderParams>(dhe_kit, py::arg("encoder_params"));
+  BindArrayForClass<PyBatchEncoderParams>(dhe_kit, py::arg("encoder_params"));
 
   m.def(
       "setup",

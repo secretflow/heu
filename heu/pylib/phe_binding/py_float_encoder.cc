@@ -41,6 +41,7 @@ void BindPyFloatEncoder(pybind11::module &m) {
            "parameters for FloatEncoder")
       .def("__str__", &PyFloatEncoderParams::ToString)
       .def("__repr__", &PyFloatEncoderParams::ToString)
+      .def(PyUtils::PickleSupport<PyFloatEncoderParams>())
       .def("instance", &PyFloatEncoderParams::Instance,
            "Create FloatEncoder instance");
 

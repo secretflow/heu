@@ -53,6 +53,10 @@ class Plaintext : public SerializableVariant<HE_PLAINTEXT_TYPES> {
   Plaintext operator-() const;
   void NegInplace();
 
+  bool IsZero() const;
+  bool IsPositive() const;
+  bool IsNegative() const;
+
   Plaintext operator+(const Plaintext &operand2) const;
   Plaintext operator-(const Plaintext &operand2) const;
   Plaintext operator*(const Plaintext &operand2) const;

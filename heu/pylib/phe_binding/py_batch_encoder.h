@@ -69,8 +69,9 @@ class PyBatchEncoder {
   lib::phe::BatchEncoder encoder_;
 };
 
-struct PyBatchEncoderParams {
+struct PyBatchEncoderParams : lib::algorithms::HeObject<PyBatchEncoderParams> {
   int64_t padding_size;
+  MSGPACK_DEFINE(padding_size);
 
   explicit PyBatchEncoderParams(int64_t padding_size = 1e6)
       : padding_size(padding_size) {}

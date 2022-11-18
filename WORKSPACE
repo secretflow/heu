@@ -12,10 +12,10 @@ OPENSOURCE_YASL_VERSION = "a1cd56d69261a0e2e4d369b0d29a4ca629ed9bc9"
 
 git_repository(
     name = "yasl",
-    recursive_init_submodules = True,
-    remote = "{}/yasl.git".format(SECRETFLOW_GIT),
     commit =
         OPENSOURCE_YASL_VERSION,
+    recursive_init_submodules = True,
+    remote = "{}/yasl.git".format(SECRETFLOW_GIT),
 )
 
 load("@yasl//bazel:repositories.bzl", "yasl_deps")

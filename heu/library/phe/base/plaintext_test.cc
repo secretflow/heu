@@ -18,9 +18,7 @@
 
 namespace heu::lib::phe::test {
 
-class PlaintextTest : public ::testing::Test {};
-
-TEST_F(PlaintextTest, AsTypeWorks) {
+TEST(PlaintextTest, AsTypeWorks) {
   Plaintext pt(SchemaType::ZPaillier);
   pt.SetValue(100);
   // The underlying type of ZPaillier is MPInt
@@ -52,11 +50,7 @@ TEST_F(PlaintextTest, AsTypeWorks) {
   EXPECT_EQ(big.GetValue<int128_t>(), i128);
 }
 
-TEST_F(PlaintextTest, EqWorks) {
-  EXPECT_FALSE(Plaintext().IsCompatible(SchemaType::Mock));
-  EXPECT_FALSE(Plaintext().IsCompatible(SchemaType::ZPaillier));
-  EXPECT_FALSE(Plaintext().IsCompatible(SchemaType::FPaillier));
-
+TEST(PlaintextTest, EqWorks) {
   Plaintext pt(SchemaType::ZPaillier);
   EXPECT_TRUE(pt.IsCompatible(SchemaType::ZPaillier));
   EXPECT_TRUE(pt.IsCompatible(SchemaType::FPaillier));
@@ -81,9 +75,71 @@ TEST_F(PlaintextTest, EqWorks) {
               Plaintext(SchemaType::Mock, 100));
 }
 
-TEST_F(PlaintextTest, ArithmeticWorks) {
-  Plaintext pt1{algorithms::MPInt(100)};
-  Plaintext pt2(algorithms::MPInt(200));
+class PlaintextTest : public ::testing::TestWithParam<SchemaType> {};
+
+INSTANTIATE_TEST_SUITE_P(Schema, PlaintextTest,
+                         ::testing::ValuesIn(GetAllSchema()));
+
+TEST_P(PlaintextTest, GetSetWorks) {
+  SchemaType schema = GetParam();
+  EXPECT_FALSE(Plaintext().IsCompatible(schema));
+
+  Plaintext pt(schema);
+  EXPECT_TRUE(pt.IsCompatible(schema));
+
+  pt.SetValue(127L);
+  EXPECT_TRUE(pt.IsPositive());
+  EXPECT_FALSE(pt.IsZero());
+  EXPECT_FALSE(pt.IsNegative());
+
+  EXPECT_EQ(pt.GetValue<uint8_t>(), 127);
+  EXPECT_EQ(pt.GetValue<int8_t>(), 127);
+  EXPECT_EQ(pt.GetValue<uint16_t>(), 127);
+  EXPECT_EQ(pt.GetValue<int16_t>(), 127);
+  EXPECT_EQ(pt.GetValue<uint32_t>(), 127);
+  EXPECT_EQ(pt.GetValue<int32_t>(), 127);
+  EXPECT_EQ(pt.GetValue<uint64_t>(), 127);
+  EXPECT_EQ(pt.GetValue<int64_t>(), 127);
+  EXPECT_EQ(pt.GetValue<uint128_t>(), 127);
+  EXPECT_EQ(pt.GetValue<int128_t>(), 127);
+
+  int128_t var = -128;
+  pt.SetValue(var);
+  EXPECT_EQ(pt.GetValue<int8_t>(), var);
+  EXPECT_EQ(pt.GetValue<int16_t>(), var);
+  EXPECT_EQ(pt.GetValue<int32_t>(), var);
+  EXPECT_EQ(pt.GetValue<int64_t>(), var);
+  EXPECT_EQ(pt.GetValue<int128_t>(), var);
+
+  var = -127;
+  pt.SetValue(static_cast<int8_t>(--var));
+  EXPECT_EQ(pt.GetValue<int8_t>(), var);
+  pt.SetValue(static_cast<int16_t>(--var));
+  EXPECT_EQ(pt.GetValue<int16_t>(), var);
+  pt.SetValue(static_cast<int32_t>(--var));
+  EXPECT_EQ(pt.GetValue<int32_t>(), var);
+  pt.SetValue(static_cast<int64_t>(--var));
+  EXPECT_EQ(pt.GetValue<int64_t>(), var);
+  pt.SetValue(static_cast<int128_t>(--var));
+  EXPECT_EQ(pt.GetValue<int128_t>(), var);
+
+  auto i64max = std::numeric_limits<int64_t>::max();
+  int128_t i128 = static_cast<int128_t>(i64max) * i64max;
+  Plaintext big(schema, i128);
+  ASSERT_GE(big.BitCount(), 120);
+  EXPECT_EQ(big.GetValue<int128_t>(), i128);
+}
+
+TEST_P(PlaintextTest, ArithmeticWorks) {
+  Plaintext pt1{GetParam(), 100};
+  Plaintext pt2(GetParam(), 200);
+  EXPECT_TRUE(pt1 < pt2);
+  EXPECT_TRUE(pt1 <= pt2);
+  EXPECT_TRUE(pt1 != pt2);
+  EXPECT_FALSE(pt1 == pt2);
+  EXPECT_FALSE(pt1 >= pt2);
+  EXPECT_FALSE(pt1 > pt2);
+
   EXPECT_EQ((pt1 + pt2).GetValue<int64_t>(), 300);
   EXPECT_EQ((pt1 - pt2).GetValue<int64_t>(), -100);
   EXPECT_EQ((pt1 * pt2).GetValue<int64_t>(), 20000);
@@ -96,6 +152,26 @@ TEST_F(PlaintextTest, ArithmeticWorks) {
   EXPECT_EQ((pt1 ^ pt2).GetValue<int64_t>(), 172);
   EXPECT_EQ((pt1 << 2).GetValue<int64_t>(), 400);
   EXPECT_EQ((pt1 >> 2).GetValue<int64_t>(), 25);
+
+  int128_t v1 = 123456789;
+  int128_t v2 = 123456;
+  pt1.SetValue(v1);
+  pt2.SetValue(v2);
+
+  EXPECT_EQ((pt1 += pt2).GetValue<int128_t>(), v1 += v2);
+  EXPECT_EQ((pt1 -= pt2).GetValue<int128_t>(), v1 -= v2);
+  EXPECT_EQ((pt1 *= pt2).GetValue<int128_t>(), v1 *= v2);
+  EXPECT_EQ((pt1 /= pt2).GetValue<int128_t>(), v1 /= v2);
+  EXPECT_EQ((pt1 %= pt2).GetValue<int128_t>(), v1 %= v2);
+
+  EXPECT_EQ((pt1 &= pt2).GetValue<int128_t>(), v1 &= v2);
+  EXPECT_EQ((pt1 |= pt2).GetValue<int128_t>(), v1 |= v2);
+  EXPECT_EQ((pt1 ^= pt2).GetValue<int128_t>(), v1 ^= v2);
+  EXPECT_EQ((pt1 <<= 10).GetValue<int128_t>(), v1 <<= 10);
+  EXPECT_EQ((pt1 >>= 10).GetValue<int128_t>(), v1 >>= 10);
+
+  pt1.NegInplace();
+  EXPECT_EQ(pt1.GetValue<int128_t>(), -v1);
 }
 
 }  // namespace heu::lib::phe::test

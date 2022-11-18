@@ -91,13 +91,13 @@ class BasicCase(unittest.TestCase):
         edr = self.kit.integer_encoder()
         for idx in range(10):
             input = np.random.randint(-10000, 10000, (100, 100))
-            harr = hnp.array(input, edr)
+            harr = self.kit.array(input, edr)
             self.assert_array_equal(harr, input, edr)
 
-        edr = phe.FloatEncoder(self.kit.get_schema(), scale=10 ** 8)
+        edr = phe.FloatEncoder(self.kit.get_schema(), scale=10**8)
         for idx in range(50):
             input = np.random.rand(100, 100)
-            harr = hnp.array(input, edr)
+            harr = self.kit.array(input, edr)
             pyarr = harr.to_numpy(edr)
             self.assertTrue(
                 np.allclose(pyarr, input), f"hnp is \n{pyarr}\ninput is \n{input}"
@@ -260,9 +260,13 @@ class BasicCase(unittest.TestCase):
         self.assert_array_equal(self.evaluator.sub(harr2, harr2), nparr2 - nparr2)
 
     def test_serialize(self):
+        edr_params = pickle.dumps(phe.BigintEncoderParams())
+
         # client: encrypt and send
         pk_buffer = pickle.dumps(self.kit.public_key())
-        pt_buffer = pickle.dumps(self.kit.array([[16, 19], [36, 43]]))
+        pt_buffer = pickle.dumps(
+            self.kit.array([[16, 19], [36, 43]], pickle.loads(edr_params))
+        )
         ct_buffer = pickle.dumps(self.encryptor.encrypt(self.kit.array([1, 2])))
 
         # server: calc ct1 - ct2

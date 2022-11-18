@@ -77,8 +77,9 @@ class PyFloatEncoder {
   lib::phe::PlainEncoder encoder_;
 };
 
-struct PyFloatEncoderParams {
+struct PyFloatEncoderParams : lib::algorithms::HeObject<PyFloatEncoderParams> {
   int64_t scale;
+  MSGPACK_DEFINE(scale);
 
   explicit PyFloatEncoderParams(int64_t scale = 1e6) : scale(scale) {}
   PyFloatEncoder Instance(lib::phe::SchemaType schema) const {

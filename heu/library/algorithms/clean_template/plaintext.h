@@ -52,6 +52,10 @@ class Plaintext {
   Plaintext operator-() const;
   void NegInplace();
 
+  bool IsZero() const;      // [SPI: Critical]
+  bool IsPositive() const;  // [SPI: Important]
+  bool IsNegative() const;  // [SPI: Important]
+
   Plaintext operator+(const Plaintext &op2) const;
   Plaintext operator-(const Plaintext &op2) const;
   Plaintext operator*(const Plaintext &op2) const;
@@ -81,8 +85,10 @@ class Plaintext {
   bool operator==(const Plaintext &other) const;
   bool operator!=(const Plaintext &other) const;
 
-  // static helper functions
+  // static helper functions //
+  // Generates a uniformly distributed random number of "bit_size" size
   static void RandomExactBits(size_t bit_size, Plaintext *r);
+  // Generates a uniformly distributed random number in [0, N)
   static void RandomLtN(const Plaintext &n, Plaintext *r);
 };
 
