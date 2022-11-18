@@ -79,7 +79,10 @@ class PyBigintEncoder : public PyBigintDecoder {
   lib::phe::SchemaType schema_type_;
 };
 
-struct PyBigintEncoderParams {
+struct PyBigintEncoderParams
+    : lib::algorithms::HeObject<PyBigintEncoderParams> {
+  MSGPACK_DEFINE();
+
   PyBigintEncoder Instance(lib::phe::SchemaType schema) const {
     return PyBigintEncoder(schema);
   }

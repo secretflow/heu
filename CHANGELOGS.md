@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [0.3.1]
+
+- add pickle support for XXXEncoderParams class
+- add IsZero/IsPositive/IsNegative to Plaintext SPI
 
 ## [0.3.0]
 

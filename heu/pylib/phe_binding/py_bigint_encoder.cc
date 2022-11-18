@@ -16,8 +16,6 @@
 
 namespace heu::pylib {
 
-using lib::phe::Plaintext;
-
 yasl::Buffer PyBigintEncoder::Serialize() const {
   msgpack::sbuffer buf;
   msgpack::pack(buf, schema_type_);
@@ -48,6 +46,7 @@ void BindPyBigintEncoder(pybind11::module &m) {
       .def(py::init<>(), "parameters for BigintEncoder")
       .def("__str__", &PyBigintEncoderParams::ToString)
       .def("__repr__", &PyBigintEncoderParams::ToString)
+      .def(PyUtils::PickleSupport<PyBigintEncoderParams>())
       .def("instance", &PyBigintEncoderParams::Instance,
            "Create BigintEncoder instance");
 

@@ -38,6 +38,7 @@ void BindPyBatchEncoder(pybind11::module &m) {
            "parameters for BigintEncoder")
       .def("__str__", &PyBatchEncoderParams::ToString)
       .def("__repr__", &PyBatchEncoderParams::ToString)
+      .def(PyUtils::PickleSupport<PyBatchEncoderParams>())
       .def("instance", &PyBatchEncoderParams::Instance,
            "Create BatchEncoder instance");
 

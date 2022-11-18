@@ -196,15 +196,21 @@ class Plaintext {
   // [SPI: Important]
   bool operator!=(const Plaintext &other) const { return bn_ != other.bn_; }
 
+  bool IsZero() const { return bn_.IsZero(); }          // [SPI: Critical]
+  bool IsPositive() const { return bn_.IsPositive(); }  // [SPI: Important]
+  bool IsNegative() const { return bn_.IsNegative(); }  // [SPI: Important]
+
   MSGPACK_DEFINE(bn_);
   MPInt bn_;  // It would be better if this field is private.
 
   // static helper functions
+  // Generates a uniformly distributed random number of "bit_size" size
   // [SPI: Critical]
   static void RandomExactBits(size_t bit_size, Plaintext *r) {
     MPInt::RandomExactBits(bit_size, &r->bn_);
   }
 
+  // Generates a uniformly distributed random number in [0, N)
   // [SPI: Critical]
   static void RandomLtN(const Plaintext &n, Plaintext *r) {
     MPInt::RandomLtN(n.bn_, &r->bn_);

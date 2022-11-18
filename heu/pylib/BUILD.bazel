@@ -5,7 +5,7 @@ load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
 package(default_visibility = ["//visibility:public"])
 
 
-PYPI_HEU_VERSION = "0.3.0b0"
+PYPI_HEU_VERSION = "0.3.1b0"
 
 exports_files(
     [

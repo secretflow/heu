@@ -88,15 +88,17 @@ class PyIntegerEncoder {
   lib::phe::PlainEncoder encoder_;
 };
 
-struct PyIntegerEncoderParams {
+struct PyIntegerEncoderParams
+    : lib::algorithms::HeObject<PyIntegerEncoderParams> {
   int64_t scale;
+  MSGPACK_DEFINE(scale);
 
   explicit PyIntegerEncoderParams(int64_t scale = 1e6) : scale(scale) {}
   PyIntegerEncoder Instance(lib::phe::SchemaType schema) const {
     return PyIntegerEncoder(schema, scale);
   }
 
-  std::string ToString();
+  std::string ToString() const;
 };
 
 void BindPyIntegerEncoder(pybind11::module &m);

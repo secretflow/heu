@@ -128,7 +128,7 @@ class MPInt {
   inline void NegInplace() { MPINT_ENFORCE_OK(mp_neg(&n_, &n_)); }
 
   [[nodiscard]] inline bool IsNegative() const { return mp_isneg(&n_); }
-  [[nodiscard]] inline bool IsPostive() const {
+  [[nodiscard]] inline bool IsPositive() const {
     return !mp_iszero(&n_) && !mp_isneg(&n_);
   }
 

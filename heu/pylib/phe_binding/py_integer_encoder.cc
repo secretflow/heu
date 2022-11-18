@@ -31,7 +31,7 @@ std::string PyIntegerEncoder::ToString() const {
                      encoder_.GetSchema(), encoder_.GetScale());
 }
 
-std::string PyIntegerEncoderParams::ToString() {
+std::string PyIntegerEncoderParams::ToString() const {
   return fmt::format("IntegerEncoderParams(scale={})", scale);
 }
 
@@ -43,6 +43,7 @@ void BindPyIntegerEncoder(pybind11::module &m) {
            "parameters for IntegerEncoder")
       .def("__str__", &PyIntegerEncoderParams::ToString)
       .def("__repr__", &PyIntegerEncoderParams::ToString)
+      .def(PyUtils::PickleSupport<PyIntegerEncoderParams>())
       .def("instance", &PyIntegerEncoderParams::Instance,
            "Create IntegerEncoder instance");
 

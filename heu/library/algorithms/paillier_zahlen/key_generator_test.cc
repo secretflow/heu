@@ -34,8 +34,8 @@ TEST_P(KeyGenTest, KeyFieldTest) {
   EXPECT_TRUE(pk.hs_table_->exp_max_bits >= pk.key_size_ / 2);
   EXPECT_TRUE(pk.hs_table_->exp_max_bits < pk.key_size_ / 2 + MP_DIGIT_BIT);
 
-  EXPECT_TRUE(sk.lambda_.IsPostive());
-  EXPECT_TRUE(sk.mu_.IsPostive());
+  EXPECT_TRUE(sk.lambda_.IsPositive());
+  EXPECT_TRUE(sk.mu_.IsPositive());
 }
 
 TEST_P(KeyGenTest, Serialize) {

@@ -22,11 +22,18 @@ void Plaintext::SetValue(const std::string& num, int radix) {
   Visit([&](auto& pt) { FOR_EACH_TYPE(pt) pt.Set(num, radix); });
 }
 
-size_t Plaintext::BitCount() const {
-  return Visit([](const auto& pt) -> size_t {
-    FOR_EACH_TYPE(pt) return pt.BitCount();
-  });
-}
+#define SIMPLE_FUNCTION_IMPL_RET(RET, NAME)  \
+  RET Plaintext::NAME() const {              \
+    return Visit([](const auto& pt) -> RET { \
+      FOR_EACH_TYPE(pt) return pt.NAME();    \
+    });                                      \
+  }
+
+SIMPLE_FUNCTION_IMPL_RET(size_t, BitCount)
+SIMPLE_FUNCTION_IMPL_RET(bool, IsZero)
+SIMPLE_FUNCTION_IMPL_RET(bool, IsPositive)
+SIMPLE_FUNCTION_IMPL_RET(bool, IsNegative)
+SIMPLE_FUNCTION_IMPL_RET(std::string, ToHexString)
 
 yasl::Buffer Plaintext::ToBytes(size_t byte_len,
                                 algorithms::Endian endian) const {
@@ -39,12 +46,6 @@ void Plaintext::ToBytes(unsigned char* buf, size_t buf_len,
                         algorithms::Endian endian) const {
   Visit([&](const auto& pt) {
     FOR_EACH_TYPE(pt) pt.ToBytes(buf, buf_len, endian);
-  });
-}
-
-std::string Plaintext::ToHexString() const {
-  return Visit([](const auto& clazz) -> std::string {
-    FOR_EACH_TYPE(clazz) return clazz.ToHexString();
   });
 }
 
