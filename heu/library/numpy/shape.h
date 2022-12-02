@@ -22,7 +22,7 @@ namespace heu::lib::numpy {
 
 class Shape : public algorithms::HeObject<Shape> {
  public:
-  Shape(){}
+  Shape() {}
   explicit Shape(std::vector<int64_t> shape) : shape_(std::move(shape)) {}
   Shape(std::initializer_list<int64_t> il) : shape_(il) {}
 
@@ -33,7 +33,7 @@ class Shape : public algorithms::HeObject<Shape> {
       index += Ndim();
     }
 
-    YASL_ENFORCE(0 <= index && index < Ndim(),
+    YACL_ENFORCE(0 <= index && index < Ndim(),
                  "index out of range, shape={}, index={}", ToString(), index);
     return shape_[index];
   }

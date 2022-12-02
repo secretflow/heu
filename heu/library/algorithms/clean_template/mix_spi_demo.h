@@ -26,20 +26,20 @@ class Encryptor {
   explicit Encryptor(const PublicKey& pk) {}
 
   // Scalar SPI only
-  Ciphertext EncryptZero() const { YASL_THROW("To be implemented"); }
+  Ciphertext EncryptZero() const { YACL_THROW("To be implemented"); }
 
   // Scalar SPI + Vectorized SPI
   Ciphertext Encrypt(const Plaintext& m) const {
-    YASL_THROW("To be implemented");
+    YACL_THROW("To be implemented");
   }
   std::vector<Ciphertext> Encrypt(ConstSpan<Plaintext> pts) const {
-    YASL_THROW("To be implemented");
+    YACL_THROW("To be implemented");
   }
 
   // Vectorized SPI only
   std::pair<std::vector<Ciphertext>, std::vector<std::string>> EncryptWithAudit(
       ConstSpan<Plaintext> pts) const {
-    YASL_THROW("To be implemented");
+    YACL_THROW("To be implemented");
   }
 };
 

@@ -14,17 +14,17 @@
 
 #include "heu/experimental/gemini-rlwe/poly_encoder.h"
 
-#include "yasl/base/exception.h"
+#include "yacl/base/exception.h"
 
 namespace heu::expt::rlwe {
 
 PolyEncoder::PolyEncoder(const seal::SEALContext &context,
                          ModulusSwitchHelper ms_helper)
     : ms_helper_(ms_helper) {
-  YASL_ENFORCE(context.parameters_set());
+  YACL_ENFORCE(context.parameters_set());
   auto pid0 = context.first_parms_id();
   auto pid1 = ms_helper.parms_id();
-  YASL_ENFORCE_EQ(0, std::memcmp(&pid0, &pid1, sizeof(seal::parms_id_type)),
+  YACL_ENFORCE_EQ(0, std::memcmp(&pid0, &pid1, sizeof(seal::parms_id_type)),
                   fmt::format("parameter set mismatch"));
   poly_deg_ = context.first_context_data()->parms().poly_modulus_degree();
 }
@@ -32,11 +32,11 @@ PolyEncoder::PolyEncoder(const seal::SEALContext &context,
 template <typename T>
 void PolyEncoder::DoForward(absl::Span<const T> vec, RLWEPt *out,
                             bool scale_delta) const {
-  yasl::CheckNotNull(out);
+  yacl::CheckNotNull(out);
   size_t num_coeffs = vec.size();
   size_t num_modulus = ms_helper_.coeff_modulus_size();
-  YASL_ENFORCE_GT(num_coeffs, 0UL);
-  YASL_ENFORCE(num_coeffs <= poly_deg_);
+  YACL_ENFORCE_GT(num_coeffs, 0UL);
+  YACL_ENFORCE(num_coeffs <= poly_deg_);
 
   out->parms_id() = seal::parms_id_zero;
   out->resize(seal::util::mul_safe(poly_deg_, num_modulus));
@@ -58,11 +58,11 @@ void PolyEncoder::DoForward(absl::Span<const T> vec, RLWEPt *out,
 template <typename T>
 void PolyEncoder::DoBackward(absl::Span<const T> vec, RLWEPt *out,
                              bool scale_delta) const {
-  yasl::CheckNotNull(out);
+  yacl::CheckNotNull(out);
   size_t num_coeffs = vec.size();
   size_t num_modulus = ms_helper_.coeff_modulus_size();
-  YASL_ENFORCE_GT(num_coeffs, 0UL);
-  YASL_ENFORCE(num_coeffs <= poly_deg_);
+  YACL_ENFORCE_GT(num_coeffs, 0UL);
+  YACL_ENFORCE(num_coeffs <= poly_deg_);
 
   size_t base_mod_bitlen = ms_helper_.base_mod_bitlen();
   T mask = static_cast<T>(-1);
@@ -131,4 +131,3 @@ void PolyEncoder::Backward(absl::Span<const uint128_t> vec, RLWEPt *out,
 }
 
 }  // namespace heu::expt::rlwe
-

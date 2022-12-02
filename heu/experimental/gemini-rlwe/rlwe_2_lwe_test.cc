@@ -107,10 +107,10 @@ class RLWE2LWETest : public testing::Test {
 bool transform_to_ntt_inplace(RLWEPt &pt, const seal::SEALContext &context) {
   using namespace seal::util;
   auto cntxt_data = context.get_context_data(pt.parms_id());
-  YASL_ENFORCE(cntxt_data != nullptr);
+  YACL_ENFORCE(cntxt_data != nullptr);
 
   auto L = cntxt_data->parms().coeff_modulus().size();
-  YASL_ENFORCE(pt.coeff_count() % L == 0);
+  YACL_ENFORCE(pt.coeff_count() % L == 0);
 
   auto ntt_tables = cntxt_data->small_ntt_tables();
   size_t n = pt.coeff_count() / L;
@@ -125,10 +125,10 @@ bool transform_to_ntt_inplace(RLWEPt &pt, const seal::SEALContext &context) {
 bool transform_from_ntt_inplace(RLWEPt &pt, const seal::SEALContext &context) {
   using namespace seal::util;
   auto cntxt_data = context.get_context_data(pt.parms_id());
-  YASL_ENFORCE(cntxt_data != nullptr);
+  YACL_ENFORCE(cntxt_data != nullptr);
 
   auto L = cntxt_data->parms().coeff_modulus().size();
-  YASL_ENFORCE(pt.coeff_count() % L == 0);
+  YACL_ENFORCE(pt.coeff_count() % L == 0);
 
   auto ntt_tables = cntxt_data->small_ntt_tables();
   size_t n = pt.coeff_count() / L;
@@ -375,7 +375,7 @@ TEST_F(RLWE2LWETest, ExtractU128) {
 }
 
 TEST_F(RLWE2LWETest, IO) {
-  yasl::Buffer lwe_sk_str;
+  yacl::Buffer lwe_sk_str;
   lwe_sk_str = EncodeSEALObject(*lwe_sk_);
 
   seal::Encryptor encryptor(*context_, *rlwe_sk_);
@@ -398,7 +398,7 @@ TEST_F(RLWE2LWETest, IO) {
 
   LWECt lwe(ct, 1, *context_);
 
-  yasl::Buffer lwe_ct_str;
+  yacl::Buffer lwe_ct_str;
   lwe_ct_str = EncodeSEALObject(lwe);
 
   LWECt lwe2;

@@ -17,7 +17,7 @@
 namespace heu::lib::algorithms {
 
 MontgomerySpace::MontgomerySpace(const MPInt &mod) {
-  YASL_ENFORCE(!mod.IsNegative() && mod.IsOdd(),
+  YACL_ENFORCE(!mod.IsNegative() && mod.IsOdd(),
                "modulus must be a positive odd number");
   mod_ = mod;
   MPINT_ENFORCE_OK(mp_montgomery_setup(&mod_.n_, &mp_));
@@ -40,9 +40,9 @@ void MontgomerySpace::MulMod(const MPInt &a, const MPInt &b, MPInt *y) const {
 void MontgomerySpace::MakeBaseTable(const MPInt &base, size_t unit_bits,
                                     size_t max_exp_bits,
                                     BaseTable *out_table) const {
-  YASL_ENFORCE(!base.IsNegative(),
+  YACL_ENFORCE(!base.IsNegative(),
                "Cache table: base number must be zero or positive");
-  YASL_ENFORCE(unit_bits > 0, "Cache table: unit_bits must > 0");
+  YACL_ENFORCE(unit_bits > 0, "Cache table: unit_bits must > 0");
 
   // About stair storage format:
   // Assuming exp_unit_bits = 3, then out_table stores:
@@ -76,10 +76,10 @@ void MontgomerySpace::MakeBaseTable(const MPInt &base, size_t unit_bits,
 
 void MontgomerySpace::PowMod(const BaseTable &base, const MPInt &e,
                              MPInt *out) const {
-  YASL_ENFORCE(!e.IsNegative() && e.BitCount() <= base.exp_max_bits,
+  YACL_ENFORCE(!e.IsNegative() && e.BitCount() <= base.exp_max_bits,
                "exponent is too big, max_allowed={}, real_exp={}",
                base.exp_max_bits, e.BitCount());
-  YASL_ENFORCE(&e != out,
+  YACL_ENFORCE(&e != out,
                "'e' and 'out' should not point to the same variable");
 
   *out = identity_;

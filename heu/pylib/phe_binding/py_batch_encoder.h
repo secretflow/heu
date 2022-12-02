@@ -35,9 +35,9 @@ class PyBatchEncoder {
   explicit PyBatchEncoder(const lib::phe::BatchEncoder &encoder)
       : encoder_(encoder) {}
 
-  [[nodiscard]] yasl::Buffer Serialize() const;
+  [[nodiscard]] yacl::Buffer Serialize() const;
 
-  static PyBatchEncoder LoadFrom(yasl::ByteContainerView buf);
+  static PyBatchEncoder LoadFrom(yacl::ByteContainerView buf);
 
   template <typename T,
             typename std::enable_if_t<std::is_integral_v<T>, int> = 0>
@@ -48,11 +48,11 @@ class PyBatchEncoder {
   template <typename T,
             typename std::enable_if_t<std::is_floating_point_v<T>, int> = 0>
   Plaintext Encode(T first, T second) const {
-    YASL_THROW_LOGIC_ERROR("BatchEncoder can not encode float element");
+    YACL_THROW_LOGIC_ERROR("BatchEncoder can not encode float element");
   }
 
   [[nodiscard]] Plaintext Encode(PyObject *first, PyObject *second) const {
-    YASL_THROW_LOGIC_ERROR(
+    YACL_THROW_LOGIC_ERROR(
         "BatchEncoder can not encode 'PyObject' type element");
   }
 

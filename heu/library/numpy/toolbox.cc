@@ -16,9 +16,9 @@
 
 namespace heu::lib::numpy {
 
-yasl::Buffer Toolbox::PMatrixToBytes(const PMatrix& pm, size_t bytes_per_int,
+yacl::Buffer Toolbox::PMatrixToBytes(const PMatrix& pm, size_t bytes_per_int,
                                      algorithms::Endian endian) {
-  yasl::Buffer res(bytes_per_int * pm.size());
+  yacl::Buffer res(bytes_per_int * pm.size());
   auto* buf = res.data<unsigned char>();
   int64_t cols = pm.cols();
   pm.ForEach([&](int64_t row, int64_t col, const phe::Plaintext& pt) {

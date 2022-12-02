@@ -1,4 +1,4 @@
-load("@yasl//bazel:yasl.bzl", "yasl_cc_library", "yasl_cc_test")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -6,7 +6,7 @@ test_suite(
     name = "gemini_rlwe_tests",
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "gemini_rlwe",
     srcs = [
         "a2h.cc",
@@ -26,7 +26,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "poly_encoder",
     srcs = [
         "poly_encoder.cc",
@@ -40,7 +40,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "lwe_decryptor",
     srcs = [
         "lwe_decryptor.cc",
@@ -54,7 +54,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "lwe_util",
     srcs = [
         "util.cc",
@@ -67,7 +67,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "lwe_types",
     srcs = [
         "lwe_ct.cc",
@@ -79,23 +79,23 @@ yasl_cc_library(
     deps = [
         ":modswitch",
         "@com_github_microsoft_seal//:seal",
-        "@yasl//yasl/base:buffer",
-        "@yasl//yasl/base:byte_container_view",
+        "@yacl//yacl/base:buffer",
+        "@yacl//yacl/base:byte_container_view",
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "modswitch",
     srcs = ["modswitch_helper.cc"],
     hdrs = ["modswitch_helper.h"],
     deps = [
         "@com_github_microsoft_seal//:seal",
-        "@yasl//yasl/base:exception",
-        "@yasl//yasl/base:int128",
+        "@yacl//yacl/base:exception",
+        "@yacl//yacl/base:int128",
     ],
 )
 
-yasl_cc_test(
+yacl_cc_test(
     name = "modswitch_helper_test",
     srcs = ["modswitch_helper_test.cc"],
     deps = [
@@ -104,7 +104,7 @@ yasl_cc_test(
     ],
 )
 
-yasl_cc_test(
+yacl_cc_test(
     name = "rlwe_2_lwe_test",
     srcs = ["rlwe_2_lwe_test.cc"],
     deps = [
@@ -112,7 +112,7 @@ yasl_cc_test(
     ],
 )
 
-yasl_cc_test(
+yacl_cc_test(
     name = "matvec_test",
     srcs = ["matvec_test.cc"],
     deps = [
@@ -120,7 +120,7 @@ yasl_cc_test(
     ],
 )
 
-yasl_cc_test(
+yacl_cc_test(
     name = "a2h_test",
     srcs = ["a2h_test.cc"],
     deps = [

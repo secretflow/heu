@@ -40,10 +40,10 @@ T MakeMask(size_t bw) {
 bool transform_to_ntt_inplace(RLWEPt& pt, const seal::SEALContext& context) {
   using namespace seal::util;
   auto cntxt_data = context.get_context_data(pt.parms_id());
-  YASL_ENFORCE(cntxt_data != nullptr);
+  YACL_ENFORCE(cntxt_data != nullptr);
 
   auto L = cntxt_data->parms().coeff_modulus().size();
-  YASL_ENFORCE(pt.coeff_count() % L == 0);
+  YACL_ENFORCE(pt.coeff_count() % L == 0);
 
   auto ntt_tables = cntxt_data->small_ntt_tables();
   size_t n = pt.coeff_count() / L;

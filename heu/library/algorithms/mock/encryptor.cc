@@ -24,7 +24,7 @@ Ciphertext Encryptor::EncryptZero() const {
 }
 
 Ciphertext Encryptor::Encrypt(const Plaintext& m) const {
-  YASL_ENFORCE(m.bn_.CompareAbs(pk_.PlaintextBound().bn_) < 0,
+  YACL_ENFORCE(m.bn_.CompareAbs(pk_.PlaintextBound().bn_) < 0,
                "message number out of range, message={}, max (abs)={}",
                m.bn_.ToHexString(), pk_.PlaintextBound());
 
@@ -35,7 +35,7 @@ Ciphertext Encryptor::Encrypt(const Plaintext& m) const {
 
 std::pair<Ciphertext, std::string> Encryptor::EncryptWithAudit(
     const Plaintext& m) const {
-  YASL_ENFORCE(m.bn_.CompareAbs(pk_.PlaintextBound().bn_) < 0,
+  YACL_ENFORCE(m.bn_.CompareAbs(pk_.PlaintextBound().bn_) < 0,
                "message number out of range, message={}, max (abs)={}",
                m.bn_.ToHexString(), pk_.PlaintextBound());
 
@@ -54,7 +54,7 @@ std::vector<Ciphertext> Encryptor::Encrypt(ConstSpan<Plaintext> pts) const {
   std::vector<Ciphertext> res;
   res.reserve(pts.size());
   for (size_t i = 0; i < pts.size(); ++i) {
-    YASL_ENFORCE(pts[i]->bn_.CompareAbs(pk_.PlaintextBound().bn_) < 0,
+    YACL_ENFORCE(pts[i]->bn_.CompareAbs(pk_.PlaintextBound().bn_) < 0,
                  "message number out of range, pts={}, max (abs)={}",
                  pts[i]->bn_.ToHexString(), pk_.PlaintextBound());
 
@@ -70,7 +70,7 @@ Encryptor::EncryptWithAudit(ConstSpan<Plaintext> pts) const {
   std::vector<std::string> res_s(pts.size());
 
   for (size_t i = 0; i < pts.size(); ++i) {
-    YASL_ENFORCE(pts[i]->bn_.CompareAbs(pk_.PlaintextBound().bn_) < 0,
+    YACL_ENFORCE(pts[i]->bn_.CompareAbs(pk_.PlaintextBound().bn_) < 0,
                  "message number out of range, pts={}, max (abs)={}",
                  pts[i]->bn_.ToHexString(), pk_.PlaintextBound());
 

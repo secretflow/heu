@@ -20,7 +20,7 @@ namespace heu::lib::numpy {
 
 class Toolbox {
  public:
-  static yasl::Buffer PMatrixToBytes(const PMatrix &pm, size_t bytes_per_int,
+  static yacl::Buffer PMatrixToBytes(const PMatrix &pm, size_t bytes_per_int,
                                      algorithms::Endian endian);
 };
 

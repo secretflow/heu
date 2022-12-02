@@ -16,13 +16,13 @@
 
 namespace heu::pylib {
 
-yasl::Buffer PyBigintEncoder::Serialize() const {
+yacl::Buffer PyBigintEncoder::Serialize() const {
   msgpack::sbuffer buf;
   msgpack::pack(buf, schema_type_);
   return {buf.data(), buf.size()};
 }
 
-PyBigintEncoder PyBigintEncoder::LoadFrom(yasl::ByteContainerView buf) {
+PyBigintEncoder PyBigintEncoder::LoadFrom(yacl::ByteContainerView buf) {
   auto msg =
       msgpack::unpack(reinterpret_cast<const char *>(buf.data()), buf.size());
   msgpack::object obj = msg.get();

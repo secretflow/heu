@@ -15,7 +15,7 @@
 #pragma once
 
 #include "tommath.h"
-#include "yasl/base/buffer.h"
+#include "yacl/base/buffer.h"
 
 #include "heu/library/algorithms/util/spi_traits.h"
 

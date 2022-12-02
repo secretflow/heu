@@ -23,13 +23,13 @@
 #include "msgpack.hpp"
 #include "tommath.h"
 #include "tommath_ext_features.h"
-#include "yasl/base/byte_container_view.h"
-#include "yasl/base/int128.h"
+#include "yacl/base/byte_container_view.h"
+#include "yacl/base/int128.h"
 
 #include "heu/library/algorithms/util/he_assert.h"
 
 #define MPINT_ENFORCE_OK(MP_ERR, ...) \
-  YASL_ENFORCE_EQ((MP_ERR), MP_OKAY, __VA_ARGS__)
+  YACL_ENFORCE_EQ((MP_ERR), MP_OKAY, __VA_ARGS__)
 
 namespace heu::lib::algorithms {
 
@@ -158,12 +158,12 @@ class MPInt {
   //  < 0:  |this| < |other|
   [[nodiscard]] int CompareAbs(const MPInt &other) const;
 
-  [[nodiscard]] yasl::Buffer Serialize() const;
-  void Deserialize(yasl::ByteContainerView buffer);
+  [[nodiscard]] yacl::Buffer Serialize() const;
+  void Deserialize(yacl::ByteContainerView buffer);
   [[nodiscard]] std::string ToString() const;
   [[nodiscard]] std::string ToHexString() const;
 
-  yasl::Buffer ToBytes(size_t byte_len, Endian endian = Endian::native) const;
+  yacl::Buffer ToBytes(size_t byte_len, Endian endian = Endian::native) const;
   void ToBytes(unsigned char *buf, size_t buf_len,
                Endian endian = Endian::native) const;
 

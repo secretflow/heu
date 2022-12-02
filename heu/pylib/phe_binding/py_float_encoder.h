@@ -34,9 +34,9 @@ class PyFloatEncoder {
   explicit PyFloatEncoder(const lib::phe::PlainEncoder &encoder)
       : encoder_(encoder) {}
 
-  [[nodiscard]] yasl::Buffer Serialize() const;
+  [[nodiscard]] yacl::Buffer Serialize() const;
 
-  static PyFloatEncoder LoadFrom(yasl::ByteContainerView buf);
+  static PyFloatEncoder LoadFrom(yacl::ByteContainerView buf);
 
   template <typename T,
             typename std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
@@ -47,14 +47,14 @@ class PyFloatEncoder {
   // NOT thread safe
   [[nodiscard]] Plaintext Encode(const pybind11::int_ &cleartext) const {
     auto [v, overflow] = (PyUtils::PyIntToCppInt128(cleartext));
-    YASL_ENFORCE(!overflow,
+    YACL_ENFORCE(!overflow,
                  "FloatEncoder cannot encode int numbers larger than 128 bits");
 
     return encoder_.Encode(v);
   }
 
   [[nodiscard]] Plaintext Encode(PyObject *cleartext) const {
-    YASL_THROW_LOGIC_ERROR(
+    YACL_THROW_LOGIC_ERROR(
         "FloatEncoder can not encode 'PyObject' type element");
   }
 

@@ -18,7 +18,7 @@ namespace heu::lib::numpy {
 
 PMatrix Random::RandInt(const phe::Plaintext& min, const phe::Plaintext& max,
                         const Shape& size) {
-  YASL_ENFORCE(min < max, "random range invalid, min={}, max={}", min, max);
+  YACL_ENFORCE(min < max, "random range invalid, min={}, max={}", min, max);
 
   PMatrix res(size);
   auto up = max - min;

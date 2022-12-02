@@ -18,9 +18,9 @@ namespace heu::pylib {
 
 using lib::phe::Plaintext;
 
-yasl::Buffer PyFloatEncoder::Serialize() const { return encoder_.Serialize(); }
+yacl::Buffer PyFloatEncoder::Serialize() const { return encoder_.Serialize(); }
 
-PyFloatEncoder PyFloatEncoder::LoadFrom(yasl::ByteContainerView buf) {
+PyFloatEncoder PyFloatEncoder::LoadFrom(yacl::ByteContainerView buf) {
   return PyFloatEncoder(lib::phe::PlainEncoder::LoadFrom(buf));
 }
 

@@ -46,7 +46,7 @@ void Evaluator::AddInplace(Ciphertext* a, const Ciphertext& b) const {
 
 Ciphertext Evaluator::Add(const Ciphertext& a, const MPInt& p) const {
   VALIDATE(a);
-  YASL_ENFORCE(p.CompareAbs(pk_.PlaintextBound()) < 0,
+  YACL_ENFORCE(p.CompareAbs(pk_.PlaintextBound()) < 0,
                "plaintext out of range, message={}, max (abs)={}",
                p.ToHexString(), pk_.PlaintextBound());
 

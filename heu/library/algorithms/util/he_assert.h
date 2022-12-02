@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include "yasl/base/exception.h"
+#include "yacl/base/exception.h"
 
 #ifdef NDEBUG
 #define HE_ASSERT(condition, ...) ((void)0)
 #else
-#define HE_ASSERT(condition, ...) YASL_ENFORCE(condition, __VA_ARGS__)
+#define HE_ASSERT(condition, ...) YACL_ENFORCE(condition, __VA_ARGS__)
 #endif

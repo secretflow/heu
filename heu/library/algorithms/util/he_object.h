@@ -18,7 +18,7 @@
 #include <string>
 
 #include "msgpack.hpp"
-#include "yasl/base/byte_container_view.h"
+#include "yacl/base/byte_container_view.h"
 
 namespace heu::lib::algorithms {
 
@@ -29,14 +29,14 @@ class HeObject {
   virtual ~HeObject() = default;
 
  public:
-  [[nodiscard]] yasl::Buffer Serialize() const {
+  [[nodiscard]] yacl::Buffer Serialize() const {
     msgpack::sbuffer buffer;
     msgpack::pack(buffer, *static_cast<const T*>(this));
     auto sz = buffer.size();
     return {buffer.release(), sz, [](void* ptr) { free(ptr); }};
   }
 
-  void Deserialize(yasl::ByteContainerView in) {
+  void Deserialize(yacl::ByteContainerView in) {
     auto msg =
         msgpack::unpack(reinterpret_cast<const char*>(in.data()), in.size());
     msgpack::object obj = msg.get();

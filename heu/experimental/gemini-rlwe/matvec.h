@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #pragma once
-#include "yasl/base/exception.h"
+#include "yacl/base/exception.h"
 
 #include "heu/experimental/gemini-rlwe/lwe_types.h"
 #include "heu/experimental/gemini-rlwe/poly_encoder.h"
@@ -53,7 +53,7 @@ class MatVecProtocol {
   void MatVecRandomMat(const Meta& meta, const std::vector<RLWECt>& vec,
                        std::function<void(T*, size_t)> prng,
                        absl::Span<T> rnd_mat, std::vector<LWECt>* out) const {
-    YASL_ENFORCE_EQ(seal::util::mul_safe(meta.nrows, meta.ncols),
+    YACL_ENFORCE_EQ(seal::util::mul_safe(meta.nrows, meta.ncols),
                     rnd_mat.size());
     prng(rnd_mat.data(), rnd_mat.size());
     MatVec(meta, rnd_mat, vec, out);
@@ -84,4 +84,3 @@ class MatVecProtocol {
 };
 
 }  // namespace heu::expt::rlwe
-

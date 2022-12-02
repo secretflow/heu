@@ -67,7 +67,7 @@ TEST_F(BatchEncoderTest, PlusWorks) {
   auto pt = batch_encoder_.Encode<int64_t>(0, 0);
   auto buf = batch_encoder_.Serialize();
   BatchEncoder new_batch_encoder(SchemaType::ZPaillier);
-  new_batch_encoder.Deserialize(yasl::ByteContainerView(buf));
+  new_batch_encoder.Deserialize(yacl::ByteContainerView(buf));
 
   int64_t sum_a = 0, sum_b = 0;
   for (int64_t n = 0; n > 0; n += INT64_MAX / 100000) {

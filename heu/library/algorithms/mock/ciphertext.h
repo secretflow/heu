@@ -43,8 +43,8 @@ class Ciphertext : public HeObject<Ciphertext> {
   // If you don't inherit from HeObject, please implement the following
   // functions.
   // Functions inherited from HeObject:
-  // yasl::Buffer Serialize() const;                // [SPI: Critical]
-  // void Deserialize(yasl::ByteContainerView in);  // [SPI: Critical]
+  // yacl::Buffer Serialize() const;                // [SPI: Critical]
+  // void Deserialize(yacl::ByteContainerView in);  // [SPI: Critical]
 
   MSGPACK_DEFINE(bn_);
   MPInt bn_;  // It would be better if this field is private.

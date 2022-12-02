@@ -14,7 +14,7 @@
 
 #include "heu/library/algorithms/paillier_zahlen/key_generator.h"
 
-#include "yasl/base/exception.h"
+#include "yacl/base/exception.h"
 
 #include "heu/library/algorithms/util/mp_int.h"
 
@@ -26,7 +26,7 @@ constexpr size_t kPQDifferenceBitLenSub = 2;  // >=1022-bit P-Q
 }
 
 void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
-  YASL_ENFORCE(key_size % 2 == 0, "Key size must be even");
+  YACL_ENFORCE(key_size % 2 == 0, "Key size must be even");
 
   MPInt p, q, n, c;
   // To avoid square-root attacks, make sure the bit length of p-q is very

@@ -15,7 +15,7 @@
 #pragma once
 #include <set>
 
-#include "yasl/base/buffer.h"
+#include "yacl/base/buffer.h"
 
 #include "heu/experimental/gemini-rlwe/lwe_types.h"
 
@@ -30,25 +30,25 @@ void KeepCoefficientsInplace(RLWECt& ciphertext,
                              const std::set<size_t>& to_keep);
 
 template <class SEALObj>
-yasl::Buffer EncodeSEALObject(const SEALObj& obj) {
+yacl::Buffer EncodeSEALObject(const SEALObj& obj) {
   size_t nbytes = obj.save_size();
-  yasl::Buffer out;
+  yacl::Buffer out;
   out.resize(nbytes);
   obj.save(out.data<seal::seal_byte>(), nbytes);
   return out;
 }
 
 template <class SEALObj>
-std::vector<yasl::Buffer> EncodeSEALObjects(
+std::vector<yacl::Buffer> EncodeSEALObjects(
     const std::vector<SEALObj>& obj_array,
     const std::vector<seal::SEALContext>& contexts) {
   const size_t obj_count = obj_array.size();
   const size_t context_count = contexts.size();
-  YASL_ENFORCE(obj_count > 0, fmt::format("empty object"));
-  YASL_ENFORCE(0 == obj_count % context_count,
+  YACL_ENFORCE(obj_count > 0, fmt::format("empty object"));
+  YACL_ENFORCE(0 == obj_count % context_count,
                fmt::format("Number of objects and SEALContexts mismatch"));
 
-  std::vector<yasl::Buffer> out(obj_count);
+  std::vector<yacl::Buffer> out(obj_count);
   for (size_t idx = 0; idx < obj_count; ++idx) {
     out[idx] = EncodeSEALObject(obj_array[idx]);
   }
@@ -57,10 +57,10 @@ std::vector<yasl::Buffer> EncodeSEALObjects(
 }
 
 template <class SEALObj>
-void DecodeSEALObject(const yasl::Buffer& buf_view,
+void DecodeSEALObject(const yacl::Buffer& buf_view,
                       const seal::SEALContext& context, SEALObj* out,
                       bool skip_sanity_check = false) {
-  yasl::CheckNotNull(out);
+  yacl::CheckNotNull(out);
   auto bytes = buf_view.data<seal::seal_byte>();
   if (skip_sanity_check) {
     out->unsafe_load(context, bytes, buf_view.size());
@@ -70,15 +70,15 @@ void DecodeSEALObject(const yasl::Buffer& buf_view,
 }
 
 template <class SEALObj>
-void DecodeSEALObjects(const std::vector<yasl::Buffer>& buf_view,
+void DecodeSEALObjects(const std::vector<yacl::Buffer>& buf_view,
                        const std::vector<seal::SEALContext>& contexts,
                        std::vector<SEALObj>* out,
                        bool skip_sanity_check = false) {
-  yasl::CheckNotNull(out);
+  yacl::CheckNotNull(out);
   const size_t obj_count = buf_view.size();
   if (obj_count > 0) {
     const size_t context_count = contexts.size();
-    YASL_ENFORCE(
+    YACL_ENFORCE(
         0 == obj_count % context_count,
         fmt::format("doDecode: number of objects and SEALContexts mismatch"));
 

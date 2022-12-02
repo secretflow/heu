@@ -28,7 +28,7 @@ void HeKitPublicBase::Setup(std::shared_ptr<PublicKey> pk) {
       ++hit;
     }
   }
-  YASL_ENFORCE("Cannot detect schema type of public key {}, hit={}",
+  YACL_ENFORCE("Cannot detect schema type of public key {}, hit={}",
                public_key_->ToString(), hit);
 }
 
@@ -70,7 +70,7 @@ DestinationHeKit::DestinationHeKit(std::shared_ptr<PublicKey> pk) {
   public_key_->Visit(HE_DISPATCH(HE_SPECIAL_SETUP_BY_PK));
 }
 
-DestinationHeKit::DestinationHeKit(yasl::ByteContainerView pk_buffer) {
+DestinationHeKit::DestinationHeKit(yacl::ByteContainerView pk_buffer) {
   auto pk = std::make_shared<PublicKey>();
   pk->Deserialize(pk_buffer);
   Setup(std::move(pk));

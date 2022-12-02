@@ -85,7 +85,7 @@ class HeKit : public HeKitSecretBase {
 class DestinationHeKit : public HeKitPublicBase {
  public:
   explicit DestinationHeKit(std::shared_ptr<PublicKey> pk);
-  explicit DestinationHeKit(yasl::ByteContainerView pk_buffer);
+  explicit DestinationHeKit(yacl::ByteContainerView pk_buffer);
 
   [[nodiscard]] const std::shared_ptr<Encryptor>& GetEncryptor() const {
     return encryptor_;

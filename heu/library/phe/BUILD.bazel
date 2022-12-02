@@ -1,8 +1,8 @@
-load("@yasl//bazel:yasl.bzl", "yasl_cc_library", "yasl_cc_test")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
 
 package(default_visibility = ["//visibility:public"])
 
-yasl_cc_library(
+yacl_cc_library(
     name = "phe",
     srcs = ["phe.cc"],
     hdrs = ["phe.h"],
@@ -15,7 +15,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "key_def",
     hdrs = ["key_def.h"],
     deps = [
@@ -23,7 +23,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "encryptor",
     srcs = ["encryptor.cc"],
     hdrs = ["encryptor.h"],
@@ -32,7 +32,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "decryptor",
     srcs = ["decryptor.cc"],
     hdrs = ["decryptor.h"],
@@ -41,7 +41,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "evaluator",
     srcs = ["evaluator.cc"],
     hdrs = ["evaluator.h"],
@@ -54,19 +54,19 @@ test_suite(
     name = "phe_tests",
 )
 
-yasl_cc_test(
+yacl_cc_test(
     name = "encryptor_test",
     srcs = ["encryptor_test.cc"],
     deps = [":phe"],
 )
 
-yasl_cc_test(
+yacl_cc_test(
     name = "evaluator_test",
     srcs = ["evaluator_test.cc"],
     deps = [":phe"],
 )
 
-yasl_cc_test(
+yacl_cc_test(
     name = "phe_test",
     srcs = ["phe_test.cc"],
     deps = [":phe"],

@@ -28,8 +28,8 @@ class PublicKey {
   // Valid plaintext range: (max_int_, -max_int_)
    const Plaintext &PlaintextBound() const &;
 
-  yasl::Buffer Serialize() const;
-  void Deserialize(yasl::ByteContainerView in);
+  yacl::Buffer Serialize() const;
+  void Deserialize(yacl::ByteContainerView in);
 };
 
 }  // namespace heu::lib::algorithms::your_algo

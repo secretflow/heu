@@ -15,7 +15,7 @@
 #include "heu/library/numpy/evaluator.h"
 
 #include "fmt/ranges.h"
-#include "yasl/utils/parallel.h"
+#include "yacl/utils/parallel.h"
 
 #include "heu/library/numpy/shape.h"
 
@@ -116,7 +116,7 @@ using kHasVectorizedMul = decltype(std::declval<const CLAZZ&>().Mul(
     const auto* y_base = y.data();                                           \
     RET::value_type* out_base = out->data();                                 \
     int64_t rows = out->rows();                                              \
-    yasl::parallel_for(0, out->size(), 1, [&](int64_t beg, int64_t end) {    \
+    yacl::parallel_for(0, out->size(), 1, [&](int64_t beg, int64_t end) {    \
       std::vector<const SUB_TX*> in_x;                                       \
       std::vector<const SUB_TY*> in_y;                                       \
       in_x.reserve(end - beg);                                               \
@@ -147,7 +147,7 @@ using kHasVectorizedMul = decltype(std::declval<const CLAZZ&>().Mul(
     const auto* y_base = y.data();                                           \
     RET::value_type* out_base = out->data();                                 \
     int64_t rows = out->rows();                                              \
-    yasl::parallel_for(0, out->size(), 1, [&](int64_t beg, int64_t end) {    \
+    yacl::parallel_for(0, out->size(), 1, [&](int64_t beg, int64_t end) {    \
       for (int64_t i = beg; i < end; ++i) {                                  \
         int64_t row = i % rows;                                              \
         int64_t col = i / rows;                                              \
@@ -164,7 +164,7 @@ using kHasVectorizedMul = decltype(std::declval<const CLAZZ&>().Mul(
                     const DenseMatrix<phe::TY>& y) const {                   \
     Dimension sx(x);                                                         \
     Dimension sy(y);                                                         \
-    YASL_ENFORCE(sx.IsCompatibleShape(sy),                                   \
+    YACL_ENFORCE(sx.IsCompatibleShape(sy),                                   \
                  "{} not supported for dim(x)={}, dim(y)={}", __func__,      \
                  (x).shape(), (y).shape());                                  \
                                                                              \
@@ -288,7 +288,7 @@ auto DoCallMatMul(const CLAZZ& sub_evaluator, const M1& mx, const M2& my,
     int64_t ret_col = my.cols();                                               \
     bool transpose = false;                                                    \
     if (out_dim == 1) {                                                        \
-      YASL_ENFORCE(                                                            \
+      YACL_ENFORCE(                                                            \
           ret_row == 1 || ret_col == 1,                                        \
           "internal error: matmul result is not a 1-d tensor, expected {}x{}", \
           ret_row, ret_col);                                                   \
@@ -306,17 +306,17 @@ auto DoCallMatMul(const CLAZZ& sub_evaluator, const M1& mx, const M2& my,
                                                                                \
   RET Evaluator::MatMul(const DenseMatrix<phe::TX>& x,                         \
                         const DenseMatrix<phe::TY>& y) const {                 \
-    YASL_ENFORCE(                                                              \
+    YACL_ENFORCE(                                                              \
         x.ndim() > 0 && y.ndim() > 0,                                          \
         "Input operands do not have enough dimensions, x-dim={}, y-dim{}",     \
         x.ndim(), y.ndim());                                                   \
     auto x_shape = x.shape();                                                  \
     auto y_shape = y.shape();                                                  \
-    YASL_ENFORCE(x_shape[-1] == y_shape[0],                                    \
+    YACL_ENFORCE(x_shape[-1] == y_shape[0],                                    \
                  "dimension mismatch for matmul, x-shape={}, y-shape={}",      \
                  x_shape, y_shape);                                            \
                                                                                \
-    YASL_ENFORCE(x.size() > 0 || y.size() > 0,                                 \
+    YACL_ENFORCE(x.size() > 0 || y.size() > 0,                                 \
                  "HEU does not support empty tensor currently");               \
                                                                                \
     if (x.ndim() == 1) {                                                       \
@@ -338,12 +338,12 @@ IMPLEMENT_DENSE_MATMUL(PMatrix, Plaintext, Plaintext);
 
 template <typename T>
 T Evaluator::Sum(const DenseMatrix<T>& x) const {
-  YASL_ENFORCE(x.cols() > 0 && x.rows() > 0,
+  YACL_ENFORCE(x.cols() > 0 && x.rows() > 0,
                "you cannot sum an empty tensor, shape={}x{}", x.rows(),
                x.cols());
 
   auto buf = x.data();
-  return yasl::parallel_reduce<T>(
+  return yacl::parallel_reduce<T>(
       0, x.size(), kHeOpGrainSize,
       [&](int64_t beg, int64_t end) {
         T sum = buf[beg];

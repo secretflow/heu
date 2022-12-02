@@ -48,7 +48,7 @@ class PlainEncoder : public algorithms::HeObject<PlainEncoder> {
       : schema_(schema), scale_(scale) {}
 
   // deserialize from buffer.
-  static PlainEncoder LoadFrom(yasl::ByteContainerView in) {
+  static PlainEncoder LoadFrom(yacl::ByteContainerView in) {
     return PlainEncoder(in);
   }
 
@@ -77,7 +77,7 @@ class PlainEncoder : public algorithms::HeObject<PlainEncoder> {
   }
 
  private:
-  explicit PlainEncoder(yasl::ByteContainerView in) { Deserialize(in); }
+  explicit PlainEncoder(yacl::ByteContainerView in) { Deserialize(in); }
 
   SchemaType schema_;
   int_fast64_t scale_;

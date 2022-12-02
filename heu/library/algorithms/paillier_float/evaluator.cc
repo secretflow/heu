@@ -127,7 +127,7 @@ MPInt Evaluator::MulRaw(const MPInt& a, const MPInt& b) const {
 }
 
 void Evaluator::DecreaseExponentTo(Ciphertext* cipher, int new_exp) const {
-  YASL_ENFORCE(new_exp <= cipher->exponent_,
+  YACL_ENFORCE(new_exp <= cipher->exponent_,
                "new_exp should <= cipher's exponent");
 
   MPInt factor;

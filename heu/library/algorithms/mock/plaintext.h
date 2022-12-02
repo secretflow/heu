@@ -54,10 +54,10 @@ class Plaintext {
   void Set(const std::string &num, int radix) { bn_.Set(num, radix); }
 
   // [SPI: Critical]
-  [[nodiscard]] yasl::Buffer Serialize() const { return bn_.Serialize(); }
+  [[nodiscard]] yacl::Buffer Serialize() const { return bn_.Serialize(); }
 
   // [SPI: Critical]
-  void Deserialize(yasl::ByteContainerView buffer) { bn_.Deserialize(buffer); }
+  void Deserialize(yacl::ByteContainerView buffer) { bn_.Deserialize(buffer); }
 
   // [SPI: Critical]
   [[nodiscard]] std::string ToString() const { return bn_.ToString(); }
@@ -70,7 +70,7 @@ class Plaintext {
   [[nodiscard]] std::string ToHexString() const { return bn_.ToHexString(); }
 
   // [SPI: Critical]
-  yasl::Buffer ToBytes(size_t byte_len, Endian endian = Endian::native) const {
+  yacl::Buffer ToBytes(size_t byte_len, Endian endian = Endian::native) const {
     return bn_.ToBytes(byte_len, endian);
   }
 

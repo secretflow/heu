@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "yasl/base/byte_container_view.h"
+#include "yacl/base/byte_container_view.h"
 
 #include "heu/library/algorithms/util/spi_traits.h"
 
@@ -36,14 +36,14 @@ class Plaintext {
   // Set big number by string
   void Set(const std::string &num, int radix);
 
-  yasl::Buffer Serialize() const;
-  void Deserialize(yasl::ByteContainerView buffer);
+  yacl::Buffer Serialize() const;
+  void Deserialize(yacl::ByteContainerView buffer);
 
   std::string ToString() const;
   friend std::ostream &operator<<(std::ostream &os, const Plaintext &pt);
   std::string ToHexString() const;
 
-  yasl::Buffer ToBytes(size_t byte_len, Endian endian = Endian::native) const;
+  yacl::Buffer ToBytes(size_t byte_len, Endian endian = Endian::native) const;
   void ToBytes(unsigned char *buf, size_t buf_len,
                Endian endian = Endian::native) const;
 

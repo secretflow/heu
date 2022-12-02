@@ -17,7 +17,7 @@
 #include <ostream>
 #include <string>
 
-#include "yasl/base/byte_container_view.h"
+#include "yacl/base/byte_container_view.h"
 
 namespace heu::lib::algorithms::your_algo {
 
@@ -32,8 +32,8 @@ class Ciphertext {
   bool operator==(const Ciphertext &other) const;
   bool operator!=(const Ciphertext &other) const;
 
-  yasl::Buffer Serialize() const;
-  void Deserialize(yasl::ByteContainerView in);
+  yacl::Buffer Serialize() const;
+  void Deserialize(yacl::ByteContainerView in);
 };
 
 }  // namespace heu::lib::algorithms::your_algo

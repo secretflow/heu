@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "yasl/base/byte_container_view.h"
+#include "yacl/base/byte_container_view.h"
 
 namespace heu::lib::algorithms::your_algo {
 
@@ -25,8 +25,8 @@ class SecretKey {
 
    std::string ToString() const;
 
-  yasl::Buffer Serialize() const;
-  void Deserialize(yasl::ByteContainerView in);
+  yacl::Buffer Serialize() const;
+  void Deserialize(yacl::ByteContainerView in);
 };
 
 }  // namespace heu::lib::algorithms::your_algo

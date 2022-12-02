@@ -25,7 +25,7 @@ template <typename CLAZZ, typename PT>
 auto DoCallEncrypt(const CLAZZ& sub_encryptor, const PMatrix& in, CMatrix* out)
     -> std::enable_if_t<
         std::experimental::is_detected_v<kHasVectorizedEncrypt, CLAZZ, PT>> {
-  yasl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
+  yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
     std::vector<const PT*> pts;
     pts.reserve(end - beg);
     for (int64_t i = beg; i < end; ++i) {
@@ -43,7 +43,7 @@ template <typename CLAZZ, typename PT>
 auto DoCallEncrypt(const CLAZZ& sub_encryptor, const PMatrix& in, CMatrix* out)
     -> std::enable_if_t<
         !std::experimental::is_detected_v<kHasVectorizedEncrypt, CLAZZ, PT>> {
-  yasl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
+  yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
     for (int64_t i = beg; i < end; ++i) {
       out->data()[i] =
           phe::Ciphertext(sub_encryptor.Encrypt(in.data()[i].As<PT>()));
@@ -76,7 +76,7 @@ auto DoCallEncryptWithAudit(const CLAZZ& sub_encryptor, const PMatrix& in,
                             CMatrix* out_c, DenseMatrix<std::string>* out_s)
     -> std::enable_if_t<std::experimental::is_detected_v<
         kHasVectorizedEncryptWithAudit, CLAZZ, PT>> {
-  yasl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
+  yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
     std::vector<const PT*> pts;
     pts.reserve(end - beg);
     for (int64_t i = beg; i < end; ++i) {
@@ -96,7 +96,7 @@ auto DoCallEncryptWithAudit(const CLAZZ& sub_encryptor, const PMatrix& in,
                             CMatrix* out_c, DenseMatrix<std::string>* out_s)
     -> std::enable_if_t<!std::experimental::is_detected_v<
         kHasVectorizedEncryptWithAudit, CLAZZ, PT>> {
-  yasl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
+  yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
     for (int64_t i = beg; i < end; ++i) {
       std::tie(out_c->data()[i], out_s->data()[i]) =
           sub_encryptor.EncryptWithAudit(in.data()[i].As<PT>());

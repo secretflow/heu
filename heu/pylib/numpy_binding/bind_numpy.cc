@@ -131,7 +131,7 @@ void BindArrayForClass(PyClassT& m, const PyArgT& edr_arg) {
 }  // namespace
 
 void PyBindNumpy(pybind11::module& m) {
-  py::register_local_exception<yasl::Exception>(m, "NumpyRuntimeError",
+  py::register_local_exception<yacl::Exception>(m, "NumpyRuntimeError",
                                                 PyExc_RuntimeError);
   /****** Basic types ******/
   py::class_<hnp::Shape>(m, "Shape")
