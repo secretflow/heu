@@ -1,4 +1,4 @@
-load("@yasl//bazel:yasl.bzl", "yasl_cc_library", "yasl_cc_test")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
 load("@pybind11_bazel//:build_defs.bzl", "pybind_extension", "pybind_library")
 
 package(default_visibility = ["//visibility:public"])
@@ -17,6 +17,6 @@ pybind_library(
     hdrs = ["py_utils.h"],
     deps = [
         "//heu/library/phe",
-        "@yasl//yasl/base:int128",
+        "@yacl//yacl/base:int128",
     ],
 )

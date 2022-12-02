@@ -34,9 +34,9 @@ class PyIntegerEncoder {
   explicit PyIntegerEncoder(const lib::phe::PlainEncoder &encoder)
       : encoder_(encoder) {}
 
-  [[nodiscard]] yasl::Buffer Serialize() const;
+  [[nodiscard]] yacl::Buffer Serialize() const;
 
-  static PyIntegerEncoder LoadFrom(yasl::ByteContainerView buf);
+  static PyIntegerEncoder LoadFrom(yacl::ByteContainerView buf);
 
   // Encode cleartext to plaintext
   template <typename T,
@@ -55,14 +55,14 @@ class PyIntegerEncoder {
   // NOT thread safe
   [[nodiscard]] Plaintext Encode(const pybind11::int_ &cleartext) const {
     auto [v, overflow] = (PyUtils::PyIntToCppInt128(cleartext));
-    YASL_ENFORCE(!overflow,
+    YACL_ENFORCE(!overflow,
                  "IntegerEncoder cannot encode numbers larger than 128 bits");
 
     return encoder_.Encode(v);
   }
 
   [[nodiscard]] Plaintext Encode(PyObject *cleartext) const {
-    YASL_THROW_LOGIC_ERROR(
+    YACL_THROW_LOGIC_ERROR(
         "IntegerEncoder can not encode 'PyObject' type element");
   }
 

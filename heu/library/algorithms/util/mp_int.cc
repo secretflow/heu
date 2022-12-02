@@ -386,20 +386,20 @@ std::string MPInt::ToHexString() const { return ToRadixString(16); }
 
 std::string MPInt::ToString() const { return ToRadixString(10); }
 
-yasl::Buffer MPInt::Serialize() const {
+yacl::Buffer MPInt::Serialize() const {
   size_t size = mp_sbin_size(&n_);
-  yasl::Buffer buffer(size);
+  yacl::Buffer buffer(size);
   MPINT_ENFORCE_OK(
       mp_to_sbin(&n_, buffer.data<unsigned char>(), size, nullptr));
   return buffer;
 }
 
-void MPInt::Deserialize(yasl::ByteContainerView buffer) {
+void MPInt::Deserialize(yacl::ByteContainerView buffer) {
   MPINT_ENFORCE_OK(mp_from_sbin(&n_, buffer.data(), buffer.size()));
 }
 
-yasl::Buffer MPInt::ToBytes(size_t byte_len, Endian endian) const {
-  yasl::Buffer buf(byte_len);
+yacl::Buffer MPInt::ToBytes(size_t byte_len, Endian endian) const {
+  yacl::Buffer buf(byte_len);
   ToBytes(buf.data<unsigned char>(), byte_len, endian);
   return buf;
 }
@@ -410,7 +410,7 @@ void MPInt::ToBytes(unsigned char *buf, size_t buf_len,
 }
 
 void MPInt::RandPrimeOver(size_t bit_size, MPInt *out, PrimeType prime_type) {
-  YASL_ENFORCE_GT(bit_size, 80u, "bit_size must > 80");
+  YACL_ENFORCE_GT(bit_size, 80u, "bit_size must > 80");
   int trials = mp_prime_rabin_miller_trials(bit_size);
 
   if (prime_type == PrimeType::FastSafe) {
@@ -449,7 +449,7 @@ void MPInt::RandomExactBits(size_t bit_size, MPInt *r) {
 }
 
 void MPInt::RandomMonicExactBits(size_t bit_size, MPInt *r) {
-  YASL_ENFORCE(bit_size > 0, "cannot gen monic random number of size 0");
+  YACL_ENFORCE(bit_size > 0, "cannot gen monic random number of size 0");
   do {
     RandomExactBits(bit_size, r);
   } while (r->BitCount() != bit_size);

@@ -21,7 +21,7 @@ size_t kExpUnitBits = 10;
 }  // namespace
 
 void SetCacheTableDensity(size_t density) {
-  YASL_ENFORCE(density > 0, "density must > 0");
+  YACL_ENFORCE(density > 0, "density must > 0");
   kExpUnitBits = density;
 }
 

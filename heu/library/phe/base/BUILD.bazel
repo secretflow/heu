@@ -1,9 +1,8 @@
-load("@yasl//bazel:yasl.bzl", "yasl_cc_library", "yasl_cc_test")
-load("@pybind11_bazel//:build_defs.bzl", "pybind_extension", "pybind_library")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
 
 package(default_visibility = ["//visibility:public"])
 
-yasl_cc_library(
+yacl_cc_library(
     name = "base",
     deps = [
         ":schema",
@@ -11,7 +10,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "schema",
     srcs = ["schema.cc"],
     hdrs = ["schema.h"],
@@ -22,7 +21,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "serializable_types",
     srcs = [
         "plaintext.cc",
@@ -39,7 +38,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "variant_helper",
     hdrs = [
         "predefined_functions.h",
@@ -51,7 +50,7 @@ test_suite(
     name = "phe_base_tests",
 )
 
-yasl_cc_test(
+yacl_cc_test(
     name = "plaintext_test",
     srcs = ["plaintext_test.cc"],
     deps = [
@@ -59,7 +58,7 @@ yasl_cc_test(
     ],
 )
 
-yasl_cc_test(
+yacl_cc_test(
     name = "schema_test",
     srcs = ["schema_test.cc"],
     deps = [

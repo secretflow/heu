@@ -22,13 +22,13 @@ namespace heu::lib::algorithms::mock {
 void Evaluator::Randomize(Ciphertext* ct) const { (void)ct; }
 
 void CheckRange(const PublicKey& pk, const Ciphertext&, const Plaintext& p) {
-  YASL_ENFORCE(p.bn_.CompareAbs(pk.PlaintextBound().bn_) < 0,
+  YACL_ENFORCE(p.bn_.CompareAbs(pk.PlaintextBound().bn_) < 0,
                "plaintext number out of range, message={}, max (abs)={}",
                p.ToHexString(), pk.PlaintextBound());
 }
 
 void CheckRange(const PublicKey& pk, const Plaintext& p, const Ciphertext&) {
-  YASL_ENFORCE(p.bn_.CompareAbs(pk.PlaintextBound().bn_) < 0,
+  YACL_ENFORCE(p.bn_.CompareAbs(pk.PlaintextBound().bn_) < 0,
                "plaintext number out of range, message={}, max (abs)={}",
                p.ToHexString(), pk.PlaintextBound());
 }
@@ -99,7 +99,7 @@ void Evaluator::Randomize(Span<Ciphertext> ct) const { /* nothing to do */
 
 #define SIMD_FUNCTION_IMPL(NAME, RET, T1, OP, T2)                             \
   std::vector<RET> Evaluator::NAME(ConstSpan<T1> a, ConstSpan<T2> b) const {  \
-    YASL_ENFORCE(a.size() == b.size(),                                        \
+    YACL_ENFORCE(a.size() == b.size(),                                        \
                  "Function {}: array not equal, a={}, b={}", #NAME, a.size(), \
                  b.size());                                                   \
                                                                               \
@@ -128,7 +128,7 @@ SIMD_FUNCTION_IMPL(Mul, Plaintext, Plaintext, *, Plaintext);
 
 #define SIMD_INPLACE_FUNCTION_IMPL(NAME, T1, OP, T2)                          \
   void Evaluator::NAME(Span<T1> a, ConstSpan<T2> b) const {                   \
-    YASL_ENFORCE(a.size() == b.size(),                                        \
+    YACL_ENFORCE(a.size() == b.size(),                                        \
                  "Function {}: array not equal, a={}, b={}", #NAME, a.size(), \
                  b.size());                                                   \
     for (size_t i = 0; i < a.size(); ++i) {                                   \

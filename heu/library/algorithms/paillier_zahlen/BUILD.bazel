@@ -1,4 +1,4 @@
-load("@yasl//bazel:yasl.bzl", "yasl_cc_library", "yasl_cc_test")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -6,7 +6,7 @@ test_suite(
     name = "paillier_zahlen_tests",
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "paillier_zahlen",
     hdrs = ["paillier.h"],
     deps = [
@@ -17,7 +17,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "secret_key",
     srcs = ["secret_key.cc"],
     hdrs = ["secret_key.h"],
@@ -27,7 +27,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "public_key",
     srcs = ["public_key.cc"],
     hdrs = ["public_key.h"],
@@ -37,7 +37,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "ciphertext",
     hdrs = ["ciphertext.h"],
     deps = [
@@ -46,7 +46,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "key_generator",
     srcs = ["key_generator.cc"],
     hdrs = ["key_generator.h"],
@@ -56,7 +56,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "encryptor",
     srcs = ["encryptor.cc"],
     hdrs = ["encryptor.h"],
@@ -68,7 +68,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "decryptor",
     srcs = ["decryptor.cc"],
     hdrs = ["decryptor.h"],
@@ -80,7 +80,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "evaluator",
     srcs = ["evaluator.cc"],
     hdrs = ["evaluator.h"],
@@ -92,7 +92,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_test(
+yacl_cc_test(
     name = "key_generator_test",
     srcs = ["key_generator_test.cc"],
     deps = [
@@ -100,7 +100,7 @@ yasl_cc_test(
     ],
 )
 
-yasl_cc_test(
+yacl_cc_test(
     name = "paillier_test",
     srcs = ["paillier_test.cc"],
     deps = [

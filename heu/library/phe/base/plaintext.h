@@ -23,19 +23,19 @@ class Plaintext : public SerializableVariant<HE_PLAINTEXT_TYPES> {
  public:
   using SerializableVariant<HE_PLAINTEXT_TYPES>::SerializableVariant;
   using SerializableVariant<HE_PLAINTEXT_TYPES>::operator=;
-  template <typename T>
+  template <typename T, std::enable_if_t<std::is_fundamental_v<T>, int> = 0>
   Plaintext(SchemaType schema, T init_value) : Plaintext(schema) {
     SetValue(init_value);
   }
 
-  template <typename T>
+  template <typename T, std::enable_if_t<std::is_fundamental_v<T>, int> = 0>
   [[nodiscard]] T GetValue() const {
     return Visit([](const auto &pt) -> T {
       FOR_EACH_TYPE(pt) return pt.template Get<T>();
     });
   }
 
-  template <typename T>
+  template <typename T, std::enable_if_t<std::is_fundamental_v<T>, int> = 0>
   void SetValue(T value) {
     Visit([&value](auto &pt) { FOR_EACH_TYPE(pt) pt.template Set<T>(value); });
   }
@@ -43,7 +43,7 @@ class Plaintext : public SerializableVariant<HE_PLAINTEXT_TYPES> {
   void SetValue(const std::string &num, int radix);
 
   size_t BitCount() const;
-  yasl::Buffer ToBytes(size_t byte_len, algorithms::Endian endian =
+  yacl::Buffer ToBytes(size_t byte_len, algorithms::Endian endian =
                                             algorithms::Endian::native) const;
   void ToBytes(unsigned char *buf, size_t buf_len,
                algorithms::Endian endian = algorithms::Endian::native) const;

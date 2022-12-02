@@ -16,7 +16,7 @@
 
 #include "pybind11/numpy.h"
 #include "pybind11/pybind11.h"
-#include "yasl/utils/parallel.h"
+#include "yacl/utils/parallel.h"
 
 #include "heu/library/numpy/matrix.h"
 #include "heu/library/phe/phe.h"
@@ -43,7 +43,7 @@ py::array DecodeNdarray(
   // this buffer will free in python side (numpy)
   // https://stackoverflow.com/questions/49179356/pybind11-create-and-return-numpy-array-from-c-side
   if (in.ndim() == 0) {
-    YASL_ENFORCE(rows == 1 && cols == 1,
+    YACL_ENFORCE(rows == 1 && cols == 1,
                  "internal error: 0-dimensional tensor has shape {}x{}", rows,
                  cols);
 
@@ -52,7 +52,7 @@ py::array DecodeNdarray(
 
   py::array res;
   if (in.ndim() == 1) {
-    YASL_ENFORCE(cols == 1, "vertical vector's cols() must be 1");
+    YACL_ENFORCE(cols == 1, "vertical vector's cols() must be 1");
     res = py::array(py::dtype(Encoder_t::DefaultPyTypeFormat),
                     py::array::ShapeContainer({rows}));
   } else {
@@ -84,7 +84,7 @@ py::array DecodeNdarray(
   if constexpr (std::is_base_of_v<Encoder_t, PyBigintDecoder>) {
     pfunc(0, in.size());
   } else {
-    yasl::parallel_for(0, in.size(), kHeOpGrainSize, pfunc);
+    yacl::parallel_for(0, in.size(), kHeOpGrainSize, pfunc);
   }
   return res;
 }
@@ -98,7 +98,7 @@ py::array DecodeNdarray(
     const lib::numpy::PMatrix &in,
     const std::enable_if_t<std::is_same_v<Encoder_t, PyBatchEncoder>, Encoder_t>
         &encoder) {
-  YASL_ENFORCE(
+  YACL_ENFORCE(
       in.cols() == 1,
       "The size of innermost dimension must be 1 when using PyBatchEncoder");
 
@@ -106,7 +106,7 @@ py::array DecodeNdarray(
   py::array res;
   if (in.ndim() <= 1) {
     // in matrix is 1x1
-    YASL_ENFORCE(in.rows() == 1, "0d/1d-array's size must be 1x2 currently");
+    YACL_ENFORCE(in.rows() == 1, "0d/1d-array's size must be 1x2 currently");
     res = py::array(py::dtype(Encoder_t::DefaultPyTypeFormat),
                     py::array::ShapeContainer({2}));
   } else {
@@ -120,7 +120,7 @@ py::array DecodeNdarray(
     return res;
   }
 
-  yasl::parallel_for(0, in.size(), kHeOpGrainSize,
+  yacl::parallel_for(0, in.size(), kHeOpGrainSize,
                      [&](int64_t beg, int64_t end) {
                        for (int64_t row = beg; row < end; ++row) {
                          const auto &pt = in(row, 0);

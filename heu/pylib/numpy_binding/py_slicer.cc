@@ -34,11 +34,11 @@ struct PySlice {
 
 int64_t ComputeInt(const py::handle& src, int64_t dim_len) {
   auto idx = static_cast<int64_t>(py::cast<py::int_>(src));
-  YASL_ENFORCE(idx < dim_len, "index {} is out of bounds [0, {})", idx,
+  YACL_ENFORCE(idx < dim_len, "index {} is out of bounds [0, {})", idx,
                dim_len);
   if (idx < 0) {
     idx += dim_len;
-    YASL_ENFORCE(idx >= 0, "index {} is out of bounds [{}, {})", idx - dim_len,
+    YACL_ENFORCE(idx >= 0, "index {} is out of bounds [{}, {})", idx - dim_len,
                  -dim_len, dim_len);
   }
   return idx;
@@ -51,12 +51,12 @@ auto Parse(const pybind11::object& src, ssize_t dim_len,
   if (py::isinstance<py::slice>(src)) {
     auto s = py::cast<py::slice>(src);
     ssize_t start = 0, stop = 0, step = 0;
-    YASL_ENFORCE(s.compute(dim_len, &start, &stop, &step, &res.items),
+    YACL_ENFORCE(s.compute(dim_len, &start, &stop, &step, &res.items),
                  "Failed to solve slice {}", py::str(s).operator std::string());
 
     // todo：use Eigen::seq
     res.indices.reserve(res.items);
-    YASL_ENFORCE(step != 0, "slice step cannot be 0");
+    YACL_ENFORCE(step != 0, "slice step cannot be 0");
     if (step > 0) {
       for (; start < stop; start += step) {
         res.indices.push_back(start);
@@ -73,7 +73,7 @@ auto Parse(const pybind11::object& src, ssize_t dim_len,
     res.items = l.size();
     res.indices.reserve(res.items);
     for (const auto& item : l) {
-      YASL_ENFORCE(
+      YACL_ENFORCE(
           py::isinstance<py::int_>(item),
           "indices array element must be integers, got {} with type {}",
           std::string(py::str(item)), std::string(py::str(item.get_type())));
@@ -86,7 +86,7 @@ auto Parse(const pybind11::object& src, ssize_t dim_len,
     res.indices.push_back(ComputeInt(src, dim_len));
 
   } else {
-    YASL_THROW_ARGUMENT_ERROR(
+    YACL_THROW_ARGUMENT_ERROR(
         "Unsupported indices type {}",
         static_cast<std::string>(py::str(src.get_type())));
   }
@@ -130,7 +130,7 @@ void MatrixAssign(lib::numpy::DenseMatrix<T>* pm,
     return;
   }
 
-  YASL_THROW_ARGUMENT_ERROR(
+  YACL_THROW_ARGUMENT_ERROR(
       "Unsupported value type [{}] for __setitem__",
       static_cast<std::string>(py::str(value.get_type())));
 }
@@ -143,7 +143,7 @@ py::object PySlicer<T>::GetItem(const hnp::DenseMatrix<T>& p_matrix,
   if (py::isinstance<py::tuple>(key)) {
     auto idx_tuple = py::cast<py::tuple>(key);
 
-    YASL_ENFORCE(static_cast<int64_t>(idx_tuple.size()) <= p_matrix.ndim(),
+    YACL_ENFORCE(static_cast<int64_t>(idx_tuple.size()) <= p_matrix.ndim(),
                  "too many indices for array, array is {}-dimensional, but "
                  "{} were indexed. slice key={}",
                  p_matrix.ndim(), idx_tuple.size(),
@@ -175,7 +175,7 @@ void PySlicer<T>::SetItem(hnp::DenseMatrix<T>* p_matrix, const py::object& key,
   if (py::isinstance<py::tuple>(key)) {
     auto idx_tuple = py::cast<py::tuple>(key);
 
-    YASL_ENFORCE(static_cast<int64_t>(idx_tuple.size()) <= p_matrix->ndim(),
+    YACL_ENFORCE(static_cast<int64_t>(idx_tuple.size()) <= p_matrix->ndim(),
                  "too many indices for array, array is {}-dimensional, but "
                  "{} were indexed, slice key={}",
                  p_matrix->ndim(), idx_tuple.size(),

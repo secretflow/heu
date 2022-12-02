@@ -62,7 +62,7 @@ TEST_P(PheTest, Serialize) {
 
   // send back to client
   Ciphertext ct2;
-  ct2.Deserialize(yasl::ByteContainerView(buffer));
+  ct2.Deserialize(yacl::ByteContainerView(buffer));
   EXPECT_EQ(he_kit_.GetDecryptor()->Decrypt(ct1), plain + edr.Encode(666));
 }
 

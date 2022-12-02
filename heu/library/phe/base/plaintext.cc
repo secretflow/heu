@@ -35,9 +35,9 @@ SIMPLE_FUNCTION_IMPL_RET(bool, IsPositive)
 SIMPLE_FUNCTION_IMPL_RET(bool, IsNegative)
 SIMPLE_FUNCTION_IMPL_RET(std::string, ToHexString)
 
-yasl::Buffer Plaintext::ToBytes(size_t byte_len,
+yacl::Buffer Plaintext::ToBytes(size_t byte_len,
                                 algorithms::Endian endian) const {
-  return Visit([&](const auto& pt) -> yasl::Buffer {
+  return Visit([&](const auto& pt) -> yacl::Buffer {
     FOR_EACH_TYPE(pt) return pt.ToBytes(byte_len, endian);
   });
 }

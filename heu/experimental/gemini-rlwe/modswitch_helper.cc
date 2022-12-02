@@ -22,12 +22,12 @@
 #include "seal/util/polyarithsmallmod.h"
 #include "seal/util/uintarith.h"
 #include "seal/util/uintarithsmallmod.h"
-#include "yasl/base/exception.h"
+#include "yacl/base/exception.h"
 
 namespace heu::expt::rlwe {
 
 inline static uint64_t U64BitMask(size_t bw) {
-  YASL_ENFORCE(bw > 0 && bw <= 64);
+  YACL_ENFORCE(bw > 0 && bw <= 64);
   return bw == 64 ? static_cast<uint64_t>(-1)
                   : (static_cast<uint64_t>(1) << bw) - 1;
 }
@@ -97,8 +97,8 @@ struct ModulusSwitchHelper::Impl {
  public:
   explicit Impl(uint32_t base_mod_bitlen, seal::SEALContext context)
       : base_mod_bitlen_(base_mod_bitlen), context_(std::move(context)) {
-    YASL_ENFORCE(context_.parameters_set(), "invalid seal context");
-    YASL_ENFORCE(base_mod_bitlen <= 128 && base_mod_bitlen >= 2,
+    YACL_ENFORCE(context_.parameters_set(), "invalid seal context");
+    YACL_ENFORCE(base_mod_bitlen <= 128 && base_mod_bitlen >= 2,
                  fmt::format("invalid base bitlen {}", base_mod_bitlen));
     Init();
   }
@@ -114,7 +114,7 @@ struct ModulusSwitchHelper::Impl {
   // limbs mod 2^k
   uint128_t ModLimbsRing2k(const uint64_t *limbs, size_t size,
                            size_t mod_bit_width) {
-    YASL_ENFORCE(mod_bit_width <= 128 && mod_bit_width >= 2);
+    YACL_ENFORCE(mod_bit_width <= 128 && mod_bit_width >= 2);
 
     uint64_t num_limbs = (mod_bit_width + 63) / 64;
     size_t msb = mod_bit_width - 64 * (num_limbs - 1);
@@ -133,11 +133,11 @@ struct ModulusSwitchHelper::Impl {
   void ModulusUpAt(absl::Span<const Scalar> src, size_t mod_idx,
                    absl::Span<uint64_t> out) const {
     using namespace seal::util;
-    YASL_ENFORCE_EQ(sizeof(Scalar) * 8, absl::bit_ceil(base_mod_bitlen_),
+    YACL_ENFORCE_EQ(sizeof(Scalar) * 8, absl::bit_ceil(base_mod_bitlen_),
                     fmt::format("expect base_mod_bitlen={} but got {}",
                                 base_mod_bitlen_, sizeof(Scalar) * 8));
     size_t num_modulus = coeff_modulus_size();
-    YASL_ENFORCE(mod_idx < num_modulus,
+    YACL_ENFORCE(mod_idx < num_modulus,
                  fmt::format("ModulusUpAt: invalid mod_idx ({} >= {})", mod_idx,
                              num_modulus));
     auto &modulus = context_.key_context_data()->parms().coeff_modulus();
@@ -160,11 +160,11 @@ struct ModulusSwitchHelper::Impl {
   void ModulusUpAt(absl::Span<const uint128_t> src, size_t mod_idx,
                    absl::Span<uint64_t> out) const {
     using namespace seal::util;
-    YASL_ENFORCE_EQ(sizeof(uint128_t) * 8, absl::bit_ceil(base_mod_bitlen_),
+    YACL_ENFORCE_EQ(sizeof(uint128_t) * 8, absl::bit_ceil(base_mod_bitlen_),
                     fmt::format("expect base_mod_bitlen={} but got {}",
                                 base_mod_bitlen_, sizeof(uint128_t) * 8));
     size_t num_modulus = coeff_modulus_size();
-    YASL_ENFORCE(mod_idx < num_modulus,
+    YACL_ENFORCE(mod_idx < num_modulus,
                  fmt::format("ModulusUpAt: invalid mod_idx ({} >= {})", mod_idx,
                              num_modulus));
     auto &modulus = context_.key_context_data()->parms().coeff_modulus();
@@ -203,14 +203,14 @@ struct ModulusSwitchHelper::Impl {
   void CenteralizeAt(absl::Span<const Scalar> src, size_t mod_idx,
                      absl::Span<uint64_t> out) const {
     using namespace seal::util;
-    YASL_ENFORCE_EQ(sizeof(Scalar) * 8, absl::bit_ceil(base_mod_bitlen_),
+    YACL_ENFORCE_EQ(sizeof(Scalar) * 8, absl::bit_ceil(base_mod_bitlen_),
                     fmt::format("expect base_mod_bitlen={} but got {}",
                                 base_mod_bitlen_, sizeof(Scalar) * 8));
 
     const auto &modulus = context_.key_context_data()->parms().coeff_modulus();
-    YASL_ENFORCE(mod_idx < coeff_modulus_size(),
+    YACL_ENFORCE(mod_idx < coeff_modulus_size(),
                  "Centeralize: invalid mod_idx");
-    YASL_ENFORCE(src.size() == out.size(), "Centeralize: size mismatch");
+    YACL_ENFORCE(src.size() == out.size(), "Centeralize: size mismatch");
 
     auto begin = src.data();
     auto end = begin + src.size();
@@ -234,13 +234,13 @@ struct ModulusSwitchHelper::Impl {
     // NOTE(juhou): Basically the same idea in seal/util/rns.cpp instead we
     // use the plain modulus `t` as 2^k here.
     using namespace seal::util;
-    YASL_ENFORCE_EQ(sizeof(Scalar) * 8, absl::bit_ceil(base_mod_bitlen_),
+    YACL_ENFORCE_EQ(sizeof(Scalar) * 8, absl::bit_ceil(base_mod_bitlen_),
                     fmt::format("expect base_mod_bitlen={} but got {}",
                                 base_mod_bitlen_, sizeof(Scalar) * 8));
     size_t num_modulus = coeff_modulus_size();
     size_t coeff_count = out.size();
-    YASL_ENFORCE_EQ(src.size(), num_modulus * out.size());
-    YASL_ENFORCE(base_Q_to_gamma_conv_ != nullptr);
+    YACL_ENFORCE_EQ(src.size(), num_modulus * out.size());
+    YACL_ENFORCE(base_Q_to_gamma_conv_ != nullptr);
     auto cntxt = context_.key_context_data();
     const auto &base_Q = *cntxt->rns_tool()->base_q();
     auto &coeff_modulus = cntxt->parms().coeff_modulus();
@@ -351,7 +351,7 @@ void ModulusSwitchHelper::Impl::Init() {
   const int gamma_bits = SEAL_INTERNAL_MOD_BIT_COUNT;
   gamma_ = seal::util::get_primes(poly_degree, gamma_bits, 1)[0];
   for (auto &modulus : coeff_modulus) {
-    YASL_ENFORCE(gamma_.value() != modulus.value(),
+    YACL_ENFORCE(gamma_.value() != modulus.value(),
                  "Use smaller coeff_modulus");
   }
 
@@ -411,9 +411,9 @@ void ModulusSwitchHelper::Impl::Init() {
     neg_inv_Q_mod_t_ = (-InvU128(base_Q_128)) & mod_t_mask_;
     inv_gamma_mod_t_ = InvU128(gamma_128) & mod_t_mask_;
 
-    YASL_ENFORCE_EQ((-neg_inv_Q_mod_t_ * base_Q_128) & mod_t_mask_,
+    YACL_ENFORCE_EQ((-neg_inv_Q_mod_t_ * base_Q_128) & mod_t_mask_,
                     static_cast<uint128_t>(1));
-    YASL_ENFORCE_EQ((inv_gamma_mod_t_ * gamma_128) & mod_t_mask_,
+    YACL_ENFORCE_EQ((inv_gamma_mod_t_ * gamma_128) & mod_t_mask_,
                     static_cast<uint128_t>(1));
   }
 
@@ -422,7 +422,7 @@ void ModulusSwitchHelper::Impl::Init() {
     using namespace seal::util;
     auto Q_mod_gamma = modulo_uint(base_Q.base_prod(), num_modulus, gamma_);
     uint64_t inv;
-    YASL_ENFORCE(try_invert_uint_mod(Q_mod_gamma, gamma_, inv));
+    YACL_ENFORCE(try_invert_uint_mod(Q_mod_gamma, gamma_, inv));
     MultiplyUIntModOperand ret;
     ret.set(negate_uint_mod(inv, gamma_), gamma_);
     return ret;
@@ -458,20 +458,20 @@ ModulusSwitchHelper::ModulusSwitchHelper(const seal::SEALContext &seal_context,
   void ModulusSwitchHelper::ModulusUpAt(                                      \
       absl::Span<const Scalar> src, size_t mod_idx, absl::Span<uint64_t> out) \
       const {                                                                 \
-    yasl::CheckNotNull(impl_.get());                                          \
-    YASL_ENFORCE(src.size() == out.size());                                   \
+    yacl::CheckNotNull(impl_.get());                                          \
+    YACL_ENFORCE(src.size() == out.size());                                   \
     impl_->ModulusUpAt<Scalar>(src, mod_idx, out);                            \
   }                                                                           \
   void ModulusSwitchHelper::CenteralizeAt(                                    \
       absl::Span<const Scalar> src, size_t mod_idx, absl::Span<uint64_t> out) \
       const {                                                                 \
-    yasl::CheckNotNull(impl_.get());                                          \
-    YASL_ENFORCE(src.size() == out.size());                                   \
+    yacl::CheckNotNull(impl_.get());                                          \
+    YACL_ENFORCE(src.size() == out.size());                                   \
     impl_->CenteralizeAt<Scalar>(src, mod_idx, out);                          \
   }                                                                           \
   void ModulusSwitchHelper::ModulusDownRNS(absl::Span<const uint64_t> src,    \
                                            absl::Span<Scalar> out) const {    \
-    yasl::CheckNotNull(impl_.get());                                          \
+    yacl::CheckNotNull(impl_.get());                                          \
     impl_->ModulusDownRNS<Scalar>(src, out);                                  \
   }
 
@@ -482,17 +482,17 @@ DEFINE_MODSWITCH_FUNS(uint128_t)
 #undef DEFINE_MODSWITCH_FUNS
 
 seal::parms_id_type ModulusSwitchHelper::parms_id() const {
-  yasl::CheckNotNull(impl_.get());
+  yacl::CheckNotNull(impl_.get());
   return impl_->parms_id();
 }
 
 uint32_t ModulusSwitchHelper::base_mod_bitlen() const {
-  yasl::CheckNotNull(impl_.get());
+  yacl::CheckNotNull(impl_.get());
   return impl_->base_mod_bitlen();
 }
 
 uint32_t ModulusSwitchHelper::coeff_modulus_size() const {
-  yasl::CheckNotNull(impl_.get());
+  yacl::CheckNotNull(impl_.get());
   return impl_->coeff_modulus_size();
 }
 

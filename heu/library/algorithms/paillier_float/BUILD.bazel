@@ -1,6 +1,6 @@
-load("@yasl//bazel:yasl.bzl", "yasl_cc_library", "yasl_cc_test")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
 
-yasl_cc_library(
+yacl_cc_library(
     name = "paillier_float",
     srcs = [
         "decryptor.cc",
@@ -31,7 +31,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_test(
+yacl_cc_test(
     name = "paillier_test",
     srcs = ["paillier_test.cc"],
     deps = [
@@ -39,7 +39,7 @@ yasl_cc_test(
     ],
 )
 
-yasl_cc_test(
+yacl_cc_test(
     name = "codec_test",
     srcs = ["internal/codec_test.cc"],
     deps = [

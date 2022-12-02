@@ -18,11 +18,11 @@ namespace heu::pylib {
 
 using lib::phe::Plaintext;
 
-yasl::Buffer PyIntegerEncoder::Serialize() const {
+yacl::Buffer PyIntegerEncoder::Serialize() const {
   return encoder_.Serialize();
 }
 
-PyIntegerEncoder PyIntegerEncoder::LoadFrom(yasl::ByteContainerView buf) {
+PyIntegerEncoder PyIntegerEncoder::LoadFrom(yacl::ByteContainerView buf) {
   return PyIntegerEncoder(lib::phe::PlainEncoder::LoadFrom(buf));
 }
 

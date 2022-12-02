@@ -18,7 +18,7 @@
 #include <utility>
 
 #include "pybind11/pybind11.h"
-#include "yasl/base/int128.h"
+#include "yacl/base/int128.h"
 
 #include "heu/library/phe/phe.h"
 
@@ -44,7 +44,7 @@ class PyUtils {
   static pybind11::int_ PlaintextToPyInt(const heu::lib::phe::Plaintext& mp);
 
   template <typename T>
-  using kHasLoadFromMethod = decltype(T::LoadFrom(yasl::ByteContainerView()));
+  using kHasLoadFromMethod = decltype(T::LoadFrom(yacl::ByteContainerView()));
 
   template <typename T>
   static decltype(auto) PickleSupport() {

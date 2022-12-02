@@ -50,9 +50,9 @@ class PyBigintEncoder : public PyBigintDecoder {
   explicit PyBigintEncoder(lib::phe::SchemaType schema_type)
       : schema_type_(schema_type) {}
 
-  [[nodiscard]] yasl::Buffer Serialize() const;
+  [[nodiscard]] yacl::Buffer Serialize() const;
 
-  static PyBigintEncoder LoadFrom(yasl::ByteContainerView buf);
+  static PyBigintEncoder LoadFrom(yacl::ByteContainerView buf);
 
   template <typename T,
             typename std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>

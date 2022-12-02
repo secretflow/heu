@@ -44,7 +44,7 @@ std::tuple<int128_t, bool> PyUtils::PyIntToCppInt128(const py::int_& p) {
       PyNumber_Rshift(p.ptr(), kPyObjValue64.ptr()));
   auto hi = PyLong_AsLongLongAndOverflow(hi_obj.ptr(), &is_overflow);
 
-  return {yasl::MakeInt128(hi, lo), is_overflow};
+  return {yacl::MakeInt128(hi, lo), is_overflow};
 }
 
 // NOT thread safe
@@ -93,7 +93,7 @@ lib::algorithms::Endian PyUtils::PyEndianToCpp(const std::string& endian) {
   } else if (endian == "big") {
     return lib::algorithms::Endian::big;
   } else {
-    YASL_THROW_ARGUMENT_ERROR("Illegal endian {}", endian);
+    YACL_THROW_ARGUMENT_ERROR("Illegal endian {}", endian);
   }
 }
 

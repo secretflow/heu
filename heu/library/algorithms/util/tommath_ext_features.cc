@@ -17,12 +17,12 @@
 #include <functional>
 
 #include "tommath_private.h"
-#include "yasl/base/buffer.h"
-#include "yasl/base/exception.h"
-#include "yasl/utils/scope_guard.h"
+#include "yacl/base/buffer.h"
+#include "yacl/base/exception.h"
+#include "yacl/utils/scope_guard.h"
 
 #ifndef MPINT_ENFORCE_OK
-#define MPINT_ENFORCE_OK(MP_ERR, ...) YASL_ENFORCE_EQ((MP_ERR), 0, __VA_ARGS__)
+#define MPINT_ENFORCE_OK(MP_ERR, ...) YACL_ENFORCE_EQ((MP_ERR), 0, __VA_ARGS__)
 #endif
 
 namespace heu::lib::algorithms {
@@ -134,14 +134,14 @@ void mp_ext_safe_prime_rand(mp_int *p, int t, int psize) {
   uint64_t mod;
 
   /* sanity check the input */
-  YASL_ENFORCE(psize > 1 && t > 0, "with psize={}, t={}", psize, t);
+  YACL_ENFORCE(psize > 1 && t > 0, "with psize={}, t={}", psize, t);
 
   int qsize = psize - 1;
   /* calc the byte size */
   int bsize = (qsize + 7) >> 3;
 
   /* we need a buffer of bsize bytes */
-  yasl::Buffer buf((size_t)bsize);
+  yacl::Buffer buf((size_t)bsize);
   uint8_t *tmp = buf.data<uint8_t>();
 
   MPINT_ENFORCE_OK(mp_init(&q));
@@ -257,7 +257,7 @@ void mp_ext_rand_bits(mp_int *out, int64_t bits) {
 
 void mp_ext_to_bytes(const mp_int &num, unsigned char *buf, int64_t byte_len,
                      Endian endian) {
-  YASL_ENFORCE(MP_DIGIT_BIT % 4 == 0, "Unsupported MP_DIGIT_BIT {}",
+  YACL_ENFORCE(MP_DIGIT_BIT % 4 == 0, "Unsupported MP_DIGIT_BIT {}",
                MP_DIGIT_BIT);
 
   int64_t pos = 0;

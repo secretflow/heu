@@ -38,7 +38,7 @@ Ciphertext Encryptor::EncryptZero() const { return Ciphertext(GetRn()); }
 template <bool audit>
 Ciphertext Encryptor::EncryptImpl(const MPInt &m,
                                   std::string *audit_str) const {
-  YASL_ENFORCE(m.CompareAbs(pk_.PlaintextBound()) < 0,
+  YACL_ENFORCE(m.CompareAbs(pk_.PlaintextBound()) < 0,
                "message number out of range, message={}, max (abs)={}",
                m.ToHexString(), pk_.PlaintextBound());
 
@@ -51,7 +51,7 @@ Ciphertext Encryptor::EncryptImpl(const MPInt &m,
   auto rn = GetRn();
   pk_.m_space_->MulMod(gm, rn, &ct.c_);
   if constexpr (audit) {
-    YASL_ENFORCE(audit_str != nullptr);
+    YACL_ENFORCE(audit_str != nullptr);
     *audit_str = fmt::format("p:{},rn:{},c:{}", m.ToHexString(),
                              rn.ToHexString(), ct.c_.ToHexString());
   }

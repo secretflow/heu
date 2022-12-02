@@ -19,7 +19,7 @@
 
 #include "absl/types/span.h"
 #include "seal/context.h"
-#include "yasl/base/int128.h"
+#include "yacl/base/int128.h"
 
 namespace heu::expt::rlwe {
 

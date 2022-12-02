@@ -16,7 +16,7 @@
 
 #include "pybind11/operators.h"
 #include "pybind11/pybind11.h"
-#include "yasl/base/exception.h"
+#include "yacl/base/exception.h"
 
 #include "heu/library/phe/key_def.h"
 #include "heu/pylib/common/py_utils.h"
@@ -28,7 +28,7 @@ namespace py = ::pybind11;
 namespace phe = ::heu::lib::phe;
 
 void PyBindPhe(pybind11::module& m) {
-  py::register_local_exception<yasl::Exception>(m, "PheRuntimeError",
+  py::register_local_exception<yacl::Exception>(m, "PheRuntimeError",
                                                 PyExc_RuntimeError);
 
   /****** Basic types ******/

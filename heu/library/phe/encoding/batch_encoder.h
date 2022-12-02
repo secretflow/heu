@@ -30,7 +30,7 @@ class BatchEncoder : public algorithms::HeObject<BatchEncoder> {
   explicit BatchEncoder(SchemaType schema, size_t batch_encoding_padding = 32)
       : schema_(schema), encoding_padding_(batch_encoding_padding) {}
 
-  static BatchEncoder LoadFrom(yasl::ByteContainerView buf) {
+  static BatchEncoder LoadFrom(yacl::ByteContainerView buf) {
     return BatchEncoder(buf);
   }
 
@@ -88,7 +88,7 @@ class BatchEncoder : public algorithms::HeObject<BatchEncoder> {
   }
 
  private:
-  explicit BatchEncoder(yasl::ByteContainerView buf) { Deserialize(buf); }
+  explicit BatchEncoder(yacl::ByteContainerView buf) { Deserialize(buf); }
 
   SchemaType schema_;
   size_t encoding_padding_;

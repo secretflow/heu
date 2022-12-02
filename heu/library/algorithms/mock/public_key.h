@@ -45,8 +45,8 @@ class PublicKey : public HeObject<PublicKey> {
   // If you don't inherit from HeObject, please implement the following
   // functions.
   // Functions inherited from HeObject:
-  // yasl::Buffer Serialize() const;                // [SPI: Critical]
-  // void Deserialize(yasl::ByteContainerView in);  // [SPI: Critical]
+  // yacl::Buffer Serialize() const;                // [SPI: Critical]
+  // void Deserialize(yacl::ByteContainerView in);  // [SPI: Critical]
 
   // for msgpack
   MSGPACK_DEFINE(key_size_, max_int_);

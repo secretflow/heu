@@ -15,7 +15,7 @@
 #pragma once
 #include <variant>
 
-#include "yasl/base/byte_container_view.h"
+#include "yacl/base/byte_container_view.h"
 
 #include "heu/library/phe/base/schema.h"
 
@@ -119,8 +119,8 @@ class SerializableVariant {
     return var_ != other.var_;
   }
 
-  [[nodiscard]] yasl::Buffer Serialize() const;
-  void Deserialize(yasl::ByteContainerView clazz);
+  [[nodiscard]] yacl::Buffer Serialize() const;
+  void Deserialize(yacl::ByteContainerView clazz);
   [[nodiscard]] std::string ToString() const;
 
   friend std::ostream &operator<<(std::ostream &os,

@@ -1,4 +1,4 @@
-load("@yasl//bazel:yasl.bzl", "yasl_cc_binary", "yasl_cc_library", "yasl_cc_test")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_binary", "yacl_cc_library", "yacl_cc_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -6,7 +6,7 @@ test_suite(
     name = "he_encoding_tests",
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "encoding",
     hdrs = ["encoding.h"],
     deps = [
@@ -16,7 +16,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "plain_encoder",
     hdrs = ["plain_encoder.h"],
     deps = [
@@ -26,7 +26,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_test(
+yacl_cc_test(
     name = "plain_encoder_test",
     srcs = ["plain_encoder_test.cc"],
     deps = [
@@ -35,7 +35,7 @@ yasl_cc_test(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "batch_encoder",
     hdrs = ["batch_encoder.h"],
     deps = [
@@ -45,7 +45,7 @@ yasl_cc_library(
     ],
 )
 
-yasl_cc_test(
+yacl_cc_test(
     name = "batch_encoder_test",
     srcs = ["batch_encoder_test.cc"],
     deps = [
@@ -54,7 +54,7 @@ yasl_cc_test(
     ],
 )
 
-yasl_cc_library(
+yacl_cc_library(
     name = "legacy_coding",
     srcs = ["coding.cc"],
     hdrs = ["coding.h"],

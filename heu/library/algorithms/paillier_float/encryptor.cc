@@ -37,7 +37,7 @@ MPInt Encryptor::EncryptRaw(const MPInt& m, absl::optional<uint32_t> rand,
   MPInt::Mod(c.IncrOne(), pk_.n_square_, &c);
   MPInt::MulMod(c, obfuscator, pk_.n_square_, &c);
   if constexpr (audit) {
-    YASL_ENFORCE(audit_str != nullptr);
+    YACL_ENFORCE(audit_str != nullptr);
     *audit_str = fmt::format("p:{},r:{},c:{}", m.ToHexString(), r.ToHexString(),
                              c.ToHexString());
   }

@@ -47,7 +47,7 @@ TEST_P(KeyGenTest, Serialize) {
   auto sk_buffer = sk.Serialize();
 
   PublicKey pk2;
-  pk2.Deserialize(yasl::ByteContainerView(pk_buffer));
+  pk2.Deserialize(yacl::ByteContainerView(pk_buffer));
   EXPECT_TRUE(pk.n_ == pk2.n_);
   EXPECT_TRUE(pk.n_square_ == pk2.n_square_);
   EXPECT_TRUE(pk.n_half_ == pk2.n_half_);
@@ -55,7 +55,7 @@ TEST_P(KeyGenTest, Serialize) {
   EXPECT_TRUE(pk.PlaintextBound() == pk2.PlaintextBound());
 
   SecretKey sk2;
-  sk2.Deserialize(yasl::ByteContainerView(sk_buffer));
+  sk2.Deserialize(yacl::ByteContainerView(sk_buffer));
   EXPECT_TRUE(sk.lambda_ == sk2.lambda_);
   EXPECT_TRUE(sk.mu_ == sk2.mu_);
   EXPECT_TRUE(sk.mu_ == sk2.mu_);

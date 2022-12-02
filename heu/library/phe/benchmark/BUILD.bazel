@@ -1,6 +1,6 @@
-load("@yasl//bazel:yasl.bzl", "yasl_cc_binary")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_binary")
 
-yasl_cc_binary(
+yacl_cc_binary(
     name = "benchmark",
     srcs = ["he_bench.cc"],
     deps = [
@@ -10,7 +10,7 @@ yasl_cc_binary(
 )
 
 
-yasl_cc_binary(
+yacl_cc_binary(
     name = "paillier_float",
     srcs = ["paillier_float_bench.cc"],
     deps = [
@@ -19,7 +19,7 @@ yasl_cc_binary(
     ],
 )
 
-yasl_cc_binary(
+yacl_cc_binary(
     name = "mpint_pack",
     srcs = ["mpint_pack_bench.cc"],
     defines = ["MPINT_PACK_BENCHMARK"],
@@ -29,7 +29,7 @@ yasl_cc_binary(
     ],
 )
 
-yasl_cc_binary(
+yacl_cc_binary(
     name = "crt",
     srcs = ["crt_bench.cc"],
     deps = [

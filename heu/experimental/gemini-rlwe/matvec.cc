@@ -19,7 +19,7 @@
 #include "absl/numeric/bits.h"
 #include "seal/evaluator.h"
 #include "seal/util/numth.h"
-#include "yasl/base/exception.h"
+#include "yacl/base/exception.h"
 
 namespace heu::expt::rlwe {
 
@@ -45,10 +45,10 @@ static void transform_to_ntt_inplace(RLWEPt& pt,
                                      const seal::SEALContext& context) {
   using namespace seal::util;
   auto cntxt_data = context.get_context_data(pt.parms_id());
-  YASL_ENFORCE(cntxt_data != nullptr);
+  YACL_ENFORCE(cntxt_data != nullptr);
 
   auto L = cntxt_data->parms().coeff_modulus().size();
-  YASL_ENFORCE(pt.coeff_count() % L == 0);
+  YACL_ENFORCE(pt.coeff_count() % L == 0);
 
   auto ntt_tables = cntxt_data->small_ntt_tables();
   size_t n = pt.coeff_count() / L;
@@ -70,10 +70,10 @@ static void ConcatSubMatrix(absl::Span<const T> mat_view,
                             const std::array<size_t, 2>& submat_shape,
                             std::vector<T>* concat_submat) {
   for (int i : {0, 1}) {
-    YASL_ENFORCE(starts[i] < (i == 0 ? meta.nrows : meta.ncols),
+    YACL_ENFORCE(starts[i] < (i == 0 ? meta.nrows : meta.ncols),
                  fmt::format("invalid start[{}]={}", i, starts[i]));
 
-    YASL_ENFORCE(extents[i] > 0 && submat_shape[i] >= extents[i],
+    YACL_ENFORCE(extents[i] > 0 && submat_shape[i] >= extents[i],
                  fmt::format("invalid extents[{}]={}", i, extents[i]));
   }
 
@@ -94,7 +94,7 @@ MatVecProtocol::MatVecProtocol(const seal::SEALContext& context,
     : poly_deg_(context.key_context_data()->parms().poly_modulus_degree()),
       encoder_(context, ms_helper),
       context_(context) {
-  YASL_ENFORCE(context_.parameters_set());
+  YACL_ENFORCE(context_.parameters_set());
 }
 
 bool MatVecProtocol::IsValidMeta(const Meta& meta) const {
@@ -105,9 +105,9 @@ template <typename T>
 void MatVecProtocol::DoEncodeVector(const Meta& meta,
                                     absl::Span<const T> vec_view,
                                     std::vector<RLWEPt>* out) const {
-  YASL_ENFORCE(IsValidMeta(meta));
-  yasl::CheckNotNull(out);
-  YASL_ENFORCE_EQ(vec_view.size(), GetVecSize(meta));
+  YACL_ENFORCE(IsValidMeta(meta));
+  yacl::CheckNotNull(out);
+  YACL_ENFORCE_EQ(vec_view.size(), GetVecSize(meta));
   auto submat_shape = GetSubMatrixShape(meta, poly_degree());
 
   size_t vec_len = vec_view.size();
@@ -126,10 +126,10 @@ template <typename T>
 void MatVecProtocol::DoMatVec(const Meta& meta, absl::Span<const T> mat_view,
                               const std::vector<RLWECt>& vec,
                               std::vector<LWECt>* out) const {
-  YASL_ENFORCE(IsValidMeta(meta));
-  YASL_ENFORCE_EQ(seal::util::mul_safe(meta.nrows, meta.ncols),
+  YACL_ENFORCE(IsValidMeta(meta));
+  YACL_ENFORCE_EQ(seal::util::mul_safe(meta.nrows, meta.ncols),
                   mat_view.size());
-  yasl::CheckNotNull(out);
+  yacl::CheckNotNull(out);
 
   auto submat_shape = GetSubMatrixShape(meta, poly_degree());
 
@@ -170,7 +170,7 @@ void MatVecProtocol::DoMatVec(const Meta& meta, absl::Span<const T> mat_view,
         accumulated = tmp;
       }
     }
-    YASL_ENFORCE(accumulated.size() > 0,
+    YACL_ENFORCE(accumulated.size() > 0,
                  fmt::format("all zero matrix is not supported for MatVec"));
 
     // position form for RLWE2LWE

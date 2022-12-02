@@ -41,8 +41,8 @@ SerializableVariant<Types...>::SerializableVariant(SchemaType schema_type) {
 }
 
 template <typename... Types>
-yasl::Buffer SerializableVariant<Types...>::Serialize() const {
-  yasl::Buffer payload = Visit([](const auto &clazz) -> yasl::Buffer {
+yacl::Buffer SerializableVariant<Types...>::Serialize() const {
+  yacl::Buffer payload = Visit([](const auto &clazz) -> yacl::Buffer {
     FOR_EACH_TYPE(clazz) { return clazz.Serialize(); }
   });
   size_t idx = var_.index();
@@ -59,7 +59,7 @@ yasl::Buffer SerializableVariant<Types...>::Serialize() const {
     if constexpr (max_idx >= (n)) {             \
       var_.template emplace<n>();               \
     } else {                                    \
-      YASL_THROW("Bug: illegal variant index"); \
+      YACL_THROW("Bug: illegal variant index"); \
     }                                           \
     break
 
@@ -79,17 +79,17 @@ void SerializableVariant<Types...>::EmplaceInstance(size_t idx) {
     EMPLACE_CASE(5);
     EMPLACE_CASE(6);
     default:
-      YASL_THROW("Bug: please contact developers to fix problem");
+      YACL_THROW("Bug: please contact developers to fix problem");
   }
 }
 
 template <typename... Types>
-void SerializableVariant<Types...>::Deserialize(yasl::ByteContainerView in) {
-  YASL_ENFORCE(in.size() > sizeof(size_t), "Illegal buffer size {}", in.size());
+void SerializableVariant<Types...>::Deserialize(yacl::ByteContainerView in) {
+  YACL_ENFORCE(in.size() > sizeof(size_t), "Illegal buffer size {}", in.size());
 
   size_t idx =
       *reinterpret_cast<const size_t *>(in.data() + in.size() - sizeof(size_t));
-  yasl::ByteContainerView payload(in.data(), in.size() - sizeof(size_t));
+  yacl::ByteContainerView payload(in.data(), in.size() - sizeof(size_t));
 
   EmplaceInstance(idx);
   Visit([&](auto &clazz) { FOR_EACH_TYPE(clazz) clazz.Deserialize(payload); });

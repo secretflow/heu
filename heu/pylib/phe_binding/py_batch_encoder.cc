@@ -18,9 +18,9 @@ namespace heu::pylib {
 
 using lib::phe::Plaintext;
 
-yasl::Buffer PyBatchEncoder::Serialize() const { return encoder_.Serialize(); }
+yacl::Buffer PyBatchEncoder::Serialize() const { return encoder_.Serialize(); }
 
-PyBatchEncoder PyBatchEncoder::LoadFrom(yasl::ByteContainerView buf) {
+PyBatchEncoder PyBatchEncoder::LoadFrom(yacl::ByteContainerView buf) {
   return PyBatchEncoder(lib::phe::BatchEncoder::LoadFrom(buf));
 }
 

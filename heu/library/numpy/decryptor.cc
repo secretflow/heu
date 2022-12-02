@@ -25,7 +25,7 @@ template <typename CLAZZ, typename CT>
 auto DoCallDecrypt(const CLAZZ& sub_decryptor, const CMatrix& in, PMatrix* out)
     -> std::enable_if_t<
         std::experimental::is_detected_v<kHasVectorizedDecrypt, CLAZZ, CT>> {
-  yasl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
+  yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
     std::vector<const CT*> cts;
     cts.reserve(end - beg);
     for (int64_t i = beg; i < end; ++i) {
@@ -43,7 +43,7 @@ template <typename CLAZZ, typename CT>
 auto DoCallDecrypt(const CLAZZ& sub_decryptor, const CMatrix& in, PMatrix* out)
     -> std::enable_if_t<
         !std::experimental::is_detected_v<kHasVectorizedDecrypt, CLAZZ, CT>> {
-  yasl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
+  yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
     for (int64_t i = beg; i < end; ++i) {
       out->data()[i] = sub_decryptor.Decrypt(in.data()[i].As<CT>());
     }

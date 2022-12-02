@@ -85,8 +85,8 @@ TEST_F(MPIntTest, SerializeWorks) {
   MPInt x1(1234567890);
   MPInt x2(-1234567890);
 
-  yasl::Buffer x1_repr = x1.Serialize();
-  yasl::Buffer x2_repr = x2.Serialize();
+  yacl::Buffer x1_repr = x1.Serialize();
+  yacl::Buffer x2_repr = x2.Serialize();
 
   ASSERT_TRUE(x1_repr.size() > 0);
   ASSERT_TRUE(x2_repr.size() > 0);

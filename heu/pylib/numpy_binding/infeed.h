@@ -33,7 +33,7 @@ template <
                               int> = 0>
 hnp::DenseMatrix<phe::Plaintext> DoEncodeMatrix(const py::array &ndarray,
                                                 const Encoder_t &encoder) {
-  YASL_ENFORCE(ndarray.ndim() <= 2,
+  YACL_ENFORCE(ndarray.ndim() <= 2,
                "HEU currently supports up to 2-dimensional tensor");
   auto bi = ndarray.request();
 
@@ -64,10 +64,10 @@ hnp::DenseMatrix<phe::Plaintext> DoEncodeMatrix(const py::array &ndarray,
 template <typename EL_TYPE>
 hnp::DenseMatrix<phe::Plaintext> DoEncodeMatrix(const py::array &ndarray,
                                                 const PyBatchEncoder &encoder) {
-  YASL_ENFORCE(ndarray.ndim() > 0 && ndarray.ndim() <= 2,
+  YACL_ENFORCE(ndarray.ndim() > 0 && ndarray.ndim() <= 2,
                "HEU only support 1-dim or 2-dim array currently");
 
-  YASL_ENFORCE(
+  YACL_ENFORCE(
       // TODO: support dynamic shape
       ndarray.shape(ndarray.ndim() - 1) == 2,
       "The size of innermost dimension must be 2 when using PyBatchEncoder");
@@ -146,13 +146,13 @@ hnp::DenseMatrix<phe::Plaintext> EncodeNdarray(const py::array &ndarray,
     case 17:
       return DoEncodeMatrix<PyObject *>(ndarray, encoder);
     default:
-      YASL_THROW_ARGUMENT_ERROR("Unsupported numpy ndarray with dtype '{}'",
+      YACL_THROW_ARGUMENT_ERROR("Unsupported numpy ndarray with dtype '{}'",
                                 std::string(py::str(ndarray.dtype())));
   }
 }
 
 py::array ParseNumpyNdarray(PyObject *ptr, int extra_flags) {
-  YASL_ENFORCE(ptr != nullptr,
+  YACL_ENFORCE(ptr != nullptr,
                "HEU cannot create a numpy.ndarray from nullptr");
 
   return py::reinterpret_steal<py::array>(

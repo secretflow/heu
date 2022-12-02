@@ -19,7 +19,7 @@ namespace heu::lib::algorithms::paillier_f::internal {
 const MPInt Codec::kBaseCache = MPInt(Codec::kBase);
 
 EncodedNumber Codec::Encode(const MPInt& scalar, int exponent) const {
-  YASL_ENFORCE(scalar.CompareAbs(pk_.PlaintextBound()) < 0,
+  YACL_ENFORCE(scalar.CompareAbs(pk_.PlaintextBound()) < 0,
                "integer scalar should in +/- {}, but get {}",
                pk_.PlaintextBound().ToHexString(), scalar.ToHexString());
 
@@ -75,7 +75,7 @@ EncodedNumber Codec::Encode(double scalar, absl::optional<float> precision,
 // }
 
 MPInt Codec::GetMantissa(const EncodedNumber& encoded) const {
-  YASL_ENFORCE(encoded.encoding < pk_.n_, "number corrupted");
+  YACL_ENFORCE(encoded.encoding < pk_.n_, "number corrupted");
 
   MPInt mantissa;
 
@@ -86,7 +86,7 @@ MPInt Codec::GetMantissa(const EncodedNumber& encoded) const {
     // negative
     mantissa = encoded.encoding - pk_.n_;
   } else {
-    YASL_THROW("overflow detected");
+    YACL_THROW("overflow detected");
   }
   return mantissa;
 }

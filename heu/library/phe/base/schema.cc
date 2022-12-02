@@ -56,7 +56,7 @@ SchemaType ParseSchemaType(const std::string& schema_string) {
       }
     }
   }
-  YASL_THROW("Unknown schema type {}", schema_string);
+  YACL_THROW("Unknown schema type {}", schema_string);
 }
 
 std::string SchemaToString(SchemaType schema_type) {

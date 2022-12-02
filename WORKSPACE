@@ -2,25 +2,23 @@ workspace(name = "com_alipay_sf_heu")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-### ref yasl ###
+### ref yacl ###
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 SECRETFLOW_GIT = "https://github.com/secretflow"
 
-
-OPENSOURCE_YASL_VERSION = "a1cd56d69261a0e2e4d369b0d29a4ca629ed9bc9"
+YACL_COMMIT_ID  = "f70558ffdaf4784f16e147c7e7322a78d467e974"
 
 git_repository(
-    name = "yasl",
-    commit =
-        OPENSOURCE_YASL_VERSION,
+    name = "yacl",
+    commit = YACL_COMMIT_ID,
     recursive_init_submodules = True,
     remote = "{}/yasl.git".format(SECRETFLOW_GIT),
 )
 
-load("@yasl//bazel:repositories.bzl", "yasl_deps")
+load("@yacl//bazel:repositories.bzl", "yacl_deps")
 
-yasl_deps()
+yacl_deps()
 
 #### fetch third-party deps ####
 
@@ -45,10 +43,10 @@ rules_foreign_cc_dependencies(
 
 http_archive(
     name = "rules_python",
-    sha256 = "9fcf91dbcc31fde6d1edb15f117246d912c33c36f44cf681976bd886538deba6",
-    strip_prefix = "rules_python-0.8.0",
+    sha256 = "c03246c11efd49266e8e41e12931090b613e12a59e6f55ba2efd29a7cb8b4258",
+    strip_prefix = "rules_python-0.11.0",
     urls = [
-        "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.8.0.tar.gz",
+        "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.11.0.tar.gz",
     ],
 )
 

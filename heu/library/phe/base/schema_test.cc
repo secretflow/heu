@@ -76,7 +76,7 @@ TEST_F(SchemaTest, SchemaParse) {
   EXPECT_EQ(ParseSchemaType("plain"), SchemaType::Mock);
   EXPECT_EQ(ParseSchemaType("paillier"), SchemaType::ZPaillier);
   EXPECT_EQ(ParseSchemaType("fpaillier"), SchemaType::FPaillier);
-  EXPECT_THROW(ParseSchemaType("abc"), yasl::RuntimeError);
+  EXPECT_THROW(ParseSchemaType("abc"), yacl::RuntimeError);
 
   EXPECT_EQ(SchemaToString(SchemaType::Mock), "Mock");
   EXPECT_EQ(SchemaToString(SchemaType::ZPaillier), "ZPaillier");

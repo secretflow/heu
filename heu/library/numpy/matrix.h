@@ -13,14 +13,14 @@
 // limitations under the License.
 
 #pragma once
-#include "yasl/base/exception.h"
-#define eigen_assert(X) YASL_ENFORCE((X))
+#include "yacl/base/exception.h"
+#define eigen_assert(X) YACL_ENFORCE((X))
 
 #include <experimental/type_traits>
 
 #include "Eigen/Core"
 #include "msgpack.hpp"
-#include "yasl/utils/parallel.h"
+#include "yacl/utils/parallel.h"
 
 #include "heu/library/numpy/eigen_traits.h"
 #include "heu/library/numpy/shape.h"
@@ -40,11 +40,11 @@ class DenseMatrix {
 
   DenseMatrix(Eigen::Index rows, Eigen::Index cols, int64_t ndim = 2)
       : m_(rows, cols), ndim_(ndim) {
-    YASL_ENFORCE(ndim <= 2, "HEU tensor dimension cannot exceed 2");
+    YACL_ENFORCE(ndim <= 2, "HEU tensor dimension cannot exceed 2");
     if (ndim == 1) {
-      YASL_ENFORCE(cols == 1, "vector's cols must be 1");
+      YACL_ENFORCE(cols == 1, "vector's cols must be 1");
     } else if (ndim == 0) {
-      YASL_ENFORCE(rows == 1 && cols == 1, "scalar's shape must be 1x1");
+      YACL_ENFORCE(rows == 1 && cols == 1, "scalar's shape must be 1x1");
     }
   }
 
@@ -59,11 +59,11 @@ class DenseMatrix {
   }
 
   T& operator()(Eigen::Index rows) {
-    YASL_ENFORCE(ndim_ == 1, "tensor is {}-dim, but index is 1-dim", ndim_);
+    YACL_ENFORCE(ndim_ == 1, "tensor is {}-dim, but index is 1-dim", ndim_);
     return m_(rows, 0);
   }
   const T& operator()(Eigen::Index rows) const {
-    YASL_ENFORCE(ndim_ == 1, "tensor is {}-dim, but index is 1-dim", ndim_);
+    YACL_ENFORCE(ndim_ == 1, "tensor is {}-dim, but index is 1-dim", ndim_);
     return m_(rows, 0);
   }
 
@@ -77,10 +77,10 @@ class DenseMatrix {
     const auto& view = m_(row_indices, col_indices);
 
     if (ndim_ == 1) {
-      YASL_ENFORCE(!squeeze_col,
+      YACL_ENFORCE(!squeeze_col,
                    "axis not exist, you cannot squeeze shape[1] of a vector");
     } else if (ndim_ == 0) {
-      YASL_ENFORCE(
+      YACL_ENFORCE(
           !squeeze_row && !squeeze_col,
           "axis not exist, tensor is 0-d, but you want to squeeze dim 1 and 2");
     }
@@ -99,19 +99,19 @@ class DenseMatrix {
         new_dim -= 1;  // scalar
       }
 
-      YASL_ENFORCE(new_dim >= min_dim,
+      YACL_ENFORCE(new_dim >= min_dim,
                    "internal error: a bug occurred during squeeze");
       return {view, new_dim};
     } else if (squeeze_row && view.rows() <= 1) {
       // horizontal vector or scalar
       new_dim -= 1;
 
-      YASL_ENFORCE(new_dim >= min_dim,
+      YACL_ENFORCE(new_dim >= min_dim,
                    "internal error: a bug occurred during squeeze");
       return {view.transpose(), new_dim};
     }
 
-    YASL_THROW_LOGIC_ERROR("GetItem should not reach here");
+    YACL_THROW_LOGIC_ERROR("GetItem should not reach here");
   }
 
   template <typename RowIndices, typename ColIndices>
@@ -145,7 +145,7 @@ class DenseMatrix {
       bool parallel = true) {
     // Why not use static_assert: m_.IsRowMajor is not a constexpr value
     // Why not use assert: C++ assert do not support custom message
-    YASL_ENFORCE(!m_.IsRowMajor,
+    YACL_ENFORCE(!m_.IsRowMajor,
                  "Internal bug: tensor must be stored in ColMajor way.");
 
     T* buf = m_.data();
@@ -157,7 +157,7 @@ class DenseMatrix {
     };
 
     if (parallel) {
-      yasl::parallel_for(0, size(), 1, func);
+      yacl::parallel_for(0, size(), 1, func);
     } else {
       func(0, size());
     }
@@ -167,7 +167,7 @@ class DenseMatrix {
   void ForEach(const std::function<void(int64_t row, int64_t col,
                                         const T& element)>& visit,
                bool parallel = true) const {
-    YASL_ENFORCE(!m_.IsRowMajor,
+    YACL_ENFORCE(!m_.IsRowMajor,
                  "Internal bug: tensor must be stored in ColMajor way.");
 
     const T* buf = m_.data();
@@ -179,7 +179,7 @@ class DenseMatrix {
     };
 
     if (parallel) {
-      yasl::parallel_for(0, size(), 1, func);
+      yacl::parallel_for(0, size(), 1, func);
     } else {
       func(0, size());
     }
@@ -188,7 +188,7 @@ class DenseMatrix {
   // there is compiling error in TransposeInplace(), so we only provide
   // Transpose()
   DenseMatrix<T> Transpose() {
-    YASL_ENFORCE(ndim_ == 2, "you cannot transpose a {}d-tensor", ndim_);
+    YACL_ENFORCE(ndim_ == 2, "you cannot transpose a {}d-tensor", ndim_);
     return {m_.transpose(), ndim_};
   }
 
@@ -205,7 +205,7 @@ class DenseMatrix {
 
   const auto& EigenMatrix() const { return m_; }
 
-  [[nodiscard]] yasl::Buffer Serialize() const {
+  [[nodiscard]] yacl::Buffer Serialize() const {
     msgpack::sbuffer buffer;
     msgpack::packer<msgpack::sbuffer> o(buffer);
 
@@ -236,7 +236,7 @@ class DenseMatrix {
     return {buffer.release(), sz, [](void* ptr) { free(ptr); }};
   }
 
-  static DenseMatrix<T> LoadFrom(yasl::ByteContainerView in) {
+  static DenseMatrix<T> LoadFrom(yacl::ByteContainerView in) {
     auto msg =
         msgpack::unpack(reinterpret_cast<const char*>(in.data()), in.size());
     msgpack::object o = msg.get();
@@ -277,11 +277,11 @@ class DenseMatrix {
  private:
   DenseMatrix(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> m, int64_t ndim)
       : m_(std::move(m)), ndim_(ndim) {
-    YASL_ENFORCE(ndim <= 2, "HEU tensor dimension cannot exceed 2");
+    YACL_ENFORCE(ndim <= 2, "HEU tensor dimension cannot exceed 2");
     if (ndim == 1) {
-      YASL_ENFORCE(m_.cols() == 1, "vector's cols must be 1");
+      YACL_ENFORCE(m_.cols() == 1, "vector's cols must be 1");
     } else if (ndim == 0) {
-      YASL_ENFORCE(m_.rows() == 1 && m_.cols() == 1,
+      YACL_ENFORCE(m_.rows() == 1 && m_.cols() == 1,
                    "scalar's shape must be 1x1");
     }
   }

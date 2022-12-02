@@ -15,7 +15,7 @@
 #pragma once
 
 #include "tommath.h"
-#include "yasl/base/int128.h"
+#include "yacl/base/int128.h"
 
 // define int8 related functions.
 void mp_set_u8(mp_int *a, uint8_t b);
