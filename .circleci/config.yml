@@ -30,7 +30,8 @@ jobs:
       - checkout
       - run:
           name: "bazel test"
-          command: "bazel test //heu/... --ui_event_filters=-info,-debug,-warning --jobs=8 --test_timeout=1800 --test_output=errors"
+          command: |
+            bazel test //heu/... --ui_event_filters=-info,-debug,-warning --jobs=8 --test_timeout=1800 --test_output=errors
       - store_test_results:
           path: ./bazel-testlogs
   linux_publish:
