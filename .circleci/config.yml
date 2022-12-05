@@ -59,7 +59,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "test"
+          name: "build package and publish"
           command: |
             set -ex
             
