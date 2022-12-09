@@ -1,0 +1,102 @@
+From c44a41667a0ff6367b3793485e9db67399eb661d Mon Sep 17 00:00:00 2001
+From: "Huang, Xiaojun" <xiaojun.huang@intel.com>
+Date: Thu, 1 Dec 2022 04:35:01 -0500
+Subject: [PATCH] ipcl patch
+
+Signed-off-by: Huang, Xiaojun <xiaojun.huang@intel.com>
+---
+ CMakeLists.txt      | 21 +++++++++++++++++----
+ ipcl/CMakeLists.txt | 26 +++++++++++++-------------
+ 2 files changed, 30 insertions(+), 17 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index b9b9030..d6c84fb 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -192,8 +192,8 @@ set(IPCL_FORWARD_CMAKE_ARGS
+ set(IPCL_ROOT_DIR ${CMAKE_CURRENT_LIST_DIR})
+ set(IPCL_SRC_DIR ${IPCL_ROOT_DIR}/ipcl)
+ set(IPCL_INC_DIR ${IPCL_SRC_DIR}/include)
+-set(IPCL_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/ipcl)
+-set(IPCL_INSTALL_LIBDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/ipcl)
++set(IPCL_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR})
++set(IPCL_INSTALL_LIBDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+ set(IPCL_CMAKE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/ipcl")
+ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+   set(IPCL_DEBUG ON)
+@@ -209,8 +209,21 @@ find_package(Threads REQUIRED)
+ find_package(OpenSSL REQUIRED)
+ 
+ # External dependencies
+-include(cmake/ippcrypto.cmake)
+-include(cmake/cereal.cmake)
++# include(cmake/ippcrypto.cmake)
++# include(cmake/cereal.cmake)
++
++add_library(IPPCP::ippcp STATIC IMPORTED GLOBAL)
++add_library(IPPCP::crypto_mb STATIC IMPORTED GLOBAL)
++
++set_target_properties(IPPCP::ippcp PROPERTIES
++          IMPORTED_LOCATION ${IPPCRYPTO_LIB_DIR}/libippcp.a
++          INCLUDE_DIRECTORIES ${IPPCRYPTO_INC_DIR}
++)
++
++set_target_properties(IPPCP::crypto_mb PROPERTIES
++          IMPORTED_LOCATION ${IPPCRYPTO_LIB_DIR}/libcrypto_mb.a
++          INCLUDE_DIRECTORIES ${IPPCRYPTO_INC_DIR}
++)
+ 
+ if(IPCL_DETECT_CPU_RUNTIME)
+   include(cmake/cpufeatures.cmake)
+diff --git a/ipcl/CMakeLists.txt b/ipcl/CMakeLists.txt
+index a601caf..31d1aa4 100644
+--- a/ipcl/CMakeLists.txt
++++ b/ipcl/CMakeLists.txt
+@@ -43,18 +43,18 @@ install(DIRECTORY ${IPCL_INC_DIR}/
+ )
+ 
+ # CEREAL (third party dep): include and install definition
+-add_dependencies(ipcl ext_cereal)
++# add_dependencies(ipcl ext_cereal)
+ target_include_directories(ipcl
+     PUBLIC $<BUILD_INTERFACE:${CEREAL_INC_DIR}>
+ 	PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/ipcl>
+ )
+ 
+-install(DIRECTORY ${CEREAL_INC_DIR}/
+-    DESTINATION ${IPCL_INSTALL_INCLUDEDIR}
+-    FILES_MATCHING
+-    PATTERN "*.hpp"
+-    PATTERN "*.h"
+-)
++# install(DIRECTORY ${CEREAL_INC_DIR}/
++#     DESTINATION ${IPCL_INSTALL_INCLUDEDIR}
++#     FILES_MATCHING
++#     PATTERN "*.hpp"
++#     PATTERN "*.h"
++# )
+ 
+ # IPP-Crypto (third party dep): include and install definition
+ target_include_directories(ipcl
+@@ -62,12 +62,12 @@ target_include_directories(ipcl
+     PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/ipcl/ippcrypto>
+ )
+ 
+-install(DIRECTORY ${IPPCRYPTO_INC_DIR}/
+-    DESTINATION ${IPCL_INSTALL_INCLUDEDIR}/ippcrypto
+-    FILES_MATCHING
+-    PATTERN "*.hpp"
+-    PATTERN "*.h"
+-)
++# install(DIRECTORY ${IPPCRYPTO_INC_DIR}/
++#     DESTINATION ${IPCL_INSTALL_INCLUDEDIR}/ippcrypto
++#     FILES_MATCHING
++#     PATTERN "*.hpp"
++#     PATTERN "*.h"
++# )
+ 
+ # include and install definition of cpu_features
+ if(IPCL_DETECT_CPU_RUNTIME)
+-- 
+2.31.1
+

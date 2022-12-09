@@ -1,0 +1,60 @@
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_binary", "yacl_cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+# test_suite(
+#     name = "paillier_ipcl_tests",
+# )
+
+yacl_cc_library(
+    name = "paillier_ipcl",
+    srcs = [
+        "plaintext.cc",
+        "ciphertext.cc",
+        "key_generator.cc",
+        "public_key.cc",
+        "secret_key.cc",
+        "vector_encryptor.cc",
+        "vector_decryptor.cc",
+        "vector_evaluator.cc",
+        "utils.cc",
+    ],
+    hdrs = [
+        "ipcl.h",
+        "plaintext.h",
+        "ciphertext.h",
+        "key_generator.h",
+        "public_key.h",
+        "secret_key.h",
+        "vector_encryptor.h",
+        "vector_decryptor.h",
+        "vector_evaluator.h",
+        "utils.h",
+    ],
+    deps = [
+        "//heu/library/algorithms/util",
+        "@yacl//yacl/base:int128",
+        "@yacl//yacl/base:byte_container_view",
+        "@com_github_msgpack_msgpack//:msgpack",
+        "@com_github_fmtlib_fmt//:fmtlib",
+        "@com_github_intel_ipcl//:ipcl",
+        "@com_github_uscilab_cereal//:cereal",  
+    ],
+)
+
+yacl_cc_binary(
+    name = "main",
+    srcs = ["main_test.cc"],
+    deps = [
+        ":paillier_ipcl",
+        "@com_github_intel_ipcl//:ipcl", 
+    ]
+)
+
+yacl_cc_test(
+  name = "ipcl_test",
+   srcs = ["ipcl_test.cc"],
+   deps = [
+       ":paillier_ipcl",
+   ],
+)
