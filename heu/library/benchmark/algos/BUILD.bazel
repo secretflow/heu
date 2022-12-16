@@ -1,0 +1,10 @@
+load("@yacl//bazel:yacl.bzl", "yacl_cc_binary")
+
+yacl_cc_binary(
+    name = "paillier_float",
+    srcs = ["paillier_float_bench.cc"],
+    deps = [
+        "//heu/library/algorithms/paillier_float",
+        "@com_github_google_benchmark//:benchmark_main",
+    ],
+)

@@ -16,6 +16,8 @@
 
 #include <type_traits>
 
+#include "fmt/compile.h"
+
 #include "heu/library/algorithms/util/he_object.h"
 #include "heu/library/algorithms/util/mp_int.h"
 #include "heu/library/phe/base/plaintext.h"

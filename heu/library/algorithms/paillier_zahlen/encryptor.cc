@@ -14,6 +14,7 @@
 
 #include "heu/library/algorithms/paillier_zahlen/encryptor.h"
 
+#include "fmt/compile.h"
 #include "fmt/format.h"
 
 #include "heu/library/algorithms/util/montgomery_math.h"
@@ -52,7 +53,7 @@ Ciphertext Encryptor::EncryptImpl(const MPInt &m,
   pk_.m_space_->MulMod(gm, rn, &ct.c_);
   if constexpr (audit) {
     YACL_ENFORCE(audit_str != nullptr);
-    *audit_str = fmt::format("p:{},rn:{},c:{}", m.ToHexString(),
+    *audit_str = fmt::format(FMT_COMPILE("p:{},rn:{},c:{}"), m.ToHexString(),
                              rn.ToHexString(), ct.c_.ToHexString());
   }
   return ct;

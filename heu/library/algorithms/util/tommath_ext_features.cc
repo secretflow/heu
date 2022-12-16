@@ -14,6 +14,7 @@
 
 #include "heu/library/algorithms/util/tommath_ext_features.h"
 
+#include <algorithm>
 #include <functional>
 
 #include "tommath_private.h"
@@ -201,7 +202,7 @@ void mp_ext_safe_prime_rand(mp_int *p, int t, int psize) {
       MPINT_ENFORCE_OK(mp_mul_2(&q, p));
       MPINT_ENFORCE_OK(mp_incr(p));
 
-      if (mp_count_bits(p) != psize) {
+      if (mp_ext_count_bits_fast(*p) != psize) {
         continue;
       }
       if (is_prime_candidate(p)) {
@@ -255,6 +256,45 @@ void mp_ext_rand_bits(mp_int *out, int64_t bits) {
   mp_clamp(out);
 }
 
+// "De Bruijn" Algorithm
+// Original paper: http://supertech.csail.mit.edu/papers/debruijn.pdf
+// However, the original "De Bruijn" Algorithm only works with uint32_t
+// This 64-bits version borrows from:
+// https://stackoverflow.com/questions/21888140/de-bruijn-algorithm-binary-digit-count-64bits-c-sharp
+//
+// Note: "De Bruijn" is the fastest portable algorithms.
+// Other ways such as std:__lg(), __builtin_clz or _BitScanReverse are not
+// portable
+// Note2: The POSIX function 'ffs' not meet requirements.
+//   https://man7.org/linux/man-pages/man3/ffsll.3.html
+int count_bits_debruijn(uint64_t v) {
+  static const int bitPatternToLog2[128] = {
+      0,  48, -1, -1, 31, -1, 15, 51, -1, 63, 5,  -1, -1, -1, 19, -1,
+      23, 28, -1, -1, -1, 40, 36, 46, -1, 13, -1, -1, -1, 34, -1, 58,
+      -1, 60, 2,  43, 55, -1, -1, -1, 50, 62, 4,  -1, 18, 27, -1, 39,
+      45, -1, -1, 33, 57, -1, 1,  54, -1, 49, -1, 17, -1, -1, 32, -1,
+      53, -1, 16, -1, -1, 52, -1, -1, -1, 64, 6,  7,  8,  -1, 9,  -1,
+      -1, -1, 20, 10, -1, -1, 24, -1, 29, -1, -1, 21, -1, 11, -1, -1,
+      41, -1, 25, 37, -1, 47, -1, 30, 14, -1, -1, -1, -1, 22, -1, -1,
+      35, 12, -1, -1, -1, 59, 42, -1, -1, 61, 3,  26, 38, 44, -1, 56};
+
+  v |= v >> 1;
+  v |= v >> 2;
+  v |= v >> 4;
+  v |= v >> 8;
+  v |= v >> 16;
+  v |= v >> 32;
+  return bitPatternToLog2[(v * 0x6c04f118e9966f6bULL) >> 57];
+}
+
+int mp_ext_count_bits_fast(const mp_int &a) {
+  if (a.used == 0) {
+    return 0;
+  }
+
+  return (a.used - 1) * MP_DIGIT_BIT + count_bits_debruijn(a.dp[a.used - 1]);
+}
+
 void mp_ext_to_bytes(const mp_int &num, unsigned char *buf, int64_t byte_len,
                      Endian endian) {
   YACL_ENFORCE(MP_DIGIT_BIT % 4 == 0, "Unsupported MP_DIGIT_BIT {}",
@@ -289,6 +329,89 @@ void mp_ext_to_bytes(const mp_int &num, unsigned char *buf, int64_t byte_len,
       cache >>= 8;
       pos++;
     }
+
+    // process residual cache
+    if (cache > 0 && pos < byte_len) {
+      if (endian == Endian::little) {
+        buf[pos] = cache & 255;
+      } else {
+        buf[byte_len - 1 - pos] = cache & 255;
+      }
+    }
+  }
+}
+
+size_t mp_ext_serialize_size(const mp_int &num) {
+  auto bits = mp_ext_count_bits_fast(num);
+  return (bits + 7) / 8 + 1;  // we add an extra meta byte
+}
+
+void mp_ext_serialize(const mp_int &num, uint8_t *buf, size_t buf_len) {
+  YACL_ENFORCE(MP_DIGIT_BIT % 4 == 0, "Unsupported MP_DIGIT_BIT {}",
+               MP_DIGIT_BIT);
+  YACL_ENFORCE_GE(buf_len, mp_ext_serialize_size(num),
+                  "buf is too small to serialize mp_int");
+
+  // buf[0] is meta byte
+  if (mp_isneg(&num)) {
+    buf[0] = 1;
+  } else {
+    buf[0] = 0;
+  }
+
+  if (num.used == 0) {
+    return;
+  }
+
+  int64_t pos = 1;
+  mp_digit cache = 0;
+  int cache_remain = 0;
+  // store num in Little-Endian
+  for (int digit_idx = 0; digit_idx < num.used - 1; ++digit_idx) {
+    // process next mp_digit
+    cache |= num.dp[digit_idx] << cache_remain;
+    cache_remain += MP_DIGIT_BIT;
+
+    for (; cache_remain >= 8; cache_remain -= 8) {
+      buf[pos++] = cache & 255;
+      cache >>= 8;
+    }
+  }
+
+  // process last digit
+  cache |= num.dp[num.used - 1] << cache_remain;
+  while (cache > 0) {
+    buf[pos++] = cache & 255;
+    cache >>= 8;
+  }
+}
+
+void mp_ext_deserialize(mp_int *num, const uint8_t *buf, size_t buf_len) {
+  YACL_ENFORCE(buf_len > 0, "mp_int deserialize: empty buffer");
+
+  /* make sure there are at least two digits */
+  int total_digits =
+      ((buf_len - 1) * CHAR_BIT + MP_DIGIT_BIT - 1) / MP_DIGIT_BIT;
+  if (num->alloc < total_digits) {
+    MPINT_ENFORCE_OK(mp_grow(num, total_digits));
+  }
+
+  num->sign = buf[0] == 0 ? MP_ZPOS : MP_NEG;
+  num->used = 0;
+  mp_digit cache = 0;
+  int cache_bits = 0;
+  for (size_t buf_idx = 1; buf_idx < buf_len; ++buf_idx) {
+    cache |= (static_cast<mp_digit>(buf[buf_idx]) << cache_bits);
+    cache_bits += 8;
+
+    if (cache_bits >= MP_DIGIT_BIT) {
+      num->dp[num->used++] = cache & MP_MASK;
+      cache >>= MP_DIGIT_BIT;
+      cache_bits -= MP_DIGIT_BIT;
+    }
+  }
+  if (cache > 0) {
+    num->dp[num->used++] = cache & MP_MASK;
   }
 }
 

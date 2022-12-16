@@ -284,13 +284,21 @@ HEU 单元测试使用 `GoogleTest <github.com/google/googletest>`_ 框架，有
 
 .. code-block:: shell
 
-   bazel run -c opt heu/library/phe/benchmark -- your_algo_name_or_alias
+   # 测试算法在 scalar 运算场景下的性能
+   # Test the performance of your algorithm in scalar computing scenarios
+   bazel run -c opt heu/library/benchmark:phe -- --schema=your_algo_name_or_alias
 
-以下命令可以依次运行所有算法的性能测试，以便您与其它算法对比性能：
+   # 测试算法在矩阵运算场景下的性能
+   # Test the performance of your algorithm in matrix operation scenarios
+   bazel run -c opt heu/library/benchmark:np -- --schema=your_algo_name_or_alias
+
+如果不加 ``--schema`` 参数，则默认运行所有算法的性能测试，以便您与其它算法对比性能：
 
 .. code-block:: shell
 
-   bazel run -c opt heu/library/phe/benchmark
+   bazel run -c opt heu/library/benchmark:phe
+   bazel run -c opt heu/library/benchmark:np
+
 
 
 算法应用

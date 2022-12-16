@@ -85,6 +85,15 @@ yacl_cc_library(
 )
 
 yacl_cc_test(
+    name = "mp_ext_test",
+    srcs = ["tommath_ext_test.cc"],
+    deps = [
+        ":tommath_ext_features",
+        "@com_google_googletest//:gtest",
+    ],
+)
+
+yacl_cc_test(
     name = "mp_int_test",
     srcs = ["mp_int_test.cc"],
     deps = [

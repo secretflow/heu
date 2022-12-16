@@ -14,6 +14,8 @@
 
 #include "heu/library/phe/base/schema.h"
 
+#include <regex>
+
 #include "absl/strings/ascii.h"
 
 namespace heu::lib::phe {
@@ -57,6 +59,22 @@ SchemaType ParseSchemaType(const std::string& schema_string) {
     }
   }
   YACL_THROW("Unknown schema type {}", schema_string);
+}
+
+std::vector<SchemaType> SelectSchemas(const std::string& regex_pattern,
+                                      bool full_match) {
+  std::vector<SchemaType> res;
+  std::regex p(regex_pattern);
+  for (const auto& schema : kSchemaTypeToString) {
+    for (const auto& alias : schema.second) {
+      if (full_match ? std::regex_match(alias, p)
+                     : std::regex_search(alias, p)) {
+        res.push_back(schema.first);
+        break;
+      }
+    }
+  }
+  return res;
 }
 
 std::string SchemaToString(SchemaType schema_type) {
