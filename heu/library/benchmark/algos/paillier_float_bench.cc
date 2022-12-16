@@ -20,7 +20,7 @@
 
 #include "heu/library/algorithms/paillier_float/paillier.h"
 
-namespace heu::lib::phe::bench {
+namespace heu::lib::bench {
 
 namespace paillier_f = algorithms::paillier_f;
 using algorithms::MPInt;
@@ -175,11 +175,11 @@ BENCHMARK(PaillierAddCipher)->Unit(benchmark::kMillisecond);
 BENCHMARK(PaillierAddInt)->Unit(benchmark::kMillisecond);
 BENCHMARK(PaillierMulti)->Unit(benchmark::kMillisecond);
 BENCHMARK(PaillierDecrypt)->Unit(benchmark::kMillisecond);
-}  // namespace heu::lib::phe::bench
+}  // namespace heu::lib::bench
 
 int main(int argc, char** argv) {
   benchmark::Initialize(&argc, argv);
-  heu::lib::phe::bench::Initialize();
+  heu::lib::bench::Initialize();
   benchmark::RunSpecifiedBenchmarks();
   return 0;
 }

@@ -14,6 +14,7 @@
 
 #include "heu/pylib/phe_binding/bind_phe.h"
 
+#include "fmt/compile.h"
 #include "pybind11/operators.h"
 #include "pybind11/pybind11.h"
 #include "yacl/base/exception.h"
@@ -90,7 +91,7 @@ void PyBindPhe(pybind11::module& m) {
       .def("__str__", [](const phe::Plaintext& mp) { return mp.ToString(); })
       .def("__repr__",
            [](const phe::Plaintext& mp) {
-             return fmt::format("Plaintext({})", mp.ToString());
+             return fmt::format(FMT_COMPILE("Plaintext({})"), mp.ToString());
            })
       .def(
           "to_bytes",

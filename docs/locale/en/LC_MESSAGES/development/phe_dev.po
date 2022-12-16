@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-10 10:52+0800\n"
+"POT-Creation-Date: 2022-12-09 16:00+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -538,24 +538,24 @@ msgstr "Benchmark"
 msgid "以下命令可以对您的算法做性能测试："
 msgstr "You can benchmark your algorithm with the following command:"
 
-#: ../../development/phe_dev.rst:289
-msgid "以下命令可以依次运行所有算法的性能测试，以便您与其它算法对比性能："
+#: ../../development/phe_dev.rst:295
+msgid "如果不加 ``--schema`` 参数，则默认运行所有算法的性能测试，以便您与其它算法对比性能："
 msgstr ""
-"The following command runs the benchmark for each algorithm in turn, so "
+"If the ``--schema`` parameter is not added, all algorithms will be benchmarked by default, so "
 "that you can compare performance with other algorithms:"
 
-#: ../../development/phe_dev.rst:297
+#: ../../development/phe_dev.rst:305
 msgid "算法应用"
 msgstr "Application"
 
-#: ../../development/phe_dev.rst:299
+#: ../../development/phe_dev.rst:307
 msgid "单元测试通过后，请执行以下命令编译、安装 Pip 包，以便在 Python 环境中使用您的新算法："
 msgstr ""
 "After the unit tests are passed, execute the following commands to "
 "compile and install the HEU pip package so that your new algorithm can be"
 " used:"
 
-#: ../../development/phe_dev.rst:308
+#: ../../development/phe_dev.rst:316
 msgid "基本使用："
 msgstr "Basic usage:"
 

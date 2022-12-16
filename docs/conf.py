@@ -79,6 +79,7 @@ html_context = {
 }
 
 html_sidebars = {
+    "index": [],
     "**": ["search-field", "sidebar-nav-bs"]
 }
 
@@ -98,12 +99,12 @@ html_theme_options = {
         {
             "name": "GitHub",
             "url": "https://github.com/secretflow/heu",
-            "icon": "fab fa-github",
+            "icon": "fa-brands fa-github",
             "type": "fontawesome",
         },
     ],
     "footer_items": ["copyright"],
-    "page_sidebar_items": ["page-toc"],
+    "secondary_sidebar_items": ["page-toc"],
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,

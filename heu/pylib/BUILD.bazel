@@ -86,7 +86,7 @@ py_wheel(
     python_requires = "==3.8.*",
     python_tag = "cp38",
     requires = [
-        "numpy==1.22.3",
+        "numpy>=1.22.0",
     ],
     strip_path_prefixes = ["heu/pylib"],
     version = PYPI_HEU_VERSION,

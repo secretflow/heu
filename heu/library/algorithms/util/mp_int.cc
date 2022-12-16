@@ -59,7 +59,7 @@ MPInt::MPInt(const MPInt &other) {
   MPINT_ENFORCE_OK(mp_init_copy(&n_, &other.n_));
 }
 
-size_t MPInt::BitCount() const { return mp_count_bits(&n_); }
+size_t MPInt::BitCount() const { return mp_ext_count_bits_fast(n_); }
 
 int MPInt::Compare(const MPInt &other) const { return mp_cmp(&n_, &other.n_); }
 
@@ -371,13 +371,14 @@ void MPInt::Set(const std::string &num, int radix) {
   MPINT_ENFORCE_OK(mp_read_radix(&n_, num.c_str(), radix));
 }
 
+// todo: this function is very slow.
 std::string MPInt::ToRadixString(int radix) const {
   int size = 0;
   MPINT_ENFORCE_OK(mp_radix_size(&n_, radix, &size));
 
   std::string output;
   output.resize(size);
-  MPINT_ENFORCE_OK(mp_to_radix(&n_, &(output[0]), size, nullptr, radix));
+  MPINT_ENFORCE_OK(mp_to_radix(&n_, output.data(), size, nullptr, radix));
   output.pop_back();  // remove tailing '\0'
   return output;
 }
@@ -387,15 +388,14 @@ std::string MPInt::ToHexString() const { return ToRadixString(16); }
 std::string MPInt::ToString() const { return ToRadixString(10); }
 
 yacl::Buffer MPInt::Serialize() const {
-  size_t size = mp_sbin_size(&n_);
+  size_t size = mp_ext_serialize_size(n_);
   yacl::Buffer buffer(size);
-  MPINT_ENFORCE_OK(
-      mp_to_sbin(&n_, buffer.data<unsigned char>(), size, nullptr));
+  mp_ext_serialize(n_, buffer.data<uint8_t>(), size);
   return buffer;
 }
 
 void MPInt::Deserialize(yacl::ByteContainerView buffer) {
-  MPINT_ENFORCE_OK(mp_from_sbin(&n_, buffer.data(), buffer.size()));
+  mp_ext_deserialize(&n_, buffer.data(), buffer.size());
 }
 
 yacl::Buffer MPInt::ToBytes(size_t byte_len, Endian endian) const {
