@@ -71,6 +71,12 @@ TEST_F(SchemaTest, AliasesUnique) {
   ASSERT_EQ(alias_set.size(), count);
 }
 
+TEST_F(SchemaTest, SelectSchema) {
+  ASSERT_EQ(SelectSchemas("paillier", true).size(), 1);
+  ASSERT_GE(SelectSchemas("paillier", false).size(), 2);
+  ASSERT_GE(SelectSchemas("paillier.+", true).size(), 2);
+}
+
 TEST_F(SchemaTest, SchemaParse) {
   EXPECT_EQ(ParseSchemaType("mock"), SchemaType::Mock);
   EXPECT_EQ(ParseSchemaType("plain"), SchemaType::Mock);

@@ -18,7 +18,6 @@
 #include <ostream>
 #include <string>
 
-#include "fmt/format.h"
 #include "fmt/ostream.h"
 #include "msgpack.hpp"
 #include "tommath.h"

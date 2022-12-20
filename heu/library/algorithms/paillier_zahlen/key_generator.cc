@@ -46,7 +46,7 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
   do {
     MPInt::RandomLtN(n, &x);
     MPInt::Gcd(x, n, &c);
-  } while (c != MPInt(1));
+  } while (c != MPInt::_1_);
   h = x * x * -MPInt::_1_ % n;
 
   // fill secret key

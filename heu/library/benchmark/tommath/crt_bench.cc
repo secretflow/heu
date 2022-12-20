@@ -17,7 +17,7 @@
 #include "heu/library/algorithms/paillier_zahlen/paillier.h"
 #include "heu/library/algorithms/util/montgomery_math.h"
 
-namespace heu::lib::phe::bench {
+namespace heu::lib::bench {
 
 namespace paillier = algorithms::paillier_z;
 using algorithms::MPInt;
@@ -85,10 +85,10 @@ BENCHMARK(PowModTommath)
     ->Arg(2048)
     ->Arg(4096);
 
-}  // namespace heu::lib::phe::bench
+}  // namespace heu::lib::bench
 
 int main() {
-  heu::lib::phe::bench::Initialize(4096);
+  heu::lib::bench::Initialize(4096);
   benchmark::RunSpecifiedBenchmarks();
   return 0;
 }

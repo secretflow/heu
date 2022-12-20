@@ -14,6 +14,7 @@
 
 #include "heu/library/algorithms/paillier_float/encryptor.h"
 
+#include "fmt/compile.h"
 #include "fmt/format.h"
 
 namespace heu::lib::algorithms::paillier_f {
@@ -38,8 +39,8 @@ MPInt Encryptor::EncryptRaw(const MPInt& m, absl::optional<uint32_t> rand,
   MPInt::MulMod(c, obfuscator, pk_.n_square_, &c);
   if constexpr (audit) {
     YACL_ENFORCE(audit_str != nullptr);
-    *audit_str = fmt::format("p:{},r:{},c:{}", m.ToHexString(), r.ToHexString(),
-                             c.ToHexString());
+    *audit_str = fmt::format(FMT_COMPILE("p:{},r:{},c:{}"), m.ToHexString(),
+                             r.ToHexString(), c.ToHexString());
   }
   return c;
 }

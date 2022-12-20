@@ -1,6 +1,17 @@
 # CHANGELOGS
 
+> Instrument:
+>
+> - Add `[Feature]` prefix for new features
+> - Add `[Bugfix]` prefix for bug fixes
+> - Add `[API]` prefix for API changes
+
 ## [Unreleased]
+
+> please add your unreleased change here.
+
+- [Optimize] MPInt serialize is 81x faster and deserialize is 53x faster.
+- [Feature] Add benchmark for numpy api
 
 ## [0.3.1]
 

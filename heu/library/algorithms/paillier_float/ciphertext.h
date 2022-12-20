@@ -52,10 +52,6 @@ class Ciphertext : public HeObject<Ciphertext> {
     return fmt::format("{}+{}", c_.ToString(), exponent_);
   }
 
-#ifdef MPINT_PACK_BENCHMARK
-  MPInt underlying() const { return c_; }
-#endif
-
  private:
   MPInt c_;
   int exponent_ = 0;
