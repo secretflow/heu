@@ -1,16 +1,5 @@
-// Copyright 2022 Ant Group Co., Ltd.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Copyright (C) 2021 Intel Corporation
+// SPDX-License-Identifier: Apache-2.0
 
 #include "heu/library/algorithms/paillier_ipcl/vector_evaluator.h"
 #include "heu/library/algorithms/paillier_ipcl/utils.h"
@@ -27,9 +16,9 @@ void Evaluator::Randomize(Span<Ciphertext> ct) const {
   std::vector<BigNumber> bn_zeros(size, BigNumber::Zero());
   ipcl::PlainText pt_zeros(bn_zeros);
   ipcl::CipherText ct_zeros = pk_.ipcl_pubkey_.encrypt(pt_zeros);
-  auto ct_zeros_vec = ipcl_to_heu<Ciphertext, ipcl::CipherText>(ct_zeros);
+  auto ct_zeros_vec = IpclToHeu<Ciphertext, ipcl::CipherText>(ct_zeros);
   std::vector<Ciphertext*> ct_zeros_pts;
-  value_vec_to_pts_vec(ct_zeros_vec, ct_zeros_pts);
+  ValueVecToPtsVec(ct_zeros_vec, ct_zeros_pts);
   ConstSpan<Ciphertext> ct_zeros_span = absl::MakeConstSpan(ct_zeros_pts.data(), size);
   AddInplace(ct, ct_zeros_span);
 }
@@ -37,19 +26,19 @@ void Evaluator::Randomize(Span<Ciphertext> ct) const {
 std::vector<Ciphertext> Evaluator::Add(ConstSpan<Ciphertext> a,
                             ConstSpan<Ciphertext> b) const {
   HE_ASSERT(a.size() == b.size(), "CT + CT error: size mismatch.");
-  ipcl::CipherText ipcl_ct_a = to_ipcl_ciphertext(pk_, a);
-  ipcl::CipherText ipcl_ct_b = to_ipcl_ciphertext(pk_, b);
+  ipcl::CipherText ipcl_ct_a = ToIpclCiphertext(pk_, a);
+  ipcl::CipherText ipcl_ct_b = ToIpclCiphertext(pk_, b);
   auto sum = ipcl_ct_a + ipcl_ct_b;
-  return ipcl_to_heu<Ciphertext, ipcl::CipherText>(sum);
+  return IpclToHeu<Ciphertext, ipcl::CipherText>(sum);
 }
 
 std::vector<Ciphertext> Evaluator::Add(ConstSpan<Ciphertext> a,
                             ConstSpan<Plaintext> b) const {
   HE_ASSERT(a.size() == b.size(), "CT + PT error: size mismatch.");
-  ipcl::CipherText ipcl_ct_a = to_ipcl_ciphertext(pk_, a);
-  ipcl::PlainText ipcl_pt_b = to_ipcl_plaintext(b);
+  ipcl::CipherText ipcl_ct_a = ToIpclCiphertext(pk_, a);
+  ipcl::PlainText ipcl_pt_b = ToIpclPlaintext(b);
   auto sum = ipcl_ct_a + ipcl_pt_b;
-  return ipcl_to_heu<Ciphertext, ipcl::CipherText>(sum);
+  return IpclToHeu<Ciphertext, ipcl::CipherText>(sum);
 }
 
 std::vector<Ciphertext> Evaluator::Add(ConstSpan<Plaintext> a,
@@ -97,7 +86,7 @@ std::vector<Ciphertext> Evaluator::Sub(ConstSpan<Ciphertext> a,
  HE_ASSERT(a.size() == b.size(), "CT - CT error: size mismatch.");
  std::vector<Ciphertext> neg_b_vec = Negate(b);
  std::vector<Ciphertext*> neg_b_pts;
- value_vec_to_pts_vec(neg_b_vec, neg_b_pts);
+ ValueVecToPtsVec(neg_b_vec, neg_b_pts);
  ConstSpan<Ciphertext> neg_b_span = absl::MakeConstSpan(neg_b_pts.data(), neg_b_pts.size());
  return Add(a, neg_b_span);
 }
@@ -110,7 +99,7 @@ std::vector<Ciphertext> Evaluator::Sub(ConstSpan<Ciphertext> a,
     neg_b_vec.push_back(-(*item));
   }
   std::vector<Plaintext*> neg_b_pts;
-  value_vec_to_pts_vec(neg_b_vec, neg_b_pts);
+  ValueVecToPtsVec(neg_b_vec, neg_b_pts);
   ConstSpan<Plaintext> neg_b_span = absl::MakeConstSpan(neg_b_pts.data(), neg_b_pts.size());
   return Add(a, neg_b_span);
 }
@@ -120,7 +109,7 @@ std::vector<Ciphertext> Evaluator::Sub(ConstSpan<Plaintext> a,
   HE_ASSERT(a.size() == b.size(), "PT - CT error: size mismatch.");
   std::vector<Ciphertext> neg_b_vec = Negate(b);
   std::vector<Ciphertext*> neg_b_pts;
-  value_vec_to_pts_vec(neg_b_vec, neg_b_pts);
+  ValueVecToPtsVec(neg_b_vec, neg_b_pts);
   ConstSpan<Ciphertext> neg_b_span = absl::MakeConstSpan(neg_b_pts.data(), neg_b_pts.size());
   return Add(a, neg_b_span);
 }
@@ -134,6 +123,28 @@ std::vector<Plaintext> Evaluator::Sub(ConstSpan<Plaintext> a,
     result.push_back(*a[i] - *b[i]);
   }
   return result;
+}
+
+void Evaluator::SubInplace(Span<Ciphertext> a, ConstSpan<Ciphertext> b) const {
+  auto res = Sub(a, b);
+  size_t vec_size = res.size();
+  for (size_t i = 0; i < vec_size; i++) {
+    *a[i] = res[i];
+  }
+}
+void Evaluator::SubInplace(Span<Ciphertext> a, ConstSpan<Plaintext> p) const {
+  auto res = Sub(a, p);
+  size_t vec_size = res.size();
+  for (size_t i = 0; i < vec_size; i++) {
+    *a[i] = res[i];
+  }
+}
+void Evaluator::SubInplace(Span<Plaintext> a, ConstSpan<Plaintext> b) const {
+  auto res = Sub(a, b);
+  size_t vec_size = res.size();
+  for (size_t i = 0; i < vec_size; i++) {
+    *a[i] = res[i];
+  }
 }
 
 std::vector<Ciphertext> Evaluator::Mul(ConstSpan<Ciphertext> a,
@@ -171,7 +182,7 @@ std::vector<Ciphertext> Evaluator::Mul(ConstSpan<Ciphertext> a,
   ipcl::CipherText ipcl_ct_a(pk_.ipcl_pubkey_, a_bn);
   ipcl::PlainText ipcl_pt_b(b_bn);
   auto product = ipcl_ct_a * ipcl_pt_b;
-  return ipcl_to_heu<Ciphertext, ipcl::CipherText>(product);
+  return IpclToHeu<Ciphertext, ipcl::CipherText>(product);
 }
 
 std::vector<Ciphertext> Evaluator::Mul(ConstSpan<Plaintext> a,

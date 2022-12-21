@@ -1,16 +1,5 @@
-// Copyright 2022 Ant Group Co., Ltd.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Copyright (C) 2021 Intel Corporation
+// SPDX-License-Identifier: Apache-2.0
 
 #include <iostream>
 #include <string>
@@ -21,7 +10,7 @@
 namespace heu::lib::algorithms::paillier_ipcl {
 
 // Compile a with b, returning 1:a>b, 0:a==b, -1:a<b
-int compare(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) {
+int Compare(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) {
   const auto max_size = std::max(a.size(), b.size());
   for(auto i = max_size; i > 0; i--) {
     auto idx = i - 1;
@@ -34,7 +23,7 @@ int compare(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) {
   return 0;
 }
 
-bool is_zero(std::vector<uint32_t>& value) {
+bool IsZero(std::vector<uint32_t>& value) {
   for(auto val : value) { 
     if(val) {
       return false;
@@ -44,7 +33,7 @@ bool is_zero(std::vector<uint32_t>& value) {
 }
 
 // Remove leading zero words
-void clamp(std::vector<uint32_t>& bn) {
+void Clamp(std::vector<uint32_t>& bn) {
   const auto size = bn.size();
   if(!size || bn[size-1]) {
     return;
@@ -60,7 +49,7 @@ void clamp(std::vector<uint32_t>& bn) {
 
 // Subtract b from a inplace
 // a >= b must be guaranteed by caller
-void subfrom(std::vector<uint32_t>& a, std::vector<uint32_t>& b) {
+void SubFrom(std::vector<uint32_t>& a, std::vector<uint32_t>& b) {
   uint32_t borrow = 0;
   for(std::size_t i = 0; i < b.size(); i++) {
     if(b[i] || borrow) {
@@ -81,7 +70,7 @@ void subfrom(std::vector<uint32_t>& a, std::vector<uint32_t>& b) {
 }
 
 // Divide bn by 2, truncating any fraction
-void shift_right_one(std::vector<uint32_t>& bn) {
+void ShiftRightOne(std::vector<uint32_t>& bn) {
   uint32_t carry = 0;
   for(auto i = bn.size(); i > 0; i--) {
     const auto next_carry = (bn[i-1] & 1) ? HI_BIT_SET : 0;
@@ -89,11 +78,11 @@ void shift_right_one(std::vector<uint32_t>& bn) {
     bn[i-1] |= carry;
     carry = next_carry;
   }
-  clamp(bn);
+  Clamp(bn);
 }
 
 // Multiply bn by 2
-void shift_left_one(std::vector<uint32_t>& bn) {
+void ShiftLeftOne(std::vector<uint32_t>& bn) {
   uint32_t carry = 0;
   for(std::size_t i = 0; i < bn.size(); i++) {
       const uint32_t next_carry = !!(bn[i] & HI_BIT_SET);
@@ -106,8 +95,69 @@ void shift_left_one(std::vector<uint32_t>& bn) {
   }
 }
 
+void ShiftRightN(std::vector<uint32_t>& bn, int n) {
+  int num_digits = 0;
+  int remainder = 0;
+  uint32_t mask;
+  uint32_t shift;
+  uint32_t carry = 0;
+  uint32_t next_carry;
+  if (n > BN_DIGITS) {
+    num_digits = n / BN_DIGITS;
+    remainder = n % BN_DIGITS;
+  } else {
+    remainder = n;
+  }
+  if (remainder > 0) {
+    int size = bn.size();
+    mask = ((uint32_t)1 << remainder) - (uint32_t)1;
+    shift = BN_DIGITS - remainder;
+    for (int i = size - 1; i >= 0; i--) {
+      next_carry = bn[i] & mask;
+      bn[i] = (bn[i] >> remainder) | (carry << shift);
+      carry = next_carry;
+    }
+  }
+  if (num_digits > 0) {
+    bn.erase(bn.begin(), bn.begin() + num_digits);
+  }
+  // Clamp(bn);
+}
+
+void ShiftLeftN(std::vector<uint32_t>& bn, int n) {
+  int num_digits = 0;
+  int remainder = 0;
+  uint32_t mask;
+  uint32_t shift;
+  uint32_t carry = 0;
+  uint32_t next_carry;
+  if (n > BN_DIGITS) {
+    num_digits = n / BN_DIGITS;
+    remainder = n % BN_DIGITS;
+  } else {
+    remainder = n;
+  }
+  if (remainder > 0) {
+    size_t size = bn.size();
+    mask = ((uint32_t)1 << remainder) - (uint32_t)1;
+    shift = BN_DIGITS - remainder;
+    for (size_t i = 0; i < size; i++) {
+      next_carry = (bn[i] >> shift) & mask;
+      bn[i] = (bn[i] << remainder) | carry;
+      carry = next_carry;
+    }
+    if (carry != 0) {
+      bn.push_back(carry);
+    }
+  }
+  if (num_digits > 0) {
+    bn.insert(bn.begin(), num_digits, 0);
+  }
+  // Clamp(bn);
+}
+
 // Set an indexed bit in bn, growing the vector when required
-void set_bit_at(std::vector<uint32_t>& bn, std::size_t index, bool set) {
+void SetBitAt(std::vector<uint32_t>& bn, std::size_t index, bool set) {
   std::size_t widx = index / (sizeof(uint32_t) * 8);
   std::size_t bidx = index % (sizeof(uint32_t) * 8);
   if(bn.size() < widx + 1) {
@@ -121,29 +171,29 @@ void set_bit_at(std::vector<uint32_t>& bn, std::size_t index, bool set) {
 }
 
 // Divide n by d, returning the result and leaving the remainder in n
-std::vector<uint32_t> divide(std::vector<uint32_t>& n, std::vector<uint32_t> d) {
-  if(is_zero(d)) {
-    throw(std::runtime_error("Divide by 0."));
+std::vector<uint32_t> Divide(std::vector<uint32_t>& n, std::vector<uint32_t> d) {
+  if(IsZero(d)) {
+    YACL_THROW("Divide by 0.");
   }
   std::size_t shift = 0;
-  while(compare(n, d) == 1) {
-    shift_left_one(d);
+  while(Compare(n, d) == 1) {
+    ShiftLeftOne(d);
     shift++;
   }
   std::vector<uint32_t> result;
   do {
-    if(compare(n, d) >= 0) {
-      set_bit_at(result, shift);
-      subfrom(n, d);
+    if(Compare(n, d) >= 0) {
+      SetBitAt(result, shift);
+      SubFrom(n, d);
     }
-    shift_right_one(d);
+    ShiftRightOne(d);
   } while(shift--);
-  clamp(result);
-  clamp(n);
+  Clamp(result);
+  Clamp(n);
   return result;
 }
 
-std::string to_string(const BigNumber& bn) {
+std::string ToString(const BigNumber& bn) {
   IppsBigNumSGN bnSgn;
   ippsRef_BN(&bnSgn, NULL, NULL, bn);
   std::string result;
@@ -151,18 +201,18 @@ std::string to_string(const BigNumber& bn) {
   std::vector<uint32_t> vec;
   bn.num2vec(vec);
   do {
-      const auto next_bn = divide(vec, {10});
+      const auto next_bn = Divide(vec, {10});
       const char digit_value = static_cast<char>(vec.size()? vec[0] : 0);
       result.push_back('0' + digit_value);
       vec = next_bn;
-  } while(!is_zero(vec));
+  } while(!IsZero(vec));
 
   std::reverse(result.begin()+1, result.end());
   return result;
 }
 
 // TODO: combine with the below as a template function?
-ipcl::CipherText to_ipcl_ciphertext(const PublicKey& pk, ConstSpan<Ciphertext> ct) {
+ipcl::CipherText ToIpclCiphertext(const PublicKey& pk, ConstSpan<Ciphertext> ct) {
   std::vector<BigNumber> bn_vec;
   size_t ct_size = ct.size();
   for (size_t i = 0; i < ct_size; i++) {
@@ -172,7 +222,7 @@ ipcl::CipherText to_ipcl_ciphertext(const PublicKey& pk, ConstSpan<Ciphertext> c
   return ipcl_ct;
 }
 
-ipcl::PlainText to_ipcl_plaintext(ConstSpan<Plaintext> pt) {
+ipcl::PlainText ToIpclPlaintext(ConstSpan<Plaintext> pt) {
   std::vector<BigNumber> bn_vec;
   size_t pt_size = pt.size();
   for (size_t i = 0; i < pt_size; i++) {

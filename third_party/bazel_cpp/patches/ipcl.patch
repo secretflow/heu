@@ -1,13 +1,15 @@
-From c44a41667a0ff6367b3793485e9db67399eb661d Mon Sep 17 00:00:00 2001
+From acbe456e24137c5b3b8de89255dd49eb7edb9dc2 Mon Sep 17 00:00:00 2001
 From: "Huang, Xiaojun" <xiaojun.huang@intel.com>
 Date: Thu, 1 Dec 2022 04:35:01 -0500
 Subject: [PATCH] ipcl patch
 
 Signed-off-by: Huang, Xiaojun <xiaojun.huang@intel.com>
 ---
- CMakeLists.txt      | 21 +++++++++++++++++----
- ipcl/CMakeLists.txt | 26 +++++++++++++-------------
- 2 files changed, 30 insertions(+), 17 deletions(-)
+ CMakeLists.txt                | 21 +++++++++++++++++----
+ ipcl/CMakeLists.txt           | 26 +++++++++++++-------------
+ ipcl/include/ipcl/bignum.h    |  7 ++++++-
+ ipcl/include/ipcl/pub_key.hpp | 16 ++++++++++------
+ 4 files changed, 46 insertions(+), 24 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 index b9b9030..d6c84fb 100644
@@ -97,6 +99,71 @@ index a601caf..31d1aa4 100644
  
  # include and install definition of cpu_features
  if(IPCL_DETECT_CPU_RUNTIME)
+diff --git a/ipcl/include/ipcl/bignum.h b/ipcl/include/ipcl/bignum.h
+index 27760a0..c96bb5d 100644
+--- a/ipcl/include/ipcl/bignum.h
++++ b/ipcl/include/ipcl/bignum.h
+@@ -134,14 +134,19 @@ class BigNumber : public ipcl::serializer::serializerBase {
+   void save(Archive& ar, const Ipp32u version) const {
+     std::vector<Ipp32u> vec;
+     num2vec(vec);
++    IppsBigNumSGN sign;
++    ippsRef_BN(&sign, nullptr, nullptr, *this);
+     ar(cereal::make_nvp("BigNumber", vec));
++    ar(cereal::make_nvp("Sign", sign));
+   }
+ 
+   template <class Archive>
+   void load(Archive& ar, const Ipp32u version) {
+     std::vector<Ipp32u> vec;
++    IppsBigNumSGN sign;
+     ar(cereal::make_nvp("BigNumber", vec));
+-    create(vec.data(), vec.size(), IppsBigNumPOS);
++    ar(cereal::make_nvp("Sign", sign));
++    create(vec.data(), vec.size(), sign);
+   }
+ 
+   std::string serializedName() const { return "BigNumber"; }
+diff --git a/ipcl/include/ipcl/pub_key.hpp b/ipcl/include/ipcl/pub_key.hpp
+index 377a916..74e22a7 100644
+--- a/ipcl/include/ipcl/pub_key.hpp
++++ b/ipcl/include/ipcl/pub_key.hpp
+@@ -133,25 +133,29 @@ class PublicKey {
+   friend class cereal::access;
+   template <class Archive>
+   void save(Archive& ar, const Ipp32u version) const {
+-    ar(::cereal::make_nvp("n", *m_n));
+     ar(::cereal::make_nvp("bits", m_bits));
+     ar(::cereal::make_nvp("enable_DJN", m_enable_DJN));
+-    ar(::cereal::make_nvp("hs", m_hs));
+     ar(::cereal::make_nvp("randbits", m_randbits));
++    ar(::cereal::make_nvp("n", *m_n));
++    ar(::cereal::make_nvp("hs", m_hs));
+   }
+ 
+   template <class Archive>
+   void load(Archive& ar, const Ipp32u version) {
+-    BigNumber n, hs;
+     bool enable_DJN;
+     int bits, randbits;
+-
+-    ar(::cereal::make_nvp("n", *m_n));
+     ar(::cereal::make_nvp("bits", bits));
+     ar(::cereal::make_nvp("enable_DJN", enable_DJN));
+-    ar(::cereal::make_nvp("hs", m_hs));
+     ar(::cereal::make_nvp("randbits", randbits));
+ 
++    int bn_len = bits / 32;
++    Ipp32u n_data[bn_len];
++    Ipp32u hs_data[bn_len * 2];
++    BigNumber n(n_data, bn_len);
++    BigNumber hs(hs_data, bn_len * 2);
++    ar(::cereal::make_nvp("n", n));
++    ar(::cereal::make_nvp("hs", hs));
++
+     if (enable_DJN)
+       create(n, bits, hs, randbits);
+     else
 -- 
 2.31.1
 

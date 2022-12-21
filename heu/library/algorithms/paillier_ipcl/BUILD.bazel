@@ -2,10 +2,6 @@ load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_binary", "yacl_cc_test
 
 package(default_visibility = ["//visibility:public"])
 
-# test_suite(
-#     name = "paillier_ipcl_tests",
-# )
-
 yacl_cc_library(
     name = "paillier_ipcl",
     srcs = [
@@ -40,15 +36,6 @@ yacl_cc_library(
         "@com_github_intel_ipcl//:ipcl",
         "@com_github_uscilab_cereal//:cereal",  
     ],
-)
-
-yacl_cc_binary(
-    name = "main",
-    srcs = ["main_test.cc"],
-    deps = [
-        ":paillier_ipcl",
-        "@com_github_intel_ipcl//:ipcl", 
-    ]
 )
 
 yacl_cc_test(

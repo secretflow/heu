@@ -15,5 +15,6 @@ cmake(
         "BUILD_DOC" : "OFF",
         "BUILD_TESTS" : "OFF",
         "BUILD_SANDBOX" : "OFF",
+        "SKIP_PERFORMANCE_COMPARISON" : "ON",
     },
 )

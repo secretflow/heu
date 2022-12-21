@@ -1,16 +1,5 @@
-// Copyright 2022 Ant Group Co., Ltd.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Copyright (C) 2021 Intel Corporation
+// SPDX-License-Identifier: Apache-2.0
 
 #include <algorithm>
 #include "yacl/base/int128.h"
@@ -102,6 +91,8 @@ void Plaintext::Set(int128_t value) {
 }
 
 void Plaintext::Set(const std::string &num, int radix) {
+  YACL_ENFORCE(radix == 10 || radix == 16,
+               "Only support radix=10 or radix=16.");
   bn_ = BigNumber(num.c_str());
 }
 
@@ -211,6 +202,32 @@ int128_t Plaintext::Get() const {
   return value;
 }
 
+// For Passing CI test
+template <>
+void Plaintext::Set(double value) {
+  int64_t int_val = static_cast<int64_t>(value);
+  Set(int_val);
+}
+
+template <>
+double Plaintext::Get() const {
+  int64_t ret = this->Get<int64_t>();
+  return (double)ret;
+}
+
+template <>
+void Plaintext::Set(float value) {
+  int64_t int_val = static_cast<int64_t>(value);
+  Set(int_val);
+}
+
+template <>
+float Plaintext::Get() const {
+  int64_t ret = this->Get<int64_t>();
+  return (float)ret;
+}
+// For Passing CI test
+
 yacl::Buffer Plaintext::Serialize() const {
   std::ostringstream os;
   {
@@ -230,7 +247,7 @@ void Plaintext::Deserialize(yacl::ByteContainerView buffer) {
 }
 
 std::string Plaintext::ToString() const {
-  return to_string(bn_);
+  return paillier_ipcl::ToString(bn_);
 }
 
 std::ostream &operator<<(std::ostream &os, const Plaintext &pt) {
@@ -244,14 +261,23 @@ std::string Plaintext::ToHexString() const {
   return s;
 }
 
-// yacl::Buffer Plaintext::ToBytes(size_t byte_len, Endian endian = Endian::native) const {
-//   throw std::runtime_error("Not implemented.");
-// }
+yacl::Buffer Plaintext::ToBytes(size_t byte_len, Endian endian) const {
+  YACL_ENFORCE(byte_len > 0, "Error: data buffer shouldn't be empty.");
+  yacl::Buffer buf(byte_len);
+  ToBytes(buf.data<unsigned char>(), byte_len, endian);
+  return buf;
+}
 
-// void Plaintext::ToBytes(unsigned char *buf, size_t buf_len,
-//               Endian endian = Endian::native) const {
-//   throw std::runtime_error("Not implemented.");
-// }
+void Plaintext::ToBytes(unsigned char *buf, size_t buf_len,
+              Endian endian) const {
+  std::vector<unsigned char> char_vec;
+  if (endian == Endian::big) {
+    BigNumber::toBin(buf, buf_len, this->bn_);
+  } else {
+    bn_.num2char(char_vec);
+    memcpy(buf, char_vec.data(), buf_len);
+  }
+}
 
 Plaintext Plaintext::operator-() const {
   Plaintext result;
@@ -260,7 +286,7 @@ Plaintext Plaintext::operator-() const {
   Ipp32u* data;
   ippsRef_BN(&sign, &bit_len, &data, bn_);
   auto rev_sign = (sign == IppsBigNumPOS)? IppsBigNumNEG : IppsBigNumPOS;
-  result.bn_ = BigNumber(data, bit_len, rev_sign);
+  result.bn_ = BigNumber(data, BITSIZE_WORD(bit_len), rev_sign);
   return result;
 }
 
@@ -302,20 +328,167 @@ Plaintext Plaintext::operator%(const Plaintext &op2) const {
   return result;  
 }
 
+Plaintext Plaintext::operator&(const Plaintext &op2) const {
+  std::vector<uint32_t> a_vec;
+  std::vector<uint32_t> b_vec;
+  std::vector<uint32_t> c_vec;
+  bool is_res_negtive;
+  if ((this->IsNegative() && !op2.IsNegative())
+      || (!this->IsNegative() && op2.IsNegative())) {
+    is_res_negtive = true;
+  } else {
+    is_res_negtive = false;
+  }
+  uint32_t ac = 1, bc = 1, cc = 1;
+  auto a_size = bn_.DwordSize();
+  auto b_size = op2.bn_.DwordSize();
+  bn_.num2vec(a_vec);
+  op2.bn_.num2vec(b_vec);
+  int size = std::max(a_size, b_size);
+  for (int i = 0; i < size; i++) {
+    uint32_t a, b, c;
+    if (this->IsNegative()) {
+      ac += (i < a_size)? (~a_vec[i] & UINT32_MASK) : UINT32_MASK;
+      a = ac & UINT32_MASK;
+      ac = 1;
+    } else {
+      a = (i < a_size)? a_vec[i] : (uint32_t)0;
+    }
+    if (op2.IsNegative()) {
+      bc += (i < b_size)? (~b_vec[i] & UINT32_MASK) : UINT32_MASK;
+      b = bc & UINT32_MASK;
+      bc = 1;
+    } else {
+      b = (i < b_size)? b_vec[i] : (uint32_t)0;
+    }
+    c = a & b;
+    if (is_res_negtive) {
+      cc += ~c & UINT32_MASK;
+      c = cc & UINT32_MASK;
+      cc = 1;
+    }
+    c_vec.push_back(c);
+  }
+  Clamp(c_vec);
+  IppsBigNumSGN sign = is_res_negtive? IppsBigNumNEG : IppsBigNumPOS;
+  BigNumber new_bn(c_vec.data(), c_vec.size(), sign);
+  Plaintext res(new_bn);
+  return res;
+}
+
 Plaintext Plaintext::operator|(const Plaintext &op2) const {
-  throw std::runtime_error("Not implemented.");
+  std::vector<uint32_t> a_vec;
+  std::vector<uint32_t> b_vec;
+  std::vector<uint32_t> c_vec;
+  bool is_res_negtive;
+  if ((this->IsNegative() && !op2.IsNegative())
+      || (!this->IsNegative() && op2.IsNegative())) {
+    is_res_negtive = true;
+  } else {
+    is_res_negtive = false;
+  }
+  uint32_t ac = 1, bc = 1, cc = 1;
+  auto a_size = bn_.DwordSize();
+  auto b_size = op2.bn_.DwordSize();
+  bn_.num2vec(a_vec);
+  op2.bn_.num2vec(b_vec);
+  int size = std::max(a_size, b_size);
+  for (int i = 0; i < size; i++) {
+    uint32_t a, b, c;
+    if (this->IsNegative()) {
+      ac += (i < a_size)? (~a_vec[i] & UINT32_MASK) : UINT32_MASK;
+      a = ac & UINT32_MASK;
+      ac = 1;
+    } else {
+      a = (i < a_size)? a_vec[i] : (uint32_t)0;
+    }
+    if (op2.IsNegative()) {
+      bc += (i < b_size)? (~b_vec[i] & UINT32_MASK) : UINT32_MASK;
+      b = bc & UINT32_MASK;
+      bc = 1;
+    } else {
+      b = (i < b_size)? b_vec[i] : (uint32_t)0;
+    }
+    c = a | b;
+    if (is_res_negtive) {
+      cc += ~c & UINT32_MASK;
+      c = cc & UINT32_MASK;
+      cc = 1;
+    }
+    c_vec.push_back(c);
+  }
+  Clamp(c_vec);
+  IppsBigNumSGN sign = is_res_negtive? IppsBigNumNEG : IppsBigNumPOS;
+  BigNumber new_bn(c_vec.data(), c_vec.size(), sign);
+  Plaintext res(new_bn);
+  return res;
 }
 
 Plaintext Plaintext::operator^(const Plaintext &op2) const {
-  throw std::runtime_error("Not implemented.");
+  std::vector<uint32_t> a_vec;
+  std::vector<uint32_t> b_vec;
+  std::vector<uint32_t> c_vec;
+  bool is_res_negtive;
+  if ((this->IsNegative() && !op2.IsNegative())
+      || (!this->IsNegative() && op2.IsNegative())) {
+    is_res_negtive = true;
+  } else {
+    is_res_negtive = false;
+  }
+  uint32_t ac = 1, bc = 1, cc = 1;
+  auto a_size = bn_.DwordSize();
+  auto b_size = op2.bn_.DwordSize();
+  bn_.num2vec(a_vec);
+  op2.bn_.num2vec(b_vec);
+  int size = std::max(a_size, b_size);
+  for (int i = 0; i < size; i++) {
+    uint32_t a, b, c;
+    if (this->IsNegative()) {
+      ac += (i < a_size)? (~a_vec[i] & UINT32_MASK) : UINT32_MASK;
+      a = ac & UINT32_MASK;
+      ac = 1;
+    } else {
+      a = (i < a_size)? a_vec[i] : (uint32_t)0;
+    }
+    if (op2.IsNegative()) {
+      bc += (i < b_size)? (~b_vec[i] & UINT32_MASK) : UINT32_MASK;
+      b = bc & UINT32_MASK;
+      bc = 1;
+    } else {
+      b = (i < b_size)? b_vec[i] : (uint32_t)0;
+    }
+    c = a ^ b;
+    if (is_res_negtive) {
+      cc += ~c & UINT32_MASK;
+      c = cc & UINT32_MASK;
+      cc = 1;
+    }
+    c_vec.push_back(c);
+  }
+  Clamp(c_vec);
+  BigNumber new_bn;
+  IppsBigNumSGN sign = is_res_negtive? IppsBigNumNEG : IppsBigNumPOS;
+  new_bn.Set(c_vec.data(), c_vec.size(), sign);
+  Plaintext res(new_bn);
+  return res;
 }
 
 Plaintext Plaintext::operator<<(size_t op2) const {
-  throw std::runtime_error("Not implemented.");
+  std::vector<uint32_t> bn_vec;
+  bn_.num2vec(bn_vec);
+  ShiftLeftN(bn_vec, op2);
+  BigNumber new_bn(bn_vec.data(), bn_vec.size());
+  Plaintext res(new_bn);
+  return res;
 }
 
 Plaintext Plaintext::operator>>(size_t op2) const {
-  throw std::runtime_error("Not implemented.");
+  std::vector<uint32_t> bn_vec;
+  bn_.num2vec(bn_vec);
+  ShiftRightN(bn_vec, op2);
+  BigNumber new_bn(bn_vec.data(), bn_vec.size());
+  Plaintext res(new_bn);
+  return res;
 }
 
 Plaintext Plaintext::operator+=(const Plaintext &op2) {
@@ -344,19 +517,34 @@ Plaintext Plaintext::operator%=(const Plaintext &op2) {
 }
 
 Plaintext Plaintext::operator&=(const Plaintext &op2) {
-  throw std::runtime_error("Not implemented.");
+  *this = *this & op2;
+  return *this;
 }
 Plaintext Plaintext::operator|=(const Plaintext &op2) {
-  throw std::runtime_error("Not implemented.");
+  *this = *this | op2;
+  return *this;
 }
+
 Plaintext Plaintext::operator^=(const Plaintext &op2) {
-  throw std::runtime_error("Not implemented.");
+  *this = *this ^ op2;
+  return *this;
 }
+
 Plaintext Plaintext::operator<<=(size_t op2) {
-  throw std::runtime_error("Not implemented.");
+  std::vector<uint32_t> bn_vec;
+  bn_.num2vec(bn_vec);
+  ShiftLeftN(bn_vec, op2);
+  BigNumber tmp(bn_vec.data(), bn_vec.size());  // bn.Set() is not workable, so use assginment constructor.
+  bn_ = tmp;
+  return *this;
 }
 Plaintext Plaintext::operator>>=(size_t op2) {
-  throw std::runtime_error("Not implemented.");
+  std::vector<uint32_t> bn_vec;
+  bn_.num2vec(bn_vec);
+  ShiftRightN(bn_vec, op2);
+  BigNumber tmp(bn_vec.data(), bn_vec.size());  // bn.Set() is not workable, so use assginment constructor.
+  bn_ = tmp;
+  return *this;
 }
 
 bool Plaintext::operator>(const Plaintext &other) const {
@@ -391,5 +579,13 @@ void Plaintext::RandomLtN(const Plaintext &n, Plaintext *r) {
   do {
     Plaintext::RandomExactBits(n.BitCount(), r);
   } while (r->IsNegative() || (*r >= n));
+}
+
+Plaintext Plaintext::Absolute(const Plaintext& pt) {
+  if (pt.IsNegative()) {
+    return -pt;
+  } else {
+    return pt;
+  }
 }
 }
