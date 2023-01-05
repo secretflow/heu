@@ -19,6 +19,7 @@
 #include "heu/library/algorithms/mock/mock.h"
 #include "heu/library/algorithms/paillier_float/paillier.h"
 #include "heu/library/algorithms/paillier_zahlen/paillier.h"
+#include "heu/library/algorithms/paillier_ipcl/ipcl.h"
 
 namespace heu::lib::phe {
 
@@ -28,6 +29,7 @@ enum class SchemaType {
   Mock,       // Mock He
   ZPaillier,  // Preferred
   FPaillier,
+  IPCL,
   // YOUR_ALGO,
 };
 
@@ -51,7 +53,8 @@ std::ostream& operator<<(std::ostream& os, SchemaType st);
 #define HE_FOR_EACH(invoke, ...)                             \
   invoke(::heu::lib::algorithms::mock, ##__VA_ARGS__),       \
   invoke(::heu::lib::algorithms::paillier_z, ##__VA_ARGS__), \
-invoke(::heu::lib::algorithms::paillier_f, ##__VA_ARGS__)
+  invoke(::heu::lib::algorithms::paillier_f, ##__VA_ARGS__), \
+  invoke(::heu::lib::algorithms::paillier_ipcl, ##__VA_ARGS__)
 
 // [SPI: Please register your algorithm here] || progress: (3 of 4)
 // If you add a new schema, change this !!
@@ -60,7 +63,8 @@ invoke(::heu::lib::algorithms::paillier_f, ##__VA_ARGS__)
 // MPInt to store plaintext, so MPInt only appears once.
 #define PLAINTEXT_FOR_EACH(invoke, ...)                 \
   invoke(::heu::lib::algorithms, MPInt, ##__VA_ARGS__), \
-  invoke(::heu::lib::algorithms::mock, Plaintext, ##__VA_ARGS__)
+  invoke(::heu::lib::algorithms::mock, Plaintext, ##__VA_ARGS__), \
+  invoke(::heu::lib::algorithms::paillier_ipcl, Plaintext, ##__VA_ARGS__)
   // invoke(::heu::lib::algorithms::your_algo, Plaintext, ##__VA_ARGS__)
 // clang-format on
 

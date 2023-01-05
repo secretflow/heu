@@ -18,6 +18,7 @@ yacl_cc_library(
         "//heu/library/algorithms/mock",
         "//heu/library/algorithms/paillier_float",
         "//heu/library/algorithms/paillier_zahlen",
+        "//heu/library/algorithms/paillier_ipcl",
     ],
 )
 

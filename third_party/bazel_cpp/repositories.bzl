@@ -1,4 +1,5 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
 
@@ -8,6 +9,8 @@ def heu_cpp_deps():
     _com_github_eigenteam_eigen()
     _com_github_madler_zlib()
     _com_github_microsoft_seal()
+    _com_github_intel_ipcl()
+    _com_github_uscilab_cereal()
 
 def _com_github_libtom_libtommath():
     maybe(
@@ -80,4 +83,42 @@ def _com_github_microsoft_seal():
             "https://github.com/microsoft/SEAL/archive/refs/tags/v3.6.6.tar.gz",
         ],
         build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:seal.BUILD",
+    )
+
+# def _com_github_intel_ipcl():
+#     maybe(
+#         http_archive,
+#         name = "com_github_intel_ipcl",
+#         strip_prefix = "pailliercryptolib-1.1.4",
+#         type = "tar.gz",
+#         patch_args = ["-p1"],
+#         patches = [
+#             "@com_alipay_sf_heu//third_party/bazel_cpp:patches/ipcl.patch",
+#         ],
+#         urls = [
+#             "https://github.com/intel/pailliercryptolib/archive/refs/tags/v1.1.4.tar.gz"
+#         ],
+#         build_file ="@com_alipay_sf_heu//third_party/bazel_cpp:ipcl.BUILD",
+#     )
+
+def _com_github_intel_ipcl():
+    maybe(
+        new_git_repository,
+        name = "com_github_intel_ipcl",
+        commit = "8ed98584692a41ff2bacb7c9ef770b1e3ba3c2fa",   # tag v2.0.0
+        patch_args = ["-p1"],
+        patches = [
+            "@com_alipay_sf_heu//third_party/bazel_cpp:patches/ipcl.patch",
+        ],
+        remote = "https://github.com/intel/pailliercryptolib.git",
+        build_file ="@com_alipay_sf_heu//third_party/bazel_cpp:ipcl.BUILD",
+    )
+
+def _com_github_uscilab_cereal():
+    maybe(
+        new_git_repository,
+        name = "com_github_uscilab_cereal",
+        commit = "ebef1e929807629befafbb2918ea1a08c7194554",  # cereal - v1.3.2
+        remote = "https://github.com/USCiLab/cereal.git",
+        build_file ="@com_alipay_sf_heu//third_party/bazel_cpp:cereal.BUILD",
     )
