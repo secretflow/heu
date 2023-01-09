@@ -5,7 +5,7 @@ yacl_cc_binary(
     srcs = ["serialize_bench.cc"],
     deps = [
         "//heu/library/algorithms/util:mp_int",
-        "@com_github_google_benchmark//:benchmark_main",
+        "@com_github_google_benchmark//:benchmark",
     ],
 )
 
@@ -14,6 +14,6 @@ yacl_cc_binary(
     srcs = ["crt_bench.cc"],
     deps = [
         "//heu/library/algorithms/paillier_zahlen",
-        "@com_github_google_benchmark//:benchmark_main",
+        "@com_github_google_benchmark//:benchmark",
     ],
 )

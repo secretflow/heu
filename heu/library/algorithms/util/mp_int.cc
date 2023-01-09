@@ -24,25 +24,6 @@ const MPInt MPInt::_2_(2);
 
 MPInt::MPInt() { MPINT_ENFORCE_OK(mp_init(&n_)); }
 
-MPInt::MPInt(uint64_t value, size_t reserved_bits) {
-  MPINT_ENFORCE_OK(mp_init_size(&n_, reserved_bits));
-  mp_set_u64(&n_, value);
-}
-
-MPInt::MPInt(int32_t x) { MPINT_ENFORCE_OK(mp_init_i32(&n_, x)); }
-MPInt::MPInt(uint32_t x) { MPINT_ENFORCE_OK(mp_init_u32(&n_, x)); }
-
-MPInt::MPInt(int64_t x) { MPINT_ENFORCE_OK(mp_init_i64(&n_, x)); }
-MPInt::MPInt(uint64_t x) { MPINT_ENFORCE_OK(mp_init_u64(&n_, x)); }
-
-MPInt::MPInt(int128_t x) { MPINT_ENFORCE_OK(mp_init_i128(&n_, x)); }
-MPInt::MPInt(uint128_t x) { MPINT_ENFORCE_OK(mp_init_u128(&n_, x)); }
-
-MPInt::MPInt(double x) {
-  MPINT_ENFORCE_OK(mp_init(&n_));
-  MPINT_ENFORCE_OK(mp_set_double(&n_, x));
-}
-
 MPInt::MPInt(MPInt &&other) noexcept {
   // /* the infamous mp_int structure */
   // typedef struct {

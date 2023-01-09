@@ -50,13 +50,18 @@ class MPInt {
 
   // Constructors and functions ...
   MPInt();
-  explicit MPInt(int32_t x);
-  explicit MPInt(uint32_t x);
-  explicit MPInt(int64_t x);
-  explicit MPInt(uint64_t x);
-  explicit MPInt(int128_t x);
-  explicit MPInt(uint128_t x);
-  explicit MPInt(double x);
+
+  // Supported T = (u)int8/16/32/64/128 or float/double
+  template <typename T>
+  explicit MPInt(T value, size_t reserved_bits = sizeof(T) * CHAR_BIT) {
+    // if T = double, the size is still safe because Set(double) will auto grow
+    // memory
+    auto digits =
+        (std::max(reserved_bits, sizeof(T) * CHAR_BIT) + MP_DIGIT_BIT - 1) /
+        MP_DIGIT_BIT;
+    MPINT_ENFORCE_OK(mp_init_size(&n_, digits));
+    Set(value);
+  }
 
   MPInt(MPInt &&other) noexcept;
   MPInt(const MPInt &other);
@@ -258,8 +263,6 @@ class MPInt {
   static void Mod(const MPInt &a, const MPInt &mod, MPInt *c);
 
  protected:
-  explicit MPInt(uint64_t value, size_t reserved_bits);
-
   mp_int n_;
 
  private:

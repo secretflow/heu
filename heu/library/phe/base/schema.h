@@ -21,9 +21,13 @@
 #include "heu/library/algorithms/paillier_zahlen/paillier.h"
 #include "heu/library/algorithms/paillier_ipcl/ipcl.h"
 
+// [SPI: Please register your algorithm here] || progress: (1 of 5)
+// Do not forget to add your algo header file here
+// #include "heu/library/algorithms/your_algo/algo.h"
+
 namespace heu::lib::phe {
 
-// [SPI: Please register your algorithm here] || progress: (1 of 4)
+// [SPI: Please register your algorithm here] || progress: (2 of 5)
 // If you add a new schema, change this !!
 enum class SchemaType {
   Mock,       // Mock He
@@ -46,7 +50,7 @@ std::string SchemaToString(SchemaType schema_type);
 std::vector<std::string> GetSchemaAliases(SchemaType schema_type);
 std::ostream& operator<<(std::ostream& os, SchemaType st);
 
-// [SPI: Please register your algorithm here] || progress: (2 of 4)
+// [SPI: Please register your algorithm here] || progress: (3 of 5)
 // If you add a new schema, change this !!
 // SchemaType is in the same order as HE_FOR_EACH
 // clang-format off
@@ -54,9 +58,9 @@ std::ostream& operator<<(std::ostream& os, SchemaType st);
   invoke(::heu::lib::algorithms::mock, ##__VA_ARGS__),       \
   invoke(::heu::lib::algorithms::paillier_z, ##__VA_ARGS__), \
   invoke(::heu::lib::algorithms::paillier_f, ##__VA_ARGS__), \
-  invoke(::heu::lib::algorithms::paillier_ipcl, ##__VA_ARGS__)
+invoke(::heu::lib::algorithms::paillier_ipcl, ##__VA_ARGS__)
 
-// [SPI: Please register your algorithm here] || progress: (3 of 4)
+// [SPI: Please register your algorithm here] || progress: (4 of 5)
 // If you add a new schema, change this !!
 // If the Plaintext class is reused with other algorithms, there is no need to
 // repeat the registration here. For example, paillier_z and paillier_f both use
