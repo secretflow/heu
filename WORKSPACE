@@ -13,7 +13,7 @@ git_repository(
     name = "yacl",
     commit = YACL_COMMIT_ID,
     recursive_init_submodules = True,
-    remote = "{}/yacl.git".format(SECRETFLOW_GIT),
+    remote = "{}/yasl.git".format(SECRETFLOW_GIT),
 )
 
 load("@yacl//bazel:repositories.bzl", "yacl_deps")
