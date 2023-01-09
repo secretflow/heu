@@ -37,9 +37,11 @@ static const std::map<SchemaType, std::vector<std::string>>
         {SchemaType::FPaillier,
          {"FPaillier", "f-paillier", "fpaillier", "paillier_f",
           "paillier_float"}},
+#ifdef __x86_64__
         {SchemaType::IPCL,
          {"IPCL", "ipcl", "ipcl-paillier", "ipcl_paillier", "paillier_ipcl",
           "paillier-ipcl"}},
+#endif
         // {SchemaType::YOUR_ALGO, {"YOUR_ALGO", "your_algorithm"}},
 };
 

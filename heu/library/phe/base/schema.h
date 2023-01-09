@@ -18,8 +18,11 @@
 
 #include "heu/library/algorithms/mock/mock.h"
 #include "heu/library/algorithms/paillier_float/paillier.h"
-#include "heu/library/algorithms/paillier_ipcl/ipcl.h"
 #include "heu/library/algorithms/paillier_zahlen/paillier.h"
+
+#ifdef __x86_64__
+#include "heu/library/algorithms/paillier_ipcl/ipcl.h"
+#endif
 
 // [SPI: Please register your algorithm here] || progress: (1 of 5)
 // Do not forget to add your algo header file here
@@ -30,10 +33,12 @@ namespace heu::lib::phe {
 // [SPI: Please register your algorithm here] || progress: (2 of 5)
 // If you add a new schema, change this !!
 enum class SchemaType {
-  Mock,  // Mock He
+  Mock,       // Mock He
   ZPaillier,  // Preferred
   FPaillier,
+#ifdef __x86_64__
   IPCL,
+#endif
   // YOUR_ALGO,
 };
 
@@ -54,21 +59,34 @@ std::ostream& operator<<(std::ostream& os, SchemaType st);
 // If you add a new schema, change this !!
 // HE_FOR_EACH must be in the same order as SchemaType
 // clang-format off
+#ifdef __x86_64__
 #define HE_FOR_EACH(invoke, ...)                              \
   invoke(::heu::lib::algorithms::mock, ##__VA_ARGS__),        \
   invoke(::heu::lib::algorithms::paillier_z, ##__VA_ARGS__),  \
   invoke(::heu::lib::algorithms::paillier_f, ##__VA_ARGS__),  \
   invoke(::heu::lib::algorithms::paillier_ipcl, ##__VA_ARGS__)
+#else
+#define HE_FOR_EACH(invoke, ...)                              \
+  invoke(::heu::lib::algorithms::mock, ##__VA_ARGS__),        \
+  invoke(::heu::lib::algorithms::paillier_z, ##__VA_ARGS__),  \
+  invoke(::heu::lib::algorithms::paillier_f, ##__VA_ARGS__)
+#endif
 
 // [SPI: Please register your algorithm here] || progress: (4 of 5)
 // If you add a new schema, change this !!
 // If the Plaintext class is reused with other algorithms, there is no need to
 // repeat the registration here. For example, paillier_z and paillier_f both use
 // MPInt to store plaintext, so MPInt only appears once.
+#ifdef __x86_64__
 #define PLAINTEXT_FOR_EACH(invoke, ...)                                   \
   invoke(::heu::lib::algorithms, MPInt, ##__VA_ARGS__),                   \
   invoke(::heu::lib::algorithms::mock, Plaintext, ##__VA_ARGS__),         \
   invoke(::heu::lib::algorithms::paillier_ipcl, Plaintext, ##__VA_ARGS__)
+#else
+#define PLAINTEXT_FOR_EACH(invoke, ...)                                   \
+  invoke(::heu::lib::algorithms, MPInt, ##__VA_ARGS__),                   \
+  invoke(::heu::lib::algorithms::mock, Plaintext, ##__VA_ARGS__)
+#endif
   // invoke(::heu::lib::algorithms::your_algo, Plaintext, ##__VA_ARGS__)
 // clang-format on
 

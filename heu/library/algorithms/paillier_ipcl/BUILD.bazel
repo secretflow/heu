@@ -36,6 +36,9 @@ yacl_cc_library(
         "@com_github_intel_ipcl//:ipcl",
         "@com_github_uscilab_cereal//:cereal",  
     ],
+    target_compatible_with = [
+        "@platforms//cpu:x86_64",
+    ],
 )
 
 yacl_cc_test(
