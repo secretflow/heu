@@ -68,6 +68,7 @@ invoke(::heu::lib::algorithms::paillier_ipcl, ##__VA_ARGS__)
 #define PLAINTEXT_FOR_EACH(invoke, ...)                 \
   invoke(::heu::lib::algorithms, MPInt, ##__VA_ARGS__), \
   invoke(::heu::lib::algorithms::mock, Plaintext, ##__VA_ARGS__), \
+  invoke(::heu::lib::algorithms::paillier_ipcl, Plaintext, ##__VA_ARGS__)
   // invoke(::heu::lib::algorithms::your_algo, Plaintext, ##__VA_ARGS__)
 // clang-format on
 
