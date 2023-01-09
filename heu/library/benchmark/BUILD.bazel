@@ -7,7 +7,7 @@ yacl_cc_binary(
         "//heu/library/phe",
         "@com_github_fmtlib_fmt//:fmtlib",
         "@com_github_gflags_gflags//:gflags",
-        "@com_github_google_benchmark//:benchmark_main",
+        "@com_github_google_benchmark//:benchmark",
     ],
 )
 
@@ -18,6 +18,6 @@ yacl_cc_binary(
         "//heu/library/numpy",
         "@com_github_fmtlib_fmt//:fmtlib",
         "@com_github_gflags_gflags//:gflags",
-        "@com_github_google_benchmark//:benchmark_main",
+        "@com_github_google_benchmark//:benchmark",
     ],
 )

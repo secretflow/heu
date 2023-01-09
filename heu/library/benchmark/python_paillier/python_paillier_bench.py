@@ -12,7 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from phe import paillier
+# If you want to run this benchmark, please uncomment the following line.
+# from phe import paillier
 import google_benchmark as benchmark
 
 K_TEST_SIZE = 10000

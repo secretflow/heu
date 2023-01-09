@@ -20,7 +20,7 @@
 
 namespace heu::lib::phe {
 
-// [SPI: Please register your algorithm here] || progress: (4 of 4)
+// [SPI: Please register your algorithm here] || progress: (5 of 5)
 // Please add aliases to your algorithm, note that aliases should not be
 // duplicated with other algorithms.
 // Aliases are case-sensitive.

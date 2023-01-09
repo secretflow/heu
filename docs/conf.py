@@ -72,7 +72,7 @@ html_css_files = [
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "pydata_sphinx_theme"
+html_theme = "sf_pydata_sphinx_theme"
 
 html_context = {
     "default_mode": "light"
@@ -86,15 +86,9 @@ html_sidebars = {
 html_theme_options = {
     "logo": {
         "text": "HEU",
-        "image_light": "logo.png",
-        "image_dark": "logo-dark.png",
     },
     "pygment_light_style": "tango",
     "pygment_dark_style": "native",
-    "external_links": [
-        {"name": "SecretFlow", "url": "https://secretflow.readthedocs.io/"},
-        {"name": "SPU", "url": "https://spu.readthedocs.io/"},
-    ],
     "icon_links": [
         {
             "name": "GitHub",
@@ -103,8 +97,11 @@ html_theme_options = {
             "type": "fontawesome",
         },
     ],
-    "footer_items": ["copyright"],
+    # https://pydata-sphinx-theme.readthedocs.io/en/stable/user_guide/layout.html
+    # the default "navbar-logo" section is redundant and has bugs, so remove it.
+    # "navbar_start": [],
     "secondary_sidebar_items": ["page-toc"],
+    "language_switch_button": True,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,

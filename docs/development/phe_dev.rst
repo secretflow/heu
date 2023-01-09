@@ -236,9 +236,11 @@ HEU Dispatcher 会在函数级别探测算法实现了哪些 SPI，因此在同�
 - `heu/library/phe/base/schema.h <https://github.com/secretflow/heu/blob/main/heu/library/phe/base/schema.h>`_
 - `heu/library/phe/base/schema.cc <https://github.com/secretflow/heu/blob/main/heu/library/phe/base/schema.cc>`_
 
-请依照文件中注释的引导注册您的算法，有 ``[SPI: Please register your algorithm here]`` 标记的位置就是需要修改的地方，总共有四处，其中 ``schema.h`` 有3处需要修改，``schema.cc`` 有1处需要修改。
+请依照文件中注释的引导注册您的算法，有 ``[SPI: Please register your algorithm here]`` 标记的位置就是需要修改的地方，总共有5处，其中 ``schema.h`` 有4处需要修改，``schema.cc`` 有1处需要修改。
 
-最后不要忘了更新 CHANGELOGS 文件：
+代码文件修改完之后，还需要在 ``schema`` 对应的 ``BUILD.bazel`` 中添加您的算法。
+
+算法注册后，也请同步更新 CHANGELOGS 文件：
 
 - `heu/CHANGELOGS.md <https://github.com/secretflow/heu/blob/main/CHANGELOGS.md>`_
 
@@ -325,3 +327,6 @@ HEU 单元测试使用 `GoogleTest <github.com/google/googletest>`_ 框架，有
    c2 = kit.evaluator().add(c1, c1)
    print(kit.decryptor().decrypt_raw(c2)) #6
 
+.. admonition:: 祝贺
+
+   如果一切顺利的话，此时您的算法已经可以在隐语中使用了，并且隐语上层所有基于 PHE 的应用都可以无缝切换到您的算法上，例如 WOE、HESS-LR、SecureBoost 等等，相信这些上层应用一定可以从您的算法中获益，感谢您对隐语做出的贡献。

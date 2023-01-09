@@ -42,23 +42,23 @@ class PheBenchmarks {
         [this](benchmark::State& st) { Encrypt(st); })
         ->Unit(benchmark::kMillisecond);
     benchmark::RegisterBenchmark(
-        fmt::format("{:^9}|AddCipher", he_kit_->GetSchemaType()).c_str(),
+        fmt::format("{:^9}|CT+CT", he_kit_->GetSchemaType()).c_str(),
         [this](benchmark::State& st) { AddCipher(st); })
         ->Unit(benchmark::kMillisecond);
     benchmark::RegisterBenchmark(
-        fmt::format("{:^9}|SubCipher", he_kit_->GetSchemaType()).c_str(),
+        fmt::format("{:^9}|CT-CT", he_kit_->GetSchemaType()).c_str(),
         [this](benchmark::State& st) { SubCipher(st); })
         ->Unit(benchmark::kMillisecond);
     benchmark::RegisterBenchmark(
-        fmt::format("{:^9}|AddInt", he_kit_->GetSchemaType()).c_str(),
+        fmt::format("{:^9}|CT+PT", he_kit_->GetSchemaType()).c_str(),
         [this](benchmark::State& st) { AddInt(st); })
         ->Unit(benchmark::kMillisecond);
     benchmark::RegisterBenchmark(
-        fmt::format("{:^9}|SubInt", he_kit_->GetSchemaType()).c_str(),
+        fmt::format("{:^9}|CT-PT", he_kit_->GetSchemaType()).c_str(),
         [this](benchmark::State& st) { SubInt(st); })
         ->Unit(benchmark::kMillisecond);
     benchmark::RegisterBenchmark(
-        fmt::format("{:^9}|Matmul", he_kit_->GetSchemaType()).c_str(),
+        fmt::format("{:^9}|CT*PT", he_kit_->GetSchemaType()).c_str(),
         [this](benchmark::State& st) { Multi(st); })
         ->Unit(benchmark::kMillisecond);
     benchmark::RegisterBenchmark(

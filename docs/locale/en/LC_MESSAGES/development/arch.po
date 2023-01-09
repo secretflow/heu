@@ -24,6 +24,6 @@ msgstr "HEU Architecture"
 #: ../../development/arch.rst:4
 msgid ""
 "请查阅 `隐语开发者文档 "
-"<https://secretflow.readthedocs.io/zh_CN/latest/developer/design/heu.html>`_"
-msgstr "Please refer to `Secretflow Developer Documentation <https://secretflow.readthedocs.io/en/latest/developer/design/heu.html>`_"
+"<https://www.secretflow.org.cn/docs/secretflow/zh_CN/developer/design/heu.html>`_"
+msgstr "Please refer to `Secretflow Developer Documentation <https://www.secretflow.org.cn/docs/secretflow/en/developer/design/heu.html>`_"
 

@@ -11,7 +11,7 @@ privacy-preserving applications without professional cryptography knowledge.
 
 ## Documentation
 
-https://heu.readthedocs.io/
+https://www.secretflow.org.cn/docs/heu/
 
 ## Background
 
