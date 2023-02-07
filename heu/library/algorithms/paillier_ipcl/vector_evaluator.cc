@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "heu/library/algorithms/paillier_ipcl/vector_evaluator.h"
-#include "heu/library/algorithms/paillier_ipcl/utils.h"
-#include "heu/library/algorithms/util/he_assert.h"
 
 #include <iostream>
+
+#include "heu/library/algorithms/paillier_ipcl/utils.h"
+#include "heu/library/algorithms/util/he_assert.h"
 namespace heu::lib::algorithms::paillier_ipcl {
 
-Evaluator::Evaluator(const PublicKey& pk) 
-: pk_(pk) {}
+Evaluator::Evaluator(const PublicKey& pk) : pk_(pk) {}
 
 void Evaluator::Randomize(Span<Ciphertext> ct) const {
   size_t size = ct.size();
@@ -19,12 +19,13 @@ void Evaluator::Randomize(Span<Ciphertext> ct) const {
   auto ct_zeros_vec = IpclToHeu<Ciphertext, ipcl::CipherText>(ct_zeros);
   std::vector<Ciphertext*> ct_zeros_pts;
   ValueVecToPtsVec(ct_zeros_vec, ct_zeros_pts);
-  ConstSpan<Ciphertext> ct_zeros_span = absl::MakeConstSpan(ct_zeros_pts.data(), size);
+  ConstSpan<Ciphertext> ct_zeros_span =
+      absl::MakeConstSpan(ct_zeros_pts.data(), size);
   AddInplace(ct, ct_zeros_span);
 }
 
 std::vector<Ciphertext> Evaluator::Add(ConstSpan<Ciphertext> a,
-                            ConstSpan<Ciphertext> b) const {
+                                       ConstSpan<Ciphertext> b) const {
   HE_ASSERT(a.size() == b.size(), "CT + CT error: size mismatch.");
   ipcl::CipherText ipcl_ct_a = ToIpclCiphertext(pk_, a);
   ipcl::CipherText ipcl_ct_b = ToIpclCiphertext(pk_, b);
@@ -33,7 +34,7 @@ std::vector<Ciphertext> Evaluator::Add(ConstSpan<Ciphertext> a,
 }
 
 std::vector<Ciphertext> Evaluator::Add(ConstSpan<Ciphertext> a,
-                            ConstSpan<Plaintext> b) const {
+                                       ConstSpan<Plaintext> b) const {
   HE_ASSERT(a.size() == b.size(), "CT + PT error: size mismatch.");
   ipcl::CipherText ipcl_ct_a = ToIpclCiphertext(pk_, a);
   ipcl::PlainText ipcl_pt_b = ToIpclPlaintext(b);
@@ -42,12 +43,12 @@ std::vector<Ciphertext> Evaluator::Add(ConstSpan<Ciphertext> a,
 }
 
 std::vector<Ciphertext> Evaluator::Add(ConstSpan<Plaintext> a,
-                            ConstSpan<Ciphertext> b) const {
+                                       ConstSpan<Ciphertext> b) const {
   return Add(b, a);
 }
 
 std::vector<Plaintext> Evaluator::Add(ConstSpan<Plaintext> a,
-                            ConstSpan<Plaintext> b) const {
+                                      ConstSpan<Plaintext> b) const {
   HE_ASSERT(a.size() == b.size(), "PT + PT error: size mismatch.");
   std::vector<Plaintext> sum;
   size_t vec_size = a.size();
@@ -82,17 +83,18 @@ void Evaluator::AddInplace(Span<Plaintext> a, ConstSpan<Plaintext> b) const {
 }
 
 std::vector<Ciphertext> Evaluator::Sub(ConstSpan<Ciphertext> a,
-                            ConstSpan<Ciphertext> b) const {
- HE_ASSERT(a.size() == b.size(), "CT - CT error: size mismatch.");
- std::vector<Ciphertext> neg_b_vec = Negate(b);
- std::vector<Ciphertext*> neg_b_pts;
- ValueVecToPtsVec(neg_b_vec, neg_b_pts);
- ConstSpan<Ciphertext> neg_b_span = absl::MakeConstSpan(neg_b_pts.data(), neg_b_pts.size());
- return Add(a, neg_b_span);
+                                       ConstSpan<Ciphertext> b) const {
+  HE_ASSERT(a.size() == b.size(), "CT - CT error: size mismatch.");
+  std::vector<Ciphertext> neg_b_vec = Negate(b);
+  std::vector<Ciphertext*> neg_b_pts;
+  ValueVecToPtsVec(neg_b_vec, neg_b_pts);
+  ConstSpan<Ciphertext> neg_b_span =
+      absl::MakeConstSpan(neg_b_pts.data(), neg_b_pts.size());
+  return Add(a, neg_b_span);
 }
 
 std::vector<Ciphertext> Evaluator::Sub(ConstSpan<Ciphertext> a,
-                              ConstSpan<Plaintext> b) const {
+                                       ConstSpan<Plaintext> b) const {
   HE_ASSERT(a.size() == b.size(), "CT - PT error: size mismatch.");
   std::vector<Plaintext> neg_b_vec;
   for (auto item : b) {
@@ -100,22 +102,24 @@ std::vector<Ciphertext> Evaluator::Sub(ConstSpan<Ciphertext> a,
   }
   std::vector<Plaintext*> neg_b_pts;
   ValueVecToPtsVec(neg_b_vec, neg_b_pts);
-  ConstSpan<Plaintext> neg_b_span = absl::MakeConstSpan(neg_b_pts.data(), neg_b_pts.size());
+  ConstSpan<Plaintext> neg_b_span =
+      absl::MakeConstSpan(neg_b_pts.data(), neg_b_pts.size());
   return Add(a, neg_b_span);
 }
 
 std::vector<Ciphertext> Evaluator::Sub(ConstSpan<Plaintext> a,
-                              ConstSpan<Ciphertext> b) const {
+                                       ConstSpan<Ciphertext> b) const {
   HE_ASSERT(a.size() == b.size(), "PT - CT error: size mismatch.");
   std::vector<Ciphertext> neg_b_vec = Negate(b);
   std::vector<Ciphertext*> neg_b_pts;
   ValueVecToPtsVec(neg_b_vec, neg_b_pts);
-  ConstSpan<Ciphertext> neg_b_span = absl::MakeConstSpan(neg_b_pts.data(), neg_b_pts.size());
+  ConstSpan<Ciphertext> neg_b_span =
+      absl::MakeConstSpan(neg_b_pts.data(), neg_b_pts.size());
   return Add(a, neg_b_span);
 }
 
 std::vector<Plaintext> Evaluator::Sub(ConstSpan<Plaintext> a,
-                             ConstSpan<Plaintext> b) const {
+                                      ConstSpan<Plaintext> b) const {
   HE_ASSERT(a.size() == b.size(), "PT - PT error: size mismatch.");
   size_t size = a.size();
   std::vector<Plaintext> result;
@@ -148,8 +152,9 @@ void Evaluator::SubInplace(Span<Plaintext> a, ConstSpan<Plaintext> b) const {
 }
 
 std::vector<Ciphertext> Evaluator::Mul(ConstSpan<Ciphertext> a,
-                            ConstSpan<Plaintext> b) const {
-  HE_ASSERT((a.size() == b.size() || b.size() == 1), "CT * PT error: size mismatch.");
+                                       ConstSpan<Plaintext> b) const {
+  HE_ASSERT((a.size() == b.size() || b.size() == 1),
+            "CT * PT error: size mismatch.");
   std::vector<BigNumber> a_bn;
   std::vector<BigNumber> b_bn;
   size_t size = a.size();
@@ -186,13 +191,14 @@ std::vector<Ciphertext> Evaluator::Mul(ConstSpan<Ciphertext> a,
 }
 
 std::vector<Ciphertext> Evaluator::Mul(ConstSpan<Plaintext> a,
-                              ConstSpan<Ciphertext> b) const {
+                                       ConstSpan<Ciphertext> b) const {
   return Mul(b, a);
 }
 
 std::vector<Plaintext> Evaluator::Mul(ConstSpan<Plaintext> a,
-                            ConstSpan<Plaintext> b) const {
-  HE_ASSERT((a.size() == b.size() || b.size() == 1), "PT * PT error: size mismatch.");
+                                      ConstSpan<Plaintext> b) const {
+  HE_ASSERT((a.size() == b.size() || b.size() == 1),
+            "PT * PT error: size mismatch.");
   std::vector<Plaintext> product;
   size_t vec_size = a.size();
   if (b.size() == 1) {
@@ -228,7 +234,8 @@ std::vector<Ciphertext> Evaluator::Negate(ConstSpan<Ciphertext> a) const {
   pt_neg_one.Set(-1);
   std::vector<Plaintext*> pts_neg_one;
   pts_neg_one.push_back(&pt_neg_one);
-  ConstSpan<Plaintext> span_neg_one = absl::MakeConstSpan(pts_neg_one.data(), 1);
+  ConstSpan<Plaintext> span_neg_one =
+      absl::MakeConstSpan(pts_neg_one.data(), 1);
   std::vector<Ciphertext> result;
   result = Mul(a, span_neg_one);
   return result;

@@ -3,7 +3,9 @@
 
 #pragma once
 
-#include "heu/library/algorithms/paillier_ipcl/ipcl.h"
+#include "heu/library/algorithms/paillier_ipcl/ciphertext.h"
+#include "heu/library/algorithms/paillier_ipcl/plaintext.h"
+#include "heu/library/algorithms/paillier_ipcl/public_key.h"
 #include "heu/library/algorithms/util/spi_traits.h"
 
 namespace heu::lib::algorithms::paillier_ipcl {

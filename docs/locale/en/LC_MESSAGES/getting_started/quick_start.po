@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-07 18:53+0800\n"
+"POT-Creation-Date: 2023-02-02 20:22+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -121,8 +121,8 @@ msgid "编码"
 msgstr "Encoding"
 
 #: ../../getting_started/quick_start.rst:51
-msgid "当前 HEU 提供了四种 ``Encoder``："
-msgstr "Currently HEU provides four kinds of ``Encoders``:"
+msgid "当前 HEU 提供了五种 ``Encoder``："
+msgstr "Currently HEU provides five kinds of ``Encoders``:"
 
 #: ../../getting_started/quick_start.rst:53
 msgid "``phe.IntegerEncoder``: 编码 128bits 以内的整数"
@@ -137,32 +137,37 @@ msgid "``phe.BigintEncoder``: 编码高精度整数，支持任意精度"
 msgstr "``phe.BigintEncoder`` Encode arbitrary-precision integers"
 
 #: ../../getting_started/quick_start.rst:56
-msgid "``phe.BatchEncoder``: 将两个原文（整数）编码到一个明文中"
+msgid "``phe.BatchIntegerEncoder``: 将两个整数原文编码到一个明文中"
 msgstr ""
-"``phe.BatchEncoder``: Encode two cleartexts (int64 integer) into one "
+"``phe.BatchIntegerEncoder``: Encode two int64 integer cleartexts into one "
 "plaintext"
 
-#: ../../getting_started/quick_start.rst:58
+#: ../../getting_started/quick_start.rst:57
+msgid "``phe.BatchFloatEncoder``: 将两个浮点数原文编码到一个明文中"
+msgstr ""
+"``phe.BatchFloatEncoder``: Encode two float64 cleartexts into one plaintext"
+
+#: ../../getting_started/quick_start.rst:59
 msgid "创建 Encoder 的方法（以``phe.IntegerEncoder``为例）"
 msgstr "Methods to create Encoders (take ``phe.IntegerEncoder`` as an example)"
 
-#: ../../getting_started/quick_start.rst:60
+#: ../../getting_started/quick_start.rst:61
 msgid "方法一："
 msgstr "Method 1:"
 
-#: ../../getting_started/quick_start.rst:66
+#: ../../getting_started/quick_start.rst:67
 msgid "方法二："
 msgstr "Method 2:"
 
-#: ../../getting_started/quick_start.rst:73
+#: ../../getting_started/quick_start.rst:74
 msgid "方法三："
 msgstr "Method 3:"
 
-#: ../../getting_started/quick_start.rst:82
+#: ../../getting_started/quick_start.rst:83
 msgid "IntegerEncoder 和 FloatEncoder"
 msgstr "IntegerEncoder & FloatEncoder"
 
-#: ../../getting_started/quick_start.rst:84
+#: ../../getting_started/quick_start.rst:85
 msgid ""
 "``phe.IntegerEncoder`` 和 ``FloatEncoder`` 原理类似，都是将原文乘上一个 scale 后转换成明文，因此 "
 "scale 大小决定了计算的精度。如果创建 ``IntegerEncoder/FloatEncoder`` 对象时不提供参数，则使用默认的 "
@@ -174,24 +179,24 @@ msgstr ""
 "IntegerEncoder/FloatEncoder object is created without arguments, the "
 "default scale ``1e6`` is used."
 
-#: ../../getting_started/quick_start.rst:86
+#: ../../getting_started/quick_start.rst:87
 msgid "``phe.IntegerEncoder`` 有数值大小上限，请确保编码后的明文小于 128 比特"
 msgstr ""
 "``phe.IntegerEncoder`` has an upper limit, please make sure the scaled "
 "cleartextis less than 128 bits"
 
-#: ../../getting_started/quick_start.rst:88
+#: ../../getting_started/quick_start.rst:89
 msgid "``phe.FloatEncoder`` 有数值大小上限，请确保编码后的明文大小在双精度浮点数（double）表示范围内"
 msgstr ""
 "``phe.FloatEncoder`` has an upper limit, please make sure the scaled "
 "cleartext is in the representation range of (double) floating-point "
 "numbers"
 
-#: ../../getting_started/quick_start.rst:107
+#: ../../getting_started/quick_start.rst:108
 msgid "BigintEncoder"
 msgstr ""
 
-#: ../../getting_started/quick_start.rst:109
+#: ../../getting_started/quick_start.rst:110
 msgid ""
 "``BigintEncoder`` 类似于 "
 "``IntegerEncoder(scale=1)``，但不受精度限制，支持编码任意精度的整数，为了方便用户使用，BigintEncoder "
@@ -201,44 +206,49 @@ msgstr ""
 " encoding arbitrary precision integers. The BigintEncoder is used by "
 "default when user does not specify an encoder."
 
-#: ../../getting_started/quick_start.rst:111
+#: ../../getting_started/quick_start.rst:112
 msgid "``BigintEncoder`` 编码 int128 原文性能非常高，但是超过 128bits 后性能会有显著降低"
 msgstr ""
 "``BigintEncoder`` has very high performance for cleartexts less than "
 "int128, but the performance will be significantly reduced for cleartexts "
 "above 128 bits"
 
-#: ../../getting_started/quick_start.rst:125
-msgid "BatchEncoder"
-msgstr ""
+#: ../../getting_started/quick_start.rst:126
+msgid "BatchIntegerEncoder 和 BatchFloatEncoder"
+msgstr "BatchIntegerEncoder & BatchFloatEncoder"
 
-#: ../../getting_started/quick_start.rst:127
+#: ../../getting_started/quick_start.rst:128
 msgid ""
-"``phe.BatchEncoder`` 支持将两个原文（Cleartext，int64整数）打包加密到一个明文（Plaintext）中，实现 "
-"SIMD 功能。"
+"BatchIntegerEncoder 和 BatchFloatEncoder 是上述 IntegerEncoder、FloatEncoder 的"
+" batch 版本，功能类似，但是 BatchEncoder "
+"支持将两个原文（Cleartext，int64整数）打包加密到一个明文（Plaintext）中，实现 SIMD 功能。"
 msgstr ""
-"``phe.BatchEncoder`` supports packing two Cleartexts (int64 numbers) into"
-" one plaintext to achieve SIMD effect."
 
-#: ../../getting_started/quick_start.rst:133
-msgid "``phe.BatchEncoder`` 有数值大小上限，每个原文不大于 64 比特"
+#: ../../getting_started/quick_start.rst:134
+msgid "``phe.BatchIntegerEncoder`` 有数值大小上限，每个原文不大于 64 比特"
 msgstr ""
-"``phe.BatchEncoder`` has an upper limit on cleartext size, please make "
+"``phe.BatchIntegerEncoder`` has an upper limit on cleartext size, please make "
 "sure each cleartext is less than 64 bits"
 
-#: ../../getting_started/quick_start.rst:135
-msgid "BatchEncoder 并不完全兼容密态减法，仅当密文中所有元素都是正整数时才可以使用，如果您无法确定元素数值范围，应当避免使用密态减法。"
+#: ../../getting_started/quick_start.rst:136
+msgid ""
+"BatchIntegerEncoder、BatchFloatEncoder "
+"并不完全兼容密态减法，仅当密文中所有元素都是正整数时才可以使用，如果您无法确定元素数值范围，应当避免使用密态减法。"
 msgstr ""
-"BatchEncoder is not fully compatible with cryptographic subtraction. It "
+"BatchIntegerEncoder and BatchFloatEncoder are not fully compatible with cryptographic subtraction. They "
 "can only be used when all elements in ciphertext are positive integers. "
 "If you cannot infer the value range of elements, cryptographic "
 "subtraction should be avoided."
 
-#: ../../getting_started/quick_start.rst:163
+#: ../../getting_started/quick_start.rst:162
+msgid "BatchEncoder 当前一次仅支持打包2个原文，如果您有打包更多数字的需求，欢迎提 Issue 或者直接参与共建。"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:166
 msgid "持久化"
 msgstr "Persistence"
 
-#: ../../getting_started/quick_start.rst:165
+#: ../../getting_started/quick_start.rst:168
 msgid "实际场景中，隐私计算往往涉及多个参与方，这就涉及到对象的序列化和反序列化，HEU 的对象持久化功能依赖 Pickle。"
 msgstr ""
 "In practical scenarios, privacy preserving computing often involves "
@@ -246,7 +256,7 @@ msgstr ""
 "deserialization capabilities. The object persistence capability in HEU "
 "relies on Pickle."
 
-#: ../../getting_started/quick_start.rst:167
+#: ../../getting_started/quick_start.rst:170
 msgid ""
 "在一个典型的使用场景中，Client 是数据提供方，Server 是算力提供方，Client 并不信任 Server，因此 Client "
 "可以把数据加密发送给 Server，Server 在密文数据上做计算，并把结果返回给 Client。"
@@ -256,4 +266,3 @@ msgstr ""
 "server, so the client chooses to encrypt private data first and then send"
 " it to server. The server perform calculations on ciphertext and returns "
 "the result to the client."
-

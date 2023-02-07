@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-07 18:53+0800\n"
+"POT-Creation-Date: 2023-02-02 20:55+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,56 +21,105 @@ msgstr ""
 msgid "升级指南"
 msgstr "Upgrade Guide"
 
-#: ../../references/upgrade_guide.rst:15
+#: ../../references/upgrade_guide.rst:16
+msgid "HEU 0.3.x → 0.4.x"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:19 ../../references/upgrade_guide.rst:59
+msgid "API 变更"
+msgstr "API changes"
+
+#: ../../references/upgrade_guide.rst:21
+msgid ""
+"HEU 0.4 版本将 ``phe.BatchEncoder`` 拆分成了2个：``phe.BatchIntegerEncoder`` 和 "
+"``phe.BatchFloatEncoder``。"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:23
+msgid ""
+"HEU 0.3 中的 ``phe.BatchEncoder`` 并不支持编码浮点数，为了让 BatchEncoder 支持浮点数编码，HEU "
+"0.4 新增了 ``phe.BatchFloatEncoder``，同时为了命名上的清晰性，我们将老旧的 ``phe.BatchEncoder``"
+" 改名成了 ``phe.BatchIntegerEncoder``"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:26 ../../references/upgrade_guide.rst:109
+msgid "用户代码怎么改"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:28
+msgid "您可以将老代码中的 BatchEncoder 查找替换为 BatchIntegerEncoder 即可，两者功能等价。"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:32
 msgid "HEU 0.2.x → 0.3.x"
 msgstr ""
 
-#: ../../references/upgrade_guide.rst:18
+#: ../../references/upgrade_guide.rst:35
 msgid "背景解释"
 msgstr "Background"
 
-#: ../../references/upgrade_guide.rst:20
+#: ../../references/upgrade_guide.rst:37
 msgid ""
 "HEU 0.2 版本与大整数运算库 Libtommath 强绑定，要求所有算法算法必须基于 Libtommath "
 "开发，这就限制了算法的发展空间，为了支持更多种类的算法，HEU 0.3 版本对底层架构做了较大升级，将 Libtommath 与 HE "
 "算法完全解耦，不再约定算法底层的实现细节，从而使得算法开发者有更大的发挥空间。"
-msgstr "HEU version 0.2 is strongly coupled with the large integer arithmetic library Libtommath, that means all algorithms must be developed based on Libtommath, which limits the development space of algorithms. In order to support more types of HE algorithms, HEU version 0.3 has made a major upgrade to the underlying architecture. Libtommath and HE algorithms are decoupled completely, and the underlying implementation of the algorithms are no longer limited, so that algorithm developers have more room to play."
+msgstr ""
+"HEU version 0.2 is strongly coupled with the large integer arithmetic "
+"library Libtommath, that means all algorithms must be developed based on "
+"Libtommath, which limits the development space of algorithms. In order to"
+" support more types of HE algorithms, HEU version 0.3 has made a major "
+"upgrade to the underlying architecture. Libtommath and HE algorithms are "
+"decoupled completely, and the underlying implementation of the algorithms"
+" are no longer limited, so that algorithm developers have more room to "
+"play."
 
-#: ../../references/upgrade_guide.rst:22
+#: ../../references/upgrade_guide.rst:39
 msgid ":red:`Before`：0.2.x 的加解密流程"
 msgstr ":red:`Before`：The enc/dec flow of version 0.2.x"
 
-#: ../../references/upgrade_guide.rst:24
+#: ../../references/upgrade_guide.rst:41
 msgid ""
 "Encoder 先把原始数据类型转换成 LibTommath 中的 MPInt 对象（即 Plaintext），再由不同 HE 算法将 MPInt"
 " Plaintext 转换成相应的 Ciphertext。"
-msgstr "The Encoder first converts the original data type into an MPInt object (i.e. Plaintext) based on LibTommath, and then converts the MPInt plaintext into the corresponding Ciphertext by different HE algorithms."
+msgstr ""
+"The Encoder first converts the original data type into an MPInt object "
+"(i.e. Plaintext) based on LibTommath, and then converts the MPInt "
+"plaintext into the corresponding Ciphertext by different HE algorithms."
 
-#: ../../references/upgrade_guide.rst:29
+#: ../../references/upgrade_guide.rst:46
 msgid ":blue:`After`：0.3.x 的加解密流程"
 msgstr ":blue:`After`：The enc/dec flow of version 0.3.x"
 
-#: ../../references/upgrade_guide.rst:31
+#: ../../references/upgrade_guide.rst:48
 msgid "Encoder 直接把原始数据类型转换成算法对应的 Plaintext，不同算法定义的 Plaintext 底层允许有完全不同的数据结构。"
-msgstr "The Encoder directly converts the original data type into the Plaintext corresponding to the HE algorithm. The underlying plaintext defined by different algorithms allows to have completely different data structures."
+msgstr ""
+"The Encoder directly converts the original data type into the Plaintext "
+"corresponding to the HE algorithm. The underlying plaintext defined by "
+"different algorithms allows to have completely different data structures."
 
-#: ../../references/upgrade_guide.rst:36
+#: ../../references/upgrade_guide.rst:53
 msgid "Encoder 为了生成正确的 Plaintext，需要额外引入 Schema 信息："
-msgstr "In order to generate correct Plaintexts, the Encoder needs to pass in additional Schema information:"
+msgstr ""
+"In order to generate correct Plaintexts, the Encoder needs to pass in "
+"additional Schema information:"
 
-#: ../../references/upgrade_guide.rst:42
-msgid "API 变更"
-msgstr "API changes"
-
-#: ../../references/upgrade_guide.rst:44
+#: ../../references/upgrade_guide.rst:61
 msgid "主要变化在于创建 Plaintext 需要传入 Schema 信息"
-msgstr "The main change is that creating Plaintext requires passing in Schema information"
+msgstr ""
+"The main change is that creating Plaintext requires passing in Schema "
+"information"
 
-#: ../../references/upgrade_guide.rst:46
+#: ../../references/upgrade_guide.rst:63
 msgid "Scalar 操作"
 msgstr "Scalar operations"
 
-#: ../../references/upgrade_guide.rst:68
+#: ../../references/upgrade_guide.rst:85
 msgid "矩阵操作"
 msgstr "matrix operations"
+
+#: ../../references/upgrade_guide.rst:111
+msgid ""
+"如果编译报错，请将 schema 参数传入即可，例如这一行编译报错：``phe.BigintEncoder()``，改为 "
+"``phe.BigintEncoder(kit.get_schema())`` 即可，具体参考上一节 **API 变更** 内容。"
+msgstr ""
 

@@ -23,10 +23,10 @@ class PublicKey {
   bool operator==(const PublicKey &other) const;
   bool operator!=(const PublicKey &other) const;
 
-   std::string ToString() const;
+  std::string ToString() const;
 
   // Valid plaintext range: (max_int_, -max_int_)
-   const Plaintext &PlaintextBound() const &;
+  const Plaintext &PlaintextBound() const &;
 
   yacl::Buffer Serialize() const;
   void Deserialize(yacl::ByteContainerView in);

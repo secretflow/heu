@@ -42,7 +42,7 @@ void BindPyFloatEncoder(pybind11::module &m) {
       .def("__str__", &PyFloatEncoderParams::ToString)
       .def("__repr__", &PyFloatEncoderParams::ToString)
       .def(PyUtils::PickleSupport<PyFloatEncoderParams>())
-      .def("instance", &PyFloatEncoderParams::Instance,
+      .def("instance", &PyFloatEncoderParams::Instance, py::arg("schema"),
            "Create FloatEncoder instance");
 
   py::class_<PyFloatEncoder>(m, "FloatEncoder")

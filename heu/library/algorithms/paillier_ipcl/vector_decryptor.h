@@ -4,6 +4,7 @@
 #pragma once
 
 #include "ipcl/pri_key.hpp"
+
 #include "heu/library/algorithms/paillier_ipcl/ciphertext.h"
 #include "heu/library/algorithms/paillier_ipcl/plaintext.h"
 #include "heu/library/algorithms/paillier_ipcl/public_key.h"
@@ -13,12 +14,13 @@
 namespace heu::lib::algorithms::paillier_ipcl {
 
 class Decryptor {
-public:
+ public:
   explicit Decryptor(const PublicKey& _, const SecretKey& sk);
 
   std::vector<Plaintext> Decrypt(ConstSpan<Ciphertext> cts) const;
   void Decrypt(ConstSpan<Ciphertext> in_cts, Span<Plaintext> out_pts) const;
-private:
+
+ private:
   ipcl::PrivateKey sk_;
   ipcl::PublicKey pk_;
   Plaintext half_n_;

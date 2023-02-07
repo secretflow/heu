@@ -3,14 +3,15 @@
 
 #pragma once
 
-#include "ipcl/pub_key.hpp"
 #include "fmt/format.h"
+#include "ipcl/pub_key.hpp"
+
 #include "heu/library/algorithms/paillier_ipcl/plaintext.h"
 
 namespace heu::lib::algorithms::paillier_ipcl {
 
 class PublicKey {
-public:
+ public:
   void Init(ipcl::PublicKey pk) {
     ipcl_pubkey_ = pk;
     pt_bound_.bn_ = *pk.getN() / 2;
@@ -21,9 +22,7 @@ public:
   std::string ToString() const;
 
   // Valid plaintext range: (max_int_, -max_int_)
-  inline const Plaintext &PlaintextBound() const & {
-    return pt_bound_;
-  }
+  inline const Plaintext &PlaintextBound() const & { return pt_bound_; }
 
   yacl::Buffer Serialize() const;
   void Deserialize(yacl::ByteContainerView in);

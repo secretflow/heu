@@ -1,9 +1,10 @@
 // Copyright (C) 2021 Intel Corporation
 // SPDX-License-Identifier: Apache-2.0
 
+#include "heu/library/algorithms/paillier_ipcl/key_generator.h"
+
 #include "ipcl/bignum.h"
 #include "ipcl/ipcl.hpp"
-#include "heu/library/algorithms/paillier_ipcl/key_generator.h"
 
 namespace heu::lib::algorithms::paillier_ipcl {
 

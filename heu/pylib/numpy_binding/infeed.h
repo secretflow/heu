@@ -61,16 +61,21 @@ hnp::DenseMatrix<phe::Plaintext> DoEncodeMatrix(const py::array &ndarray,
 // [[g1, h1],      [[p1],
 //  [g2, h2],  ==>  [p2],
 //  [g3, h3]]       [p3]]
-template <typename EL_TYPE>
+template <typename EL_TYPE, typename Encoder_t,
+          typename std::enable_if_t<
+              std::is_same_v<Encoder_t, PyBatchIntegerEncoder> ||
+                  std::is_same_v<Encoder_t, PyBatchFloatEncoder>,
+              int> = 0>
 hnp::DenseMatrix<phe::Plaintext> DoEncodeMatrix(const py::array &ndarray,
-                                                const PyBatchEncoder &encoder) {
+                                                const Encoder_t &encoder) {
   YACL_ENFORCE(ndarray.ndim() > 0 && ndarray.ndim() <= 2,
                "HEU only support 1-dim or 2-dim array currently");
 
   YACL_ENFORCE(
       // TODO: support dynamic shape
       ndarray.shape(ndarray.ndim() - 1) == 2,
-      "The size of innermost dimension must be 2 when using PyBatchEncoder");
+      "The size of innermost dimension must be 2 when using "
+      "BatchIntegerEncoder/BatchFloatEncoder");
 
   // support shape of (2,) and (n, 2)
   auto rows = ndarray.ndim() == 1 ? 1 : ndarray.shape(0);

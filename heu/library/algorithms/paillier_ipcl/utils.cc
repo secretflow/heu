@@ -1,31 +1,32 @@
 // Copyright (C) 2021 Intel Corporation
 // SPDX-License-Identifier: Apache-2.0
 
+#include "utils.h"
+
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>
-#include "utils.h"
 
 namespace heu::lib::algorithms::paillier_ipcl {
 
 // Compile a with b, returning 1:a>b, 0:a==b, -1:a<b
 int Compare(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) {
   const auto max_size = std::max(a.size(), b.size());
-  for(auto i = max_size; i > 0; i--) {
+  for (auto i = max_size; i > 0; i--) {
     auto idx = i - 1;
     const auto wa = idx < a.size() ? a[idx] : 0;
     const auto wb = idx < b.size() ? b[idx] : 0;
-    if(wa != wb) { 
-      return wa > wb ? 1 : -1; 
+    if (wa != wb) {
+      return wa > wb ? 1 : -1;
     }
   }
   return 0;
 }
 
 bool IsZero(std::vector<uint32_t>& value) {
-  for(auto val : value) { 
-    if(val) {
+  for (auto val : value) {
+    if (val) {
       return false;
     }
   }
@@ -35,11 +36,11 @@ bool IsZero(std::vector<uint32_t>& value) {
 // Remove leading zero words
 void Clamp(std::vector<uint32_t>& bn) {
   const auto size = bn.size();
-  if(!size || bn[size-1]) {
+  if (!size || bn[size - 1]) {
     return;
   }
-  for(auto i = size-2; i+1; i--) {
-    if(bn[i]) {
+  for (auto i = size - 2; i + 1; i--) {
+    if (bn[i]) {
       bn.resize(i + 1);
       return;
     }
@@ -51,17 +52,17 @@ void Clamp(std::vector<uint32_t>& bn) {
 // a >= b must be guaranteed by caller
 void SubFrom(std::vector<uint32_t>& a, std::vector<uint32_t>& b) {
   uint32_t borrow = 0;
-  for(std::size_t i = 0; i < b.size(); i++) {
-    if(b[i] || borrow) {
-        const auto w = a[i] - b[i] - borrow;
-        // this relies on the automatic w = w (mod base),
-        // assuming unsigned max is base-1
-        // if this is not the case, w must be set to w % base here
-        borrow = w >= a[i];
-        a[i] = w;
+  for (std::size_t i = 0; i < b.size(); i++) {
+    if (b[i] || borrow) {
+      const auto w = a[i] - b[i] - borrow;
+      // this relies on the automatic w = w (mod base),
+      // assuming unsigned max is base-1
+      // if this is not the case, w must be set to w % base here
+      borrow = w >= a[i];
+      a[i] = w;
     }
   }
-  for(auto i = b.size(); borrow; i++) {
+  for (auto i = b.size(); borrow; i++) {
     borrow = !a[i];
     --a[i];
     // a[i] must be set modulo base here too
@@ -72,10 +73,10 @@ void SubFrom(std::vector<uint32_t>& a, std::vector<uint32_t>& b) {
 // Divide bn by 2, truncating any fraction
 void ShiftRightOne(std::vector<uint32_t>& bn) {
   uint32_t carry = 0;
-  for(auto i = bn.size(); i > 0; i--) {
-    const auto next_carry = (bn[i-1] & 1) ? HI_BIT_SET : 0;
-    bn[i-1] >>= 1;
-    bn[i-1] |= carry;
+  for (auto i = bn.size(); i > 0; i--) {
+    const auto next_carry = (bn[i - 1] & 1) ? HI_BIT_SET : 0;
+    bn[i - 1] >>= 1;
+    bn[i - 1] |= carry;
     carry = next_carry;
   }
   Clamp(bn);
@@ -84,13 +85,13 @@ void ShiftRightOne(std::vector<uint32_t>& bn) {
 // Multiply bn by 2
 void ShiftLeftOne(std::vector<uint32_t>& bn) {
   uint32_t carry = 0;
-  for(std::size_t i = 0; i < bn.size(); i++) {
-      const uint32_t next_carry = !!(bn[i] & HI_BIT_SET);
-      bn[i] <<= 1;
-      bn[i] |= carry;
-      carry = next_carry;
+  for (std::size_t i = 0; i < bn.size(); i++) {
+    const uint32_t next_carry = !!(bn[i] & HI_BIT_SET);
+    bn[i] <<= 1;
+    bn[i] |= carry;
+    carry = next_carry;
   }
-  if(carry) {
+  if (carry) {
     bn.push_back(1);
   }
 }
@@ -160,10 +161,10 @@ void ShiftLeftN(std::vector<uint32_t>& bn, int n) {
 void SetBitAt(std::vector<uint32_t>& bn, std::size_t index, bool set) {
   std::size_t widx = index / (sizeof(uint32_t) * 8);
   std::size_t bidx = index % (sizeof(uint32_t) * 8);
-  if(bn.size() < widx + 1) {
+  if (bn.size() < widx + 1) {
     bn.resize(widx + 1);
   }
-  if(set) {
+  if (set) {
     bn[widx] |= uint32_t(1) << bidx;
   } else {
     bn[widx] &= ~(uint32_t(1) << bidx);
@@ -171,23 +172,24 @@ void SetBitAt(std::vector<uint32_t>& bn, std::size_t index, bool set) {
 }
 
 // Divide n by d, returning the result and leaving the remainder in n
-std::vector<uint32_t> Divide(std::vector<uint32_t>& n, std::vector<uint32_t> d) {
-  if(IsZero(d)) {
+std::vector<uint32_t> Divide(std::vector<uint32_t>& n,
+                             std::vector<uint32_t> d) {
+  if (IsZero(d)) {
     YACL_THROW("Divide by 0.");
   }
   std::size_t shift = 0;
-  while(Compare(n, d) == 1) {
+  while (Compare(n, d) == 1) {
     ShiftLeftOne(d);
     shift++;
   }
   std::vector<uint32_t> result;
   do {
-    if(Compare(n, d) >= 0) {
+    if (Compare(n, d) >= 0) {
       SetBitAt(result, shift);
       SubFrom(n, d);
     }
     ShiftRightOne(d);
-  } while(shift--);
+  } while (shift--);
   Clamp(result);
   Clamp(n);
   return result;
@@ -201,18 +203,19 @@ std::string ToString(const BigNumber& bn) {
   std::vector<uint32_t> vec;
   bn.num2vec(vec);
   do {
-      const auto next_bn = Divide(vec, {10});
-      const char digit_value = static_cast<char>(vec.size()? vec[0] : 0);
-      result.push_back('0' + digit_value);
-      vec = next_bn;
-  } while(!IsZero(vec));
+    const auto next_bn = Divide(vec, {10});
+    const char digit_value = static_cast<char>(vec.size() ? vec[0] : 0);
+    result.push_back('0' + digit_value);
+    vec = next_bn;
+  } while (!IsZero(vec));
 
-  std::reverse(result.begin()+1, result.end());
+  std::reverse(result.begin() + 1, result.end());
   return result;
 }
 
 // TODO: combine with the below as a template function?
-ipcl::CipherText ToIpclCiphertext(const PublicKey& pk, ConstSpan<Ciphertext> ct) {
+ipcl::CipherText ToIpclCiphertext(const PublicKey& pk,
+                                  ConstSpan<Ciphertext> ct) {
   std::vector<BigNumber> bn_vec;
   size_t ct_size = ct.size();
   for (size_t i = 0; i < ct_size; i++) {
@@ -231,4 +234,4 @@ ipcl::PlainText ToIpclPlaintext(ConstSpan<Plaintext> pt) {
   ipcl::PlainText ipcl_pt(bn_vec);
   return ipcl_pt;
 }
-}
+}  // namespace heu::lib::algorithms::paillier_ipcl

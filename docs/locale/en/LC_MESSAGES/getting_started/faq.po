@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-07 18:53+0800\n"
+"POT-Creation-Date: 2023-02-02 20:22+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgid "常见问题"
 msgstr "Frequently asked questions (FAQ)"
 
 #: ../../getting_started/faq.rst:6
-msgid "部署相关"
+msgid "安装部署相关"
 msgstr "Category: Install and deployment"
 
 #: ../../getting_started/faq.rst:10
@@ -51,4 +51,44 @@ msgstr "Pip version must be 22.0+"
 
 #: ../../getting_started/faq.rst:20
 msgid "操作系统版本是否满足要求，详见 :doc:`安装文档<./installation>`"
-msgstr "Check whether the OS version meets the requirements, see :doc:`installation documentation<./installation>` for details."
+msgstr ""
+"Check whether the OS version meets the requirements, see "
+":doc:`installation documentation<./installation>` for details."
+
+#: ../../getting_started/faq.rst:24
+msgid "HEU 是否支持其它的 Python 版本？"
+msgstr ""
+
+#: ../../getting_started/faq.rst:25
+msgid ""
+"Pypi 仓库的包仅支持 Python 3.8 环境，如果要支持更多的 Python 版本可以尝试 "
+":doc:`从源码编译<./installation>`，同时还需要修改 `此文件 "
+"<https://github.com/secretflow/heu/blob/main/heu/pylib/BUILD.bazel>`_ 中关于"
+" Python 版本的声明。"
+msgstr ""
+
+#: ../../getting_started/faq.rst:27
+msgid ""
+"受限于 Pybind 的特性，HEU 运行所用的 Python 版本必须与编译所用的 Python 版本一致，例如编译用的是 Python "
+"3.10 版本，运行也必须在 Python 3.10 下。"
+msgstr ""
+
+#: ../../getting_started/faq.rst:31
+msgid "功能相关"
+msgstr ""
+
+#: ../../getting_started/faq.rst:34
+msgid "HEU 当前提供哪些功能，FHE 支持吗？"
+msgstr ""
+
+#: ../../getting_started/faq.rst:35
+msgid ""
+"HEU 是一个业界领先的 PHE Library，支持加解密、明密文加减法、密文-明文乘法等计算，并提供 C++、Python 两种 "
+"API，您可以把 HEU 当做一个纯的 Library 来使用，也可以通过 `Secretflow "
+"<https://github.com/secretflow/secretflow>`_ 编程框架将 HEU 当做一个密态计算设备使用。"
+msgstr ""
+
+#: ../../getting_started/faq.rst:37
+msgid "FHE 功能的支持在路上，届时将额外支持密文乘法、密文比较等操作，敬请关注。"
+msgstr ""
+

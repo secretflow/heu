@@ -96,11 +96,12 @@ py::array DecodeNdarray(
 template <typename Encoder_t>
 py::array DecodeNdarray(
     const lib::numpy::PMatrix &in,
-    const std::enable_if_t<std::is_same_v<Encoder_t, PyBatchEncoder>, Encoder_t>
-        &encoder) {
-  YACL_ENFORCE(
-      in.cols() == 1,
-      "The size of innermost dimension must be 1 when using PyBatchEncoder");
+    const std::enable_if_t<std::is_same_v<Encoder_t, PyBatchIntegerEncoder> ||
+                               std::is_same_v<Encoder_t, PyBatchFloatEncoder>,
+                           Encoder_t> &encoder) {
+  YACL_ENFORCE(in.cols() == 1,
+               "The size of innermost dimension must be 1 when using "
+               "BatchIntegerEncoder/BatchFloatEncoder");
 
   int rows = in.rows();
   py::array res;

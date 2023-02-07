@@ -23,60 +23,105 @@ namespace heu::pylib {
 
 using lib::phe::Plaintext;
 
-// Helper class for python binding
+// Base class of PyBatch{Integer/Float}Encoder
+template <typename RealEncoderT, typename CleartextT>
 class PyBatchEncoder {
  public:
-  using DefaultPlainT = int64_t;
-  constexpr static std::string_view DefaultPyTypeFormat = "l";
+  using DefaultPlainT = CleartextT;
+  constexpr static std::string_view DefaultPyTypeFormat =
+      std::is_floating_point_v<CleartextT> ? "d" : "l";
 
-  explicit PyBatchEncoder(lib::phe::SchemaType schema,
-                          size_t batch_encoding_padding = 32)
-      : encoder_(schema, batch_encoding_padding) {}
-  explicit PyBatchEncoder(const lib::phe::BatchEncoder &encoder)
-      : encoder_(encoder) {}
+  virtual ~PyBatchEncoder() = default;
 
-  [[nodiscard]] yacl::Buffer Serialize() const;
-
-  static PyBatchEncoder LoadFrom(yacl::ByteContainerView buf);
-
-  template <typename T,
-            typename std::enable_if_t<std::is_integral_v<T>, int> = 0>
-  Plaintext Encode(T first, T second) const {
-    return encoder_.Encode<int64_t>(first, second);
+  [[nodiscard]] yacl::Buffer Serialize() const { return encoder_.Serialize(); }
+  static RealEncoderT LoadFrom(yacl::ByteContainerView buf) {
+    return RealEncoderT(lib::phe::BatchEncoder::LoadFrom(buf));
   }
 
-  template <typename T,
-            typename std::enable_if_t<std::is_floating_point_v<T>, int> = 0>
-  Plaintext Encode(T first, T second) const {
-    YACL_THROW_LOGIC_ERROR("BatchEncoder can not encode float element");
+  Plaintext Encode(CleartextT first, CleartextT second) const {
+    return encoder_.Encode(first, second);
   }
 
   [[nodiscard]] Plaintext Encode(PyObject *first, PyObject *second) const {
     YACL_THROW_LOGIC_ERROR(
-        "BatchEncoder can not encode 'PyObject' type element");
+        "BatchFloatEncoder can not encode 'PyObject' type element");
   }
 
   template <size_t index>
-  [[nodiscard]] int64_t Decode(const Plaintext &plaintext) const {
-    return encoder_.Decode<int64_t, index>(plaintext);
+  [[nodiscard]] CleartextT Decode(const Plaintext &plaintext) const {
+    return encoder_.Decode<CleartextT, index>(plaintext);
   }
 
   lib::phe::SchemaType GetSchema() const { return encoder_.GetSchema(); }
-  size_t GetPaddingSize() const { return encoder_.GetPaddingSize(); }
-  [[nodiscard]] std::string ToString() const;
+  size_t GetScale() const { return encoder_.GetScale(); }
+  size_t GetPaddingBits() const { return encoder_.GetPaddingBits(); }
 
- private:
+  [[nodiscard]] std::string ToString() const {
+    return fmt::format("{}(schema={}, scale={}, padding_bits={})",
+                       pybind11::type_id<RealEncoderT>(), GetSchema(),
+                       GetScale(), GetPaddingBits());
+  }
+
+ protected:
+  explicit PyBatchEncoder(lib::phe::SchemaType schema, int64_t scale,
+                          size_t padding_bits = 32)
+      : encoder_(schema, scale, padding_bits) {}
+  explicit PyBatchEncoder(const lib::phe::BatchEncoder &encoder)
+      : encoder_(encoder) {}
+
   lib::phe::BatchEncoder encoder_;
 };
 
-struct PyBatchEncoderParams : lib::algorithms::HeObject<PyBatchEncoderParams> {
-  int64_t padding_size;
-  MSGPACK_DEFINE(padding_size);
+// Helper class for python binding
+class PyBatchIntegerEncoder
+    : public PyBatchEncoder<PyBatchIntegerEncoder, int64_t> {
+ public:
+  explicit PyBatchIntegerEncoder(lib::phe::SchemaType schema, int64_t scale = 1,
+                                 size_t padding_bits = 32)
+      : PyBatchEncoder(schema, scale, padding_bits) {}
 
-  explicit PyBatchEncoderParams(int64_t padding_size = 1e6)
-      : padding_size(padding_size) {}
-  PyBatchEncoder Instance(lib::phe::SchemaType schema) const {
-    return PyBatchEncoder(schema, padding_size);
+  using PyBatchEncoder<PyBatchIntegerEncoder, int64_t>::PyBatchEncoder;
+};
+
+// Helper class for python binding
+class PyBatchFloatEncoder : public PyBatchEncoder<PyBatchFloatEncoder, double> {
+ public:
+  explicit PyBatchFloatEncoder(lib::phe::SchemaType schema, int64_t scale = 1e6,
+                               size_t padding_bits = 32)
+      : PyBatchEncoder(schema, scale, padding_bits) {}
+
+  using PyBatchEncoder<PyBatchFloatEncoder, double>::PyBatchEncoder;
+};
+
+struct PyBatchIntegerEncoderParams
+    : lib::algorithms::HeObject<PyBatchIntegerEncoderParams> {
+  int64_t scale = 1;
+  size_t padding_bits = 32;
+  MSGPACK_DEFINE(scale, padding_bits);
+
+  explicit PyBatchIntegerEncoderParams(int64_t scale = 1,
+                                       size_t padding_bits = 32)
+      : scale(scale), padding_bits(padding_bits) {}
+
+  PyBatchIntegerEncoder Instance(lib::phe::SchemaType schema) const {
+    return PyBatchIntegerEncoder(schema, scale, padding_bits);
+  }
+
+  [[nodiscard]] std::string ToString() const;
+};
+
+struct PyBatchFloatEncoderParams
+    : lib::algorithms::HeObject<PyBatchFloatEncoderParams> {
+  int64_t scale = 1;
+  size_t padding_bits = 32;
+  MSGPACK_DEFINE(scale, padding_bits);
+
+  explicit PyBatchFloatEncoderParams(int64_t scale = 1e6,
+                                     size_t padding_bits = 32)
+      : scale(scale), padding_bits(padding_bits) {}
+
+  PyBatchFloatEncoder Instance(lib::phe::SchemaType schema) const {
+    return PyBatchFloatEncoder(schema, scale, padding_bits);
   }
 
   [[nodiscard]] std::string ToString() const;

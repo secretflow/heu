@@ -17,6 +17,7 @@
 #include <type_traits>
 
 #include "fmt/compile.h"
+#include "yacl/base/exception.h"
 
 #include "heu/library/algorithms/util/he_object.h"
 #include "heu/library/algorithms/util/mp_int.h"
@@ -29,8 +30,9 @@ class BatchEncoder : public algorithms::HeObject<BatchEncoder> {
   // During batch encoding, if the lower digits overflow, the upper digits will
   // be affected. The default parameter 32 bit padding supports approximately 2
   // billion addition operations
-  explicit BatchEncoder(SchemaType schema, size_t batch_encoding_padding = 32)
-      : schema_(schema), encoding_padding_(batch_encoding_padding) {}
+  explicit BatchEncoder(SchemaType schema, int64_t scale = 1,
+                        size_t padding_bits = 32)
+      : schema_(schema), scale_(scale), padding_bits_(padding_bits) {}
 
   static BatchEncoder LoadFrom(yacl::ByteContainerView buf) {
     return BatchEncoder(buf);
@@ -46,54 +48,93 @@ class BatchEncoder : public algorithms::HeObject<BatchEncoder> {
   // concept UnsignedIntegralType =
   //    std::is_unsigned<T>::value && std::is_integral<T>::value;
 
-  // Encoding signed number，supports int8 ~ int64
+  // Encoding signed number，supports int8 ~ int128
+  // Be careful of overflow
   template <typename T,
             typename std::enable_if_t<
                 std::is_signed_v<T> && std::is_integral_v<T>, int> = 0>
   Plaintext Encode(T first, T second) const {
     typedef typename std::make_unsigned<T>::type unsigned_t;
-    return Encode<unsigned_t>(*reinterpret_cast<unsigned_t *>(&first),
-                              *reinterpret_cast<unsigned_t *>(&second));
+    T n1 = first * static_cast<T>(scale_);
+    T n2 = second * static_cast<T>(scale_);
+    // get raw buffer (means 2's complement code) and encode it
+    return DoEncode<unsigned_t>(*reinterpret_cast<unsigned_t *>(&n1),
+                                *reinterpret_cast<unsigned_t *>(&n2));
   }
 
-  // Encoding unsigned numbers，supports uint8 ~ uint64
+  // Encoding unsigned numbers，supports uint8 ~ uint128
+  // Be careful of overflow
   template <typename T,
             typename std::enable_if_t<
                 std::is_unsigned_v<T> && std::is_integral_v<T>, int> = 0>
   Plaintext Encode(T first, T second) const {
-    Plaintext pt(schema_, second);
-    pt <<= sizeof(second) * CHAR_BIT + encoding_padding_;
-    pt |= Plaintext(schema_, first);
-    return pt;
+    return DoEncode(static_cast<T>(first * static_cast<T>(scale_)),
+                    static_cast<T>(second * static_cast<T>(scale_)));
   }
 
-  // Decode element.
+  // Encoding float or double variables
+  // Be careful of overflow
+  template <typename T,
+            typename std::enable_if_t<std::is_floating_point_v<T>, int> = 0>
+  Plaintext Encode(T first, T second) const {
+    auto n1 = static_cast<int64_t>(static_cast<double>(first) * scale_);
+    auto n2 = static_cast<int64_t>(static_cast<double>(second) * scale_);
+    // same with encode an int64 number
+    return DoEncode<uint64_t>(*reinterpret_cast<uint64_t *>(&n1),
+                              *reinterpret_cast<uint64_t *>(&n2));
+  }
+
+  // Decode element. supports (u)int8 ~ (u)int128
   // return 0 if index is greater or equal to the number encoded in plaintext
   template <typename T, size_t index>
   typename std::enable_if_t<std::is_integral_v<T>, T> Decode(
       const Plaintext &plaintext) const {
     static_assert(index < 2,
                   "You cannot get more than two elements from one plaintext");
-    Plaintext pt =
-        plaintext >> index * (sizeof(T) * CHAR_BIT + encoding_padding_);
-    return pt.template GetValue<T>();
+    Plaintext pt = plaintext >> index * (sizeof(T) * CHAR_BIT + padding_bits_);
+    // The T in GetValue<> must exactly same with T in Encode<>, otherwise we
+    // cannot get the right 2's complement code when result is negative.
+    return pt.template GetValue<T>() / static_cast<T>(scale_);
   }
 
-  MSGPACK_DEFINE(schema_, encoding_padding_);
+  template <typename T, size_t index>
+  typename std::enable_if_t<std::is_floating_point_v<T>, T> Decode(
+      const Plaintext &plaintext) const {
+    static_assert(index < 2,
+                  "You cannot get more than two elements from one plaintext");
+    Plaintext pt =
+        plaintext >> index * (sizeof(int64_t) * CHAR_BIT + padding_bits_);
+    return pt.template GetValue<int64_t>() / static_cast<T>(scale_);
+  }
+
+  MSGPACK_DEFINE(schema_, scale_, padding_bits_);
 
   SchemaType GetSchema() const { return schema_; }
-  size_t GetPaddingSize() const { return encoding_padding_; }
+  int64_t GetScale() const { return scale_; }
+  size_t GetPaddingBits() const { return padding_bits_; }
 
   [[nodiscard]] std::string ToString() const override {
-    return fmt::format("BatchEncoder(schema={}, padding={}, max_batch=2)",
-                       schema_, encoding_padding_);
+    return fmt::format(
+        "BatchEncoder(schema={}, scale={}, padding_bits={}, max_batch=2)",
+        schema_, scale_, padding_bits_);
   }
 
  private:
   explicit BatchEncoder(yacl::ByteContainerView buf) { Deserialize(buf); }
 
+  template <typename T,
+            typename std::enable_if_t<
+                std::is_unsigned_v<T> && std::is_integral_v<T>, int> = 0>
+  Plaintext DoEncode(T first, T second) const {
+    Plaintext pt(schema_, second);
+    pt <<= sizeof(T) * CHAR_BIT + padding_bits_;
+    pt |= Plaintext(schema_, first);
+    return pt;
+  }
+
   SchemaType schema_;
-  size_t encoding_padding_;
+  int64_t scale_;
+  size_t padding_bits_;
 };
 
 }  // namespace heu::lib::phe

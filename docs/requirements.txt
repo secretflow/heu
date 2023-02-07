@@ -3,7 +3,10 @@ sphinx-intl
 sphinx-copybutton
 sphinx-togglebutton
 sphinx-inline-tabs
-sf-pydata-sphinx-theme  # theme
 # matplotlib
 # myst-parser
 sf-heu
+
+# theme
+# if sf-pydata-sphinx-theme install fails, please replace it to pydata-sphinx-theme
+sf-pydata-sphinx-theme

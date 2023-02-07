@@ -2,15 +2,17 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "heu/library/algorithms/paillier_ipcl/ipcl.h"
+
+#include "gtest/gtest.h"
+#include "yacl/base/int128.h"
+
 #include "heu/library/algorithms/paillier_ipcl/utils.h"
 #include "heu/library/algorithms/util/spi_traits.h"
-#include "yacl/base/int128.h"
-#include "gtest/gtest.h"
 
 namespace heu::lib::algorithms::paillier_ipcl::test {
 
 class IPCLTest : public ::testing::Test {
-protected:
+ protected:
   void SetUp() override {
     KeyGenerator::Generate(2048, &sk_, &pk_);
     evaluator_ = std::make_shared<Evaluator>(pk_);
@@ -18,7 +20,7 @@ protected:
     encryptor_ = std::make_shared<Encryptor>(pk_);
   }
 
-protected:
+ protected:
   SecretKey sk_;
   PublicKey pk_;
   std::shared_ptr<Encryptor> encryptor_;
@@ -130,13 +132,13 @@ TEST_F(IPCLTest, EncDec) {
   for (size_t i = 0; i < vec_size; i++) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
   auto a_ct_vec = encryptor_->Encrypt(a_pt_span);
-  std::vector<Ciphertext*> a_ct_pts;
+  std::vector<Ciphertext *> a_ct_pts;
   ValueVecToPtsVec(a_ct_vec, a_ct_pts);
-   auto a_ct_span = absl::MakeConstSpan(a_ct_pts.data(), vec_size);
+  auto a_ct_span = absl::MakeConstSpan(a_ct_pts.data(), vec_size);
   std::vector<Plaintext> res_pt_vec = decryptor_->Decrypt(a_ct_span);
   for (size_t i = 0; i < vec_size; i++) {
     EXPECT_EQ((BigNumber)res_pt_vec[i], BigNumber(expect_res[i]));
@@ -155,23 +157,23 @@ TEST_F(IPCLTest, CTPlusCT) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
     b_pt_vec.push_back(Plaintext(b_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
-  std::vector<Plaintext*> b_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
+  std::vector<Plaintext *> b_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   ValueVecToPtsVec(b_pt_vec, b_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
   auto b_pt_span = absl::MakeConstSpan(b_pt_pts.data(), vec_size);
   auto a_ct_vec = encryptor_->Encrypt(a_pt_span);
   auto b_ct_vec = encryptor_->Encrypt(b_pt_span);
-  std::vector<Ciphertext*> a_ct_pts;
-  std::vector<Ciphertext*> b_ct_pts;
+  std::vector<Ciphertext *> a_ct_pts;
+  std::vector<Ciphertext *> b_ct_pts;
   ValueVecToPtsVec(a_ct_vec, a_ct_pts);
   ValueVecToPtsVec(b_ct_vec, b_ct_pts);
   auto a_ct_span = absl::MakeConstSpan(a_ct_pts.data(), vec_size);
   auto b_ct_span = absl::MakeConstSpan(b_ct_pts.data(), vec_size);
   std::vector<Ciphertext> res_ct_vec = evaluator_->Add(a_ct_span, b_ct_span);
 
-  std::vector<Ciphertext*> res_ct_pts;
+  std::vector<Ciphertext *> res_ct_pts;
   ValueVecToPtsVec(res_ct_vec, res_ct_pts);
   auto res_ct_span = absl::MakeConstSpan(res_ct_pts.data(), vec_size);
   std::vector<Plaintext> res_pt_vec = decryptor_->Decrypt(res_ct_span);
@@ -192,16 +194,16 @@ TEST_F(IPCLTest, CTPlusCTInplace) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
     b_pt_vec.push_back(Plaintext(b_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
-  std::vector<Plaintext*> b_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
+  std::vector<Plaintext *> b_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   ValueVecToPtsVec(b_pt_vec, b_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
   auto b_pt_span = absl::MakeConstSpan(b_pt_pts.data(), vec_size);
   auto a_ct_vec = encryptor_->Encrypt(a_pt_span);
   auto b_ct_vec = encryptor_->Encrypt(b_pt_span);
-  std::vector<Ciphertext*> a_ct_pts;
-  std::vector<Ciphertext*> b_ct_pts;
+  std::vector<Ciphertext *> a_ct_pts;
+  std::vector<Ciphertext *> b_ct_pts;
   ValueVecToPtsVec(a_ct_vec, a_ct_pts);
   ValueVecToPtsVec(b_ct_vec, b_ct_pts);
   auto a_ct_span = absl::MakeSpan(a_ct_pts.data(), vec_size);
@@ -226,21 +228,21 @@ TEST_F(IPCLTest, CTPlusPT) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
     b_pt_vec.push_back(Plaintext(b_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
-  std::vector<Plaintext*> b_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
+  std::vector<Plaintext *> b_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   ValueVecToPtsVec(b_pt_vec, b_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
   auto b_pt_span = absl::MakeConstSpan(b_pt_pts.data(), vec_size);
   auto a_ct_vec = encryptor_->Encrypt(a_pt_span);
 
-  std::vector<Ciphertext*> a_ct_pts;
+  std::vector<Ciphertext *> a_ct_pts;
   ValueVecToPtsVec(a_ct_vec, a_ct_pts);
   auto a_ct_span = absl::MakeConstSpan(a_ct_pts.data(), vec_size);
 
   std::vector<Ciphertext> res_ct_vec = evaluator_->Add(a_ct_span, b_pt_span);
 
-  std::vector<Ciphertext*> res_ct_pts;
+  std::vector<Ciphertext *> res_ct_pts;
   ValueVecToPtsVec(res_ct_vec, res_ct_pts);
   auto res_ct_span = absl::MakeConstSpan(res_ct_pts.data(), vec_size);
   std::vector<Plaintext> res_pt_vec = decryptor_->Decrypt(res_ct_span);
@@ -261,15 +263,15 @@ TEST_F(IPCLTest, CTPlusPTInplace) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
     b_pt_vec.push_back(Plaintext(b_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
-  std::vector<Plaintext*> b_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
+  std::vector<Plaintext *> b_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   ValueVecToPtsVec(b_pt_vec, b_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
   auto b_pt_span = absl::MakeConstSpan(b_pt_pts.data(), vec_size);
   auto a_ct_vec = encryptor_->Encrypt(a_pt_span);
 
-  std::vector<Ciphertext*> a_ct_pts;
+  std::vector<Ciphertext *> a_ct_pts;
   ValueVecToPtsVec(a_ct_vec, a_ct_pts);
   auto a_ct_span = absl::MakeConstSpan(a_ct_pts.data(), vec_size);
 
@@ -292,13 +294,13 @@ TEST_F(IPCLTest, PTPlusPT) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
     b_pt_vec.push_back(Plaintext(b_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
-  std::vector<Plaintext*> b_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
+  std::vector<Plaintext *> b_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   ValueVecToPtsVec(b_pt_vec, b_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
   auto b_pt_span = absl::MakeConstSpan(b_pt_pts.data(), vec_size);
-  
+
   auto result = evaluator_->Add(a_pt_span, b_pt_span);
   for (size_t i = 0; i < vec_size; i++) {
     EXPECT_EQ((BigNumber)result[i], BigNumber(expect_res[i]));
@@ -317,13 +319,13 @@ TEST_F(IPCLTest, PTPlusPTInplace) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
     b_pt_vec.push_back(Plaintext(b_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
-  std::vector<Plaintext*> b_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
+  std::vector<Plaintext *> b_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   ValueVecToPtsVec(b_pt_vec, b_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
   auto b_pt_span = absl::MakeConstSpan(b_pt_pts.data(), vec_size);
-  
+
   evaluator_->AddInplace(a_pt_span, b_pt_span);
   for (size_t i = 0; i < vec_size; i++) {
     EXPECT_EQ((BigNumber)*a_pt_span[i], BigNumber(expect_res[i]));
@@ -342,23 +344,23 @@ TEST_F(IPCLTest, CTSubCT) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
     b_pt_vec.push_back(Plaintext(b_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
-  std::vector<Plaintext*> b_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
+  std::vector<Plaintext *> b_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   ValueVecToPtsVec(b_pt_vec, b_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
   auto b_pt_span = absl::MakeConstSpan(b_pt_pts.data(), vec_size);
   auto a_ct_vec = encryptor_->Encrypt(a_pt_span);
   auto b_ct_vec = encryptor_->Encrypt(b_pt_span);
-  std::vector<Ciphertext*> a_ct_pts;
-  std::vector<Ciphertext*> b_ct_pts;
+  std::vector<Ciphertext *> a_ct_pts;
+  std::vector<Ciphertext *> b_ct_pts;
   ValueVecToPtsVec(a_ct_vec, a_ct_pts);
   ValueVecToPtsVec(b_ct_vec, b_ct_pts);
   auto a_ct_span = absl::MakeConstSpan(a_ct_pts.data(), vec_size);
   auto b_ct_span = absl::MakeConstSpan(b_ct_pts.data(), vec_size);
   std::vector<Ciphertext> res_ct_vec = evaluator_->Sub(a_ct_span, b_ct_span);
 
-  std::vector<Ciphertext*> res_ct_pts;
+  std::vector<Ciphertext *> res_ct_pts;
   ValueVecToPtsVec(res_ct_vec, res_ct_pts);
   auto res_ct_span = absl::MakeConstSpan(res_ct_pts.data(), vec_size);
   std::vector<Plaintext> res_pt_vec = decryptor_->Decrypt(res_ct_span);
@@ -379,19 +381,19 @@ TEST_F(IPCLTest, CTSubPT) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
     b_pt_vec.push_back(Plaintext(b_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
-  std::vector<Plaintext*> b_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
+  std::vector<Plaintext *> b_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   ValueVecToPtsVec(b_pt_vec, b_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
   auto b_pt_span = absl::MakeConstSpan(b_pt_pts.data(), vec_size);
   auto a_ct_vec = encryptor_->Encrypt(a_pt_span);
 
-  std::vector<Ciphertext*> a_ct_pts;
+  std::vector<Ciphertext *> a_ct_pts;
   ValueVecToPtsVec(a_ct_vec, a_ct_pts);
   auto a_ct_span = absl::MakeConstSpan(a_ct_pts.data(), vec_size);
   std::vector<Ciphertext> res_ct_vec = evaluator_->Sub(a_ct_span, b_pt_span);
-  std::vector<Ciphertext*> res_ct_pts;
+  std::vector<Ciphertext *> res_ct_pts;
   ValueVecToPtsVec(res_ct_vec, res_ct_pts);
   auto res_ct_span = absl::MakeConstSpan(res_ct_pts.data(), vec_size);
   std::vector<Plaintext> res_pt_vec = decryptor_->Decrypt(res_ct_span);
@@ -412,19 +414,19 @@ TEST_F(IPCLTest, PTSubCT) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
     b_pt_vec.push_back(Plaintext(b_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
-  std::vector<Plaintext*> b_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
+  std::vector<Plaintext *> b_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   ValueVecToPtsVec(b_pt_vec, b_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
   auto b_pt_span = absl::MakeConstSpan(b_pt_pts.data(), vec_size);
   auto b_ct_vec = encryptor_->Encrypt(b_pt_span);
 
-  std::vector<Ciphertext*> b_ct_pts;
+  std::vector<Ciphertext *> b_ct_pts;
   ValueVecToPtsVec(b_ct_vec, b_ct_pts);
   auto b_ct_span = absl::MakeConstSpan(b_ct_pts.data(), vec_size);
   std::vector<Ciphertext> res_ct_vec = evaluator_->Sub(a_pt_span, b_ct_span);
-  std::vector<Ciphertext*> res_ct_pts;
+  std::vector<Ciphertext *> res_ct_pts;
   ValueVecToPtsVec(res_ct_vec, res_ct_pts);
   auto res_ct_span = absl::MakeConstSpan(res_ct_pts.data(), vec_size);
   std::vector<Plaintext> res_pt_vec = decryptor_->Decrypt(res_ct_span);
@@ -445,8 +447,8 @@ TEST_F(IPCLTest, PTSubPT) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
     b_pt_vec.push_back(Plaintext(b_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
-  std::vector<Plaintext*> b_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
+  std::vector<Plaintext *> b_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   ValueVecToPtsVec(b_pt_vec, b_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
@@ -471,16 +473,16 @@ TEST_F(IPCLTest, CTSubCTInplace) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
     b_pt_vec.push_back(Plaintext(b_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
-  std::vector<Plaintext*> b_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
+  std::vector<Plaintext *> b_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   ValueVecToPtsVec(b_pt_vec, b_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
   auto b_pt_span = absl::MakeConstSpan(b_pt_pts.data(), vec_size);
   auto a_ct_vec = encryptor_->Encrypt(a_pt_span);
   auto b_ct_vec = encryptor_->Encrypt(b_pt_span);
-  std::vector<Ciphertext*> a_ct_pts;
-  std::vector<Ciphertext*> b_ct_pts;
+  std::vector<Ciphertext *> a_ct_pts;
+  std::vector<Ciphertext *> b_ct_pts;
   ValueVecToPtsVec(a_ct_vec, a_ct_pts);
   ValueVecToPtsVec(b_ct_vec, b_ct_pts);
   auto a_ct_span = absl::MakeConstSpan(a_ct_pts.data(), vec_size);
@@ -506,21 +508,21 @@ TEST_F(IPCLTest, CTMultiplyPT) {
   for (size_t i = 0; i < b_vec.size(); i++) {
     b_pt_vec.push_back(Plaintext(b_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
-  std::vector<Plaintext*> b_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
+  std::vector<Plaintext *> b_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   ValueVecToPtsVec(b_pt_vec, b_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), a_vec.size());
   auto b_pt_span = absl::MakeConstSpan(b_pt_pts.data(), b_vec.size());
   auto a_ct_vec = encryptor_->Encrypt(a_pt_span);
 
-  std::vector<Ciphertext*> a_ct_pts;
+  std::vector<Ciphertext *> a_ct_pts;
   ValueVecToPtsVec(a_ct_vec, a_ct_pts);
   auto a_ct_span = absl::MakeConstSpan(a_ct_pts.data(), a_vec.size());
 
   std::vector<Ciphertext> res_ct_vec = evaluator_->Mul(a_ct_span, b_pt_span);
 
-  std::vector<Ciphertext*> res_ct_pts;
+  std::vector<Ciphertext *> res_ct_pts;
   ValueVecToPtsVec(res_ct_vec, res_ct_pts);
   auto res_ct_span = absl::MakeConstSpan(res_ct_pts.data(), res_ct_pts.size());
   std::vector<Plaintext> res_pt_vec = decryptor_->Decrypt(res_ct_span);
@@ -542,15 +544,15 @@ TEST_F(IPCLTest, CTMultiplyPTInplace) {
   for (size_t i = 0; i < b_vec.size(); i++) {
     b_pt_vec.push_back(Plaintext(b_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
-  std::vector<Plaintext*> b_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
+  std::vector<Plaintext *> b_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   ValueVecToPtsVec(b_pt_vec, b_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), a_pt_pts.size());
   auto b_pt_span = absl::MakeConstSpan(b_pt_pts.data(), b_pt_pts.size());
   auto a_ct_vec = encryptor_->Encrypt(a_pt_span);
 
-  std::vector<Ciphertext*> a_ct_pts;
+  std::vector<Ciphertext *> a_ct_pts;
   ValueVecToPtsVec(a_ct_vec, a_ct_pts);
   auto a_ct_span = absl::MakeConstSpan(a_ct_pts.data(), a_ct_pts.size());
 
@@ -574,21 +576,21 @@ TEST_F(IPCLTest, PTMultiplyCT) {
   for (size_t i = 0; i < b_vec.size(); i++) {
     b_pt_vec.push_back(Plaintext(b_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
-  std::vector<Plaintext*> b_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
+  std::vector<Plaintext *> b_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   ValueVecToPtsVec(b_pt_vec, b_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), a_vec.size());
   auto b_pt_span = absl::MakeConstSpan(b_pt_pts.data(), b_vec.size());
   auto b_ct_vec = encryptor_->Encrypt(b_pt_span);
 
-  std::vector<Ciphertext*> b_ct_pts;
+  std::vector<Ciphertext *> b_ct_pts;
   ValueVecToPtsVec(b_ct_vec, b_ct_pts);
   auto b_ct_span = absl::MakeConstSpan(b_ct_pts.data(), b_vec.size());
 
   std::vector<Ciphertext> res_ct_vec = evaluator_->Mul(a_pt_span, b_ct_span);
 
-  std::vector<Ciphertext*> res_ct_pts;
+  std::vector<Ciphertext *> res_ct_pts;
   ValueVecToPtsVec(res_ct_vec, res_ct_pts);
   auto res_ct_span = absl::MakeConstSpan(res_ct_pts.data(), res_ct_pts.size());
   std::vector<Plaintext> res_pt_vec = decryptor_->Decrypt(res_ct_span);
@@ -609,8 +611,8 @@ TEST_F(IPCLTest, PTMultiplyPT) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
     b_pt_vec.push_back(Plaintext(b_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
-  std::vector<Plaintext*> b_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
+  std::vector<Plaintext *> b_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   ValueVecToPtsVec(b_pt_vec, b_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
@@ -633,13 +635,13 @@ TEST_F(IPCLTest, PTMultiplyPTInplace) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
     b_pt_vec.push_back(Plaintext(b_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
-  std::vector<Plaintext*> b_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
+  std::vector<Plaintext *> b_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   ValueVecToPtsVec(b_pt_vec, b_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
   auto b_pt_span = absl::MakeConstSpan(b_pt_pts.data(), vec_size);
-  
+
   evaluator_->MulInplace(a_pt_span, b_pt_span);
   for (size_t i = 0; i < vec_size; i++) {
     EXPECT_EQ((BigNumber)*a_pt_span[i], BigNumber(expect_res[i]));
@@ -654,17 +656,17 @@ TEST_F(IPCLTest, Negate) {
   for (size_t i = 0; i < vec_size; i++) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
   auto a_ct_vec = encryptor_->Encrypt(a_pt_span);
-  std::vector<Ciphertext*> a_ct_pts;
+  std::vector<Ciphertext *> a_ct_pts;
   ValueVecToPtsVec(a_ct_vec, a_ct_pts);
   auto a_ct_span = absl::MakeConstSpan(a_ct_pts.data(), vec_size);
 
   std::vector<Ciphertext> res_ct_vec = evaluator_->Negate(a_ct_span);
 
-  std::vector<Ciphertext*> res_ct_pts;
+  std::vector<Ciphertext *> res_ct_pts;
   ValueVecToPtsVec(res_ct_vec, res_ct_pts);
   auto res_ct_span = absl::MakeConstSpan(res_ct_pts.data(), vec_size);
   std::vector<Plaintext> res_pt_vec = decryptor_->Decrypt(res_ct_span);
@@ -681,11 +683,11 @@ TEST_F(IPCLTest, NegateInplace) {
   for (size_t i = 0; i < vec_size; i++) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
   auto a_ct_vec = encryptor_->Encrypt(a_pt_span);
-  std::vector<Ciphertext*> a_ct_pts;
+  std::vector<Ciphertext *> a_ct_pts;
   ValueVecToPtsVec(a_ct_vec, a_ct_pts);
   auto a_ct_span = absl::MakeConstSpan(a_ct_pts.data(), vec_size);
 
@@ -705,11 +707,11 @@ TEST_F(IPCLTest, Randomize) {
   for (size_t i = 0; i < vec_size; i++) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
   auto a_ct_vec = encryptor_->Encrypt(a_pt_span);
-  std::vector<Ciphertext*> a_ct_pts;
+  std::vector<Ciphertext *> a_ct_pts;
   ValueVecToPtsVec(a_ct_vec, a_ct_pts);
   auto a_ct_span = absl::MakeConstSpan(a_ct_pts.data(), vec_size);
 
@@ -728,7 +730,7 @@ TEST_F(IPCLTest, CTSerializeDeserialize) {
   for (size_t i = 0; i < vec_size; i++) {
     a_pt_vec.push_back(Plaintext(a_vec[i]));
   }
-  std::vector<Plaintext*> a_pt_pts;
+  std::vector<Plaintext *> a_pt_pts;
   ValueVecToPtsVec(a_pt_vec, a_pt_pts);
   auto a_pt_span = absl::MakeConstSpan(a_pt_pts.data(), vec_size);
   auto a_ct_vec = encryptor_->Encrypt(a_pt_span);
@@ -748,4 +750,4 @@ int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
-}
+}  // namespace heu::lib::algorithms::paillier_ipcl::test

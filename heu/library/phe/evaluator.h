@@ -77,7 +77,7 @@ class Evaluator {
 
   SchemaType GetSchemaType() const;
 
-  protected:
+ protected:
   SchemaType schema_type_;
   EvaluatorType evaluator_ptr_;
 };

@@ -1,9 +1,12 @@
 // Copyright (C) 2021 Intel Corporation
 // SPDX-License-Identifier: Apache-2.0
 
-#include <string_view>
-#include "cereal/archives/portable_binary.hpp"
 #include "heu/library/algorithms/paillier_ipcl/ciphertext.h"
+
+#include <string_view>
+
+#include "cereal/archives/portable_binary.hpp"
+
 #include "heu/library/algorithms/paillier_ipcl/utils.h"
 
 namespace heu::lib::algorithms::paillier_ipcl {
@@ -11,7 +14,7 @@ namespace heu::lib::algorithms::paillier_ipcl {
 std::string Ciphertext::ToString() const {
   return paillier_ipcl::ToString(bn_);
 }
-  
+
 std::ostream &operator<<(std::ostream &os, const Ciphertext &c) {
   os << c.ToString();
   return os;

@@ -18,11 +18,8 @@
 
 #include "heu/library/algorithms/mock/mock.h"
 #include "heu/library/algorithms/paillier_float/paillier.h"
-#include "heu/library/algorithms/paillier_zahlen/paillier.h"
-
-#ifdef __x86_64__
 #include "heu/library/algorithms/paillier_ipcl/ipcl.h"
-#endif
+#include "heu/library/algorithms/paillier_zahlen/paillier.h"
 
 // [SPI: Please register your algorithm here] || progress: (1 of 5)
 // Do not forget to add your algo header file here
@@ -30,17 +27,22 @@
 
 namespace heu::lib::phe {
 
+#define ECHO_true(str) str,
+#define ECHO_false(str)
+#define ENUM_ELEMENT_HELPER(enable, name) ECHO_##enable(name)
+#define ENUM_ELEMENT(enable, name) ENUM_ELEMENT_HELPER(enable, name)
+
 // [SPI: Please register your algorithm here] || progress: (2 of 5)
 // If you add a new schema, change this !!
+// clang-format off
 enum class SchemaType {
-  Mock,       // Mock He
-  ZPaillier,  // Preferred
-  FPaillier,
-#ifdef __x86_64__
-  IPCL,
-#endif
-  // YOUR_ALGO,
+  ENUM_ELEMENT(true, Mock)  // Mock He
+  ENUM_ELEMENT(ENABLE_IPCL, IPCL)
+  ENUM_ELEMENT(true, ZPaillier)  // Preferred
+  ENUM_ELEMENT(true, FPaillier)
+  // YOUR_ALGO
 };
+// clang-format on
 
 // SchemaType <-> String
 // If you add a new schema, change schema <-> string map in schema.cc !!
@@ -55,39 +57,37 @@ std::string SchemaToString(SchemaType schema_type);
 std::vector<std::string> GetSchemaAliases(SchemaType schema_type);
 std::ostream& operator<<(std::ostream& os, SchemaType st);
 
+// Below are some helper macros
+#define INVOKE_true(func_or_macro, schema_ns, ...) \
+  , func_or_macro(schema_ns, ##__VA_ARGS__)
+#define INVOKE_false(func_or_macro, schema_ns, ...)
+
+#define INVOKE_HELPER(enable, func_or_macro, schema_ns, ...) \
+  INVOKE_##enable(func_or_macro, schema_ns, ##__VA_ARGS__)
+
+#define INVOKE(enable, func_or_macro, schema_ns, ...) \
+  INVOKE_HELPER(enable, func_or_macro, schema_ns, ##__VA_ARGS__)
+
 // [SPI: Please register your algorithm here] || progress: (3 of 5)
 // If you add a new schema, change this !!
 // HE_FOR_EACH must be in the same order as SchemaType
 // clang-format off
-#ifdef __x86_64__
-#define HE_FOR_EACH(invoke, ...)                              \
-  invoke(::heu::lib::algorithms::mock, ##__VA_ARGS__),        \
-  invoke(::heu::lib::algorithms::paillier_z, ##__VA_ARGS__),  \
-  invoke(::heu::lib::algorithms::paillier_f, ##__VA_ARGS__),  \
-  invoke(::heu::lib::algorithms::paillier_ipcl, ##__VA_ARGS__)
-#else
-#define HE_FOR_EACH(invoke, ...)                              \
-  invoke(::heu::lib::algorithms::mock, ##__VA_ARGS__),        \
-  invoke(::heu::lib::algorithms::paillier_z, ##__VA_ARGS__),  \
-  invoke(::heu::lib::algorithms::paillier_f, ##__VA_ARGS__)
-#endif
+#define HE_FOR_EACH(func_or_macro, ...)                             \
+  func_or_macro(::heu::lib::algorithms::mock, ##__VA_ARGS__)        \
+  INVOKE(ENABLE_IPCL, func_or_macro, ::heu::lib::algorithms::paillier_ipcl, ##__VA_ARGS__) \
+  INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_z, ##__VA_ARGS__)           \
+  INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_f, ##__VA_ARGS__)
 
 // [SPI: Please register your algorithm here] || progress: (4 of 5)
 // If you add a new schema, change this !!
 // If the Plaintext class is reused with other algorithms, there is no need to
 // repeat the registration here. For example, paillier_z and paillier_f both use
 // MPInt to store plaintext, so MPInt only appears once.
-#ifdef __x86_64__
-#define PLAINTEXT_FOR_EACH(invoke, ...)                                   \
-  invoke(::heu::lib::algorithms, MPInt, ##__VA_ARGS__),                   \
-  invoke(::heu::lib::algorithms::mock, Plaintext, ##__VA_ARGS__),         \
-  invoke(::heu::lib::algorithms::paillier_ipcl, Plaintext, ##__VA_ARGS__)
-#else
-#define PLAINTEXT_FOR_EACH(invoke, ...)                                   \
-  invoke(::heu::lib::algorithms, MPInt, ##__VA_ARGS__),                   \
-  invoke(::heu::lib::algorithms::mock, Plaintext, ##__VA_ARGS__)
-#endif
-  // invoke(::heu::lib::algorithms::your_algo, Plaintext, ##__VA_ARGS__)
+#define PLAINTEXT_FOR_EACH(func_or_macro, ...)                                   \
+  func_or_macro(::heu::lib::algorithms, MPInt, ##__VA_ARGS__)                    \
+  INVOKE(true, func_or_macro, ::heu::lib::algorithms::mock, Plaintext, ##__VA_ARGS__)                 \
+  INVOKE(ENABLE_IPCL, func_or_macro, ::heu::lib::algorithms::paillier_ipcl, Plaintext, ##__VA_ARGS__) \
+  // INVOKE(true, func_or_macro, ::heu::lib::algorithms::your_algo, Plaintext, ##__VA_ARGS__)
 // clang-format on
 
 #define HE_COMBINE_NS_TYPE(ns, type) ns::type

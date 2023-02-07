@@ -48,12 +48,13 @@ HEU 基本使用展示
 编码
 -----------------
 
-当前 HEU 提供了四种 ``Encoder``：
+当前 HEU 提供了五种 ``Encoder``：
 
 - ``phe.IntegerEncoder``: 编码 128bits 以内的整数
 - ``phe.FloatEncoder``: 编码双精度浮点数
 - ``phe.BigintEncoder``: 编码高精度整数，支持任意精度
-- ``phe.BatchEncoder``: 将两个原文（整数）编码到一个明文中
+- ``phe.BatchIntegerEncoder``: 将两个整数原文编码到一个明文中
+- ``phe.BatchFloatEncoder``: 将两个浮点数原文编码到一个明文中
 
 创建 Encoder 的方法（以``phe.IntegerEncoder``为例）
 
@@ -121,18 +122,18 @@ BigintEncoder
    print(encoder.decode(pt) == int64_max**10)  # True
 
 
-BatchEncoder
-^^^^^^^^^^^^^^^
+BatchIntegerEncoder 和 BatchFloatEncoder
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``phe.BatchEncoder`` 支持将两个原文（Cleartext，int64整数）打包加密到一个明文（Plaintext）中，实现 SIMD 功能。
+BatchIntegerEncoder 和 BatchFloatEncoder 是上述 IntegerEncoder、FloatEncoder 的 batch 版本，功能类似，但是 BatchEncoder 支持将两个原文（Cleartext，int64整数）打包加密到一个明文（Plaintext）中，实现 SIMD 功能。
 
 .. image:: _img/batch_encoding.png
    :scale: 30%
    :align: center
 
-.. warning:: ``phe.BatchEncoder`` 有数值大小上限，每个原文不大于 64 比特
+.. warning:: ``phe.BatchIntegerEncoder`` 有数值大小上限，每个原文不大于 64 比特
 
-.. caution:: BatchEncoder 并不完全兼容密态减法，仅当密文中所有元素都是正整数时才可以使用，如果您无法确定元素数值范围，应当避免使用密态减法。
+.. caution:: BatchIntegerEncoder、BatchFloatEncoder 并不完全兼容密态减法，仅当密文中所有元素都是正整数时才可以使用，如果您无法确定元素数值范围，应当避免使用密态减法。
 
 .. code-block:: python3
    :linenos:
@@ -144,7 +145,7 @@ BatchEncoder
    evaluator = kit.evaluator()
    decryptor = kit.decryptor()
 
-   bc = kit.batch_encoder()
+   bc = kit.batch_integer_encoder()
    pt1 = bc.encode(123, 456)
    pt2 = bc.encode(789, 101112)
 
@@ -157,6 +158,8 @@ BatchEncoder
    # which can only be used when all elements in ciphertext are positive integers.
    # output: (-666, -100656)
    print(bc.decode(decryptor.decrypt(evaluator.sub(ct1, ct2))))
+
+.. note:: BatchEncoder 当前一次仅支持打包2个原文，如果您有打包更多数字的需求，欢迎提 Issue 或者直接参与共建。
 
 
 持久化

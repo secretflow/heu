@@ -171,7 +171,8 @@ void PyBindNumpy(pybind11::module& m) {
   BindToNumpy<PyBigintDecoder>(pmatrix, py::arg("encoder") = PyBigintDecoder());
   BindToNumpy<PyIntegerEncoder>(pmatrix, py::arg("encoder"));
   BindToNumpy<PyFloatEncoder>(pmatrix, py::arg("encoder"));
-  BindToNumpy<PyBatchEncoder>(pmatrix, py::arg("encoder"));
+  BindToNumpy<PyBatchIntegerEncoder>(pmatrix, py::arg("encoder"));
+  BindToNumpy<PyBatchFloatEncoder>(pmatrix, py::arg("encoder"));
   pmatrix.def(
       "to_bytes",
       [](const hnp::PMatrix& pm, size_t bytes_per_int,
@@ -197,7 +198,8 @@ void PyBindNumpy(pybind11::module& m) {
   BindArrayForModule<PyBigintEncoder>(m);
   BindArrayForModule<PyIntegerEncoder>(m);
   BindArrayForModule<PyFloatEncoder>(m);
-  BindArrayForModule<PyBatchEncoder>(m);
+  BindArrayForModule<PyBatchIntegerEncoder>(m);
+  BindArrayForModule<PyBatchFloatEncoder>(m);
 
   // random generator
   py::class_<hnp::Random>(m, "random")
@@ -223,7 +225,10 @@ void PyBindNumpy(pybind11::module& m) {
       he_kit, py::arg("encoder_params") = PyBigintEncoderParams());
   BindArrayForClass<PyIntegerEncoderParams>(he_kit, py::arg("encoder_params"));
   BindArrayForClass<PyFloatEncoderParams>(he_kit, py::arg("encoder_params"));
-  BindArrayForClass<PyBatchEncoderParams>(he_kit, py::arg("encoder_params"));
+  BindArrayForClass<PyBatchIntegerEncoderParams>(he_kit,
+                                                 py::arg("encoder_params"));
+  BindArrayForClass<PyBatchFloatEncoderParams>(he_kit,
+                                               py::arg("encoder_params"));
 
   m.def(
       "setup",
@@ -257,7 +262,10 @@ void PyBindNumpy(pybind11::module& m) {
       dhe_kit, py::arg("encoder_params") = PyBigintEncoderParams());
   BindArrayForClass<PyIntegerEncoderParams>(dhe_kit, py::arg("encoder_params"));
   BindArrayForClass<PyFloatEncoderParams>(dhe_kit, py::arg("encoder_params"));
-  BindArrayForClass<PyBatchEncoderParams>(dhe_kit, py::arg("encoder_params"));
+  BindArrayForClass<PyBatchIntegerEncoderParams>(dhe_kit,
+                                                 py::arg("encoder_params"));
+  BindArrayForClass<PyBatchFloatEncoderParams>(dhe_kit,
+                                               py::arg("encoder_params"));
 
   m.def(
       "setup",

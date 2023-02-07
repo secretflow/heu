@@ -1,9 +1,11 @@
 // Copyright (C) 2021 Intel Corporation
 // SPDX-License-Identifier: Apache-2.0
 
-#include "ipcl/plaintext.hpp"
-#include "ipcl/ciphertext.hpp"
 #include "heu/library/algorithms/paillier_ipcl/vector_encryptor.h"
+
+#include "ipcl/ciphertext.hpp"
+#include "ipcl/plaintext.hpp"
+
 #include "heu/library/algorithms/paillier_ipcl/utils.h"
 
 namespace heu::lib::algorithms::paillier_ipcl {
@@ -25,7 +27,7 @@ std::vector<Ciphertext> Encryptor::Encrypt(ConstSpan<Plaintext> pts) const {
   std::vector<BigNumber> bn_vec;
   for (auto item : pts) {
     YACL_ENFORCE(Plaintext::Absolute(*item) < pt_bound_,
-          "Plaintext out of range");
+                 "Plaintext out of range");
     bn_vec.push_back(item->bn_);
   }
   ipcl::PlainText ipcl_pt(bn_vec);
@@ -38,8 +40,8 @@ std::vector<Ciphertext> Encryptor::Encrypt(ConstSpan<Plaintext> pts) const {
   return result;
 }
 
-std::pair<std::vector<Ciphertext>, std::vector<std::string>> Encryptor::EncryptWithAudit(
-    ConstSpan<Plaintext> pts) const {
+std::pair<std::vector<Ciphertext>, std::vector<std::string>>
+Encryptor::EncryptWithAudit(ConstSpan<Plaintext> pts) const {
   YACL_THROW("Not Implemented.");
 }
 }  // namespace heu::lib::algorithms::paillier_ipcl

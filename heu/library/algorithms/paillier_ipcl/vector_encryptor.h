@@ -4,6 +4,7 @@
 #pragma once
 
 #include "ipcl/pub_key.hpp"
+
 #include "heu/library/algorithms/paillier_ipcl/ciphertext.h"
 #include "heu/library/algorithms/paillier_ipcl/plaintext.h"
 #include "heu/library/algorithms/paillier_ipcl/public_key.h"
@@ -12,7 +13,7 @@
 namespace heu::lib::algorithms::paillier_ipcl {
 
 class Encryptor {
-public:
+ public:
   explicit Encryptor(const PublicKey& pk);
 
   std::vector<Ciphertext> EncryptZero(int64_t size) const;
@@ -20,7 +21,8 @@ public:
 
   std::pair<std::vector<Ciphertext>, std::vector<std::string>> EncryptWithAudit(
       ConstSpan<Plaintext> pts) const;
-private:
+
+ private:
   ipcl::PublicKey pk_;
   Plaintext pt_bound_;
 };

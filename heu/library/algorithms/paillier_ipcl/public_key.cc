@@ -1,15 +1,16 @@
 // Copyright (C) 2021 Intel Corporation
 // SPDX-License-Identifier: Apache-2.0
 
-#include "cereal/archives/portable_binary.hpp"
 #include "heu/library/algorithms/paillier_ipcl/public_key.h"
+
+#include "cereal/archives/portable_binary.hpp"
 
 namespace heu::lib::algorithms::paillier_ipcl {
 
 bool PublicKey::operator==(const PublicKey &other) const {
-  return ipcl_pubkey_.getN() == other.ipcl_pubkey_.getN()
-         && ipcl_pubkey_.getG() == other.ipcl_pubkey_.getG()
-         && ipcl_pubkey_.getHS() == other.ipcl_pubkey_.getHS();
+  return ipcl_pubkey_.getN() == other.ipcl_pubkey_.getN() &&
+         ipcl_pubkey_.getG() == other.ipcl_pubkey_.getG() &&
+         ipcl_pubkey_.getHS() == other.ipcl_pubkey_.getHS();
 }
 
 bool PublicKey::operator!=(const PublicKey &other) const {
@@ -22,9 +23,9 @@ std::string PublicKey::ToString() const {
   ipcl_pubkey_.getN()->num2hex(n);
   ipcl_pubkey_.getHS().num2hex(hs);
   return fmt::format(
-    "IPCL public key: n={}[{}bits], h_s={}, max_plaintext={}[~{}bits]",
-    n, ipcl_pubkey_.getN()->BitSize(), hs,
-    PlaintextBound().ToHexString(), PlaintextBound().BitCount());
+      "IPCL public key: n={}[{}bits], h_s={}, max_plaintext={}[~{}bits]", n,
+      ipcl_pubkey_.getN()->BitSize(), hs, PlaintextBound().ToHexString(),
+      PlaintextBound().BitCount());
 }
 
 yacl::Buffer PublicKey::Serialize() const {

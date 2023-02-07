@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-21 20:05+0800\n"
+"POT-Creation-Date: 2023-02-02 10:16+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -456,28 +456,42 @@ msgid ""
 msgstr ""
 "Please follow the instructions in files to register your algorithm. The "
 "position marked with ``[SPI: Please register your algorithm here]`` is "
-"the place that needs to be updated. There are 5 places in total, four"
-" in ``schema.h``, and one in ``schema.cc``."
+"the place that needs to be updated. There are 5 places in total, four in "
+"``schema.h``, and one in ``schema.cc``."
 
-#: ../../development/phe_dev.rst:241
-msgid "代码文件修改完之后，还需要在 ``schema`` 对应的 ``BUILD.bazel`` 中添加您的算法。"
-msgstr "After modifying the code file, you also need to add your algorithm in ``BUILD.bazel`` corresponding to ``schema`` file."
-
-#: ../../development/phe_dev.rst:243
-msgid "算法注册后，也请同步更新 CHANGELOGS 文件："
-msgstr "After the algorithm is registered, please also update the CHANGELOGS file as well:"
-
-#: ../../development/phe_dev.rst:245
-msgid ""
-"`heu/CHANGELOGS.md "
-"<https://github.com/secretflow/heu/blob/main/CHANGELOGS.md>`_"
+#: ../../development/phe_dev.rst:242
+msgid "条件编译（可选）"
 msgstr ""
 
-#: ../../development/phe_dev.rst:249
+#: ../../development/phe_dev.rst:244
+msgid ""
+"我们鼓励开发者编写可移植性强，平台依赖低的代码，以便您的算法可以被不同平台的用户所使用。一般而言，隐语至少要求算法支持 "
+"Linux、Mac（Intel）、Mac（arm）三个平台，但是对于某些涉及硬件加速的算法支持全平台确实存在困难，则可以考虑条件编译。"
+msgstr ""
+
+#: ../../development/phe_dev.rst:246
+msgid "条件编译支持在编译时完全剥除您的算法，仅在支持的平台上包含您的算法，避免因为一个算法的加入导致整个 HEU 在某个平台上编译失败。"
+msgstr ""
+
+#: ../../development/phe_dev.rst:248
+msgid "条件编译的步骤为："
+msgstr ""
+
+#: ../../development/phe_dev.rst:250
+msgid ""
+"在算法的入口头文件中定义 ``ENABLE_YOUR_ALGO`` 宏，例如 `ipcl.h "
+"<https://github.com/secretflow/heu/blob/main/heu/library/algorithms/paillier_ipcl/ipcl.h>`_"
+msgstr ""
+
+#: ../../development/phe_dev.rst:251
+msgid "在 schema.h/cc 注册算法时引用 ``ENABLE_YOUR_ALGO`` 宏，即不要写死 true，这一步也可以参考 IPCL 的做法"
+msgstr ""
+
+#: ../../development/phe_dev.rst:255
 msgid "测试和使用"
 msgstr "Test and use"
 
-#: ../../development/phe_dev.rst:251
+#: ../../development/phe_dev.rst:257
 msgid ""
 "算法开发完毕后，您还需要编写一个编译脚本，HEU 使用的是 bazel 编译系统，您需要在算法同级目录 "
 "``heu/library/algorithms/your_algo/`` 下放置一个 ``BUILD.bazel`` 文件。"
@@ -487,7 +501,7 @@ msgstr ""
 "``BUILD.bazel`` file in the same level directory of the algorithm, namely"
 " ``heu/library/algorithms/your_algo/``."
 
-#: ../../development/phe_dev.rst:253
+#: ../../development/phe_dev.rst:259
 msgid ""
 "``BUILD.bazel`` 文件的写法可以参考 `此处 "
 "<https://github.com/secretflow/heu/blob/main/heu/library/algorithms/mock/BUILD.bazel>`_"
@@ -495,21 +509,35 @@ msgstr ""
 "The syntax of ``BUILD.bazel`` can refer to `here "
 "<https://github.com/secretflow/heu/blob/main/heu/library/algorithms/mock/BUILD.bazel>`_"
 
-#: ../../development/phe_dev.rst:254
+#: ../../development/phe_dev.rst:260
 msgid "更多 Bazel 教程可以参考 `Bazel 官方文档 <bazel.build>`_"
 msgstr ""
 "For more Bazel tutorials, please refer to `Bazel official documentation "
 "<bazel.build>`_"
 
-#: ../../development/phe_dev.rst:258
+#: ../../development/phe_dev.rst:262
+msgid "Bazel 脚本编写完成后，请把您的算法作为依赖项加入到 ``schema.h/cc`` 对应的 ``BUILD.bazel`` 文件中。"
+msgstr ""
+
+#: ../../development/phe_dev.rst:264
+msgid "您可以通过以下命令测试编译是否通过："
+msgstr ""
+
+#: ../../development/phe_dev.rst:270
+msgid ""
+"所有代码开发完成后，请立即更新 `CHANGELOGS "
+"<https://github.com/secretflow/heu/blob/main/CHANGELOGS.md>`_ 文件。"
+msgstr ""
+
+#: ../../development/phe_dev.rst:274
 msgid "单元测试"
 msgstr "Unit test"
 
-#: ../../development/phe_dev.rst:261
+#: ../../development/phe_dev.rst:277
 msgid "编写自己的单测（可选）"
 msgstr "Develop your own unit tests (optional)"
 
-#: ../../development/phe_dev.rst:263
+#: ../../development/phe_dev.rst:279
 msgid ""
 "HEU 单元测试使用 `GoogleTest <github.com/google/googletest>`_ 框架，有关 GoogleTest "
 "的用法请查阅 `GoogleTest 官方文档 <google.github.io/googletest/>`_"
@@ -519,57 +547,76 @@ msgstr ""
 "please refer to `GoogleTest official documentation "
 "<google.github.io/googletest/>`_."
 
-#: ../../development/phe_dev.rst:265
+#: ../../development/phe_dev.rst:281
 msgid "单元测试编写完毕后，您可以使用以下命令运行单元测试："
 msgstr "Once the unit tests are developed, you can run the unit tests with:"
 
-#: ../../development/phe_dev.rst:273
+#: ../../development/phe_dev.rst:289
 msgid "运行已有单测（必须）"
 msgstr "Run existing unit tests (required)"
 
-#: ../../development/phe_dev.rst:275
+#: ../../development/phe_dev.rst:291
 msgid "即使您没有编写任何单测，HEU 也会自动测试您的算法，单测请在 Python 3.8 环境下执行，请执行以下命令测试整个 HEU："
 msgstr ""
 "HEU will automatically test your algorithm even if you haven't written "
 "any unit tests. Please set up a Python 3.8 environment and execute the "
 "following command to test entire HEU:"
 
-#: ../../development/phe_dev.rst:283
+#: ../../development/phe_dev.rst:299
 msgid "性能测试"
 msgstr "Benchmark"
 
-#: ../../development/phe_dev.rst:285
+#: ../../development/phe_dev.rst:301
 msgid "以下命令可以对您的算法做性能测试："
 msgstr "You can benchmark your algorithm with the following command:"
 
-#: ../../development/phe_dev.rst:297
+#: ../../development/phe_dev.rst:313
 msgid "如果不加 ``--schema`` 参数，则默认运行所有算法的性能测试，以便您与其它算法对比性能："
 msgstr ""
 "If the ``--schema`` parameter is not added, all algorithms will be "
 "benchmarked by default, so that you can compare performance with other "
 "algorithms:"
 
-#: ../../development/phe_dev.rst:307
+#: ../../development/phe_dev.rst:323
 msgid "算法应用"
 msgstr "Application"
 
-#: ../../development/phe_dev.rst:309
+#: ../../development/phe_dev.rst:325
 msgid "单元测试通过后，请执行以下命令编译、安装 Pip 包，以便在 Python 环境中使用您的新算法："
 msgstr ""
 "After the unit tests are passed, execute the following commands to "
 "compile and install the HEU pip package so that your new algorithm can be"
 " used:"
 
-#: ../../development/phe_dev.rst:318
+#: ../../development/phe_dev.rst:334
 msgid "基本使用："
 msgstr "Basic usage:"
 
-#: ../../development/phe_dev.rst:330
+#: ../../development/phe_dev.rst:346
 msgid "祝贺"
 msgstr "Congratulation"
 
-#: ../../development/phe_dev.rst:332
+#: ../../development/phe_dev.rst:348
 msgid ""
 "如果一切顺利的话，此时您的算法已经可以在隐语中使用了，并且隐语上层所有基于 PHE 的应用都可以无缝切换到您的算法上，例如 WOE、HESS-"
 "LR、SecureBoost 等等，相信这些上层应用一定可以从您的算法中获益，感谢您对隐语做出的贡献。"
-msgstr "Goog work! Your algorithm can be used in Secretflow now. And all PHE-based applications of Secretflow can seamlessly switch to your algorithm, such as WOE, HESS-LR, SecureBoost and so on. We believe these applications can definitely benefit from your algorithm, thank you for your contribution."
+msgstr ""
+"Goog work! Your algorithm can be used in Secretflow now. And all PHE-"
+"based applications of Secretflow can seamlessly switch to your algorithm,"
+" such as WOE, HESS-LR, SecureBoost and so on. We believe these "
+"applications can definitely benefit from your algorithm, thank you for "
+"your contribution."
+
+#~ msgid "代码文件修改完之后，还需要在 ``schema`` 对应的 ``BUILD.bazel`` 中添加您的算法。"
+#~ msgstr ""
+#~ "After modifying the code file, you "
+#~ "also need to add your algorithm in"
+#~ " ``BUILD.bazel`` corresponding to ``schema`` "
+#~ "file."
+
+#~ msgid ""
+#~ "算法注册后，也请同步更新 `CHANGELOGS "
+#~ "<https://github.com/secretflow/heu/blob/main/CHANGELOGS.md>`_ "
+#~ "文件。"
+#~ msgstr ""
+

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-09 18:58+0800\n"
+"POT-Creation-Date: 2023-02-01 21:05+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -334,6 +334,14 @@ msgstr ""
 msgid "FPaillier"
 msgstr ""
 
+#: ../../docstring heu.phe.SchemaType:9 of
+msgid "OU"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.parse_schema_type:1 of
+msgid "Parse schema string. (string -> SchemaType)"
+msgstr ""
+
 #: ../../docstring heu.phe.PyCapsule.setup:3 of
 msgid ""
 "setup(schema_type: heu.phe.SchemaType = <SchemaType.ZPaillier: 1>, "
@@ -361,4 +369,3 @@ msgstr ""
 #: ../../docstring heu.phe.PyCapsule.setup:13 of
 msgid "Setup phe environment by an already generated public key"
 msgstr ""
-

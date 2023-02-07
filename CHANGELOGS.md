@@ -10,13 +10,16 @@
 
 > please add your unreleased change here.
 
+- [Break change] Split BatchEncoder into BatchIntegerEncoder and
+  BatchFloatEncoder. Please see upgrade guide doc for details.
+
 ## [0.3.2]
 
 - [Optimize] MPInt serialize is 81x faster and deserialize is 53x faster.
 - [Feature] Add benchmark for numpy api
 - [Feature/experimental] Add a new PHE algorithm implementation - IPCL. IPCL has
-  very good performance on Intel AVX512-IFMA cpu instruction set and/or Intel QAT
-  accelerator
+  very good performance on Intel AVX512-IFMA cpu instruction set and/or Intel
+  QAT accelerator
 
 ## [0.3.1]
 

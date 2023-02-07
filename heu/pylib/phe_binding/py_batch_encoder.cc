@@ -18,52 +18,88 @@ namespace heu::pylib {
 
 using lib::phe::Plaintext;
 
-yacl::Buffer PyBatchEncoder::Serialize() const { return encoder_.Serialize(); }
-
-PyBatchEncoder PyBatchEncoder::LoadFrom(yacl::ByteContainerView buf) {
-  return PyBatchEncoder(lib::phe::BatchEncoder::LoadFrom(buf));
+std::string PyBatchIntegerEncoderParams::ToString() const {
+  return fmt::format("BatchIntegerEncoderParams(scale={}, padding_bits={})",
+                     scale, padding_bits);
 }
-
-std::string PyBatchEncoder::ToString() const { return encoder_.ToString(); }
-
-std::string PyBatchEncoderParams::ToString() const {
-  return fmt::format("BatchEncoderParams(padding_size={})", padding_size);
+std::string PyBatchFloatEncoderParams::ToString() const {
+  return fmt::format("BatchFloatEncoderParams(scale={}, padding_bits={})",
+                     scale, padding_bits);
 }
 
 void BindPyBatchEncoder(pybind11::module &m) {
   namespace py = ::pybind11;
 
-  py::class_<PyBatchEncoderParams>(m, "BatchEncoderParams")
-      .def(py::init<size_t>(), py::arg("padding_size") = 32,
-           "parameters for BigintEncoder")
-      .def("__str__", &PyBatchEncoderParams::ToString)
-      .def("__repr__", &PyBatchEncoderParams::ToString)
-      .def(PyUtils::PickleSupport<PyBatchEncoderParams>())
-      .def("instance", &PyBatchEncoderParams::Instance,
-           "Create BatchEncoder instance");
+  py::class_<PyBatchIntegerEncoderParams>(m, "BatchIntegerEncoderParams")
+      .def(py::init<size_t, size_t>(), py::arg("scale") = 1,
+           py::arg("padding_bits") = 32, "Init BatchIntegerEncoderParams")
+      .def("__str__", &PyBatchIntegerEncoderParams::ToString)
+      .def("__repr__", &PyBatchIntegerEncoderParams::ToString)
+      .def(PyUtils::PickleSupport<PyBatchIntegerEncoderParams>())
+      .def("instance", &PyBatchIntegerEncoderParams::Instance,
+           py::arg("schema"), "Create BatchIntegerEncoder instance")
+      .doc() = "Store parameters for BatchIntegerEncoder";
 
-  py::class_<PyBatchEncoder>(m, "BatchEncoder")
-      .def(py::init<lib::phe::SchemaType, size_t>(), py::arg("schema"),
-           py::arg("padding_size") = 32)
-      .def("__str__", &PyBatchEncoder::ToString)
-      .def("__repr__",
-           [](const PyBatchEncoder &bn) {
-             return fmt::format("BatchEncoder(schema={}, padding_size={})",
-                                bn.GetSchema(), bn.GetPaddingSize());
-           })
-      .def(PyUtils::PickleSupport<PyBatchEncoder>())
-      .def("encode", &PyBatchEncoder::Encode<int64_t>, py::arg("cleartext_1"),
-           py::arg("cleartext_2"),
-           "Batch encode two cleartexts into one plaintext")
+  py::class_<PyBatchFloatEncoderParams>(m, "BatchFloatEncoderParams")
+      .def(py::init<size_t, size_t>(), py::arg("scale") = (int64_t)1e6,
+           py::arg("padding_bits") = 32, "Init PyBatchFloatEncoderParams")
+      .def("__str__", &PyBatchFloatEncoderParams::ToString)
+      .def("__repr__", &PyBatchFloatEncoderParams::ToString)
+      .def(PyUtils::PickleSupport<PyBatchFloatEncoderParams>())
+      .def("instance", &PyBatchFloatEncoderParams::Instance, py::arg("schema"),
+           "Create BatchFloatEncoder instance")
+      .doc() = "Store parameters for BatchFloatEncoder";
+
+  py::class_<PyBatchIntegerEncoder>(m, "BatchIntegerEncoder")
+      .def(py::init<lib::phe::SchemaType, int64_t, size_t>(), py::arg("schema"),
+           py::arg("scale") = 1, py::arg("padding_bits") = 32)
+      .def("__str__", &PyBatchIntegerEncoder::ToString)
+      .def("__repr__", &PyBatchIntegerEncoder::ToString)
+      .def(PyUtils::PickleSupport<PyBatchIntegerEncoder>())
+      .def(
+          "encode",
+          [](const PyBatchIntegerEncoder &bn, int64_t i1, int64_t i2) {
+            return bn.Encode(i1, i2);
+          },
+          py::arg("cleartext_1"), py::arg("cleartext_2"),
+          "Encode two int64 cleartexts into one plaintext")
       .def(
           "decode",
-          [](const PyBatchEncoder &bn, const lib::phe::Plaintext &mp) {
+          [](const PyBatchIntegerEncoder &bn, const lib::phe::Plaintext &mp) {
+            return py::make_tuple(bn.Decode<0>(mp), bn.Decode<1>(mp));
+          },
+          py::arg("plaintext"), "Decode plaintext and return two cleartexts")
+      .doc() = "BatchIntegerEncoder can encode two integers into one plaintext";
+
+  py::class_<PyBatchFloatEncoder>(m, "BatchFloatEncoder")
+      .def(py::init<lib::phe::SchemaType, int64_t, size_t>(), py::arg("schema"),
+           py::arg("scale") = (int64_t)1e6, py::arg("padding_bits") = 32,
+           "Create a BatchFloatEncoder\n\nArgs:\n"
+           "  scale (int): Homomorphic encryption only supports integers "
+           "internally, so floating-point numbers will be converted to "
+           "integers by multiplied a scale. Please note that the encoded "
+           "number cannot exceed 64 bits, otherwise it will overflow.\n"
+           "  padding_bits (int): The gap between two numbers, if the gap is "
+           "too small, the low bit number will pollute the high bit number, "
+           "resulting in wrong results.")
+      .def("__str__", &PyBatchFloatEncoder::ToString)
+      .def("__repr__", &PyBatchFloatEncoder::ToString)
+      .def(PyUtils::PickleSupport<PyBatchFloatEncoder>())
+      .def(
+          "encode",
+          [](const PyBatchFloatEncoder &bn, double f1, double f2) {
+            return bn.Encode(f1, f2);
+          },
+          py::arg("cleartext_1"), py::arg("cleartext_2"),
+          "Batch encode two cleartexts into one plaintext")
+      .def(
+          "decode",
+          [](const PyBatchFloatEncoder &bn, const lib::phe::Plaintext &mp) {
             return py::make_tuple(bn.Decode<0>(mp), bn.Decode<1>(mp));
           },
           py::arg("plaintext"), "Decode plaintext and return two cleartexts")
       .doc() =
-      "Encode two cleartexts into one plaintext.\n\n"
-      "Cleartexts must be integers and cannot exceed 64bit.";
+      "BatchFloatEncoder can encode two floating number into one plaintext";
 }
 
 }  // namespace heu::pylib

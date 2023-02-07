@@ -93,7 +93,7 @@ I/O
    # [[0 1 2 3 4]
    #  [5 6 7 8 9]]
 
-.. note:: **phe.IntegerEncoder**、**phe.FloatEncoder**、**phe.BatchEncoder** 默认并行编码原文矩阵，而 **phe.BigintEncoder** 受限于全局解释器锁（GIL）的存在尚不支持并行编码。
+.. note:: **phe.IntegerEncoder**、**phe.FloatEncoder**、**phe.BatchIntegerEncoder** 和 **phe.BatchFloatEncoder** 默认并行编码原文矩阵，而 **phe.BigintEncoder** 受限于全局解释器锁（GIL）的存在尚不支持并行编码。
 
 .. tip:: **phe.IntegerEncoder**、**phe.FloatEncoder** 本质上就是把原始数据乘了一个 scale，如果我自己把原文乘上一个 scale 再转换成 hnp.PlaintextArray 行吗？
 

@@ -9,11 +9,11 @@ filegroup(
 
 cmake(
     name = "fmtlib",
+    build_args = ["-j"],
     cache_entries = {
         "FMT_TEST": "OFF",
     },
     defines = ["FMT_HEADER_ONLY"],
     lib_source = ":all_srcs",
     out_headers_only = True,
-    build_args = ["-j"]
 )

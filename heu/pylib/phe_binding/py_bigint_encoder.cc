@@ -47,7 +47,7 @@ void BindPyBigintEncoder(pybind11::module &m) {
       .def("__str__", &PyBigintEncoderParams::ToString)
       .def("__repr__", &PyBigintEncoderParams::ToString)
       .def(PyUtils::PickleSupport<PyBigintEncoderParams>())
-      .def("instance", &PyBigintEncoderParams::Instance,
+      .def("instance", &PyBigintEncoderParams::Instance, py::arg("schema"),
            "Create BigintEncoder instance");
 
   // PyBigintDecoder does not depend on the schema_type parameter, so sometimes
