@@ -105,13 +105,13 @@ def _com_github_intel_ipcl():
     maybe(
         new_git_repository,
         name = "com_github_intel_ipcl",
-        commit = "8ed98584692a41ff2bacb7c9ef770b1e3ba3c2fa",   # tag v2.0.0
+        commit = "8ed98584692a41ff2bacb7c9ef770b1e3ba3c2fa",  # tag v2.0.0
         patch_args = ["-p1"],
         patches = [
             "@com_alipay_sf_heu//third_party/bazel_cpp:patches/ipcl.patch",
         ],
         remote = "https://github.com/intel/pailliercryptolib.git",
-        build_file ="@com_alipay_sf_heu//third_party/bazel_cpp:ipcl.BUILD",
+        build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:ipcl.BUILD",
     )
 
 def _com_github_uscilab_cereal():
@@ -120,5 +120,5 @@ def _com_github_uscilab_cereal():
         name = "com_github_uscilab_cereal",
         commit = "ebef1e929807629befafbb2918ea1a08c7194554",  # cereal - v1.3.2
         remote = "https://github.com/USCiLab/cereal.git",
-        build_file ="@com_alipay_sf_heu//third_party/bazel_cpp:cereal.BUILD",
+        build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:cereal.BUILD",
     )

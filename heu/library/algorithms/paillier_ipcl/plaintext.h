@@ -3,9 +3,10 @@
 
 #pragma once
 
-#include "yacl/base/byte_container_view.h"
-#include "heu/library/algorithms/util/spi_traits.h"
 #include "ipcl/bignum.h"
+#include "yacl/base/byte_container_view.h"
+
+#include "heu/library/algorithms/util/spi_traits.h"
 
 namespace heu::lib::algorithms::paillier_ipcl {
 
@@ -14,7 +15,7 @@ class Plaintext {
   explicit Plaintext() = default;
 
   template <typename T>
-  explicit Plaintext(T& value) {
+  explicit Plaintext(T &value) {
     Set(value);
   }
 
@@ -47,17 +48,11 @@ class Plaintext {
   Plaintext operator-() const;
   void NegInplace();
 
-  inline bool IsNegative() const {
-    return bn_ < BigNumber::Zero();
-  };
+  inline bool IsNegative() const { return bn_ < BigNumber::Zero(); };
 
-  inline bool IsZero() const {
-    return bn_ == BigNumber::Zero();
-  }
+  inline bool IsZero() const { return bn_ == BigNumber::Zero(); }
 
-  inline bool IsPositive() const {
-    return bn_ > BigNumber::Zero();
-  }
+  inline bool IsPositive() const { return bn_ > BigNumber::Zero(); }
 
   Plaintext operator+(const Plaintext &op2) const;
   Plaintext operator-(const Plaintext &op2) const;
@@ -92,11 +87,9 @@ class Plaintext {
   static void RandomExactBits(size_t bit_size, Plaintext *r);
   static void RandomLtN(const Plaintext &n, Plaintext *r);
 
-  static Plaintext Absolute(const Plaintext& pt);
+  static Plaintext Absolute(const Plaintext &pt);
 
-  operator BigNumber() {
-    return bn_;
-  }
+  operator BigNumber() { return bn_; }
   BigNumber bn_;
 };
 

@@ -14,6 +14,7 @@
 
 #include "heu/library/phe/base/schema.h"
 
+#include "fmt/ranges.h"
 #include "gtest/gtest.h"
 
 #include "heu/library/phe/base/serializable_types.h"
@@ -63,7 +64,9 @@ TEST_F(SchemaTest, AliasesUnique) {
   for (const auto& schema : GetAllSchema()) {
     for (const auto& alias : GetSchemaAliases(schema)) {
       ++count;
-      ASSERT_TRUE(alias_set.count(alias) == 0);
+      ASSERT_TRUE(alias_set.count(alias) == 0)
+          << fmt::format("all schema: {}, alias_set: {}, dup={}",
+                         GetAllSchema(), alias_set, alias);
       alias_set.insert(alias);
     }
   }

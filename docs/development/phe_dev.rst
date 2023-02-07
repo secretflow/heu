@@ -238,11 +238,17 @@ HEU Dispatcher 会在函数级别探测算法实现了哪些 SPI，因此在同�
 
 请依照文件中注释的引导注册您的算法，有 ``[SPI: Please register your algorithm here]`` 标记的位置就是需要修改的地方，总共有5处，其中 ``schema.h`` 有4处需要修改，``schema.cc`` 有1处需要修改。
 
-代码文件修改完之后，还需要在 ``schema`` 对应的 ``BUILD.bazel`` 中添加您的算法。
+条件编译（可选）
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-算法注册后，也请同步更新 CHANGELOGS 文件：
+我们鼓励开发者编写可移植性强，平台依赖低的代码，以便您的算法可以被不同平台的用户所使用。一般而言，隐语至少要求算法支持 Linux、Mac（Intel）、Mac（arm）三个平台，但是对于某些涉及硬件加速的算法支持全平台确实存在困难，则可以考虑条件编译。
 
-- `heu/CHANGELOGS.md <https://github.com/secretflow/heu/blob/main/CHANGELOGS.md>`_
+条件编译支持在编译时完全剥除您的算法，仅在支持的平台上包含您的算法，避免因为一个算法的加入导致整个 HEU 在某个平台上编译失败。
+
+条件编译的步骤为：
+
+#. 在算法的入口头文件中定义 ``ENABLE_YOUR_ALGO`` 宏，例如 `ipcl.h <https://github.com/secretflow/heu/blob/main/heu/library/algorithms/paillier_ipcl/ipcl.h>`_
+#. 在 schema.h/cc 注册算法时引用 ``ENABLE_YOUR_ALGO`` 宏，即不要写死 true，这一步也可以参考 IPCL 的做法
 
 
 测试和使用
@@ -252,6 +258,16 @@ HEU Dispatcher 会在函数级别探测算法实现了哪些 SPI，因此在同�
 
 - ``BUILD.bazel`` 文件的写法可以参考 `此处 <https://github.com/secretflow/heu/blob/main/heu/library/algorithms/mock/BUILD.bazel>`_
 - 更多 Bazel 教程可以参考 `Bazel 官方文档 <bazel.build>`_
+
+Bazel 脚本编写完成后，请把您的算法作为依赖项加入到 ``schema.h/cc`` 对应的 ``BUILD.bazel`` 文件中。
+
+您可以通过以下命令测试编译是否通过：
+
+.. code-block:: shell
+
+   bazel test --verbose_failures heu/library/...
+
+.. note:: 所有代码开发完成后，请立即更新 `CHANGELOGS <https://github.com/secretflow/heu/blob/main/CHANGELOGS.md>`_ 文件。
 
 
 单元测试

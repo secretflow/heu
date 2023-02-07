@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-07 18:53+0800\n"
+"POT-Creation-Date: 2023-02-01 21:05+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -88,8 +88,8 @@ msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.array:3 of
 msgid ""
-"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, encoder: "
-"heu.phe.BigintEncoderParams = BigintEncoderParams()) -> "
+"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, "
+"encoder_params: heu.phe.BigintEncoderParams = BigintEncoderParams()) -> "
 "heu.numpy.PlaintextArray"
 msgstr ""
 
@@ -99,7 +99,7 @@ msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.array:7 of
 msgid ""
-"array(self: heu.phe.HeKitPublicBase, object: object, encoder: "
+"array(self: heu.phe.HeKitPublicBase, object: object, encoder_params: "
 "heu.phe.BigintEncoderParams = BigintEncoderParams()) -> "
 "heu.numpy.PlaintextArray"
 msgstr ""
@@ -111,61 +111,157 @@ msgstr ""
 #: ../../docstring heu.numpy.PyCapsule.array:11 of
 msgid ""
 "array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, encoder: "
-"heu.phe.IntegerEncoderParams) -> heu.numpy.PlaintextArray"
+"heu.phe.BigintEncoder) -> heu.numpy.PlaintextArray"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.array:13 of
-msgid "Create and encode an array using heu::pylib::PyIntegerEncoderParams"
+msgid ""
+"Create and encode an array using heu::pylib::PyBigintEncoder, same with "
+"hnp.array()"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.array:15 of
 msgid ""
 "array(self: heu.phe.HeKitPublicBase, object: object, encoder: "
-"heu.phe.IntegerEncoderParams) -> heu.numpy.PlaintextArray"
+"heu.phe.BigintEncoder) -> heu.numpy.PlaintextArray"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.array:17 of
-msgid "Encode a numpy ndarray using heu::pylib::PyIntegerEncoderParams"
+msgid ""
+"Encode a numpy ndarray using heu::pylib::PyBigintEncoder, same with "
+"hnp.array()"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.array:19 of
 msgid ""
-"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, encoder: "
-"heu.phe.FloatEncoderParams) -> heu.numpy.PlaintextArray"
+"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, "
+"encoder_params: heu.phe.IntegerEncoderParams) -> heu.numpy.PlaintextArray"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.array:21 of
-msgid "Create and encode an array using heu::pylib::PyFloatEncoderParams"
+msgid "Create and encode an array using heu::pylib::PyIntegerEncoderParams"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.array:23 of
 msgid ""
-"array(self: heu.phe.HeKitPublicBase, object: object, encoder: "
-"heu.phe.FloatEncoderParams) -> heu.numpy.PlaintextArray"
+"array(self: heu.phe.HeKitPublicBase, object: object, encoder_params: "
+"heu.phe.IntegerEncoderParams) -> heu.numpy.PlaintextArray"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.array:25 of
-msgid "Encode a numpy ndarray using heu::pylib::PyFloatEncoderParams"
+msgid "Encode a numpy ndarray using heu::pylib::PyIntegerEncoderParams"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.array:27 of
 msgid ""
 "array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, encoder: "
-"heu.phe.BatchEncoderParams) -> heu.numpy.PlaintextArray"
+"heu.phe.IntegerEncoder) -> heu.numpy.PlaintextArray"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.array:29 of
-msgid "Create and encode an array using heu::pylib::PyBatchEncoderParams"
+msgid ""
+"Create and encode an array using heu::pylib::PyIntegerEncoder, same with "
+"hnp.array()"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.array:31 of
 msgid ""
 "array(self: heu.phe.HeKitPublicBase, object: object, encoder: "
-"heu.phe.BatchEncoderParams) -> heu.numpy.PlaintextArray"
+"heu.phe.IntegerEncoder) -> heu.numpy.PlaintextArray"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.array:33 of
+msgid ""
+"Encode a numpy ndarray using heu::pylib::PyIntegerEncoder, same with "
+"hnp.array()"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:35 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, "
+"encoder_params: heu.phe.FloatEncoderParams) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:37 of
+msgid "Create and encode an array using heu::pylib::PyFloatEncoderParams"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:39 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, object: object, encoder_params: "
+"heu.phe.FloatEncoderParams) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:41 of
+msgid "Encode a numpy ndarray using heu::pylib::PyFloatEncoderParams"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:43 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, encoder: "
+"heu.phe.FloatEncoder) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:45 of
+msgid ""
+"Create and encode an array using heu::pylib::PyFloatEncoder, same with "
+"hnp.array()"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:47 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, object: object, encoder: "
+"heu.phe.FloatEncoder) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:49 of
+msgid ""
+"Encode a numpy ndarray using heu::pylib::PyFloatEncoder, same with "
+"hnp.array()"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:51 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, "
+"encoder_params: heu.phe.BatchEncoderParams) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:53 of
+msgid "Create and encode an array using heu::pylib::PyBatchEncoderParams"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:55 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, object: object, encoder_params: "
+"heu.phe.BatchEncoderParams) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:57 of
 msgid "Encode a numpy ndarray using heu::pylib::PyBatchEncoderParams"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:59 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, encoder: "
+"heu.phe.BatchEncoder) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:61 of
+msgid ""
+"Create and encode an array using heu::pylib::PyBatchEncoder, same with "
+"hnp.array()"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:63 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, object: object, encoder: "
+"heu.phe.BatchEncoder) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.array:65 of
+msgid ""
+"Encode a numpy ndarray using heu::pylib::PyBatchEncoder, same with "
+"hnp.array()"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.encryptor:1 of

@@ -1,12 +1,15 @@
 // Copyright (C) 2021 Intel Corporation
 // SPDX-License-Identifier: Apache-2.0
 
-#include <algorithm>
-#include "yacl/base/int128.h"
-#include "ipcl/utils/common.hpp"
 #include "heu/library/algorithms/paillier_ipcl/plaintext.h"
-#include "heu/library/algorithms/paillier_ipcl/utils.h"
+
+#include <algorithm>
+
 #include "cereal/archives/portable_binary.hpp"
+#include "ipcl/utils/common.hpp"
+#include "yacl/base/int128.h"
+
+#include "heu/library/algorithms/paillier_ipcl/utils.h"
 
 namespace heu::lib::algorithms::paillier_ipcl {
 
@@ -98,37 +101,37 @@ void Plaintext::Set(const std::string &num, int radix) {
 
 template <>
 uint8_t Plaintext::Get() const {
-    std::vector<uint32_t> vec;
-    bn_.num2vec(vec);
-    uint8_t value = vec[0] & 0xFF;
-    return value;
+  std::vector<uint32_t> vec;
+  bn_.num2vec(vec);
+  uint8_t value = vec[0] & 0xFF;
+  return value;
 }
 
 template <>
 uint16_t Plaintext::Get() const {
-    std::vector<uint32_t> vec;
-    bn_.num2vec(vec);
-    uint16_t value = vec[0] & 0xFFFF;
-    return value;
+  std::vector<uint32_t> vec;
+  bn_.num2vec(vec);
+  uint16_t value = vec[0] & 0xFFFF;
+  return value;
 }
 
 template <>
 uint32_t Plaintext::Get() const {
-    std::vector<uint32_t> vec;
-    bn_.num2vec(vec);
-    return vec[0];
+  std::vector<uint32_t> vec;
+  bn_.num2vec(vec);
+  return vec[0];
 }
 
 template <>
 uint64_t Plaintext::Get() const {
-    std::vector<uint32_t> vec;
-    bn_.num2vec(vec);
-    auto size = std::min((int)vec.size(), 2);
-    uint64_t value = 0;
-    for (auto i = 0; i < size; i++) {
-      value += (uint64_t)vec[i] << i * 32;
-    }
-    return value;
+  std::vector<uint32_t> vec;
+  bn_.num2vec(vec);
+  auto size = std::min((int)vec.size(), 2);
+  uint64_t value = 0;
+  for (auto i = 0; i < size; i++) {
+    value += (uint64_t)vec[i] << i * 32;
+  }
+  return value;
 }
 
 template <>
@@ -146,36 +149,36 @@ uint128_t Plaintext::Get() const {
 template <>
 int8_t Plaintext::Get() const {
   IppsBigNumSGN sign;
-  uint32_t* data;
+  uint32_t *data;
   ippsRef_BN(&sign, nullptr, &data, bn_);
   uint8_t avalue = data[0] & 0xFF;
-  int8_t value = sign == IppsBigNumPOS? avalue : -avalue;
+  int8_t value = sign == IppsBigNumPOS ? avalue : -avalue;
   return value;
 }
 
 template <>
 int16_t Plaintext::Get() const {
   IppsBigNumSGN sign;
-  uint32_t* data;
+  uint32_t *data;
   ippsRef_BN(&sign, nullptr, &data, bn_);
   uint16_t avalue = data[0] & 0xFFFF;
-  int16_t value = sign == IppsBigNumPOS? avalue : -avalue;
+  int16_t value = sign == IppsBigNumPOS ? avalue : -avalue;
   return value;
 }
 
 template <>
 int32_t Plaintext::Get() const {
   IppsBigNumSGN sign;
-  uint32_t* data;
+  uint32_t *data;
   ippsRef_BN(&sign, nullptr, &data, bn_);
-  int32_t value = sign == IppsBigNumPOS? data[0] : -data[0];
+  int32_t value = sign == IppsBigNumPOS ? data[0] : -data[0];
   return value;
 }
 
 template <>
 int64_t Plaintext::Get() const {
   IppsBigNumSGN sign;
-  uint32_t* data;
+  uint32_t *data;
   int bit_size;
   ippsRef_BN(&sign, &bit_size, &data, bn_);
   auto size = std::min((bit_size + 31) >> 5, 2);
@@ -183,14 +186,14 @@ int64_t Plaintext::Get() const {
   for (auto i = 0; i < size; i++) {
     avalue += (uint64_t)data[i] << i * 32;
   }
-  int64_t value = sign == IppsBigNumPOS? avalue : -avalue;
+  int64_t value = sign == IppsBigNumPOS ? avalue : -avalue;
   return value;
 }
 
 template <>
 int128_t Plaintext::Get() const {
   IppsBigNumSGN sign;
-  uint32_t* data;
+  uint32_t *data;
   int bit_size;
   ippsRef_BN(&sign, &bit_size, &data, bn_);
   auto size = std::min((bit_size + 31) >> 5, 4);
@@ -198,7 +201,7 @@ int128_t Plaintext::Get() const {
   for (auto i = 0; i < size; i++) {
     avalue += (uint128_t)data[i] << i * 32;
   }
-  int128_t value = sign == IppsBigNumPOS? avalue : -avalue;
+  int128_t value = sign == IppsBigNumPOS ? avalue : -avalue;
   return value;
 }
 
@@ -246,9 +249,7 @@ void Plaintext::Deserialize(yacl::ByteContainerView buffer) {
   }
 }
 
-std::string Plaintext::ToString() const {
-  return paillier_ipcl::ToString(bn_);
-}
+std::string Plaintext::ToString() const { return paillier_ipcl::ToString(bn_); }
 
 std::ostream &operator<<(std::ostream &os, const Plaintext &pt) {
   os << pt.ToString();
@@ -269,7 +270,7 @@ yacl::Buffer Plaintext::ToBytes(size_t byte_len, Endian endian) const {
 }
 
 void Plaintext::ToBytes(unsigned char *buf, size_t buf_len,
-              Endian endian) const {
+                        Endian endian) const {
   std::vector<unsigned char> char_vec;
   if (endian == Endian::big) {
     BigNumber::toBin(buf, buf_len, this->bn_);
@@ -283,20 +284,16 @@ Plaintext Plaintext::operator-() const {
   Plaintext result;
   IppsBigNumSGN sign;
   int bit_len;
-  Ipp32u* data;
+  Ipp32u *data;
   ippsRef_BN(&sign, &bit_len, &data, bn_);
-  auto rev_sign = (sign == IppsBigNumPOS)? IppsBigNumNEG : IppsBigNumPOS;
+  auto rev_sign = (sign == IppsBigNumPOS) ? IppsBigNumNEG : IppsBigNumPOS;
   result.bn_ = BigNumber(data, BITSIZE_WORD(bit_len), rev_sign);
   return result;
 }
 
-void Plaintext::NegInplace() {
-  *this = -(*this);
-}
+void Plaintext::NegInplace() { *this = -(*this); }
 
-size_t Plaintext::BitCount() const {
-  return bn_.BitSize();
-}
+size_t Plaintext::BitCount() const { return bn_.BitSize(); }
 
 Plaintext Plaintext::operator+(const Plaintext &op2) const {
   Plaintext result;
@@ -325,7 +322,7 @@ Plaintext Plaintext::operator/(const Plaintext &op2) const {
 Plaintext Plaintext::operator%(const Plaintext &op2) const {
   Plaintext result;
   result.bn_ = bn_ % op2.bn_;
-  return result;  
+  return result;
 }
 
 Plaintext Plaintext::operator&(const Plaintext &op2) const {
@@ -333,8 +330,8 @@ Plaintext Plaintext::operator&(const Plaintext &op2) const {
   std::vector<uint32_t> b_vec;
   std::vector<uint32_t> c_vec;
   bool is_res_negtive;
-  if ((this->IsNegative() && !op2.IsNegative())
-      || (!this->IsNegative() && op2.IsNegative())) {
+  if ((this->IsNegative() && !op2.IsNegative()) ||
+      (!this->IsNegative() && op2.IsNegative())) {
     is_res_negtive = true;
   } else {
     is_res_negtive = false;
@@ -348,18 +345,18 @@ Plaintext Plaintext::operator&(const Plaintext &op2) const {
   for (int i = 0; i < size; i++) {
     uint32_t a, b, c;
     if (this->IsNegative()) {
-      ac += (i < a_size)? (~a_vec[i] & UINT32_MASK) : UINT32_MASK;
+      ac += (i < a_size) ? (~a_vec[i] & UINT32_MASK) : UINT32_MASK;
       a = ac & UINT32_MASK;
       ac = 1;
     } else {
-      a = (i < a_size)? a_vec[i] : (uint32_t)0;
+      a = (i < a_size) ? a_vec[i] : (uint32_t)0;
     }
     if (op2.IsNegative()) {
-      bc += (i < b_size)? (~b_vec[i] & UINT32_MASK) : UINT32_MASK;
+      bc += (i < b_size) ? (~b_vec[i] & UINT32_MASK) : UINT32_MASK;
       b = bc & UINT32_MASK;
       bc = 1;
     } else {
-      b = (i < b_size)? b_vec[i] : (uint32_t)0;
+      b = (i < b_size) ? b_vec[i] : (uint32_t)0;
     }
     c = a & b;
     if (is_res_negtive) {
@@ -370,7 +367,7 @@ Plaintext Plaintext::operator&(const Plaintext &op2) const {
     c_vec.push_back(c);
   }
   Clamp(c_vec);
-  IppsBigNumSGN sign = is_res_negtive? IppsBigNumNEG : IppsBigNumPOS;
+  IppsBigNumSGN sign = is_res_negtive ? IppsBigNumNEG : IppsBigNumPOS;
   BigNumber new_bn(c_vec.data(), c_vec.size(), sign);
   Plaintext res(new_bn);
   return res;
@@ -381,8 +378,8 @@ Plaintext Plaintext::operator|(const Plaintext &op2) const {
   std::vector<uint32_t> b_vec;
   std::vector<uint32_t> c_vec;
   bool is_res_negtive;
-  if ((this->IsNegative() && !op2.IsNegative())
-      || (!this->IsNegative() && op2.IsNegative())) {
+  if ((this->IsNegative() && !op2.IsNegative()) ||
+      (!this->IsNegative() && op2.IsNegative())) {
     is_res_negtive = true;
   } else {
     is_res_negtive = false;
@@ -396,18 +393,18 @@ Plaintext Plaintext::operator|(const Plaintext &op2) const {
   for (int i = 0; i < size; i++) {
     uint32_t a, b, c;
     if (this->IsNegative()) {
-      ac += (i < a_size)? (~a_vec[i] & UINT32_MASK) : UINT32_MASK;
+      ac += (i < a_size) ? (~a_vec[i] & UINT32_MASK) : UINT32_MASK;
       a = ac & UINT32_MASK;
       ac = 1;
     } else {
-      a = (i < a_size)? a_vec[i] : (uint32_t)0;
+      a = (i < a_size) ? a_vec[i] : (uint32_t)0;
     }
     if (op2.IsNegative()) {
-      bc += (i < b_size)? (~b_vec[i] & UINT32_MASK) : UINT32_MASK;
+      bc += (i < b_size) ? (~b_vec[i] & UINT32_MASK) : UINT32_MASK;
       b = bc & UINT32_MASK;
       bc = 1;
     } else {
-      b = (i < b_size)? b_vec[i] : (uint32_t)0;
+      b = (i < b_size) ? b_vec[i] : (uint32_t)0;
     }
     c = a | b;
     if (is_res_negtive) {
@@ -418,7 +415,7 @@ Plaintext Plaintext::operator|(const Plaintext &op2) const {
     c_vec.push_back(c);
   }
   Clamp(c_vec);
-  IppsBigNumSGN sign = is_res_negtive? IppsBigNumNEG : IppsBigNumPOS;
+  IppsBigNumSGN sign = is_res_negtive ? IppsBigNumNEG : IppsBigNumPOS;
   BigNumber new_bn(c_vec.data(), c_vec.size(), sign);
   Plaintext res(new_bn);
   return res;
@@ -429,8 +426,8 @@ Plaintext Plaintext::operator^(const Plaintext &op2) const {
   std::vector<uint32_t> b_vec;
   std::vector<uint32_t> c_vec;
   bool is_res_negtive;
-  if ((this->IsNegative() && !op2.IsNegative())
-      || (!this->IsNegative() && op2.IsNegative())) {
+  if ((this->IsNegative() && !op2.IsNegative()) ||
+      (!this->IsNegative() && op2.IsNegative())) {
     is_res_negtive = true;
   } else {
     is_res_negtive = false;
@@ -444,18 +441,18 @@ Plaintext Plaintext::operator^(const Plaintext &op2) const {
   for (int i = 0; i < size; i++) {
     uint32_t a, b, c;
     if (this->IsNegative()) {
-      ac += (i < a_size)? (~a_vec[i] & UINT32_MASK) : UINT32_MASK;
+      ac += (i < a_size) ? (~a_vec[i] & UINT32_MASK) : UINT32_MASK;
       a = ac & UINT32_MASK;
       ac = 1;
     } else {
-      a = (i < a_size)? a_vec[i] : (uint32_t)0;
+      a = (i < a_size) ? a_vec[i] : (uint32_t)0;
     }
     if (op2.IsNegative()) {
-      bc += (i < b_size)? (~b_vec[i] & UINT32_MASK) : UINT32_MASK;
+      bc += (i < b_size) ? (~b_vec[i] & UINT32_MASK) : UINT32_MASK;
       b = bc & UINT32_MASK;
       bc = 1;
     } else {
-      b = (i < b_size)? b_vec[i] : (uint32_t)0;
+      b = (i < b_size) ? b_vec[i] : (uint32_t)0;
     }
     c = a ^ b;
     if (is_res_negtive) {
@@ -467,7 +464,7 @@ Plaintext Plaintext::operator^(const Plaintext &op2) const {
   }
   Clamp(c_vec);
   BigNumber new_bn;
-  IppsBigNumSGN sign = is_res_negtive? IppsBigNumNEG : IppsBigNumPOS;
+  IppsBigNumSGN sign = is_res_negtive ? IppsBigNumNEG : IppsBigNumPOS;
   new_bn.Set(c_vec.data(), c_vec.size(), sign);
   Plaintext res(new_bn);
   return res;
@@ -534,7 +531,8 @@ Plaintext Plaintext::operator<<=(size_t op2) {
   std::vector<uint32_t> bn_vec;
   bn_.num2vec(bn_vec);
   ShiftLeftN(bn_vec, op2);
-  BigNumber tmp(bn_vec.data(), bn_vec.size());  // bn.Set() is not workable, so use assginment constructor.
+  BigNumber tmp(bn_vec.data(), bn_vec.size());  // bn.Set() is not workable, so
+                                                // use assginment constructor.
   bn_ = tmp;
   return *this;
 }
@@ -542,7 +540,8 @@ Plaintext Plaintext::operator>>=(size_t op2) {
   std::vector<uint32_t> bn_vec;
   bn_.num2vec(bn_vec);
   ShiftRightN(bn_vec, op2);
-  BigNumber tmp(bn_vec.data(), bn_vec.size());  // bn.Set() is not workable, so use assginment constructor.
+  BigNumber tmp(bn_vec.data(), bn_vec.size());  // bn.Set() is not workable, so
+                                                // use assginment constructor.
   bn_ = tmp;
   return *this;
 }
@@ -581,11 +580,11 @@ void Plaintext::RandomLtN(const Plaintext &n, Plaintext *r) {
   } while (r->IsNegative() || (*r >= n));
 }
 
-Plaintext Plaintext::Absolute(const Plaintext& pt) {
+Plaintext Plaintext::Absolute(const Plaintext &pt) {
   if (pt.IsNegative()) {
     return -pt;
   } else {
     return pt;
   }
 }
-}
+}  // namespace heu::lib::algorithms::paillier_ipcl

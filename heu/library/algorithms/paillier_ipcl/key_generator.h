@@ -9,7 +9,7 @@
 namespace heu::lib::algorithms::paillier_ipcl {
 
 class KeyGenerator {
-public:
+ public:
   // Generate PHE key pair
   static void Generate(int key_size, SecretKey* sk, PublicKey* pk);
 };

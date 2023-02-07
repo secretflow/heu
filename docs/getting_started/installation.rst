@@ -35,7 +35,7 @@ HEU 安装包已经发布到了 PyPi，您可以通过 pip 工具安装 HEU
 
 依赖工具：
  - `Bazel <https://docs.bazel.build/versions/main/install.html>`_
- - `GCC`
+ - GCC >= 11
 
 安装：
 

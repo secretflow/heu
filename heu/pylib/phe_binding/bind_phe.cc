@@ -129,13 +129,25 @@ void PyBindPhe(pybind11::module& m) {
       .def("get_schema", &phe::HeKitPublicBase::GetSchemaType,
            "Get schema type")
       .def(
-          "batch_encoder",
-          [](const phe::HeKitPublicBase& kpb, size_t padding_size) {
-            return PyBatchEncoder(kpb.GetSchemaType(), padding_size);
+          "batch_integer_encoder",
+          [](const phe::HeKitPublicBase& kpb, int64_t scale,
+             size_t padding_bits) {
+            return PyBatchIntegerEncoder(kpb.GetSchemaType(), scale,
+                                         padding_bits);
           },
-          py::arg("padding_size") = 32,
-          "Get an instance of BatchEncoder, equal to `phe.BatchEncoder(schema, "
-          "padding_size)`")
+          py::arg("scale") = 1, py::arg("padding_bits") = 32,
+          "Get an instance of BatchIntegerEncoder, equal to "
+          "`phe.BatchIntegerEncoder(schema, scale, padding_size)`")
+      .def(
+          "batch_float_encoder",
+          [](const phe::HeKitPublicBase& kpb, int64_t scale,
+             size_t padding_bits) {
+            return PyBatchFloatEncoder(kpb.GetSchemaType(), scale,
+                                       padding_bits);
+          },
+          py::arg("scale") = (int64_t)1e6, py::arg("padding_bits") = 32,
+          "Get an instance of BatchIntegerEncoder, equal to "
+          "`phe.BatchFloatEncoder(schema, scale, padding_size)`")
       .def(
           "bigint_encoder",
           [](const phe::HeKitPublicBase& kpb) {

@@ -65,4 +65,4 @@ class ModulusSwitchHelper {
   std::shared_ptr<Impl> impl_{nullptr};
 };
 
-}  // namespace heu::lib::algorithms::util
+}  // namespace heu::expt::rlwe

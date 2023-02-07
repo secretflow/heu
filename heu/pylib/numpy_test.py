@@ -84,8 +84,11 @@ class BasicCase(unittest.TestCase):
             phe.BigintEncoder(self.kit.get_schema()),
         )
 
-        do_test([1, 2], phe.BatchEncoder(self.kit.get_schema()))
-        do_test([[10, 11], [12, 13], [15, 16]], phe.BatchEncoder(self.kit.get_schema()))
+        do_test([1, 2], phe.BatchIntegerEncoder(self.kit.get_schema()))
+        do_test(
+            [[10, 11], [12, 13], [15, 16]],
+            phe.BatchIntegerEncoder(self.kit.get_schema()),
+        )
 
     def test_encoder_parallel(self):
         edr = self.kit.integer_encoder()
@@ -109,10 +112,19 @@ class BasicCase(unittest.TestCase):
             harr = self.kit.array(input)
             self.assert_array_equal(harr, input)
 
+        # batch int
         for idx in range(50):
             input = np.random.randint(-10000, 10000, (5000, 2))
-            harr = self.kit.array(input, phe.BatchEncoderParams())
-            self.assert_array_equal(harr, input, self.kit.batch_encoder())
+            harr = self.kit.array(input, phe.BatchIntegerEncoderParams())
+            self.assert_array_equal(harr, input, self.kit.batch_integer_encoder())
+
+        # batch float
+        for idx in range(50):
+            input = np.random.rand(5000, 2)
+            harr = self.kit.array(input, phe.BatchFloatEncoderParams(scale=2**62))
+            self.assert_array_equal(
+                harr, input, self.kit.batch_float_encoder(scale=2**62)
+            )
 
     def test_encrypt_with_audit(self):
         pt1 = self.kit.array([[1], [3]])

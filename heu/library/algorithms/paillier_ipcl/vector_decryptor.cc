@@ -24,14 +24,15 @@ std::vector<Plaintext> Decryptor::Decrypt(ConstSpan<Ciphertext> cts) const {
   for (auto item : ipcl_res) {
     // handle negative numbers
     if (item > half_n_.bn_) {
-      item -= n; 
+      item -= n;
     }
     pt_vec.push_back(Plaintext(item));
   }
   return pt_vec;
 }
 
-void Decryptor::Decrypt(ConstSpan<Ciphertext> in_cts, Span<Plaintext> out_pts) const {
+void Decryptor::Decrypt(ConstSpan<Ciphertext> in_cts,
+                        Span<Plaintext> out_pts) const {
   std::vector<BigNumber> ct_vec;
   for (auto item : in_cts) {
     ct_vec.push_back(item->bn_);
@@ -44,7 +45,7 @@ void Decryptor::Decrypt(ConstSpan<Ciphertext> in_cts, Span<Plaintext> out_pts) c
   for (size_t i = 0; i < size; i++) {
     // handle negative numbers
     if (ipcl_res[i] > half_n) {
-      ipcl_res[i] -= n; 
+      ipcl_res[i] -= n;
     }
     *out_pts[i] = Plaintext(ipcl_res[i]);
   }

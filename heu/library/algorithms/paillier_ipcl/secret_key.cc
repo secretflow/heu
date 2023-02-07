@@ -5,9 +5,9 @@
 
 namespace heu::lib::algorithms::paillier_ipcl {
 bool SecretKey::operator==(const SecretKey &other) const {
-  return ipcl_prikey_.getP() == other.ipcl_prikey_.getP()
-          && ipcl_prikey_.getQ() == other.ipcl_prikey_.getQ()
-          && ipcl_prikey_.getLambda() == other.ipcl_prikey_.getLambda();
+  return ipcl_prikey_.getP() == other.ipcl_prikey_.getP() &&
+         ipcl_prikey_.getQ() == other.ipcl_prikey_.getQ() &&
+         ipcl_prikey_.getLambda() == other.ipcl_prikey_.getLambda();
 }
 
 bool SecretKey::operator!=(const SecretKey &other) const {
@@ -17,8 +17,8 @@ bool SecretKey::operator!=(const SecretKey &other) const {
 std::string SecretKey::ToString() const {
   std::string lambda;
   ipcl_prikey_.getLambda().num2hex(lambda);
-  return fmt::format("IPCL secret key: lambda={}[{}bits]",
-                  lambda, ipcl_prikey_.getLambda().BitSize());
+  return fmt::format("IPCL secret key: lambda={}[{}bits]", lambda,
+                     ipcl_prikey_.getLambda().BitSize());
 }
 
 }  // namespace heu::lib::algorithms::paillier_ipcl

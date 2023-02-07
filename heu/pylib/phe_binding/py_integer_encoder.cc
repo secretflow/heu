@@ -44,7 +44,7 @@ void BindPyIntegerEncoder(pybind11::module &m) {
       .def("__str__", &PyIntegerEncoderParams::ToString)
       .def("__repr__", &PyIntegerEncoderParams::ToString)
       .def(PyUtils::PickleSupport<PyIntegerEncoderParams>())
-      .def("instance", &PyIntegerEncoderParams::Instance,
+      .def("instance", &PyIntegerEncoderParams::Instance, py::arg("schema"),
            "Create IntegerEncoder instance");
 
   py::class_<PyIntegerEncoder>(m, "IntegerEncoder")

@@ -20,29 +20,32 @@
 
 namespace heu::lib::phe {
 
+#define MAP_ITEM_true(enum_item, ...)                    \
+  {                                                      \
+    SchemaType::enum_item, { #enum_item, ##__VA_ARGS__ } \
+  }
+#define MAP_ITEM_false(...) \
+  {}
+#define MAP_ITEM_HELPER(enable, enum_item, ...) \
+  MAP_ITEM_##enable(enum_item, ##__VA_ARGS__)
+#define MAP_ITEM(enable, enum_item, ...) \
+  MAP_ITEM_HELPER(enable, enum_item, ##__VA_ARGS__)
+
 // [SPI: Please register your algorithm here] || progress: (5 of 5)
 // Please add aliases to your algorithm, note that aliases should not be
 // duplicated with other algorithms.
 // Aliases are case-sensitive.
-// The first alias of each schema will be bound to Python SchemaType enum, it is
-// recommended to have the same name as the C++ enum
-// 请给您的算法添加别名，别名区分大小写，注意别名不能与其它算法重复
-// 第一个别名将被绑定到 Python SchemaType enum 中，建议与 C++ enum 同名
+// 请给您的算法添加别名，别名区分大小写，注意别名必须唯一，不与其它算法重复
 static const std::map<SchemaType, std::vector<std::string>>
     kSchemaTypeToString = {
-        {SchemaType::Mock, {"Mock", "none", "mock", "plain"}},
-        {SchemaType::ZPaillier,
-         {"ZPaillier", "z-paillier", "zpaillier", "paillier", "paillier_z",
-          "paillier_zahlen"}},
-        {SchemaType::FPaillier,
-         {"FPaillier", "f-paillier", "fpaillier", "paillier_f",
-          "paillier_float"}},
-#ifdef __x86_64__
-        {SchemaType::IPCL,
-         {"IPCL", "ipcl", "ipcl-paillier", "ipcl_paillier", "paillier_ipcl",
-          "paillier-ipcl"}},
-#endif
-        // {SchemaType::YOUR_ALGO, {"YOUR_ALGO", "your_algorithm"}},
+        MAP_ITEM(true, Mock, "none", "mock", "plain"),
+        MAP_ITEM(true, ZPaillier, "z-paillier", "zpaillier", "paillier",
+                 "paillier_z", "paillier_zahlen"),
+        MAP_ITEM(true, FPaillier, "f-paillier", "fpaillier", "paillier_f",
+                 "paillier_float"),
+        MAP_ITEM(ENABLE_IPCL, IPCL, "ipcl", "ipcl-paillier", "ipcl_paillier",
+                 "paillier_ipcl", "paillier-ipcl"),
+        // MAP_ITEM(ENABLE, YOUR_ALGO, "one_or_more_name_alias"),
 };
 
 std::vector<SchemaType> GetAllSchema() {

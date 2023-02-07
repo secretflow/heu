@@ -11,6 +11,23 @@
 .. role:: red
 .. role:: blue
 
+
+HEU 0.3.x → 0.4.x
+------------------
+
+API 变更
+^^^^^^^^^^^^^^^^^^^
+
+HEU 0.4 版本将 ``phe.BatchEncoder`` 拆分成了2个：``phe.BatchIntegerEncoder`` 和 ``phe.BatchFloatEncoder``。
+
+HEU 0.3 中的 ``phe.BatchEncoder`` 并不支持编码浮点数，为了让 BatchEncoder 支持浮点数编码，HEU 0.4 新增了 ``phe.BatchFloatEncoder``，同时为了命名上的清晰性，我们将老旧的 ``phe.BatchEncoder`` 改名成了 ``phe.BatchIntegerEncoder``
+
+用户代码怎么改
+^^^^^^^^^^^^^^^^^^^
+
+您可以将老代码中的 BatchEncoder 查找替换为 BatchIntegerEncoder 即可，两者功能等价。
+
+
 HEU 0.2.x → 0.3.x
 ------------------
 
@@ -88,3 +105,7 @@ Scalar 操作
    # Or:
    pt = kit.array([1, 2, 3], phe.IntegerEncoderParams(scale=100))
 
+用户代码怎么改
+^^^^^^^^^^^^^^^^^^^
+
+如果编译报错，请将 schema 参数传入即可，例如这一行编译报错：``phe.BigintEncoder()``，改为 ``phe.BigintEncoder(kit.get_schema())`` 即可，具体参考上一节 **API 变更** 内容。

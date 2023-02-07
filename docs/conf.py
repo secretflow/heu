@@ -74,14 +74,9 @@ html_css_files = [
 #
 html_theme = "sf_pydata_sphinx_theme"
 
-html_context = {
-    "default_mode": "light"
-}
+html_context = {"default_mode": "light"}
 
-html_sidebars = {
-    "index": [],
-    "**": ["search-field", "sidebar-nav-bs"]
-}
+html_sidebars = {"index": [], "**": ["search-field", "sidebar-nav-bs"]}
 
 html_theme_options = {
     "logo": {

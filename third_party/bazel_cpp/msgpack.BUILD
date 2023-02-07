@@ -1,4 +1,5 @@
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake", "configure_make")
+
 package(default_visibility = ["//visibility:public"])
 
 filegroup(
@@ -8,6 +9,7 @@ filegroup(
 
 cmake(
     name = "msgpack",
+    build_args = ["-j"],
     cache_entries = {
         "MSGPACK_CXX17": "ON",
         "MSGPACK_BUILD_EXAMPLES": "OFF",
@@ -16,5 +18,4 @@ cmake(
     },
     lib_source = ":all_srcs",
     out_headers_only = True,
-    build_args = ["-j"]
 )

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-07 18:53+0800\n"
+"POT-Creation-Date: 2023-02-02 20:22+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: ../../getting_started/installation.rst:2
 #: ../../getting_started/installation.rst:16
 msgid "安装"
 msgstr "Installation"
@@ -46,53 +45,53 @@ msgstr ""
 msgid "macOS 11.1+ (macOS Big Sur+)"
 msgstr ""
 
-#: ../../getting_started/installation.rst:35
+#: ../../getting_started/installation.rst:21
 msgid "通过 Pip 安装"
 msgstr "Installation from PyPI"
 
-#: ../../getting_started/installation.rst:37
+#: ../../getting_started/installation.rst:23
 msgid "HEU 安装包已经发布到了 PyPi，您可以通过 pip 工具安装 HEU"
 msgstr ""
 "HEU packages are published on PyPi. The preferred tool for installing "
 "packages from PyPI is pip. This tool is provided with all modern versions"
 " of Python."
 
-#: ../../getting_started/installation.rst:45
+#: ../../getting_started/installation.rst:31
 msgid "从源码安装"
 msgstr "Installation from source"
 
-#: ../../getting_started/installation.rst:49
+#: ../../getting_started/installation.rst:34
 msgid "如果您需要使用最新测试版本，可以从 `源码 <https://github.com/secretflow/heu>`_ 编译安装。"
 msgstr ""
 "You can install HEU directly from a clone of the `Git repository "
-"<https://github.com/secretflow/heu>`_. Please clone the repo first "
-"and then installing from local source."
+"<https://github.com/secretflow/heu>`_. Please clone the repo first and "
+"then installing from local source."
 
-#: ../../getting_started/installation.rst:53
+#: ../../getting_started/installation.rst:38
 msgid "依赖工具："
 msgstr "Dependency:"
 
-#: ../../getting_started/installation.rst:52
+#: ../../getting_started/installation.rst:37
 msgid "`Bazel <https://docs.bazel.build/versions/main/install.html>`_"
 msgstr ""
 
-#: ../../getting_started/installation.rst:53
-msgid "`GCC`"
+#: ../../getting_started/installation.rst:38
+msgid "GCC >= 11"
 msgstr ""
 
-#: ../../getting_started/installation.rst:55
+#: ../../getting_started/installation.rst:40
 msgid "安装："
 msgstr "Compile and install:"
 
-#: ../../getting_started/installation.rst:66
+#: ../../getting_started/installation.rst:51
 msgid "测试运行"
 msgstr "Test running"
 
-#: ../../getting_started/installation.rst:68
+#: ../../getting_started/installation.rst:53
 msgid "安装完成后，建议执行以下命令检查 HEU 是否工作正常"
 msgstr "After installation, it is a good idea to test HEU using:"
 
-#: ../../getting_started/installation.rst:74
+#: ../../getting_started/installation.rst:59
 msgid ""
 "上述命令，如果没有任何输出，则说明安装成功；反之如果报错，则说明安装未成功，请参考 :doc:`FAQ "
 "</getting_started/faq>`"

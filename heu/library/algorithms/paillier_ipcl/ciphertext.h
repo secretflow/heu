@@ -16,7 +16,7 @@ namespace heu::lib::algorithms::paillier_ipcl {
 class Ciphertext {
  public:
   Ciphertext() = default;
-  explicit Ciphertext(BigNumber& bn) : bn_(bn) {};
+  explicit Ciphertext(BigNumber &bn) : bn_(bn){};
 
   std::string ToString() const;
   friend std::ostream &operator<<(std::ostream &os, const Ciphertext &c);
@@ -27,9 +27,7 @@ class Ciphertext {
   yacl::Buffer Serialize() const;
   void Deserialize(yacl::ByteContainerView in);
 
-  operator BigNumber() {
-    return bn_;
-  }
+  operator BigNumber() { return bn_; }
   BigNumber bn_;
 };
 

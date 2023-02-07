@@ -9,12 +9,12 @@ filegroup(
 
 cmake(
     name = "cereal",
+    cache_entries = {
+        "BUILD_DOC": "OFF",
+        "BUILD_TESTS": "OFF",
+        "BUILD_SANDBOX": "OFF",
+        "SKIP_PERFORMANCE_COMPARISON": "ON",
+    },
     lib_source = "@com_github_uscilab_cereal//:all",
     out_headers_only = True,
-    cache_entries = {
-        "BUILD_DOC" : "OFF",
-        "BUILD_TESTS" : "OFF",
-        "BUILD_SANDBOX" : "OFF",
-        "SKIP_PERFORMANCE_COMPARISON" : "ON",
-    },
 )

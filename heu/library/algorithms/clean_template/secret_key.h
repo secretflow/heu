@@ -23,7 +23,7 @@ class SecretKey {
   bool operator==(const SecretKey &other) const;
   bool operator!=(const SecretKey &other) const;
 
-   std::string ToString() const;
+  std::string ToString() const;
 
   yacl::Buffer Serialize() const;
   void Deserialize(yacl::ByteContainerView in);

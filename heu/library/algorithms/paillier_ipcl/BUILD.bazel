@@ -1,50 +1,63 @@
-load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_binary", "yacl_cc_test")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_binary", "yacl_cc_library", "yacl_cc_test")
 
 package(default_visibility = ["//visibility:public"])
 
 yacl_cc_library(
     name = "paillier_ipcl",
+    hdrs = ["ipcl.h"],
+    deps = select({
+        "@platforms//cpu:x86_64": [
+            ":paillier_ipcl_impl",
+        ],
+        "//conditions:default": [],
+    }),
+)
+
+yacl_cc_library(
+    name = "paillier_ipcl_impl",
     srcs = [
-        "plaintext.cc",
         "ciphertext.cc",
         "key_generator.cc",
+        "plaintext.cc",
         "public_key.cc",
         "secret_key.cc",
-        "vector_encryptor.cc",
-        "vector_decryptor.cc",
-        "vector_evaluator.cc",
         "utils.cc",
+        "vector_decryptor.cc",
+        "vector_encryptor.cc",
+        "vector_evaluator.cc",
     ],
     hdrs = [
-        "ipcl.h",
-        "plaintext.h",
         "ciphertext.h",
         "key_generator.h",
+        "plaintext.h",
         "public_key.h",
         "secret_key.h",
-        "vector_encryptor.h",
-        "vector_decryptor.h",
-        "vector_evaluator.h",
         "utils.h",
-    ],
-    deps = [
-        "//heu/library/algorithms/util",
-        "@yacl//yacl/base:int128",
-        "@yacl//yacl/base:byte_container_view",
-        "@com_github_msgpack_msgpack//:msgpack",
-        "@com_github_fmtlib_fmt//:fmtlib",
-        "@com_github_intel_ipcl//:ipcl",
-        "@com_github_uscilab_cereal//:cereal",  
+        "vector_decryptor.h",
+        "vector_encryptor.h",
+        "vector_evaluator.h",
     ],
     target_compatible_with = [
         "@platforms//cpu:x86_64",
     ],
+    deps = [
+        "//heu/library/algorithms/util",
+        "@com_github_fmtlib_fmt//:fmtlib",
+        "@com_github_intel_ipcl//:ipcl",
+        "@com_github_msgpack_msgpack//:msgpack",
+        "@com_github_uscilab_cereal//:cereal",
+        "@yacl//yacl/base:byte_container_view",
+        "@yacl//yacl/base:int128",
+    ],
 )
 
 yacl_cc_test(
-  name = "ipcl_test",
-   srcs = ["ipcl_test.cc"],
-   deps = [
-       ":paillier_ipcl",
-   ],
+    name = "ipcl_test",
+    srcs = ["ipcl_test.cc"],
+    target_compatible_with = [
+        "@platforms//cpu:x86_64",
+    ],
+    deps = [
+        ":paillier_ipcl",
+    ],
 )
