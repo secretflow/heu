@@ -1,6 +1,17 @@
 load("@yacl//bazel:yacl.bzl", "yacl_cc_binary")
 
 yacl_cc_binary(
+    name = "mpint",
+    srcs = ["mpint_bench.cc"],
+    linkopts = ["-lm"],
+    deps = [
+        "//heu/library/algorithms/ou",
+        "//heu/library/algorithms/util:tommath_ext_features",
+        "@com_github_google_benchmark//:benchmark",
+    ],
+)
+
+yacl_cc_binary(
     name = "serialize",
     srcs = ["serialize_bench.cc"],
     deps = [

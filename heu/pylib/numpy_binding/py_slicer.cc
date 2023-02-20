@@ -18,90 +18,9 @@
 
 #include "heu/library/numpy/matrix.h"
 #include "heu/pylib/common/traits.h"
+#include "heu/pylib/numpy_binding/slice_tool.h"
 
 namespace heu::pylib {
-
-namespace slice_tool {
-
-// record one dim's slice info
-template <typename INDICES_T>
-struct PySlice {
-  ssize_t items;
-  INDICES_T indices;
-
-  std::string ToString() { return fmt::format("PySlice index {}", indices); }
-};
-
-int64_t ComputeInt(const py::handle& src, int64_t dim_len) {
-  auto idx = static_cast<int64_t>(py::cast<py::int_>(src));
-  YACL_ENFORCE(idx < dim_len, "index {} is out of bounds [0, {})", idx,
-               dim_len);
-  if (idx < 0) {
-    idx += dim_len;
-    YACL_ENFORCE(idx >= 0, "index {} is out of bounds [{}, {})", idx - dim_len,
-                 -dim_len, dim_len);
-  }
-  return idx;
-}
-
-auto Parse(const pybind11::object& src, ssize_t dim_len,
-           bool* should_squeeze = nullptr) {
-  PySlice<std::vector<int64_t>> res;
-  bool squeeze = false;
-  if (py::isinstance<py::slice>(src)) {
-    auto s = py::cast<py::slice>(src);
-    ssize_t start = 0, stop = 0, step = 0;
-    YACL_ENFORCE(s.compute(dim_len, &start, &stop, &step, &res.items),
-                 "Failed to solve slice {}", py::str(s).operator std::string());
-
-    // todo：use Eigen::seq
-    res.indices.reserve(res.items);
-    YACL_ENFORCE(step != 0, "slice step cannot be 0");
-    if (step > 0) {
-      for (; start < stop; start += step) {
-        res.indices.push_back(start);
-      }
-    } else {
-      for (; start > stop; start += step) {
-        res.indices.push_back(start);
-      }
-    }
-  }
-
-  else if (py::isinstance<py::sequence>(src)) {
-    auto l = py::cast<py::sequence>(src);
-    res.items = l.size();
-    res.indices.reserve(res.items);
-    for (const auto& item : l) {
-      YACL_ENFORCE(
-          py::isinstance<py::int_>(item),
-          "indices array element must be integers, got {} with type {}",
-          std::string(py::str(item)), std::string(py::str(item.get_type())));
-      res.indices.push_back(ComputeInt(item, dim_len));
-    }
-
-  } else if (py::isinstance<py::int_>(src)) {
-    squeeze = true;
-    res.items = 1;
-    res.indices.push_back(ComputeInt(src, dim_len));
-
-  } else {
-    YACL_THROW_ARGUMENT_ERROR(
-        "Unsupported indices type {}",
-        static_cast<std::string>(py::str(src.get_type())));
-  }
-
-  if (should_squeeze != nullptr) {
-    *should_squeeze = squeeze;
-  }
-  return res;
-}
-
-auto All(ssize_t dim_len) -> PySlice<decltype(Eigen::all)> {
-  return {dim_len, Eigen::all};
-};
-
-}  // namespace slice_tool
 
 namespace {
 

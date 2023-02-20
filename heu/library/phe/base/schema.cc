@@ -39,6 +39,7 @@ namespace heu::lib::phe {
 static const std::map<SchemaType, std::vector<std::string>>
     kSchemaTypeToString = {
         MAP_ITEM(true, Mock, "none", "mock", "plain"),
+        MAP_ITEM(true, OU, "ou", "okamoto-uchiyama"),
         MAP_ITEM(true, ZPaillier, "z-paillier", "zpaillier", "paillier",
                  "paillier_z", "paillier_zahlen"),
         MAP_ITEM(true, FPaillier, "f-paillier", "fpaillier", "paillier_f",

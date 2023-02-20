@@ -1,6 +1,15 @@
 load("@yacl//bazel:yacl.bzl", "yacl_cc_binary")
 
 yacl_cc_binary(
+    name = "ou",
+    srcs = ["ou_bench.cc"],
+    deps = [
+        "//heu/library/algorithms/ou",
+        "@com_github_google_benchmark//:benchmark_main",
+    ],
+)
+
+yacl_cc_binary(
     name = "paillier_float",
     srcs = ["paillier_float_bench.cc"],
     deps = [

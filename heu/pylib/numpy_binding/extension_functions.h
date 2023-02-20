@@ -19,18 +19,16 @@
 #include "heu/library/numpy/evaluator.h"
 #include "heu/library/numpy/matrix.h"
 
-// These functions deal with slicing from python.
-
 namespace heu::pylib {
-
 template <typename T>
-class PySlicer {
+class ExtensionFunctions {
  public:
-  static pybind11::object GetItem(const lib::numpy::DenseMatrix<T>& p_matrix,
-                                  const pybind11::object& key);
-  static void SetItem(lib::numpy::DenseMatrix<T>* p_matrix,
-                      const pybind11::object& key,
-                      const pybind11::object& value);
-};
+  static T SelectSum(const lib::numpy::Evaluator e,
+                     const lib::numpy::DenseMatrix<T>& x,
+                     const pybind11::object& key);
 
+  static lib::numpy::DenseMatrix<T> BatchSelectSum(
+      const lib::numpy::Evaluator e, const lib::numpy::DenseMatrix<T>& x,
+      std::vector<pybind11::object> key);
+};
 }  // namespace heu::pylib

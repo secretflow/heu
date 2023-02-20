@@ -14,23 +14,11 @@
 
 #pragma once
 
-#include "pybind11/pybind11.h"
+// Okamoto–Uchiyama cryptosystem
 
-#include "heu/library/numpy/evaluator.h"
-#include "heu/library/numpy/matrix.h"
-
-// These functions deal with slicing from python.
-
-namespace heu::pylib {
-
-template <typename T>
-class PySlicer {
- public:
-  static pybind11::object GetItem(const lib::numpy::DenseMatrix<T>& p_matrix,
-                                  const pybind11::object& key);
-  static void SetItem(lib::numpy::DenseMatrix<T>* p_matrix,
-                      const pybind11::object& key,
-                      const pybind11::object& value);
-};
-
-}  // namespace heu::pylib
+#include "heu/library/algorithms/ou/decryptor.h"
+#include "heu/library/algorithms/ou/encryptor.h"
+#include "heu/library/algorithms/ou/evaluator.h"
+#include "heu/library/algorithms/ou/key_generator.h"
+#include "heu/library/algorithms/ou/public_key.h"
+#include "heu/library/algorithms/ou/secret_key.h"

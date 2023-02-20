@@ -30,6 +30,11 @@ TEST_F(SchemaTest, SchemaEqualsMacro) {
     EXPECT_TRUE((std::is_same_v<decltype(obj), algorithms::mock::Ciphertext>));
   });
 
+  Ciphertext ciphertext1(SchemaType::OU);
+  ciphertext1.Visit([](auto obj) {
+    EXPECT_TRUE((std::is_same_v<decltype(obj), algorithms::ou::Ciphertext>));
+  });
+
   Ciphertext ciphertext2(SchemaType::FPaillier);
   ciphertext2.Visit([](auto obj) {
     EXPECT_TRUE(
@@ -83,11 +88,13 @@ TEST_F(SchemaTest, SelectSchema) {
 TEST_F(SchemaTest, SchemaParse) {
   EXPECT_EQ(ParseSchemaType("mock"), SchemaType::Mock);
   EXPECT_EQ(ParseSchemaType("plain"), SchemaType::Mock);
+  EXPECT_EQ(ParseSchemaType("ou"), SchemaType::OU);
   EXPECT_EQ(ParseSchemaType("paillier"), SchemaType::ZPaillier);
   EXPECT_EQ(ParseSchemaType("fpaillier"), SchemaType::FPaillier);
   EXPECT_THROW(ParseSchemaType("abc"), yacl::RuntimeError);
 
   EXPECT_EQ(SchemaToString(SchemaType::Mock), "Mock");
+  EXPECT_EQ(SchemaToString(SchemaType::OU), "OU");
   EXPECT_EQ(SchemaToString(SchemaType::ZPaillier), "ZPaillier");
   EXPECT_EQ(SchemaToString(SchemaType::FPaillier), "FPaillier");
 }

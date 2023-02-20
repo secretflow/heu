@@ -10,6 +10,8 @@
 
 > please add your unreleased change here.
 
+- [Feature] Add Okamoto–Uchiyama cryptosystem
+- [Docs] Add docs to help users choose algorithms
 - [Break change] Split BatchEncoder into BatchIntegerEncoder and
   BatchFloatEncoder. Please see upgrade guide doc for details.
 

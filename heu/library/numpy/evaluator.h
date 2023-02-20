@@ -50,6 +50,22 @@ class Evaluator : public phe::Evaluator {
   // reduce add
   template <typename T>
   T Sum(const DenseMatrix<T>& x) const;  // x is PMatrix or CMatrix
-};
 
+  // reduce add given indices
+  template <typename T, typename RowIndices, typename ColIndices>
+  T SelectSum(const DenseMatrix<T>& x, const RowIndices& row_indices,
+              const ColIndices& col_indices) const {
+    YACL_ENFORCE(x.cols() > 0 && x.rows() > 0,
+                 "you cannot select sum an empty tensor, shape={}x{}", x.rows(),
+                 x.cols());
+
+    T zero = phe::Evaluator::Sub(x(0, 0), x(0, 0));
+    const auto& sub = x.GetItem(row_indices, col_indices);
+    if (sub.size() == 0) {
+      return zero;
+    }
+
+    return Sum(sub);
+  };
+};
 }  // namespace heu::lib::numpy

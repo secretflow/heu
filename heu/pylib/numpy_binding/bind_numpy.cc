@@ -21,6 +21,7 @@
 #include "heu/library/numpy/numpy.h"
 #include "heu/library/numpy/random.h"
 #include "heu/library/numpy/toolbox.h"
+#include "heu/pylib/numpy_binding/extension_functions.h"
 #include "heu/pylib/numpy_binding/infeed.h"
 #include "heu/pylib/numpy_binding/outfeed.h"
 #include "heu/pylib/numpy_binding/py_slicer.h"
@@ -358,7 +359,26 @@ void PyBindNumpy(pybind11::module& m) {
                &hnp::Evaluator::MatMul, py::const_))
 
       .def("sum", &hnp::Evaluator::Sum<phe::Plaintext>)
-      .def("sum", &hnp::Evaluator::Sum<phe::Ciphertext>);
+      .def("sum", &hnp::Evaluator::Sum<phe::Ciphertext>)
+
+      .def("select_sum",
+           &heu::pylib::ExtensionFunctions<phe::Plaintext>::SelectSum,
+           "Compute the sum of selected elements (Plaintext), equivalent "
+           "x[indices].sum() but faster.")
+      .def("select_sum",
+           &heu::pylib::ExtensionFunctions<phe::Ciphertext>::SelectSum,
+           "Compute the sum of selected elements (Ciphertext), equivalent "
+           "x[indices].sum() but faster.")
+      .def("batch_select_sum",
+           &heu::pylib::ExtensionFunctions<phe::Plaintext>::BatchSelectSum,
+           "Compute an array of sum of selected elements (Plaintext), "
+           "equivalent to [x[indices].sum() for indices in indices_list] but "
+           "faster.")
+      .def("batch_select_sum",
+           &heu::pylib::ExtensionFunctions<phe::Ciphertext>::BatchSelectSum,
+           "Compute an array of sum of selected elements (Ciphertext), "
+           "equivalent to [x[indices].sum() for indices in indices_list] but "
+           "faster.");
 }
 
 }  // namespace heu::pylib

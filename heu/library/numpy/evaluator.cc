@@ -23,7 +23,7 @@ namespace heu::lib::numpy {
 
 namespace {
 
-constexpr int64_t kHeOpGrainSize = 32;
+constexpr int64_t kHeOpGrainSize = 256;
 
 // todo: drop this class, just use Shape
 struct Dimension {

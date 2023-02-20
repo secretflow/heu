@@ -35,7 +35,8 @@ class BasicCase(unittest.TestCase):
 
         harr = harr.to_numpy(edr)
         self.assertTrue(
-            np.array_equal(harr, nparr), f"hnp is\n{harr}\nnumpy array is \n{nparr}"
+            np.array_equal(harr, nparr),
+            f"hnp is\n{harr}, type {type(harr)}\nnumpy array is \n{nparr}, type {type(nparr)}",
         )
 
     def test_parse_and_str(self):
@@ -210,6 +211,30 @@ class BasicCase(unittest.TestCase):
         self.assertEqual(
             self.decryptor.phe.decrypt(ct3), phe.Plaintext(self.kit.get_schema(), 22)
         )
+
+        # select sum
+        pt3 = self.evaluator.select_sum(pt1, ([0, 1], 0))
+        self.assertEqual(pt3, phe.Plaintext(self.kit.get_schema(), 4))
+        ct3 = self.evaluator.select_sum(ct1, [0])
+        self.assertEqual(
+            self.decryptor.phe.decrypt(ct3), phe.Plaintext(self.kit.get_schema(), 3)
+        )
+        pt3 = self.evaluator.select_sum(pt2, ())
+        self.assertEqual(pt3, phe.Plaintext(self.kit.get_schema(), 0))
+        ct3 = self.evaluator.select_sum(ct2, (1, [0, 1]))
+        self.assertEqual(
+            self.decryptor.phe.decrypt(ct3), phe.Plaintext(self.kit.get_schema(), 13)
+        )
+
+        # batch select sum
+        pt3 = self.evaluator.batch_select_sum(pt1, [(0, 0), (1, 1)])
+        self.assert_array_equal(pt3, np.array([1, 4]))
+        ct3 = self.evaluator.batch_select_sum(ct1, [0])
+        self.assert_array_equal(ct3, np.array([3]))
+        pt3 = self.evaluator.batch_select_sum(pt2, [(), ()])
+        self.assert_array_equal(pt3, np.array([0, 0]))
+        ct3 = self.evaluator.batch_select_sum(ct2, [(1, [0, 1]), ([0, 1], 0)])
+        self.assert_array_equal(ct3, np.array([13, 10]))
 
     def test_matmul(self):
         nparr1 = np.random.randint(-10000, 10000, (64,))
