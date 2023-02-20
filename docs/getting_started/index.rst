@@ -10,4 +10,5 @@
    installation
    quick_start
    numpy
+   algo_choice
    faq

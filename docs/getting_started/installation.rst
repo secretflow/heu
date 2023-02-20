@@ -43,8 +43,8 @@ HEU 安装包已经发布到了 PyPi，您可以通过 pip 工具安装 HEU
 
   git clone --recursive git@github.com:secretflow/heu.git
   cd heu
-  bazel build //heu:heu_wheel -c opt
-  pip install bazel-bin/heu/(cat bazel-bin/heu/heu_wheel.name) --force-reinstall
+  bazel build //heu/pylib -c opt
+  pip install bazel-bin/heu/pylib/(cat bazel-bin/heu/pylib/pylib.name) --force-reinstall
 
 
 测试运行

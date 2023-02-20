@@ -90,8 +90,8 @@ Plaintext Plaintext::operator-() const {
   });
 }
 
-void Plaintext::NegInplace() {
-  Visit([&](auto& pt) { FOR_EACH_TYPE(pt) pt.NegInplace(); });
+void Plaintext::NegateInplace() {
+  Visit([&](auto& pt) { FOR_EACH_TYPE(pt) pt.NegateInplace(); });
 }
 
 Plaintext Plaintext::operator<<=(size_t operand2) {

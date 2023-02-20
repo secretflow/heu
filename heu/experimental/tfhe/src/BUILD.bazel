@@ -12,7 +12,7 @@ rust_library(
         "tools/*.rs",
         "lib.rs",
     ]),
-    deps = all_crate_deps(package_name = "heu/tfhe"),
+    deps = all_crate_deps(package_name = "heu/experimental/tfhe"),
 )
 
 rust_static_library(
@@ -22,13 +22,13 @@ rust_static_library(
         "tools/*.rs",
         "lib.rs",
     ]),
-    deps = all_crate_deps(package_name = "heu/tfhe"),
+    deps = all_crate_deps(package_name = "heu/experimental/tfhe"),
 )
 
 rust_binary(
     name = "bench_bootstrap",
     srcs = ["bin/bench_bootstrap.rs"],
-    deps = all_crate_deps(package_name = "heu/tfhe") + [
+    deps = all_crate_deps(package_name = "heu/experimental/tfhe") + [
         ":torus",
     ],
 )

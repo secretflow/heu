@@ -110,7 +110,7 @@ TEST_F(ZPaillierTest, MinMaxDecrypt) {
   decryptor_->Decrypt(ct0, &plain2);
   EXPECT_EQ(plain, plain2);
 
-  plain.NegInplace();  // -max
+  plain.NegateInplace();  // -max
   ct0 = encryptor_->Encrypt(plain);
   decryptor_->Decrypt(ct0, &plain2);
   EXPECT_EQ(plain, plain2);

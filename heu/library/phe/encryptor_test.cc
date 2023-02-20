@@ -62,7 +62,7 @@ TEST_P(EncryptorTest, MinMaxEnc) {
   auto plain = he_kit_.GetPublicKey()->PlaintextBound();
   EXPECT_THROW(encryptor->Encrypt(plain), std::exception);  // too big
 
-  plain.NegInplace();
+  plain.NegateInplace();
   EXPECT_THROW(encryptor->Encrypt(plain), std::exception);  // too small
 
   plain = he_kit_.GetPublicKey()->PlaintextBound();
@@ -71,7 +71,7 @@ TEST_P(EncryptorTest, MinMaxEnc) {
   Plaintext plain2 = decryptor->Decrypt(ct0);
   EXPECT_EQ(plain, plain2);
 
-  plain.NegInplace();  // -max
+  plain.NegateInplace();  // -max
   ct0 = encryptor->Encrypt(plain);
   decryptor->Decrypt(ct0, &plain2);
   EXPECT_EQ(plain, plain2);

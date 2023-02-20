@@ -6,5 +6,5 @@ package(default_visibility = ["//visibility:public"])
 rust_test_suite(
     name = "torus_tests",
     srcs = glob(["*.rs"]),
-    deps = all_crate_deps(package_name = "heu/tfhe") + ["//heu/experimental/tfhe/src:torus"],
+    deps = all_crate_deps(package_name = "heu/experimental/tfhe") + ["//heu/experimental/tfhe/src:torus"],
 )

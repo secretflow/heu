@@ -50,7 +50,7 @@ class Plaintext {
   size_t BitCount() const;
 
   Plaintext operator-() const;
-  void NegInplace();
+  void NegateInplace();
 
   bool IsZero() const;      // [SPI: Critical]
   bool IsPositive() const;  // [SPI: Important]

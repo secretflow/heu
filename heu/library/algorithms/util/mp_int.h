@@ -52,7 +52,7 @@ class MPInt {
   MPInt();
 
   // Supported T = (u)int8/16/32/64/128 or float/double
-  template <typename T>
+  template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
   explicit MPInt(T value, size_t reserved_bits = sizeof(T) * CHAR_BIT) {
     // if T = double, the size is still safe because Set(double) will auto grow
     // memory
@@ -62,6 +62,8 @@ class MPInt {
     MPINT_ENFORCE_OK(mp_init_size(&n_, digits));
     Set(value);
   }
+
+  explicit MPInt(const std::string &num, size_t radix = 0);
 
   MPInt(MPInt &&other) noexcept;
   MPInt(const MPInt &other);
@@ -129,7 +131,7 @@ class MPInt {
 
   /* a = -a */
   inline void Negate(MPInt *z) const { MPINT_ENFORCE_OK(mp_neg(&n_, &z->n_)); }
-  inline void NegInplace() { MPINT_ENFORCE_OK(mp_neg(&n_, &n_)); }
+  inline void NegateInplace() { MPINT_ENFORCE_OK(mp_neg(&n_, &n_)); }
 
   [[nodiscard]] inline bool IsNegative() const { return mp_isneg(&n_); }
   [[nodiscard]] inline bool IsPositive() const {
@@ -147,7 +149,7 @@ class MPInt {
   template <typename T>
   void Set(T value);
 
-  void Set(const std::string &num, int radix);
+  void Set(const std::string &num, int radix = 0);
 
   // compare a to b
   // Returns:
@@ -195,10 +197,22 @@ class MPInt {
 
   [[nodiscard]] bool IsPrime() const;
 
-  /**
-   * (*c) = a * b
-   */
+  // (*c) = a + b
+  static void Add(const MPInt &a, const MPInt &b, MPInt *c);
+  MPInt AddMod(const MPInt &b, const MPInt &mod) const;
+
+  // (*c) = a - b
+  static void Sub(const MPInt &a, const MPInt &b, MPInt *c);
+  MPInt SubMod(const MPInt &b, const MPInt &mod) const;
+
+  // (*c) = a * b
   static void Mul(const MPInt &a, const MPInt &b, MPInt *c);
+  MPInt Mul(mp_digit b) const;
+  void MulInplace(mp_digit b);
+
+  MPInt MulMod(const MPInt &b, const MPInt &mod) const;
+  static void MulMod(const MPInt &a, const MPInt &b, const MPInt &mod,
+                     MPInt *d);
 
   /**
    * Generate a random number >= 0
@@ -228,16 +242,12 @@ class MPInt {
    */
   static void RandomLtN(const MPInt &n, MPInt *r);
 
-  /**
-   *  (*d) = (a * b) mod c
-   */
-  static void MulMod(const MPInt &a, const MPInt &b, const MPInt &mod,
-                     MPInt *d);
-
   // *d = (a**b) mod c
   static void PowMod(const MPInt &a, const MPInt &b, const MPInt &mod,
                      MPInt *d);
   static void Pow(const MPInt &a, uint32_t b, MPInt *c);
+  MPInt Pow(uint32_t b) const;
+  void PowInplace(uint32_t b);
 
   static void Lcm(const MPInt &a, const MPInt &b, MPInt *c);
   static void Gcd(const MPInt &a, const MPInt &b, MPInt *c);
@@ -258,9 +268,50 @@ class MPInt {
    * exception is thrown
    */
   static void InvertMod(const MPInt &a, const MPInt &mod, MPInt *c);
+  MPInt InvertMod(const MPInt &mod) const;
 
   /* c = a mod b, 0 <= c < b  */
   static void Mod(const MPInt &a, const MPInt &mod, MPInt *c);
+
+  // if combiner is add, output scalar * base
+  // if combiner is mul, output scalar ** base
+  // warning: this function is very slow.
+  template <typename T>
+  static T CustomGroupPowSlow(
+      const T &identity, const T &base, const MPInt &scalar,
+      const std::function<void(T *, const T &)> &CombineInplace) {
+    YACL_ENFORCE(!scalar.IsNegative(), "scalar must >= 0, get {}", scalar);
+
+    if (scalar.n_.used == 0) {
+      return identity;
+    }
+
+    T res = identity;
+    T s = base;
+    for (int digit_idx = 0; digit_idx < scalar.n_.used - 1; ++digit_idx) {
+      mp_digit e = scalar.n_.dp[digit_idx];
+      for (int i = 0; i < MP_DIGIT_BIT; ++i) {
+        if (e & 1) {
+          CombineInplace(&res, s);
+        }
+        e >>= 1;
+        CombineInplace(&s, s);
+      }
+    }
+
+    // process last digit
+    mp_digit e = scalar.n_.dp[scalar.n_.used - 1] & MP_MASK;
+    while (e != 0) {
+      if (e & 1) {
+        CombineInplace(&res, s);
+      }
+      e >>= 1;
+      if (e != 0) {
+        CombineInplace(&s, s);
+      }
+    }
+    return res;
+  }
 
  protected:
   mp_int n_;
@@ -270,6 +321,9 @@ class MPInt {
 
   friend class MontgomerySpace;
 };
+
+MPInt operator""_mp(const char *sz, size_t n);
+MPInt operator""_mp(unsigned long long num);
 
 }  // namespace heu::lib::algorithms
 

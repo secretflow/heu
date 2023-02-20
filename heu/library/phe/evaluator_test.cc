@@ -97,7 +97,7 @@ TEST_P(EvaluatorTest, EvaluateInplace) {
   EXPECT_EQ(decryptor->Decrypt(ct0).GetValue<int64_t>(), 9876);
 
   evaluator->NegateInplace(&ct1);
-  pt1.NegInplace();
+  pt1.NegateInplace();
   EXPECT_EQ(decryptor->Decrypt(ct1), pt1);
 
   // ADD //

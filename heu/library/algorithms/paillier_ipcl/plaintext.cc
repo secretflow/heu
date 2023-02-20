@@ -291,7 +291,7 @@ Plaintext Plaintext::operator-() const {
   return result;
 }
 
-void Plaintext::NegInplace() { *this = -(*this); }
+void Plaintext::NegateInplace() { *this = -(*this); }
 
 size_t Plaintext::BitCount() const { return bn_.BitSize(); }
 

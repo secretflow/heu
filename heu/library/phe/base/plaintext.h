@@ -51,7 +51,7 @@ class Plaintext : public SerializableVariant<HE_PLAINTEXT_TYPES> {
   [[nodiscard]] std::string ToHexString() const;
 
   Plaintext operator-() const;
-  void NegInplace();
+  void NegateInplace();
 
   bool IsZero() const;
   bool IsPositive() const;

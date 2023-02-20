@@ -22,7 +22,20 @@ namespace heu::lib::algorithms {
 const MPInt MPInt::_1_(1);
 const MPInt MPInt::_2_(2);
 
+MPInt operator""_mp(const char *sz, size_t n) {
+  return MPInt(std::string(sz, n));
+}
+
+MPInt operator""_mp(unsigned long long num) {
+  return MPInt(static_cast<uint64_t>(num));
+}
+
 MPInt::MPInt() { MPINT_ENFORCE_OK(mp_init(&n_)); }
+
+MPInt::MPInt(const std::string &num, size_t radix) {
+  MPINT_ENFORCE_OK(mp_init(&n_));
+  Set(num, radix);
+}
 
 MPInt::MPInt(MPInt &&other) noexcept {
   // /* the infamous mp_int structure */
@@ -349,7 +362,48 @@ void MPInt::Set(MPInt value) {
 // it doesn't store a null-terminated string. It stores a pointer to the
 // first element, and the length of the string, basically.
 void MPInt::Set(const std::string &num, int radix) {
-  MPINT_ENFORCE_OK(mp_read_radix(&n_, num.c_str(), radix));
+  auto p = num.c_str();
+  auto len = num.size();
+  YACL_ENFORCE(len > 0, "Cannot init MPInt by an empty string");
+
+  if (radix > 0) {
+    MPINT_ENFORCE_OK(mp_read_radix(&n_, num.c_str(), radix));
+    return;
+  }
+
+  bool is_neg = false;
+  // radix <= 0, auto detect radix
+  // https://stackoverflow.com/questions/56881846/get-radix-from-stdstoi
+  if (*p == '+' || *p == '-') {
+    is_neg = *p == '-';
+    ++p;
+    --len;
+    YACL_ENFORCE(len > 0, "Invalid number string '{}'", num);
+  }
+
+  if (*p == '0' && len == 1) {
+    SetZero();
+    return;
+  }
+
+  if (*p != '0') {
+    MPINT_ENFORCE_OK(mp_read_radix(&n_, p, 10), "Invalid decimal string: {}",
+                     num);
+  } else {
+    ++p;
+    --len;
+    if (*p == 'x' || *p == 'X') {
+      MPINT_ENFORCE_OK(mp_read_radix(&n_, ++p, 16), "Invalid hex string: {}",
+                       num);
+    } else {
+      MPINT_ENFORCE_OK(mp_read_radix(&n_, p, 8), "Invalid octal string: {}",
+                       num);
+    }
+  }
+
+  if (is_neg) {
+    NegateInplace();
+  }
 }
 
 // todo: this function is very slow.
@@ -409,10 +463,6 @@ bool MPInt::IsPrime() const {
   return result > 0;
 }
 
-void MPInt::Mul(const MPInt &a, const MPInt &b, MPInt *c) {
-  MPINT_ENFORCE_OK(mp_mul(&a.n_, &b.n_, &c->n_));
-}
-
 void MPInt::RandomRoundDown(size_t bit_size, MPInt *r) {
   // floor (向下取整)
   mp_int *n = &r->n_;
@@ -442,12 +492,60 @@ void MPInt::RandomLtN(const MPInt &n, MPInt *r) {
   } while (r->IsNegative() || r->Compare(n) >= 0);
 }
 
+void MPInt::Add(const MPInt &a, const MPInt &b, MPInt *c) {
+  MPINT_ENFORCE_OK(mp_add(&a.n_, &b.n_, &c->n_));
+}
+
+MPInt MPInt::AddMod(const MPInt &b, const MPInt &mod) const {
+  MPInt res;
+  MPINT_ENFORCE_OK(mp_addmod(&n_, &b.n_, &mod.n_, &res.n_));
+  return res;
+}
+
+void MPInt::Sub(const MPInt &a, const MPInt &b, MPInt *c) {
+  MPINT_ENFORCE_OK(mp_sub(&a.n_, &b.n_, &c->n_));
+}
+
+MPInt MPInt::SubMod(const MPInt &b, const MPInt &mod) const {
+  MPInt res;
+  MPINT_ENFORCE_OK(mp_submod(&n_, &b.n_, &mod.n_, &res.n_));
+  return res;
+}
+
+void MPInt::Mul(const MPInt &a, const MPInt &b, MPInt *c) {
+  MPINT_ENFORCE_OK(mp_mul(&a.n_, &b.n_, &c->n_));
+}
+
+MPInt MPInt::Mul(mp_digit b) const {
+  MPInt res;
+  MPINT_ENFORCE_OK(mp_mul_d(&n_, b, &res.n_));
+  return res;
+}
+
+void MPInt::MulInplace(mp_digit b) { MPINT_ENFORCE_OK(mp_mul_d(&n_, b, &n_)); }
+
+MPInt MPInt::MulMod(const MPInt &b, const MPInt &mod) const {
+  MPInt res;
+  MPINT_ENFORCE_OK(mp_mulmod(&n_, &b.n_, &mod.n_, &res.n_));
+  return res;
+}
+
 void MPInt::MulMod(const MPInt &a, const MPInt &b, const MPInt &mod, MPInt *d) {
   MPINT_ENFORCE_OK(mp_mulmod(&a.n_, &b.n_, &mod.n_, &d->n_));
 }
 
 void MPInt::Pow(const MPInt &a, uint32_t b, MPInt *c) {
   MPINT_ENFORCE_OK(mp_expt_u32(&a.n_, b, &c->n_));
+}
+
+MPInt MPInt::Pow(uint32_t b) const {
+  MPInt res;
+  MPINT_ENFORCE_OK(mp_expt_u32(&n_, b, &res.n_));
+  return res;
+}
+
+void MPInt::PowInplace(uint32_t b) {
+  MPINT_ENFORCE_OK(mp_expt_u32(&n_, b, &n_));
 }
 
 void MPInt::PowMod(const MPInt &a, const MPInt &b, const MPInt &mod, MPInt *d) {
@@ -475,6 +573,12 @@ void MPInt::Div3(const MPInt &a, MPInt *b) {
 
 void MPInt::InvertMod(const MPInt &a, const MPInt &mod, MPInt *c) {
   MPINT_ENFORCE_OK(mp_invmod(&a.n_, &mod.n_, &c->n_));
+}
+
+MPInt MPInt::InvertMod(const MPInt &mod) const {
+  MPInt res(0, mod.BitCount());
+  InvertMod(*this, mod, &res);
+  return res;
 }
 
 void MPInt::Mod(const MPInt &a, const MPInt &mod, MPInt *c) {

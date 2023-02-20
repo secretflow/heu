@@ -73,7 +73,7 @@ class Evaluator {
   Ciphertext Negate(const Ciphertext& a) const;
   Plaintext Negate(const Plaintext& a) const { return -a; };
   void NegateInplace(Ciphertext* a) const;
-  void NegateInplace(Plaintext* a) const { a->NegInplace(); };
+  void NegateInplace(Plaintext* a) const { a->NegateInplace(); };
 
   SchemaType GetSchemaType() const;
 

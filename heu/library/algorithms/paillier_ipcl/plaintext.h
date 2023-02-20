@@ -46,7 +46,7 @@ class Plaintext {
   size_t BitCount() const;
 
   Plaintext operator-() const;
-  void NegInplace();
+  void NegateInplace();
 
   inline bool IsNegative() const { return bn_ < BigNumber::Zero(); };
 

@@ -43,21 +43,61 @@ TEST_F(MPIntTest, ArithmeticWorks) {
   EXPECT_TRUE(x2 * x1 == MPInt(37 * 23));
   EXPECT_TRUE(x1 / x2 == MPInt(23 / 37));
   EXPECT_TRUE(x2 / x1 == MPInt(37 / 23));
+
+  EXPECT_EQ(x1.AddMod(x2, MPInt(5)), MPInt((23 + 37) % 5));
+  EXPECT_EQ(x2.SubMod(x1, MPInt(5)), MPInt((37 - 23) % 5));
+  EXPECT_EQ(x1.MulMod(x2, MPInt(5)), MPInt((23 * 37) % 5));
+
+  MPInt c;
+  MPInt::Add(x1, x2, &c);
+  EXPECT_TRUE(c == MPInt(23 + 37));
+  MPInt::Sub(x1, x2, &c);
+  EXPECT_TRUE(c == MPInt(23 - 37));
+  MPInt::Mul(x1, x2, &c);
+  EXPECT_TRUE(c == MPInt(23 * 37));
+
+  EXPECT_TRUE(x1.Mul(3) == MPInt(23 * 3));
+  x1.MulInplace(3);
+  EXPECT_TRUE(x1 == MPInt(23 * 3));
 }
 
-TEST_F(MPIntTest, DefaultCtorWorks) {
+TEST_F(MPIntTest, CtorZeroWorks) {
   MPInt x;
-
   EXPECT_TRUE(x.IsZero());
+
+  MPInt x2(0);
+  EXPECT_TRUE(x2.IsZero());
+
+  MPInt x3(0, 2048);
+  EXPECT_TRUE(x3.IsZero());
 }
 
 TEST_F(MPIntTest, CtorWorks) {
   MPInt x1(-123456);
-  MPInt x2(2345);
+  MPInt x2(2345, 512);
 
   EXPECT_TRUE(x1.IsNegative());
   EXPECT_FALSE(x2.IsNegative());
   EXPECT_TRUE(x1.Compare(x2) < 0);
+
+  EXPECT_EQ(MPInt("0").Get<int64_t>(), 0);
+  EXPECT_EQ(MPInt("0777").Get<int64_t>(), 511);
+  EXPECT_EQ(MPInt("520").Get<int64_t>(), 520);
+  EXPECT_EQ(MPInt("0xabc").Get<int64_t>(), 2748);
+  EXPECT_EQ(MPInt("0xABC").Get<int64_t>(), 2748);
+  EXPECT_EQ(MPInt("0Xabc").Get<int64_t>(), 2748);
+  EXPECT_EQ(MPInt("-0").Get<int64_t>(), 0);
+  EXPECT_EQ(MPInt("-0777").Get<int64_t>(), -511);
+  EXPECT_EQ(MPInt("-520").Get<int64_t>(), -520);
+  EXPECT_EQ(MPInt("-0xabc").Get<int64_t>(), -2748);
+  EXPECT_EQ(MPInt("-0xABC").Get<int64_t>(), -2748);
+  EXPECT_EQ(MPInt("-0Xabc").Get<int64_t>(), -2748);
+  EXPECT_EQ(MPInt("+0").Get<int64_t>(), 0);
+  EXPECT_EQ(MPInt("+0777").Get<int64_t>(), 511);
+  EXPECT_EQ(MPInt("+520").Get<int64_t>(), 520);
+  EXPECT_EQ(MPInt("+0xabc").Get<int64_t>(), 2748);
+  EXPECT_EQ(MPInt("+0xABC").Get<int64_t>(), 2748);
+  EXPECT_EQ(MPInt("+0Xabc").Get<int64_t>(), 2748);
 }
 
 TEST_F(MPIntTest, InvertModWorks) {
@@ -211,6 +251,18 @@ TEST_F(MPIntTest, ToBytesWorks) {
 
   a = MPInt(-1);
   EXPECT_EQ(a.ToBytes(10, Endian::little), a.ToBytes(10, Endian::big));
+}
+
+TEST_F(MPIntTest, CustomPowWorks) {
+  // 3^1234
+  MPInt res = MPInt::CustomGroupPowSlow<MPInt>(
+      1_mp, 3_mp, 1234_mp, [](MPInt* a, const MPInt& b) -> void { *a *= b; });
+  EXPECT_EQ(res, (3_mp).Pow(1234));
+
+  // 23 * 90
+  res = MPInt::CustomGroupPowSlow<MPInt>(
+      0_mp, 23_mp, 90_mp, [](MPInt* a, const MPInt& b) -> void { *a += b; });
+  EXPECT_EQ(res.Get<int64_t>(), 23 * 90);
 }
 
 class MPIntToBytesTest : public ::testing::TestWithParam<int128_t> {};
