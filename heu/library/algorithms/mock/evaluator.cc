@@ -158,7 +158,7 @@ std::vector<Ciphertext> Evaluator::Negate(ConstSpan<Ciphertext> a) const {
 
 void Evaluator::NegateInplace(Span<Ciphertext> a) const {
   for (const auto& item : a) {
-    item->bn_.NegInplace();
+    item->bn_.NegateInplace();
   }
 };
 

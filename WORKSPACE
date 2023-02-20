@@ -7,7 +7,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 SECRETFLOW_GIT = "https://github.com/secretflow"
 
-YACL_COMMIT_ID  = "36651b8002d7ef6ac3576b4b118b2b5cf9827bf5"
+YACL_COMMIT_ID  = "791ba5cc146903394a99739563ecddfa436f440d"
 
 git_repository(
     name = "yacl",
@@ -43,20 +43,20 @@ rules_foreign_cc_dependencies(
 
 http_archive(
     name = "rules_python",
-    sha256 = "c03246c11efd49266e8e41e12931090b613e12a59e6f55ba2efd29a7cb8b4258",
-    strip_prefix = "rules_python-0.11.0",
+    sha256 = "8c15896f6686beb5c631a4459a3aa8392daccaab805ea899c9d14215074b60ef",
+    strip_prefix = "rules_python-0.17.3",
     urls = [
-        "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.11.0.tar.gz",
+        "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.17.3.tar.gz",
     ],
 )
 
 # Python binding.
 http_archive(
     name = "pybind11_bazel",
-    sha256 = "a5666d950c3344a8b0d3892a88dc6b55c8e0c78764f9294e806d69213c03f19d",
-    strip_prefix = "pybind11_bazel-26973c0ff320cb4b39e45bc3e4297b82bc3a6c09",
+    sha256 = "6426567481ee345eb48661e7db86adc053881cb4dd39fbf527c8986316b682b9",
+    strip_prefix = "pybind11_bazel-fc56ce8a8b51e3dd941139d329b63ccfea1d304b",
     urls = [
-        "https://github.com/pybind/pybind11_bazel/archive/26973c0ff320cb4b39e45bc3e4297b82bc3a6c09.zip",
+        "https://github.com/pybind/pybind11_bazel/archive/fc56ce8a8b51e3dd941139d329b63ccfea1d304b.zip",
     ],
 )
 
@@ -73,10 +73,7 @@ http_archive(
 
 load("@pybind11_bazel//:python_configure.bzl", "python_configure")
 
-python_configure(
-    name = "local_config_python",
-    python_version = "3",
-)
+python_configure(name = "local_config_python")
 
 #### for rust ####
 

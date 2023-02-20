@@ -170,7 +170,7 @@ TEST_P(PlaintextTest, ArithmeticWorks) {
   EXPECT_EQ((pt1 <<= 10).GetValue<int128_t>(), v1 <<= 10);
   EXPECT_EQ((pt1 >>= 10).GetValue<int128_t>(), v1 >>= 10);
 
-  pt1.NegInplace();
+  pt1.NegateInplace();
   EXPECT_EQ(pt1.GetValue<int128_t>(), -v1);
 }
 

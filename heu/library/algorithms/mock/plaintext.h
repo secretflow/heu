@@ -83,7 +83,7 @@ class Plaintext {
   size_t BitCount() const { return bn_.BitCount(); }  // [SPI: Critical]
 
   Plaintext operator-() const { return Wrap(-bn_); }  // [SPI: Critical]
-  void NegInplace() { bn_.NegInplace(); }             // [SPI: Critical]
+  void NegateInplace() { bn_.NegateInplace(); }       // [SPI: Critical]
 
   // [SPI: Critical]
   Plaintext operator+(const Plaintext &op2) const {

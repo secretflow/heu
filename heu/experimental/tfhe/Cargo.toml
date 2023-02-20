@@ -25,8 +25,8 @@ targets = [
 genmode = "Remote"
 default_gen_buildrs = true
 experimental_api = true
-registry = "https://crates-io.proxy.ustclug.org/api/v1/crates/{crate}/{version}/download"
-index_url = "https://mirrors.ustc.edu.cn/crates.io-index"
+#registry = "https://crates-io.proxy.ustclug.org/api/v1/crates/{crate}/{version}/download"
+#index_url = "https://mirrors.ustc.edu.cn/crates.io-index"
 
 [profile.test]
 opt-level = 3
