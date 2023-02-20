@@ -61,6 +61,6 @@ Build python lib
 
 ```shell
 # require Python 3.8
-# build and install python library (by default no GPU acceleration)
+# build and install python library
 sh heu/pylib/reinstall.sh
 ```
