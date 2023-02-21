@@ -17,6 +17,7 @@
 #include "msgpack.hpp"
 
 #include "heu/library/algorithms/mock/mock.h"
+#include "heu/library/algorithms/ou/ou.h"
 #include "heu/library/algorithms/paillier_float/paillier.h"
 #include "heu/library/algorithms/paillier_ipcl/ipcl.h"
 #include "heu/library/algorithms/paillier_zahlen/paillier.h"
@@ -37,6 +38,7 @@ namespace heu::lib::phe {
 // clang-format off
 enum class SchemaType {
   ENUM_ELEMENT(true, Mock)  // Mock He
+  ENUM_ELEMENT(true, OU)
   ENUM_ELEMENT(ENABLE_IPCL, IPCL)
   ENUM_ELEMENT(true, ZPaillier)  // Preferred
   ENUM_ELEMENT(true, FPaillier)
@@ -74,6 +76,7 @@ std::ostream& operator<<(std::ostream& os, SchemaType st);
 // clang-format off
 #define HE_FOR_EACH(func_or_macro, ...)                             \
   func_or_macro(::heu::lib::algorithms::mock, ##__VA_ARGS__)        \
+  INVOKE(true, func_or_macro, ::heu::lib::algorithms::ou, ##__VA_ARGS__)                   \
   INVOKE(ENABLE_IPCL, func_or_macro, ::heu::lib::algorithms::paillier_ipcl, ##__VA_ARGS__) \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_z, ##__VA_ARGS__)           \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_f, ##__VA_ARGS__)

@@ -187,6 +187,19 @@ TEST_F(NumpyTest, SumWorks) {
             899 * 900 / 2);
 }
 
+TEST_F(NumpyTest, SelectSumWorks) {
+  auto m = GenMatrix(he_kit_.GetSchemaType(), 30, 30);
+  std::vector<int64_t> a{0}, b{0, 1};
+
+  auto sum = he_kit_.GetEvaluator()->SelectSum(m, a, a);
+  EXPECT_EQ(sum.GetValue<int64_t>(), 0);
+
+  auto m2 = he_kit_.GetEncryptor()->Encrypt(m);
+  auto sum2 = he_kit_.GetEvaluator()->SelectSum(m2, b, b);
+  EXPECT_EQ(he_kit_.GetDecryptor()->Decrypt(sum2).GetValue<int64_t>(),
+            0 + 1 + 30 + 31);
+}
+
 class MatmulTest : public ::testing::TestWithParam<std::tuple<int, int, int>> {
  protected:
   HeKit he_kit_ = HeKit(phe::HeKit(phe::SchemaType::ZPaillier, 2048));

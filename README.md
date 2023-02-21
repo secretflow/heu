@@ -33,10 +33,9 @@ communication, so HEU and PPU are complementary
 
 Depending on the computing power, HEU has 4 working modes:
 
-
 | working mode          | Supported calculation types               | Number of calculations | HE algorithms  | Calculating speed  | Ciphertext size     |
 |-----------------------|-------------------------------------------|------------------------|----------------|--------------------|---------------------|
-| PHEU                  | addition                                  | Unlimited              | Paillier, -   | Fast               | Small               |
+| PHEU                  | addition                                  | Unlimited              | Paillier, OU   | Fast               | Small               |
 | LHEU                  | addition, multiplication                  | Limited                | BGV, CKKS      | Fast (packed mode) | Least (packed mode) |
 | FHEU (low precision)  | addition, mux, LUT                        | Unlimited              | TFHE (Torus)   | Fastest            | Large               |
 | FHEU (high precision) | addition, multiplication, comparison, mux | Unlimited              | TFHE (Bitwise) | Very slow          | Largest             |
@@ -65,4 +64,3 @@ Build python lib
 # build and install python library
 sh heu/pylib/reinstall.sh
 ```
-

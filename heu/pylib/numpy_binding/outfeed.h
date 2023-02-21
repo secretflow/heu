@@ -105,9 +105,8 @@ py::array DecodeNdarray(
 
   int rows = in.rows();
   py::array res;
-  if (in.ndim() <= 1) {
-    // in matrix is 1x1
-    YACL_ENFORCE(in.rows() == 1, "0d/1d-array's size must be 1x2 currently");
+  if (in.ndim() <= 1 && in.rows() == 1) {
+    // in matrix is 1x1, or a scalar
     res = py::array(py::dtype(Encoder_t::DefaultPyTypeFormat),
                     py::array::ShapeContainer({2}));
   } else {
@@ -115,20 +114,32 @@ py::array DecodeNdarray(
   }
 
   auto r = res.template mutable_unchecked<typename Encoder_t::DefaultPlainT>();
-  if (in.ndim() == 1) {
+  if (in.ndim() <= 1 && in.rows() == 1) {
     r(0) = encoder.template Decode<0>(in(0, 0));
     r(1) = encoder.template Decode<1>(in(0, 0));
     return res;
   }
 
-  yacl::parallel_for(0, in.size(), kHeOpGrainSize,
-                     [&](int64_t beg, int64_t end) {
-                       for (int64_t row = beg; row < end; ++row) {
-                         const auto &pt = in(row, 0);
-                         r(row, 0) = encoder.template Decode<0>(pt);
-                         r(row, 1) = encoder.template Decode<1>(pt);
-                       }
-                     });
+  if (in.ndim() == 1 && in.rows() > 1) {
+    yacl::parallel_for(0, in.size(), kHeOpGrainSize,
+                       [&](int64_t beg, int64_t end) {
+                         for (int64_t row = beg; row < end; ++row) {
+                           const auto &pt = in(row);
+                           r(row, 0) = encoder.template Decode<0>(pt);
+                           r(row, 1) = encoder.template Decode<1>(pt);
+                         }
+                       });
+  } else {
+    yacl::parallel_for(0, in.size(), kHeOpGrainSize,
+                       [&](int64_t beg, int64_t end) {
+                         for (int64_t row = beg; row < end; ++row) {
+                           const auto &pt = in(row, 0);
+                           r(row, 0) = encoder.template Decode<0>(pt);
+                           r(row, 1) = encoder.template Decode<1>(pt);
+                         }
+                       });
+  }
+
   return res;
 }
 

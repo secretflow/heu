@@ -11,6 +11,7 @@ pybind_library(
         ":infeed",
         ":outfeed",
         ":py_slicer",
+        ":extension_functions",
         "//heu/library/numpy",
         "//heu/pylib/phe_binding:py_encoders",
     ],
@@ -43,5 +44,27 @@ pybind_library(
     deps = [
         "//heu/library/numpy",
         "//heu/pylib/common:traits",
+        "//heu/pylib/numpy_binding:slice_tool",
+    ],
+)
+
+pybind_library(
+    name = "slice_tool",
+    srcs = ["slice_tool.cc"],
+    hdrs = ["slice_tool.h"],
+    deps = [
+        "//heu/library/numpy",
+        "//heu/pylib/common:traits",
+    ],
+)
+
+pybind_library(
+    name = "extension_functions",
+    srcs = ["extension_functions.cc"],
+    hdrs = ["extension_functions.h"],
+    deps = [
+        "//heu/library/numpy",
+        "//heu/pylib/common:traits",
+        "//heu/pylib/numpy_binding:slice_tool",
     ],
 )

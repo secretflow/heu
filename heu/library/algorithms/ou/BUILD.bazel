@@ -1,0 +1,126 @@
+load("@yacl//bazel:yacl.bzl", "yacl_cc_binary", "yacl_cc_library", "yacl_cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+test_suite(
+    name = "ou_tests",
+)
+
+yacl_cc_library(
+    name = "ou",
+    hdrs = [
+        "ou.h",
+    ],
+    deps = [
+        ":decryptor",
+        ":encryptor",
+        ":evaluator",
+        ":key_generator",
+    ],
+)
+
+yacl_cc_library(
+    name = "secret_key",
+    hdrs = ["secret_key.h"],
+    deps = [
+        "//heu/library/algorithms/util",
+        "@com_github_msgpack_msgpack//:msgpack",
+    ],
+)
+
+yacl_cc_library(
+    name = "public_key",
+    srcs = ["public_key.cc"],
+    hdrs = ["public_key.h"],
+    deps = [
+        "//heu/library/algorithms/util",
+        "@com_github_msgpack_msgpack//:msgpack",
+    ],
+)
+
+yacl_cc_library(
+    name = "ciphertext",
+    hdrs = ["ciphertext.h"],
+    deps = [
+        "//heu/library/algorithms/util",
+        "@com_github_msgpack_msgpack//:msgpack",
+    ],
+)
+
+yacl_cc_library(
+    name = "key_generator",
+    srcs = ["key_generator.cc"],
+    hdrs = ["key_generator.h"],
+    deps = [
+        ":public_key",
+        ":secret_key",
+    ],
+)
+
+yacl_cc_library(
+    name = "encryptor",
+    srcs = ["encryptor.cc"],
+    hdrs = ["encryptor.h"],
+    deps = [
+        ":ciphertext",
+        ":public_key",
+        "//heu/library/algorithms/util",
+    ],
+)
+
+yacl_cc_library(
+    name = "decryptor",
+    srcs = ["decryptor.cc"],
+    hdrs = ["decryptor.h"],
+    deps = [
+        ":ciphertext",
+        ":public_key",
+        ":secret_key",
+        "//heu/library/algorithms/util",
+    ],
+)
+
+yacl_cc_library(
+    name = "evaluator",
+    srcs = ["evaluator.cc"],
+    hdrs = ["evaluator.h"],
+    deps = [
+        ":ciphertext",
+        ":encryptor",
+        ":public_key",
+        "//heu/library/algorithms/util",
+    ],
+)
+
+yacl_cc_test(
+    name = "key_generator_test",
+    srcs = ["key_generator_test.cc"],
+    deps = [
+        ":key_generator",
+    ],
+)
+
+yacl_cc_test(
+    name = "evaluator_test",
+    srcs = ["evaluator_test.cc"],
+    deps = [
+        ":ou",
+        "//heu/library/phe/encoding",
+    ],
+)
+
+yacl_cc_test(
+    name = "encryptor_test",
+    srcs = ["encryptor_test.cc"],
+    deps = [
+        ":ou",
+    ],
+)
+
+yacl_cc_test(
+    name = "ou_test",
+    srcs = ["ou_test.cc"],
+    deps = [
+        ":ou",
+    ],
+)

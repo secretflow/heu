@@ -16,6 +16,7 @@ yacl_cc_library(
     hdrs = ["schema.h"],
     deps = [
         "//heu/library/algorithms/mock",
+        "//heu/library/algorithms/ou",
         "//heu/library/algorithms/paillier_float",
         "//heu/library/algorithms/paillier_zahlen",
         "//heu/library/algorithms/paillier_ipcl",
