@@ -105,7 +105,8 @@ def _com_github_intel_ipcl():
     maybe(
         new_git_repository,
         name = "com_github_intel_ipcl",
-        commit = "8ed98584692a41ff2bacb7c9ef770b1e3ba3c2fa",  # tag v2.0.0
+        # commit = "8ed98584692a41ff2bacb7c9ef770b1e3ba3c2fa",  # tag v2.0.0
+        commit = "0ad1297c2932cceddb3c5953ed7865c22d7df780", # development branch
         patch_args = ["-p1"],
         patches = [
             "@com_alipay_sf_heu//third_party/bazel_cpp:patches/ipcl.patch",
