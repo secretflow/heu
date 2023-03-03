@@ -15,7 +15,6 @@
 #include "benchmark/benchmark.h"
 
 #include "heu/library/algorithms/paillier_zahlen/paillier.h"
-#include "heu/library/algorithms/util/montgomery_math.h"
 
 namespace heu::lib::bench {
 

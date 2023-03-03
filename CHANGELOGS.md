@@ -10,7 +10,11 @@
 
 > please add your unreleased change here.
 
+## [0.4.0]
+
 - [Feature] Add Okamoto–Uchiyama cryptosystem
+- [Feature] New api: PMatrix/CMatrix add BatchSelectSum api for better
+  performance
 - [Docs] Add docs to help users choose algorithms
 - [Break change] Split BatchEncoder into BatchIntegerEncoder and
   BatchFloatEncoder. Please see upgrade guide doc for details.

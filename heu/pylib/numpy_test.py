@@ -450,6 +450,23 @@ class BasicCase(unittest.TestCase):
         m1 = hnp.random.randbits(self.kit.get_schema(), 2048, sp)
         self.assertEqual(m1.ndim, 2)
         self.assertEqual(tuple(m1.shape), (10, 20))
+        
+    def test_batch_select_sum(self):
+        sample_size = 100 * 10000
+        m1 = hnp.random.randint(
+            phe.Plaintext(self.kit.get_schema(), -100),
+            phe.Plaintext(self.kit.get_schema(), 100),
+            (sample_size, 2),
+        )
+       
+        # select randon 150 row indices and create 50000 batches
+        select_indices = [np.random.randint(0,sample_size,150).tolist() for _ in range(50000)]
+        batch_select_result = self.evaluator.batch_select_sum(m1, select_indices)
+        true_results = [self.evaluator.sum(m1[a]) for a in select_indices]
+        for i in range(len(true_results)):
+            self.assertEqual(batch_select_result[i], true_results[i])
+        
+        
 
 
 if __name__ == "__main__":

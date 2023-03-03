@@ -20,9 +20,12 @@
 #include "heu/library/numpy/matrix.h"
 #include "heu/pylib/common/traits.h"
 #include "heu/pylib/numpy_binding/slice_tool.h"
+
 namespace heu::pylib {
+
+// todo: place make sure this function is thread safe.
 template <typename T>
-T ExtensionFunctions<T>::SelectSum(const hnp::Evaluator evaluator,
+T ExtensionFunctions<T>::SelectSum(const hnp::Evaluator& evaluator,
                                    const hnp::DenseMatrix<T>& p_matrix,
                                    const py::object& key) {
   if (py::isinstance<py::tuple>(key)) {
@@ -55,12 +58,13 @@ T ExtensionFunctions<T>::SelectSum(const hnp::Evaluator evaluator,
 
 template <typename T>
 hnp::DenseMatrix<T> ExtensionFunctions<T>::BatchSelectSum(
-    const hnp::Evaluator evaluator, const hnp::DenseMatrix<T>& p_matrix,
-    std::vector<py::object> key) {
+    const hnp::Evaluator& evaluator, const hnp::DenseMatrix<T>& p_matrix,
+    const std::vector<py::object>& key) {
   auto res = hnp::DenseMatrix<T>(key.size());
   yacl::parallel_for(0, key.size(), 1, [&](int64_t beg, int64_t end) {
     for (int64_t x = beg; x < end; ++x) {
-      res(x) = ExtensionFunctions<T>::SelectSum(evaluator, p_matrix, key[x]);
+      res.data()[x] =
+          ExtensionFunctions<T>::SelectSum(evaluator, p_matrix, key[x]);
     }
   });
   return res;
@@ -68,4 +72,5 @@ hnp::DenseMatrix<T> ExtensionFunctions<T>::BatchSelectSum(
 
 template class ExtensionFunctions<lib::phe::Plaintext>;
 template class ExtensionFunctions<lib::phe::Ciphertext>;
+
 }  // namespace heu::pylib

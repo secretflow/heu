@@ -8,10 +8,10 @@ pybind_library(
     srcs = ["bind_numpy.cc"],
     hdrs = ["bind_numpy.h"],
     deps = [
+        ":extension_functions",
         ":infeed",
         ":outfeed",
         ":py_slicer",
-        ":extension_functions",
         "//heu/library/numpy",
         "//heu/pylib/phe_binding:py_encoders",
     ],

@@ -17,7 +17,7 @@
 #include "benchmark/benchmark.h"
 
 #include "heu/library/algorithms/ou/ou.h"
-#include "heu/library/algorithms/util/tommath_ext_features.h"
+#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::bench {
 

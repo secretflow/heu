@@ -25,7 +25,7 @@ yacl_cc_library(
     linkopts = ["-lm"],  # codec
     visibility = ["//visibility:public"],
     deps = [
-        "//heu/library/algorithms/util:mp_int",
+        "//heu/library/algorithms/util",
         "@com_github_msgpack_msgpack//:msgpack",
         "@com_google_absl//absl/types:optional",
     ],

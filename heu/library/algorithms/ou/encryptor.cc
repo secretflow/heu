@@ -16,8 +16,6 @@
 
 #include "fmt/compile.h"
 
-#include "heu/library/algorithms/util/montgomery_math.h"
-
 namespace heu::lib::algorithms::ou {
 
 Encryptor::Encryptor(PublicKey pk, bool enable_cache)

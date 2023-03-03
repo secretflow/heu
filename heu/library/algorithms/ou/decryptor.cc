@@ -15,7 +15,6 @@
 #include "heu/library/algorithms/ou/decryptor.h"
 
 #include "heu/library/algorithms/util/he_assert.h"
-#include "heu/library/algorithms/util/montgomery_math.h"
 
 namespace heu::lib::algorithms::ou {
 

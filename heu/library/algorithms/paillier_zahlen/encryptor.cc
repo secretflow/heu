@@ -17,8 +17,6 @@
 #include "fmt/compile.h"
 #include "fmt/format.h"
 
-#include "heu/library/algorithms/util/montgomery_math.h"
-
 namespace heu::lib::algorithms::paillier_z {
 
 Encryptor::Encryptor(PublicKey pk) : pk_(std::move(pk)) {}

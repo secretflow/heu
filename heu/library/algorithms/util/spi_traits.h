@@ -15,6 +15,7 @@
 #pragma once
 
 #include "absl/types/span.h"
+#include "yacl/crypto/base/mpint/type_traits.h"
 
 namespace heu::lib::algorithms {
 
@@ -24,11 +25,6 @@ using Span = absl::Span<T* const>;
 template <typename T>
 using ConstSpan = absl::Span<const T* const>;
 
-// borrow from c++20 stl
-enum class Endian {
-  little = __ORDER_LITTLE_ENDIAN__,
-  big = __ORDER_BIG_ENDIAN__,
-  native = __BYTE_ORDER__,  // alias for little or big
-};
+using yacl::crypto::Endian;
 
 }  // namespace heu::lib::algorithms
