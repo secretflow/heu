@@ -20,15 +20,17 @@
 #include "heu/library/numpy/matrix.h"
 
 namespace heu::pylib {
+
 template <typename T>
 class ExtensionFunctions {
  public:
-  static T SelectSum(const lib::numpy::Evaluator e,
+  static T SelectSum(const lib::numpy::Evaluator& e,
                      const lib::numpy::DenseMatrix<T>& x,
                      const pybind11::object& key);
 
   static lib::numpy::DenseMatrix<T> BatchSelectSum(
-      const lib::numpy::Evaluator e, const lib::numpy::DenseMatrix<T>& x,
-      std::vector<pybind11::object> key);
+      const lib::numpy::Evaluator& e, const lib::numpy::DenseMatrix<T>& x,
+      const std::vector<pybind11::object>& key);
 };
+
 }  // namespace heu::pylib

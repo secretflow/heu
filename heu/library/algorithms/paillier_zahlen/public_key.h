@@ -15,7 +15,6 @@
 #pragma once
 
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/montgomery_math.h"
 #include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::paillier_z {

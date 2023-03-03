@@ -6,15 +6,6 @@ yacl_cc_binary(
     linkopts = ["-lm"],
     deps = [
         "//heu/library/algorithms/ou",
-        "//heu/library/algorithms/util:tommath_ext_features",
-        "@com_github_google_benchmark//:benchmark",
-    ],
-)
-
-yacl_cc_binary(
-    name = "serialize",
-    srcs = ["serialize_bench.cc"],
-    deps = [
         "//heu/library/algorithms/util:mp_int",
         "@com_github_google_benchmark//:benchmark",
     ],

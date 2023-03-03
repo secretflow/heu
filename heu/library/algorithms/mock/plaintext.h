@@ -15,6 +15,7 @@
 #pragma once
 
 #include "heu/library/algorithms/util/mp_int.h"
+#include "heu/library/algorithms/util/spi_traits.h"
 
 namespace heu::lib::algorithms::mock {
 
