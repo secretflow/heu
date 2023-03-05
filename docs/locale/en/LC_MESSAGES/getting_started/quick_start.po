@@ -32,7 +32,7 @@ msgstr ""
 
 #: ../../getting_started/quick_start.rst:6
 msgid "本文所讲的内容全部位于 heu.phe 模块中"
-msgstr "All content mentioned in this article is implemented in ``heu.phe`` module"
+msgstr "All contents mentioned in this article are implemented in ``heu.phe`` module"
 
 #: ../../getting_started/quick_start.rst:9
 msgid "加解密"
@@ -80,7 +80,7 @@ msgstr ""
 
 #: ../../getting_started/quick_start.rst:1
 msgid "编码后的原文，一定为整数"
-msgstr "The encoded cleartext, always an integer"
+msgstr "The encoded cleartext which is always an integer"
 
 #: ../../getting_started/quick_start.rst:1
 msgid "Ciphertext（密文）"
@@ -189,7 +189,7 @@ msgstr ""
 msgid "``phe.FloatEncoder`` 有数值大小上限，请确保编码后的明文大小在双精度浮点数（double）表示范围内"
 msgstr ""
 "``phe.FloatEncoder`` has an upper limit, please make sure the scaled "
-"cleartext is in the representation range of (double) floating-point "
+"plaintext is in the representation range of (double) floating-point "
 "numbers"
 
 #: ../../getting_started/quick_start.rst:108
@@ -211,7 +211,7 @@ msgid "``BigintEncoder`` 编码 int128 原文性能非常高，但是超过 128b
 msgstr ""
 "``BigintEncoder`` has very high performance for cleartexts less than "
 "int128, but the performance will be significantly reduced for cleartexts "
-"above 128 bits"
+"more than 128 bits"
 
 #: ../../getting_started/quick_start.rst:126
 msgid "BatchIntegerEncoder 和 BatchFloatEncoder"

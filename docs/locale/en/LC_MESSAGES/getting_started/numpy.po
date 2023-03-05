@@ -41,7 +41,7 @@ msgstr "Initialization"
 #: ../../getting_started/numpy.rst:13
 msgid "运行本文示例代码之前请先通过以下方式 import 相关模块"
 msgstr ""
-"Please import relevant modules before running any sample code in this "
+"Please import relevant modules before running any sample codes in this "
 "document"
 
 #: ../../getting_started/numpy.rst:21
@@ -67,7 +67,7 @@ msgid ""
 msgstr ""
 "In a typical usage scenario, the participants of HEU consist of "
 "**sk_keeper** and **evaluator**. After **sk_keeper** generates the key "
-"pair, it will pass the public key to evaluator so that the evaluator can "
+"pair, it will pass the public key to **evaluator** so that the **evaluator** can "
 "perform subsequent operations."
 
 #: ../../getting_started/numpy.rst:42
@@ -137,7 +137,7 @@ msgid ""
 "scale，如果我自己把原文乘上一个 scale 再转换成 hnp.PlaintextArray 行吗？"
 msgstr ""
 "The **phe.IntegerEncoder** and **phe.FloatEncoder** are essentially "
-"multiplying cleartext by a scale. So can I multiply a scale by myself and"
+"multiplying cleartext by a scale. So can I multiply the cleartext a scale by myself and"
 " ignore the encoder?"
 
 #: ../../getting_started/numpy.rst:100
@@ -183,7 +183,7 @@ msgid ""
 msgstr ""
 "The encoder has both encoding and decoding functions. Generally speaking,"
 " **to_numpy()** needs to pass in the same encoder as **hnp.array()**, "
-"otherwise the decoded cleartext maybe incorrect"
+"otherwise the decoded cleartext may be incorrect"
 
 #: ../../getting_started/numpy.rst:147
 msgid "与 **hnp.array()** 一样，如果 **to_numpy()** 不指定编码器，则默认使用 ``BigintEncoder``。"
@@ -205,7 +205,7 @@ msgid ""
 "提供了明文、密文运算的能力，用法如下："
 msgstr ""
 "The **encryptor** and **decryptor** provide encryption and decryption "
-"capability respectively. The **evaluator** provides the capability of "
+"interface respectively. The **evaluator** provides the capability of "
 "plaintext and ciphertext operations, the usage is as follows:"
 
 #: ../../getting_started/numpy.rst:172
@@ -215,7 +215,7 @@ msgid ""
 msgstr ""
 "The ciphertext of homomorphic encryption cannot be truncated, so if the "
 "plaintext/ciphertext is scaled, the multiplication will cause the scale "
-"to be double. The following are two suggestions to solve this problem:"
+"to be doubled. The following are two suggestions to solve this problem:"
 
 #: ../../getting_started/numpy.rst:174
 msgid "保证乘法的其中一个乘数的 scale 为 1"
@@ -225,7 +225,7 @@ msgstr "Guarantee one of the multipliers have a scale of 1"
 msgid "在结果转为明文或原文后手动除以 scale"
 msgstr ""
 "Manually divide a scale after the result is converted to "
-"plaintext/cleartext"
+"plaintext or cleartext"
 
 #: ../../getting_started/numpy.rst:195
 msgid "切片"
