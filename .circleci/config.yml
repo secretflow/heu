@@ -35,6 +35,33 @@ jobs:
             bazel test //heu/... --ui_event_filters=-info,-debug,-warning --jobs=8 --test_timeout=1800 --test_output=errors --verbose_failures
       - store_test_results:
           path: ./bazel-testlogs
+  macOS_ut:
+    macos:
+      xcode: 14.2
+    environment:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    resource_class: macos.m1.large.gen1
+    steps:
+      - checkout
+      - run:
+          name: "Install homebrew dependencies"
+          command: |
+            brew install bazel cmake ninja libomp wget
+            (cd /opt/homebrew/Cellar/bazel/*.*.*/libexec/bin && curl -fLO https://github.com/bazelbuild/bazel/releases/download/5.4.0/bazel-5.4.0-darwin-arm64 && chmod +x bazel-5.4.0-darwin-arm64)
+      - run:
+          name: "Install Miniconda"
+          command: |
+            wget https://repo.anaconda.com/miniconda/Miniconda3-py38_23.1.0-1-MacOSX-arm64.sh -O ~/miniconda.sh
+            bash ~/miniconda.sh -b -p $HOME/miniconda
+            source $HOME/miniconda/bin/activate
+            conda init bash zsh
+            pip install numpy
+      - run:
+          name: "bazel test"
+          command: |
+            bazel test //heu/... --ui_event_filters=-info,-debug,-warning --jobs=8 --test_timeout=1800 --test_output=errors --verbose_failures
+      - store_test_results:
+          path: ./bazel-testlogs
   linux_publish:
     docker:
       - image: registry.hub.docker.com/secretflow/release-ci:0.1
@@ -51,7 +78,7 @@ jobs:
             python3 -m pip install twine
             python3 -m twine upload -r pypi -u __token__ -p ${PYPI_TWINE_TOKEN} $heu_wheel_path
 
-  macOS_publish:
+  macOS_x64_publish:
     macos:
       xcode: 13.0.0
     environment:
@@ -72,10 +99,31 @@ jobs:
             source $HOME/miniconda/bin/activate
             conda init zsh
 
+            bazel build -c opt --jobs=8 //heu/pylib
+            heu_wheel=$(<bazel-bin/heu/pylib/pylib.name)
+            heu_wheel_path="bazel-bin/heu/pylib/${heu_wheel}"
+            python3 -m pip install twine
+            python3 -m twine upload -r pypi -u __token__ -p ${PYPI_TWINE_TOKEN} $heu_wheel_path
+  macOS_arm64_publish:
+    macos:
+      xcode: 14.2
+    environment:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    resource_class: macos.m1.large.gen1
+    steps:
+      - checkout
+      - run:
+          name: "build package and publish"
+          command: |
+            set -ex
+            
+            brew install bazel cmake ninja libomp wget
+            (cd /opt/homebrew/Cellar/bazel/*.*.*/libexec/bin && curl -fLO https://github.com/bazelbuild/bazel/releases/download/5.4.0/bazel-5.4.0-darwin-arm64 && chmod +x bazel-5.4.0-darwin-arm64)
 
-            conda create -y -n secretflow python=3.8
-            conda activate secretflow
-            conda install -y grpcio
+            wget https://repo.anaconda.com/miniconda/Miniconda3-py38_23.1.0-1-MacOSX-arm64.sh -O ~/miniconda.sh
+            bash ~/miniconda.sh -b -p $HOME/miniconda
+            source $HOME/miniconda/bin/activate
+            conda init zsh
 
             bazel build -c opt --jobs=8 //heu/pylib
             heu_wheel=$(<bazel-bin/heu/pylib/pylib.name)
@@ -89,11 +137,10 @@ workflows:
   ut:
     jobs:
       - linux_ut
-  linux_publish:
+      - macOS_ut
+  publish:
     when: << pipeline.parameters.GHA_Action >>
     jobs:
       - linux_publish
-  macOS_publish:
-    when: << pipeline.parameters.GHA_Action >>
-    jobs:
-      - macOS_publish
+      - macOS_x64_publish
+      - macOS_arm64_publish
