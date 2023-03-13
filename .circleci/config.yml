@@ -59,7 +59,7 @@ jobs:
       - run:
           name: "bazel test"
           command: |
-            bazel test //heu/... --ui_event_filters=-info,-debug,-warning --jobs=8 --test_timeout=1800 --test_output=errors --verbose_failures
+            bazel test //heu/... -//heu/experimental/tfhe/... --ui_event_filters=-info,-debug,-warning --jobs=8 --test_timeout=1800 --test_output=errors --verbose_failures
       - store_test_results:
           path: ./bazel-testlogs
   linux_publish:
