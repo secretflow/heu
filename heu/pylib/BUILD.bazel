@@ -24,8 +24,6 @@ pybind_extension(
         ],
         "//conditions:default": [
             "-Wl,--version-script,$(location //heu/pylib:version_script.lds)",
-            "-static-libstdc++",
-            "-static-libgcc",
         ],
     }),
     deps = [
