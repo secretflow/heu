@@ -378,6 +378,9 @@ Plaintext Plaintext::operator|(const Plaintext &op2) const {
   std::vector<uint32_t> b_vec;
   std::vector<uint32_t> c_vec;
   bool is_res_negtive;
+  if (this->IsZero() && op2.IsZero()) {
+    return *this;
+  }
   if ((this->IsNegative() && !op2.IsNegative()) ||
       (!this->IsNegative() && op2.IsNegative())) {
     is_res_negtive = true;
