@@ -1,5 +1,4 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
 
@@ -53,41 +52,30 @@ def _com_github_microsoft_seal():
         build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:seal.BUILD",
     )
 
-# def _com_github_intel_ipcl():
-#     maybe(
-#         http_archive,
-#         name = "com_github_intel_ipcl",
-#         strip_prefix = "pailliercryptolib-1.1.4",
-#         type = "tar.gz",
-#         patch_args = ["-p1"],
-#         patches = [
-#             "@com_alipay_sf_heu//third_party/bazel_cpp:patches/ipcl.patch",
-#         ],
-#         urls = [
-#             "https://github.com/intel/pailliercryptolib/archive/refs/tags/v1.1.4.tar.gz"
-#         ],
-#         build_file ="@com_alipay_sf_heu//third_party/bazel_cpp:ipcl.BUILD",
-#     )
-
 def _com_github_intel_ipcl():
     maybe(
-        new_git_repository,
+        http_archive,
         name = "com_github_intel_ipcl",
-        # commit = "8ed98584692a41ff2bacb7c9ef770b1e3ba3c2fa",  # tag v2.0.0
-        commit = "0ad1297c2932cceddb3c5953ed7865c22d7df780", # development branch
         patch_args = ["-p1"],
+        sha256 = "13bbfaec1d54a582555c54bb9e7e344f9d122f756481666b9e992b143d567227",
         patches = [
             "@com_alipay_sf_heu//third_party/bazel_cpp:patches/ipcl.patch",
         ],
-        remote = "https://github.com/intel/pailliercryptolib.git",
+        strip_prefix = "pailliercryptolib-0ad1297c2932cceddb3c5953ed7865c22d7df780",
         build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:ipcl.BUILD",
+        urls = [
+            "https://github.com/intel/pailliercryptolib/archive/0ad1297c2932cceddb3c5953ed7865c22d7df780.tar.gz",
+        ],
     )
 
 def _com_github_uscilab_cereal():
     maybe(
-        new_git_repository,
+        http_archive,
         name = "com_github_uscilab_cereal",
-        commit = "ebef1e929807629befafbb2918ea1a08c7194554",  # cereal - v1.3.2
-        remote = "https://github.com/USCiLab/cereal.git",
+        sha256 = "ce52ae6abcdbda5fecd63abbaa7ab57e54b814b24d7cb6f5096f5753d1975d24",
         build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:cereal.BUILD",
+        strip_prefix = "cereal-ebef1e929807629befafbb2918ea1a08c7194554",
+        urls = [
+            "https://github.com/USCiLab/cereal/archive/ebef1e929807629befafbb2918ea1a08c7194554.tar.gz",
+        ],
     )

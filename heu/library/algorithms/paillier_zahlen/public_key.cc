@@ -41,7 +41,7 @@ void PublicKey::Init() {
 
 std::string PublicKey::ToString() const {
   return fmt::format(
-      "Z-paillier public key: n={}[{}bits], h_s={}, max_plaintext={}[~{}bits]",
+      "Z-paillier PK: n={}[{}bits], h_s={}, max_plaintext={}[~{}bits]",
       n_.ToHexString(), n_.BitCount(), h_s_.ToHexString(),
       PlaintextBound().ToHexString(), PlaintextBound().BitCount());
 }

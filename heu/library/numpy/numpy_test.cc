@@ -14,6 +14,7 @@
 
 #include "heu/library/numpy/numpy.h"
 
+#include "Eigen/Core"
 #include "gtest/gtest.h"
 
 namespace heu::lib::numpy::test {
@@ -198,6 +199,24 @@ TEST_F(NumpyTest, SelectSumWorks) {
   auto sum2 = he_kit_.GetEvaluator()->SelectSum(m2, b, b);
   EXPECT_EQ(he_kit_.GetDecryptor()->Decrypt(sum2).GetValue<int64_t>(),
             0 + 1 + 30 + 31);
+}
+
+TEST_F(NumpyTest, BinSumWorks) {
+  auto m = GenMatrix(he_kit_.GetSchemaType(), 5, 2);
+  // whole group
+  std::vector<size_t> subgroup_indices({2, 3, 4});
+
+  // 1 feature all in 0th bucket
+  RowMatrixXd order_map({{1, 3, 2, 2, 3, 3, 0, 0, 0, 0},
+                         {2, 3, 0, 1, 0, 1, 2, 3, 0, 1},
+                         {2, 1, 1, 1, 0, 2, 0, 1, 1, 1},
+                         {3, 2, 2, 0, 0, 1, 1, 1, 2, 3},
+                         {0, 0, 2, 2, 3, 3, 0, 3, 2, 2}});
+  auto bucket_num = 5;
+  auto sum = he_kit_.GetEvaluator()->FeatureWiseBucketSum(
+      m.GetItem(subgroup_indices, Eigen::all),
+      order_map(subgroup_indices, Eigen::all), bucket_num)(2, 0);
+  EXPECT_EQ(sum.GetValue<int64_t>(), 4);
 }
 
 class MatmulTest : public ::testing::TestWithParam<std::tuple<int, int, int>> {

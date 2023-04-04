@@ -18,6 +18,9 @@
 #include "heu/library/phe/phe.h"
 
 namespace heu::lib::numpy {
+using RowMatrixXd = const Eigen::Matrix<int8_t, Eigen::Dynamic, Eigen::Dynamic,
+                                        Eigen::RowMajor>;
+using RowVector = const Eigen::Matrix<int8_t, 1, Eigen::Dynamic>;
 
 class Evaluator : public phe::Evaluator {
  public:
@@ -59,7 +62,7 @@ class Evaluator : public phe::Evaluator {
                  "you cannot select sum an empty tensor, shape={}x{}", x.rows(),
                  x.cols());
 
-    T zero = phe::Evaluator::Sub(x(0, 0), x(0, 0));
+    T zero = GetZero(x);
     const auto& sub = x.GetItem(row_indices, col_indices);
     if (sub.size() == 0) {
       return zero;
@@ -67,5 +70,22 @@ class Evaluator : public phe::Evaluator {
 
     return Sum(sub);
   };
+
+  template <typename T>
+  DenseMatrix<T> FeatureWiseBucketSum(const DenseMatrix<T>& x,
+                                      const Eigen::Ref<RowMatrixXd>& order_map,
+                                      int bucket_num,
+                                      bool cumsum = false) const;
+
+  template <typename T>
+  void FeatureWiseBucketSumInplace(const DenseMatrix<T>& x,
+                                   const Eigen::Ref<RowMatrixXd>& order_map,
+                                   int bucket_num, DenseMatrix<T>& res,
+                                   bool cumsum = false) const;
+
+  template <typename T>
+  T GetZero(const DenseMatrix<T>& x) const {
+    return phe::Evaluator::Sub(x(0, 0), x(0, 0));
+  }
 };
 }  // namespace heu::lib::numpy

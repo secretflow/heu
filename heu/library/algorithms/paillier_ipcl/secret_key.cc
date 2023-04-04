@@ -15,10 +15,13 @@ bool SecretKey::operator!=(const SecretKey &other) const {
 }
 
 std::string SecretKey::ToString() const {
-  std::string lambda;
-  ipcl_prikey_.getLambda().num2hex(lambda);
-  return fmt::format("IPCL secret key: lambda={}[{}bits]", lambda,
-                     ipcl_prikey_.getLambda().BitSize());
+  std::string p;
+  ipcl_prikey_.getP()->num2hex(p);
+  std::string q;
+  ipcl_prikey_.getP()->num2hex(q);
+  return fmt::format("IPCL SK: p={}[{}bits], q={}[{}bits]", p,
+                     ipcl_prikey_.getP()->BitSize(), q,
+                     ipcl_prikey_.getQ()->BitSize());
 }
 
 }  // namespace heu::lib::algorithms::paillier_ipcl

@@ -26,7 +26,7 @@ SecretKey::SecretKey(PublicKey pk, MPInt p, MPInt q) : pk_(std::move(pk)) {
 }
 
 std::string SecretKey::ToString() const {
-  return fmt::format("F-paillier secret key: lambda={}[{}bits], x={}[{}bits]",
+  return fmt::format("F-paillier SK: lambda={}[{}bits], x={}[{}bits]",
                      lambda_.ToHexString(), lambda_.BitCount(),
                      x_.ToHexString(), x_.BitCount());
 }

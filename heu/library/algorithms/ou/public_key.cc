@@ -44,7 +44,7 @@ void PublicKey::Init() {
 
 std::string PublicKey::ToString() const {
   return fmt::format(
-      "OU public key: n={}[{}bits], G={}[{}bits], H={}[{}bits], "
+      "OU PK: n={}[{}bits], G={}[{}bits], H={}[{}bits], "
       "max_plaintext={}[~{}bits]",
       n_.ToHexString(), n_.BitCount(), capital_g_.ToHexString(),
       capital_g_.BitCount(), capital_h_.ToHexString(), capital_h_.BitCount(),

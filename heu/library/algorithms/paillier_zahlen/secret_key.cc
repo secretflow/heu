@@ -50,9 +50,9 @@ MPInt SecretKey::PowModNSquareCrt(const MPInt& base, const MPInt& exp) const {
 }
 
 std::string SecretKey::ToString() const {
-  return fmt::format("Z-paillier secret key: lambda={}[{}bits], μ={}[{}bits]",
-                     lambda_.ToHexString(), lambda_.BitCount(),
-                     mu_.ToHexString(), mu_.BitCount());
+  return fmt::format("Z-paillier SK: p={}[{}bits], q={}[{}bits]",
+                     p_.ToHexString(), p_.BitCount(), q_.ToHexString(),
+                     q_.BitCount());
 }
 
 }  // namespace heu::lib::algorithms::paillier_z
