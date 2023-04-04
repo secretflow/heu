@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 #include "heu/library/numpy/evaluator.h"
 
 #include "fmt/ranges.h"
@@ -359,4 +358,93 @@ T Evaluator::Sum(const DenseMatrix<T>& x) const {
 template phe::Ciphertext Evaluator::Sum(const CMatrix&) const;
 template phe::Plaintext Evaluator::Sum(const PMatrix&) const;
 
+template <typename T>
+DenseMatrix<T> Evaluator::FeatureWiseBucketSum(
+    const DenseMatrix<T>& x, const Eigen::Ref<RowMatrixXd>& order_map,
+    int bucket_num, bool cumsum) const {
+  // the output is a dense matrix of size sum(bucket_sums) * x.shape[1]
+  YACL_ENFORCE(x.cols() > 0 && x.rows() > 0,
+               "you cannot sum an empty tensor, shape={}x{}", x.rows(),
+               x.cols());
+  YACL_ENFORCE_EQ(order_map.rows(), (x.rows()),
+                  "order map and x should have same number of rows.");
+  // assume all rows of order map has length feature num
+  auto total_bucket_num = bucket_num * order_map.cols();
+  auto res = DenseMatrix<T>(total_bucket_num, x.cols());
+  FeatureWiseBucketSumInplace(x, order_map, bucket_num, res, cumsum);
+  return res;
+}
+
+template CMatrix Evaluator::FeatureWiseBucketSum(
+    const CMatrix&, const Eigen::Ref<RowMatrixXd>& order_map, int bucket_num,
+    bool cumsum) const;
+
+template PMatrix Evaluator::FeatureWiseBucketSum(
+    const PMatrix&, const Eigen::Ref<RowMatrixXd>& order_map, int bucket_num,
+    bool cumsum) const;
+
+template <typename T>
+void Evaluator::FeatureWiseBucketSumInplace(
+    const DenseMatrix<T>& x, const Eigen::Ref<RowMatrixXd>& order_map,
+    int bucket_num, DenseMatrix<T>& res, bool cumsum) const {
+  // the output is a dense matrix of size sum(bucket_sums) * x.shape[1]
+  YACL_ENFORCE(x.cols() > 0 && x.rows() > 0,
+               "you cannot sum an empty tensor, shape={}x{}", x.rows(),
+               x.cols());
+  YACL_ENFORCE_EQ(order_map.rows(), x.rows(),
+                  "order map and x should have same number of rows.");
+  // assume all rows of order map has length feature num
+  auto feature_num = static_cast<size_t>(order_map.cols());
+  auto total_bucket_num = bucket_num * order_map.cols();
+
+  YACL_ENFORCE_EQ(total_bucket_num, res.rows());
+  YACL_ENFORCE_EQ(x.cols(), res.cols());
+  T zero = GetZero(x);
+  // could made this parallel
+  for (auto col = 0; col < x.cols(); ++col) {
+    // feature wise calculations, could be made parallel
+    yacl::parallel_for(0, feature_num, 1, [&](int64_t beg_f, int64_t end_f) {
+      for (auto feature_index = beg_f; feature_index < end_f; ++feature_index) {
+        auto start_offset = bucket_num * feature_index;
+        auto bucket_sums = yacl::parallel_reduce<std::vector<T>>(
+            0, x.rows(), 4 * kHeOpGrainSize,
+            [&](int64_t beg, int64_t end) {
+              auto sums = std::vector<T>(bucket_num, zero);
+              for (auto i = beg; i < end; ++i) {
+                phe::Evaluator::AddInplace(&sums[order_map(i, feature_index)],
+                                           x(i, col));
+              }
+              return sums;
+            },
+            // todo: use binary reduce
+            [&](const std::vector<T>& a, const std::vector<T>& b) {
+              auto result = std::vector<T>(bucket_num);
+              for (auto j = 0; j < bucket_num; ++j) {
+                result[j] = phe::Evaluator::Add(a[j], b[j]);
+              }
+              return result;
+            });
+        if (cumsum) {
+          auto cache_sum = zero;
+          for (auto i = 0; i < bucket_num; ++i) {
+            phe::Evaluator::AddInplace(&cache_sum, bucket_sums[i]);
+            res(i + start_offset, col) = cache_sum;
+          }
+        } else {
+          for (auto i = 0; i < bucket_num; ++i) {
+            res(i + start_offset, col) = bucket_sums[i];
+          }
+        }
+      }
+    });
+  }
+}
+
+template void Evaluator::FeatureWiseBucketSumInplace(
+    const CMatrix&, const Eigen::Ref<RowMatrixXd>& order_map, int bucket_num,
+    CMatrix& res, bool cumsum) const;
+
+template void Evaluator::FeatureWiseBucketSumInplace(
+    const PMatrix&, const Eigen::Ref<RowMatrixXd>& order_map, int bucket_num,
+    PMatrix& res, bool cumsum) const;
 }  // namespace heu::lib::numpy

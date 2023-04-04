@@ -10,6 +10,16 @@
 
 > please add your unreleased change here.
 
+## [0.4.2]
+- [Feature] Modify api: FeatureWiseBucketSum now support cumulative sum option.
+- [Feature] Modify public key to string message.
+
+## [0.4.1]
+- [Feature] New api: PMatrix/CMatrix add FeatureWiseBucketSum api for better
+  performance
+- [Feature] New api: pylib extension add TreePredict api for performance
+- [Optimize] Optimize CI.
+
 ## [0.4.0]
 
 - [Feature] Add Okamoto–Uchiyama cryptosystem

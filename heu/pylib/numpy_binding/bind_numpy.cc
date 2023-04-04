@@ -363,22 +363,101 @@ void PyBindNumpy(pybind11::module& m) {
 
       .def("select_sum",
            &heu::pylib::ExtensionFunctions<phe::Plaintext>::SelectSum,
-           "Compute the sum of selected elements (Plaintext), equivalent "
-           "x[indices].sum() but faster.")
+           "Compute the sum of selected elements (Plaintext), equivalent to \n"
+           "x[indices].sum() but faster.\n")
       .def("select_sum",
            &heu::pylib::ExtensionFunctions<phe::Ciphertext>::SelectSum,
-           "Compute the sum of selected elements (Ciphertext), equivalent "
-           "x[indices].sum() but faster.")
+           "Compute the sum of selected elements (Ciphertext), equivalent to\n"
+           "x[indices].sum() but faster. \n")
       .def("batch_select_sum",
            &heu::pylib::ExtensionFunctions<phe::Plaintext>::BatchSelectSum,
-           "Compute an array of sum of selected elements (Plaintext), "
-           "equivalent to [x[indices].sum() for indices in indices_list] but "
+           "Compute an array of sum of selected elements (Plaintext), \n"
+           "equivalent to [x[indices].sum() for indices in indices_list] but \n"
            "faster.")
       .def("batch_select_sum",
            &heu::pylib::ExtensionFunctions<phe::Ciphertext>::BatchSelectSum,
-           "Compute an array of sum of selected elements (Ciphertext), "
-           "equivalent to [x[indices].sum() for indices in indices_list] but "
-           "faster.");
+           "Compute an array of sum of selected elements (Ciphertext), \n"
+           "equivalent to [x[indices].sum() for indices in indices_list] but \n"
+           "faster.")
+      .def(
+          "feature_wise_bucket_sum",
+          &heu::pylib::ExtensionFunctions<phe::Plaintext>::FeatureWiseBucketSum,
+          "Take elements in x according to order_map to caculate the row sum \n"
+          "at each bin.\n"
+          "(Plaintext)\n"
+          "e heu numpy evaluator\n"
+          "x dense matrix, rows are elements of bin sum\n"
+          "subgroup_map a 1d py np ndarray (vector) acts as a filter. \n"
+          "Its length should be equal to x.rows(), elements should be 0 or 1,\n"
+          "with 1 indicates in this subgroup. \n"
+          "order_map a 2d py ndarray. It has shape x.rows() * number of\n"
+          "features.order_map(i, j) = k means row i feature j should be in\n"
+          "bin k of feature j.\n"
+          "bucket_num int. The number of buckets for each bin. \n"
+          "cumsum bool. If apply cumulative sum to buckets for each feature.\n"
+          "return dense matrix<T>, the row bin sum result. It has shape \n"
+          "(bucket_num * feature_num, x.cols()).")
+      .def("feature_wise_bucket_sum",
+           &heu::pylib::ExtensionFunctions<
+               phe::Ciphertext>::FeatureWiseBucketSum,
+           "Take elements in x according to order_map to caculate the row sum\n"
+           "at each bin.\n"
+           "(Ciphertext)\n"
+           "e heu numpy evaluator\n"
+           "x dense matrix, rows are elements of bin sum\n"
+           "subgroup_map a 1d py np ndarray (vector) acts as a filter. \n"
+           "Its length\n"
+           "should be equal to x.rows(), elements should be 0 or 1, with 1\n"
+           "indicates in this subgroup. \n"
+           "order_map a 2d py ndarray. It has shape x.rows() * number of\n"
+           "features.order_map(i, j) = k means row i feature j should be in\n"
+           "bin k of feature j.\n"
+           "bucket_num int. The number of buckets for each bin.\n"
+           "cumsum bool. If apply cumulative sum to buckets for each feature.\n"
+           "return dense matrix<T>, the row bin sum result. It has shape\n"
+           "(bucket_num * feature_num, x.cols()).\n")
+      .def(
+          "batch_feature_wise_bucket_sum",
+          &heu::pylib::ExtensionFunctions<
+              phe::Plaintext>::BatchFeatureWiseBucketSum,
+          "Take elements in x according to order_map to caculate the row sum \n"
+          "at each bin for each subgroup\n"
+          "(Plaintext)\n"
+          "e heu numpy evaluator\n"
+          "x dense matrix, rows are elements of bin sum\n"
+          "subgroup_map a list of 1d py np ndarray (vector) acts as filters. \n"
+          "Its length should be equal to x.rows(), elements should be 0 or 1,\n"
+          "with 1 indicates in this subgroup. \n"
+          "order_map a 2d py ndarray. It has shape x.rows() * number of\n"
+          "features.order_map(i, j) = k means row i feature j should be in\n"
+          "bin k of feature j.\n"
+          "bucket_num int. The number of buckets for each bin. \n"
+          "cumsum bool. If apply cumulative sum to buckets for each feature.\n"
+          "return list of dense matrix<T>, the row bin sum results. \n"
+          "Each element has shape (bucket_num * feature_num, x.cols()).\n")
+      .def(
+          "batch_feature_wise_bucket_sum",
+          &heu::pylib::ExtensionFunctions<
+              phe::Ciphertext>::BatchFeatureWiseBucketSum,
+          "Take elements in x according to order_map to caculate the row sum \n"
+          "at each bin for each subgroup\n"
+          "(Ciphertext)\n"
+          "e heu numpy evaluator\n"
+          "x dense matrix, rows are elements of bin sum\n"
+          "subgroup_map a list of 1d py np ndarray (vector) acts as filters. \n"
+          "Its length should be equal to x.rows(), elements should be 0 or 1,\n"
+          "with 1 indicates in this subgroup. \n"
+          "order_map a 2d py ndarray. It has shape x.rows() * number of\n"
+          "features.order_map(i, j) = k means row i feature j should be in\n"
+          "bin k of feature j.\n"
+          "bucket_num int. The number of buckets for each bin. \n"
+          "cumsum bool. If apply cumulative sum to buckets for each feature.\n"
+          "return list of dense matrix<T>, the row bin sum results. \n"
+          "Each element has shape (bucket_num * feature_num, x.cols()).\n");
+
+  // pure numpy functions that support xgb
+  m.def("tree_predict", &heu::pylib::PureNumpyExtensionFunctions::TreePredict,
+        "Compute tree predict based on split features and points.\n");
 }
 
 }  // namespace heu::pylib

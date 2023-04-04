@@ -46,9 +46,8 @@ class SecretKey : public HeObject<SecretKey> {
   }
 
   [[nodiscard]] std::string ToString() const override {
-    return fmt::format("OU secret key, p={}[{}bits], q={}[{}bits]",
-                       p_.ToHexString(), p_.BitCount(), q_.ToHexString(),
-                       q_.BitCount());
+    return fmt::format("OU SK, p={}[{}bits], q={}[{}bits]", p_.ToHexString(),
+                       p_.BitCount(), q_.ToHexString(), q_.BitCount());
   }
 };
 

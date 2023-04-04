@@ -8,5 +8,4 @@ sphinx-inline-tabs
 sf-heu
 
 # theme
-# if sf-pydata-sphinx-theme install fails, please replace it to pydata-sphinx-theme
-sf-pydata-sphinx-theme
+pydata-sphinx-theme

@@ -23,7 +23,7 @@ std::string PublicKey::ToString() const {
   ipcl_pubkey_.getN()->num2hex(n);
   ipcl_pubkey_.getHS().num2hex(hs);
   return fmt::format(
-      "IPCL public key: n={}[{}bits], h_s={}, max_plaintext={}[~{}bits]", n,
+      "IPCL PK: n={}[{}bits], h_s={}, max_plaintext={}[~{}bits]", n,
       ipcl_pubkey_.getN()->BitSize(), hs, PlaintextBound().ToHexString(),
       PlaintextBound().BitCount());
 }

@@ -14,12 +14,19 @@
 
 #pragma once
 
+#include "Eigen/Core"
+#include "pybind11/eigen.h"
 #include "pybind11/pybind11.h"
 
 #include "heu/library/numpy/evaluator.h"
 #include "heu/library/numpy/matrix.h"
 
 namespace heu::pylib {
+using RowMatrixXd = const Eigen::Matrix<int8_t, Eigen::Dynamic, Eigen::Dynamic,
+                                        Eigen::RowMajor>;
+using RowMatrixXdDouble = const Eigen::Matrix<double_t, Eigen::Dynamic,
+                                              Eigen::Dynamic, Eigen::RowMajor>;
+using RowVector = const Eigen::Matrix<int8_t, 1, Eigen::Dynamic>;
 
 template <typename T>
 class ExtensionFunctions {
@@ -31,6 +38,29 @@ class ExtensionFunctions {
   static lib::numpy::DenseMatrix<T> BatchSelectSum(
       const lib::numpy::Evaluator& e, const lib::numpy::DenseMatrix<T>& x,
       const std::vector<pybind11::object>& key);
+
+  static lib::numpy::DenseMatrix<T> FeatureWiseBucketSum(
+      const lib::numpy::Evaluator& e, const lib::numpy::DenseMatrix<T>& x,
+      const Eigen::Ref<RowVector>& subgroup_map,
+      const Eigen::Ref<RowMatrixXd>& order_map, int bucket_num,
+      bool cumsum = false);
+
+  static std::vector<lib::numpy::DenseMatrix<T>> BatchFeatureWiseBucketSum(
+      const lib::numpy::Evaluator& e, const lib::numpy::DenseMatrix<T>& x,
+      const std::vector<Eigen::Ref<RowVector>>& subgroup_maps,
+      const Eigen::Ref<RowMatrixXd>& order_map, int bucket_num,
+      bool cumsum = false);
+};
+
+// Pure xgb logic that should be in another library
+class PureNumpyExtensionFunctions {
+ public:
+  // tree predict based on split features and points
+  // return shape is constant np array of size x.rows() *
+  // split_features.size()+1
+  static RowMatrixXd TreePredict(const Eigen::Ref<RowMatrixXdDouble> x,
+                                 const std::vector<int>& split_features,
+                                 const std::vector<double>& split_points);
 };
 
 }  // namespace heu::pylib
