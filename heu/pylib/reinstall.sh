@@ -15,7 +15,7 @@
 
 set -ex
 
-bazel build -c opt //heu/pylib   --define disable_gpu=true --cxxopt=-DENABLE_GPAILLIER=false
+bazel build -c opt //heu/pylib
 
 heu_wheel=$(<bazel-bin/heu/pylib/pylib.name)
 heu_wheel_path="bazel-bin/heu/pylib/${heu_wheel}"
