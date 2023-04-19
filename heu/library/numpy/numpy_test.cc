@@ -219,6 +219,18 @@ TEST_F(NumpyTest, BinSumWorks) {
   EXPECT_EQ(sum.GetValue<int64_t>(), 4);
 }
 
+TEST_F(NumpyTest, RangeCheckWorks) {
+  auto pmatrix = GenMatrix(he_kit_.GetSchemaType(), 30, 30);
+  auto cmatrix = he_kit_.GetEncryptor()->Encrypt(pmatrix);
+  EXPECT_NO_THROW(he_kit_.GetDecryptor()->DecryptInRange(cmatrix, 64));
+
+  he_kit_.GetEvaluator()->MulInplace(
+      &cmatrix(15, 15), phe::Plaintext(he_kit_.GetSchemaType(),
+                                       std::numeric_limits<int64_t>::max()));
+  EXPECT_ANY_THROW(he_kit_.GetDecryptor()->DecryptInRange(cmatrix, 64));
+  EXPECT_NO_THROW(he_kit_.GetDecryptor()->Decrypt(cmatrix));
+}
+
 class MatmulTest : public ::testing::TestWithParam<std::tuple<int, int, int>> {
  protected:
   HeKit he_kit_ = HeKit(phe::HeKit(phe::SchemaType::ZPaillier, 2048));

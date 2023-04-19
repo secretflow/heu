@@ -21,6 +21,7 @@
 #include "heu/library/numpy/numpy.h"
 #include "heu/library/numpy/random.h"
 #include "heu/library/numpy/toolbox.h"
+#include "heu/library/phe/base/serializable_types.h"
 #include "heu/pylib/numpy_binding/extension_functions.h"
 #include "heu/pylib/numpy_binding/infeed.h"
 #include "heu/pylib/numpy_binding/outfeed.h"
@@ -314,7 +315,23 @@ void PyBindNumpy(pybind11::module& m) {
            py::overload_cast<const hnp::CMatrix&>(&hnp::Decryptor::Decrypt,
                                                   py::const_),
            py::arg("ciphertext_array"),
-           "Decrypt ciphertext array to plaintext array");
+           "Decrypt ciphertext array to plaintext array")
+      .def("decrypt_in_range",
+           py::overload_cast<const phe::Ciphertext&, size_t>(
+               &hnp::Decryptor::DecryptInRange, py::const_),
+           py::arg("ciphertext"), py::arg("range_bits") = 128,
+           "Decrypt ciphertext (scalar) and make sure plaintext is in range "
+           "(-2^range_bits, 2^range_bits). Range checking is used to block OU "
+           "plaintext overflow attack, see HEU documentation for details.\n"
+           "throws an exception if plaintext is out of range.")
+      .def("decrypt_in_range",
+           py::overload_cast<const hnp::CMatrix&, size_t>(
+               &hnp::Decryptor::DecryptInRange, py::const_),
+           py::arg("CMatrix"), py::arg("range_bits") = 128,
+           "Decrypt ciphertext array and make sure each plaintext is in range "
+           "(-2^range_bits, 2^range_bits). Range checking is used to block OU "
+           "plaintext overflow attack, see HEU documentation for details.\n"
+           "throws an exception if plaintext is out of range.");
 
   /****** evaluation ******/
   py::class_<hnp::Evaluator, std::shared_ptr<hnp::Evaluator>>(m, "Evaluator")
@@ -457,7 +474,12 @@ void PyBindNumpy(pybind11::module& m) {
 
   // pure numpy functions that support xgb
   m.def("tree_predict", &heu::pylib::PureNumpyExtensionFunctions::TreePredict,
-        "Compute tree predict based on split features and points.\n");
+        "Compute tree predict based on split features and points, the tree is "
+        "complete.\n");
+  m.def("tree_predict_with_indices",
+        &heu::pylib::PureNumpyExtensionFunctions::TreePredictWithIndices,
+        "Compute tree predict based on split features and points, the tree may "
+        "be unbalanced.\n");
 }
 
 }  // namespace heu::pylib

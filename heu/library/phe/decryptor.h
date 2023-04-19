@@ -32,6 +32,12 @@ class Decryptor {
   void Decrypt(const Ciphertext& ct, Plaintext* out) const;
   [[nodiscard]] Plaintext Decrypt(const Ciphertext& ct) const;
 
+  // Decrypt ct and make sure pt is in range (-2^range_bits, 2^range_bits)
+  // throws an exception if plaintext is out of range.
+  // Range checking is used to block OU plaintext overflow attack, see HEU
+  // documentation for details
+  Plaintext DecryptInRange(const Ciphertext& ct, size_t range_bits = 128) const;
+
   SchemaType GetSchemaType() const;
 
  protected:

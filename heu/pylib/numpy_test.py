@@ -535,6 +535,18 @@ class BasicCase(unittest.TestCase):
         split_points = [np.inf, np.inf, 0.0699642896652222, np.inf, np.inf, np.inf, 0.999987125396729]
         correct_selects = np.array([[1, 1, 1 ,1, 0, 0 ,1, 0], [1, 1, 1 ,1, 0 ,0, 1, 0]])
         assert (hnp.tree_predict(x, split_features, split_points) == correct_selects).all()
+    
+    def test_tree_predict_with_indices(self):
+        x = np.array([[-0.51422644,  0.73001039 ,-0.7303912,   0.97048271, -0.35085386, -0.80080819,  -0.2015295,  -0.49920642, -0.75011241, -0.9106403 ],
+                      [-0.72553682,  0.48224366, -0.82322264,  0.20211923, -0.27067894, -0.13978112,0.36809838 ,-0.65290093 , 0.43806458  ,0.83020592]])
+        split_features = [-1, -1, 3, -1, -1, -1, 0]
+        num_split_node = len(split_features)
+        leaf_num = num_split_node + 1
+        split_points = [np.inf, np.inf, 0.0699642896652222, np.inf, np.inf, np.inf, 0.999987125396729]
+        indices = [*range(num_split_node)]
+        leaf_indices = [num_split_node + i for i in range(leaf_num)]
+        correct_selects = np.array([[1, 1, 1 ,1, 0, 0 ,1, 0], [1, 1, 1 ,1, 0 ,0, 1, 0]])
+        assert (hnp.tree_predict_with_indices(x, split_features, split_points, indices, leaf_indices) == correct_selects).all()
         
         
         

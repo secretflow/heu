@@ -10,11 +10,22 @@
 
 > please add your unreleased change here.
 
+## [0.4.3]
+
+- [Feature] New api: TreePredictWithIndices support prediction with non-complete
+  trees.
+- [Feature] New api: Add range check for OU on decryption to block plaintext
+  overflow attack
+- [Bugfix] Code improve: Make tree pred with indices safer and faster.
+- [other] Update libtommath to head version
+
 ## [0.4.2]
+
 - [Feature] Modify api: FeatureWiseBucketSum now support cumulative sum option.
 - [Feature] Modify public key to string message.
 
 ## [0.4.1]
+
 - [Feature] New api: PMatrix/CMatrix add FeatureWiseBucketSum api for better
   performance
 - [Feature] New api: pylib extension add TreePredict api for performance

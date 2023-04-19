@@ -32,7 +32,7 @@ void Decryptor::Decrypt(const Ciphertext& ct, MPInt* out) const {
   MPInt::MulMod(c / sk_.p_, sk_.gp_inv_, sk_.p_, out);
 
   // handle negative numbers
-  if (*out >= sk_.p_half_) {
+  if (*out > sk_.p_half_) {
     *out -= sk_.p_;
   }
 }

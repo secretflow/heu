@@ -28,6 +28,13 @@ class Decryptor : public phe::Decryptor {
 
   using phe::Decryptor::Decrypt;
   PMatrix Decrypt(const CMatrix& in) const;
+
+  // Decrypt ct and make sure pt is in range (-2^range_bits, 2^range_bits)
+  // throws an exception if plaintext is out of range.
+  // Range checking is used to block OU plaintext overflow attack, see HEU
+  // documentation for details
+  using phe::Decryptor::DecryptInRange;
+  PMatrix DecryptInRange(const CMatrix& in, size_t range_bits = 128) const;
 };
 
 }  // namespace heu::lib::numpy

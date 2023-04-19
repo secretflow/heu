@@ -31,7 +31,7 @@ void Decryptor::Decrypt(const Ciphertext& ct, MPInt* out) const {
   *out = sk_.PowModNSquareCrt(c, sk_.lambda_);
   MPInt::MulMod(out->DecrOne() / pk_.n_, sk_.mu_, pk_.n_, out);
   // handle negative numbers
-  if (*out >= pk_.n_half_) {
+  if (*out > pk_.n_half_) {
     *out -= pk_.n_;
   }
 }
