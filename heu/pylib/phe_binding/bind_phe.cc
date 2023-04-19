@@ -246,6 +246,12 @@ void PyBindPhe(pybind11::module& m) {
            py::overload_cast<const phe::Ciphertext&>(&phe::Decryptor::Decrypt,
                                                      py::const_),
            py::arg("ciphertext"), "Decrypt ciphertext to plaintext")
+      .def("decrypt_in_range", &phe::Decryptor::DecryptInRange,
+           py::arg("ciphertext"), py::arg("range_bits") = 128,
+           "Decrypt ciphertext and make sure plaintext is in range "
+           "(-2^range_bits, 2^range_bits). Range checking is used to block OU "
+           "plaintext overflow attack, see HEU documentation for details.\n"
+           "throws an exception if plaintext is out of range.")
       .def(
           "decrypt_raw",
           [](const phe::Decryptor& decryptor, const phe::Ciphertext& ct) {

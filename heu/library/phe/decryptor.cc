@@ -61,6 +61,18 @@ Plaintext Decryptor::Decrypt(const Ciphertext& ct) const {
       decryptor_ptr_);
 }
 
+Plaintext Decryptor::DecryptInRange(const Ciphertext& ct,
+                                    size_t range_bits) const {
+  auto pt = Decrypt(ct);
+  YACL_ENFORCE(
+      pt.BitCount() <= range_bits,
+      "Dangerous!!! HE ciphertext range check failed, there may be a malicious "
+      "party stealing your data, please stop computing immediately. "
+      "pt.BitCount()={}, expected {}",
+      pt.BitCount(), range_bits);
+  return pt;
+}
+
 SchemaType Decryptor::GetSchemaType() const { return schema_type_; }
 
 }  // namespace heu::lib::phe

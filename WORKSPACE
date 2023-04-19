@@ -7,7 +7,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 SECRETFLOW_GIT = "https://github.com/secretflow"
 
-YACL_COMMIT_ID  = "289794e823f5f664742194e51ce00f1e30017e44"
+YACL_COMMIT_ID  = "b9f85c5810e7c682018851cd495b26316ab49d4a"
 
 git_repository(
     name = "yacl",

@@ -13,6 +13,8 @@
 // limitations under the License.
 #include "heu/pylib/numpy_binding/extension_functions.h"
 
+#include <tuple>
+
 #include "fmt/ranges.h"
 #include "yacl/utils/parallel.h"
 
@@ -69,22 +71,6 @@ hnp::DenseMatrix<T> ExtensionFunctions<T>::BatchSelectSum(
   return res;
 }
 
-/// @brief Take elements in x according to order_map to caculate the row sum at
-/// each bin.
-/// @tparam T Plaintext or Ciphertext
-/// @param e heu numpy evaluator
-/// @param x dense matrix, rows are elements of bin sum
-/// @param subgroup_map a 1d py np ndarray (vector) acts as a filter. Its length
-/// should be equal to x.rows(), elements should be 0 or 1, with 1 indicates in
-/// this subgroup.
-/// @param order_map a 2d py ndarray. It has shape x.rows() * number of
-/// features.order_map(i, j) = k means row i feature j should be in bin k of
-/// feature j.
-/// @param bucket_num int. The number of buckets for each bin.
-/// @param cumsum bool. if apply cum sum to buckets for earch feature.
-/// @return dense matrix<T>, the row bin sum result. It has shape (bucket_num *
-/// feature_num, x.cols()).
-
 template <typename T>
 lib::numpy::DenseMatrix<T> ExtensionFunctions<T>::FeatureWiseBucketSum(
     const lib::numpy::Evaluator& e, const lib::numpy::DenseMatrix<T>& x,
@@ -104,21 +90,6 @@ lib::numpy::DenseMatrix<T> ExtensionFunctions<T>::FeatureWiseBucketSum(
   return res;
 }
 
-/// @brief Take elements in x according to order_map to caculate the row sum at
-/// each bin for each subgroup.
-/// @tparam T Plaintext or Ciphertext
-/// @param e heu numpy evaluator
-/// @param x dense matrix, rows are elements of bin sum
-/// @param subgroup_map a list of 1d py np ndarray (vector) acts as filters.
-/// Each element's length should be equal to x.rows(), elements should be 0 or
-/// 1, with 1 indicates in this subgroup.
-/// @param order_map a 2d py ndarray. It has shape x.rows() * number of
-/// features.order_map(i, j) = k means row i feature j should be in bin k of
-/// feature j.
-/// @param bucket_num int. The number of buckets for each bin.
-/// @param cumsum bool. if apply cum sum to buckets for earch feature.
-/// @return a list of dense matrix<T>, the row bin sum result. Each element has
-/// shape (bucket_num * feature_num, x.cols()).
 template <typename T>
 std::vector<lib::numpy::DenseMatrix<T>>
 ExtensionFunctions<T>::BatchFeatureWiseBucketSum(
@@ -204,4 +175,70 @@ RowMatrixXd PureNumpyExtensionFunctions::TreePredict(
   return res;
 }
 
+typedef std::tuple<int, float> NodeContent;
+typedef std::unordered_map<int, NodeContent> SplitTree;
+
+namespace {
+SplitTree BuildTreeMap(const std::vector<int>& split_features,
+                       const std::vector<double>& split_points,
+                       const std::vector<int>& node_indices) {
+  YACL_ENFORCE_EQ(node_indices.size(), split_features.size(),
+                  "node length must be well defined");
+  YACL_ENFORCE_EQ(node_indices.size(), split_points.size(),
+                  "node length must be well defined");
+  SplitTree res;
+  for (size_t i = 0; i < node_indices.size(); ++i) {
+    res[node_indices[i]] = NodeContent(split_features[i], split_points[i]);
+  }
+  return res;
+}
+}  // namespace
+
+RowMatrixXd PureNumpyExtensionFunctions::TreePredictWithIndices(
+    const Eigen::Ref<RowMatrixXdDouble> x,
+    const std::vector<int>& split_features,
+    const std::vector<double>& split_points,
+    const std::vector<int>& node_indices,
+    const std::vector<int>& leaf_indices) {
+  auto split_node_num = split_features.size();
+  YACL_ENFORCE_EQ(split_node_num + 1, leaf_indices.size(),
+                  "leaf number must be well defined");
+  // mathematical fact: leaf number = split points + 1
+  Eigen::Matrix<int8_t, -1, -1> res =
+      Eigen::Matrix<int8_t, -1, -1>::Zero(x.rows(), leaf_indices.size());
+  auto split_tree = BuildTreeMap(split_features, split_points, node_indices);
+  std::unordered_map<int, int> leaf_index_map;
+  for (size_t i = 0; i < leaf_indices.size(); ++i) {
+    leaf_index_map[leaf_indices[i]] = i;
+  }
+  yacl::parallel_for(0, x.rows(), 32, [&](int64_t beg, int64_t end) {
+    for (auto i = beg; i < end; ++i) {
+      std::deque<size_t> idxs;
+      idxs.push_back(0);
+      while (idxs.size() > 0) {
+        auto idx = idxs[0];
+        idxs.pop_front();
+        if (split_tree.count(idx) > 0) {
+          const NodeContent& node = split_tree[idx];
+          int f = std::get<0>(node);
+          double v = std::get<1>(node);
+          if (f == -1) {
+            idxs.push_back(idx * 2 + 1);
+            idxs.push_back(idx * 2 + 2);
+          } else {
+            if (x(i, f) < v) {
+              idxs.push_back(idx * 2 + 1);
+            } else {
+              idxs.push_back(idx * 2 + 2);
+            }
+          }
+        } else {
+          auto leaf_idx = leaf_index_map.at(idx);
+          res(i, leaf_idx) = 1;
+        }
+      }
+    }
+  });
+  return res;
+}
 }  // namespace heu::pylib

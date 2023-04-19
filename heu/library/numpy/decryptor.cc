@@ -21,8 +21,9 @@ using kHasVectorizedDecrypt = decltype(std::declval<const CLAZZ&>().Decrypt(
     absl::Span<const CT* const>()));
 
 // CT is each algorithm's Ciphertext
-template <typename CLAZZ, typename CT>
-auto DoCallDecrypt(const CLAZZ& sub_decryptor, const CMatrix& in, PMatrix* out)
+template <typename CLAZZ, typename CT, bool CheckRange>
+auto DoCallDecrypt(const CLAZZ& sub_decryptor, const CMatrix& in,
+                   size_t range_bits, PMatrix* out)
     -> std::enable_if_t<
         std::experimental::is_detected_v<kHasVectorizedDecrypt, CLAZZ, CT>> {
   yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
@@ -34,18 +35,35 @@ auto DoCallDecrypt(const CLAZZ& sub_decryptor, const CMatrix& in, PMatrix* out)
     auto res = sub_decryptor.Decrypt(cts);
     for (int64_t i = beg; i < end; ++i) {
       out->data()[i] = std::move(res[i - beg]);
+      if constexpr (CheckRange) {
+        YACL_ENFORCE(
+            out->data()[i].BitCount() <= range_bits,
+            "Dangerous!!! HE ciphertext range check failed, there may be a "
+            "malicious party stealing your data, please stop computing "
+            "immediately. found pt.BitCount()={}, expected {}",
+            out->data()[i].BitCount(), range_bits);
+      }
     }
   });
 }
 
 // CT is each algorithm's Ciphertext
-template <typename CLAZZ, typename CT>
-auto DoCallDecrypt(const CLAZZ& sub_decryptor, const CMatrix& in, PMatrix* out)
+template <typename CLAZZ, typename CT, bool CheckRange>
+auto DoCallDecrypt(const CLAZZ& sub_decryptor, const CMatrix& in,
+                   size_t range_bits, PMatrix* out)
     -> std::enable_if_t<
         !std::experimental::is_detected_v<kHasVectorizedDecrypt, CLAZZ, CT>> {
   yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
     for (int64_t i = beg; i < end; ++i) {
       out->data()[i] = sub_decryptor.Decrypt(in.data()[i].As<CT>());
+      if constexpr (CheckRange) {
+        YACL_ENFORCE(
+            out->data()[i].BitCount() <= range_bits,
+            "Dangerous!!! HE ciphertext range check failed, there may be a "
+            "malicious party stealing your data, please stop computing "
+            "immediately. found pt.BitCount()={}, expected {}",
+            out->data()[i].BitCount(), range_bits);
+      }
     }
   });
 }
@@ -53,9 +71,25 @@ auto DoCallDecrypt(const CLAZZ& sub_decryptor, const CMatrix& in, PMatrix* out)
 PMatrix Decryptor::Decrypt(const CMatrix& in) const {
   PMatrix out(in.rows(), in.cols(), in.ndim());
 
-#define FUNC(ns)                                                           \
-  [&](const ns::Decryptor& sub_decryptor) {                                \
-    DoCallDecrypt<ns::Decryptor, ns::Ciphertext>(sub_decryptor, in, &out); \
+#define FUNC(ns)                                                              \
+  [&](const ns::Decryptor& sub_decryptor) {                                   \
+    DoCallDecrypt<ns::Decryptor, ns::Ciphertext, false>(sub_decryptor, in, 0, \
+                                                        &out);                \
+  }
+
+  std::visit(HE_DISPATCH(FUNC), decryptor_ptr_);
+#undef FUNC
+
+  return out;
+}
+
+PMatrix Decryptor::DecryptInRange(const CMatrix& in, size_t range_bits) const {
+  PMatrix out(in.rows(), in.cols(), in.ndim());
+
+#define FUNC(ns)                                                          \
+  [&](const ns::Decryptor& sub_decryptor) {                               \
+    DoCallDecrypt<ns::Decryptor, ns::Ciphertext, true>(sub_decryptor, in, \
+                                                       range_bits, &out); \
   }
 
   std::visit(HE_DISPATCH(FUNC), decryptor_ptr_);

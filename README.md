@@ -49,6 +49,9 @@ PHE has been basically developed, LHE and FHE are under development
 Build all
 
 ```shell
+# OPENSOURCE-CLEANUP REMOVE 2
+# optional, if you meet any host key verification issues.
+ssh-keyscan -t rsa gitlab.alipay-inc.com >> ~/.ssh/known_hosts
 
 # build all
 bazel build heu/...

@@ -61,6 +61,12 @@ yacl_cc_test(
 )
 
 yacl_cc_test(
+    name = "decryptor_test",
+    srcs = ["decryptor_test.cc"],
+    deps = [":phe"],
+)
+
+yacl_cc_test(
     name = "evaluator_test",
     srcs = ["evaluator_test.cc"],
     deps = [":phe"],
