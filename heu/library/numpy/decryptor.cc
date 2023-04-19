@@ -26,6 +26,7 @@ auto DoCallDecrypt(const CLAZZ& sub_decryptor, const CMatrix& in,
                    size_t range_bits, PMatrix* out)
     -> std::enable_if_t<
         std::experimental::is_detected_v<kHasVectorizedDecrypt, CLAZZ, CT>> {
+  bool out_of_range = false;  // should be atomic?
   yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
     std::vector<const CT*> cts;
     cts.reserve(end - beg);
@@ -35,16 +36,19 @@ auto DoCallDecrypt(const CLAZZ& sub_decryptor, const CMatrix& in,
     auto res = sub_decryptor.Decrypt(cts);
     for (int64_t i = beg; i < end; ++i) {
       out->data()[i] = std::move(res[i - beg]);
-      if (CheckRange) {
-        YACL_ENFORCE(
-            out->data()[i].BitCount() <= range_bits,
-            "Dangerous!!! HE ciphertext range check failed, there may be a "
-            "malicious party stealing your data, please stop computing "
-            "immediately. found pt.BitCount()={}, expected {}",
-            out->data()[i].BitCount(), range_bits);
+      if constexpr (CheckRange) {
+        if (out->data()[i].BitCount() > range_bits) {
+          out_of_range = true;
+        }
       }
     }
   });
+
+  YACL_ENFORCE(!out_of_range,
+               "Dangerous!!! HE ciphertext range check failed, there may be a "
+               "malicious party stealing your data, please stop computing "
+               "immediately. max_allowed_bits={}",
+               range_bits);
 }
 
 // CT is each algorithm's Ciphertext
@@ -53,19 +57,23 @@ auto DoCallDecrypt(const CLAZZ& sub_decryptor, const CMatrix& in,
                    size_t range_bits, PMatrix* out)
     -> std::enable_if_t<
         !std::experimental::is_detected_v<kHasVectorizedDecrypt, CLAZZ, CT>> {
+  bool out_of_range = false;  // should be atomic?
   yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
     for (int64_t i = beg; i < end; ++i) {
       out->data()[i] = sub_decryptor.Decrypt(in.data()[i].As<CT>());
-      if (CheckRange) {
-        YACL_ENFORCE(
-            out->data()[i].BitCount() <= range_bits,
-            "Dangerous!!! HE ciphertext range check failed, there may be a "
-            "malicious party stealing your data, please stop computing "
-            "immediately. found pt.BitCount()={}, expected {}",
-            out->data()[i].BitCount(), range_bits);
+      if constexpr (CheckRange) {
+        if (out->data()[i].BitCount() > range_bits) {
+          out_of_range = true;
+        }
       }
     }
   });
+
+  YACL_ENFORCE(!out_of_range,
+               "Dangerous!!! HE ciphertext range check failed, there may be a "
+               "malicious party stealing your data, please stop computing "
+               "immediately. max_allowed_bits={}",
+               range_bits);
 }
 
 PMatrix Decryptor::Decrypt(const CMatrix& in) const {
