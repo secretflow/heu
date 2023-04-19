@@ -35,7 +35,7 @@ auto DoCallDecrypt(const CLAZZ& sub_decryptor, const CMatrix& in,
     auto res = sub_decryptor.Decrypt(cts);
     for (int64_t i = beg; i < end; ++i) {
       out->data()[i] = std::move(res[i - beg]);
-      if constexpr (CheckRange) {
+      if (CheckRange) {
         YACL_ENFORCE(
             out->data()[i].BitCount() <= range_bits,
             "Dangerous!!! HE ciphertext range check failed, there may be a "
@@ -56,7 +56,7 @@ auto DoCallDecrypt(const CLAZZ& sub_decryptor, const CMatrix& in,
   yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
     for (int64_t i = beg; i < end; ++i) {
       out->data()[i] = sub_decryptor.Decrypt(in.data()[i].As<CT>());
-      if constexpr (CheckRange) {
+      if (CheckRange) {
         YACL_ENFORCE(
             out->data()[i].BitCount() <= range_bits,
             "Dangerous!!! HE ciphertext range check failed, there may be a "
