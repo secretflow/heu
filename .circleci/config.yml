@@ -32,7 +32,7 @@ jobs:
           name: "bazel test"
           command: |
             pip install numpy
-            bazel test //heu/... --ui_event_filters=-info,-debug,-warning --test_timeout=1800 --test_output=errors --verbose_failures
+            bazel test //heu/... --test_timeout=1800 --test_output=errors --verbose_failures
       - store_test_results:
           path: ./bazel-testlogs
   macOS_ut:
