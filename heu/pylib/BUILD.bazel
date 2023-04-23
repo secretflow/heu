@@ -1,10 +1,7 @@
 load("@pybind11_bazel//:build_defs.bzl", "pybind_extension")
 load("@rules_python//python:defs.bzl", "py_library", "py_test")
-load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
 
 package(default_visibility = ["//visibility:public"])
-
-HEU_VERSION = "0.4.3b2"
 
 exports_files(
     [
@@ -58,36 +55,3 @@ py_test(
     ],
 )
 
-py_library(
-    name = "package",
-    deps = [
-        ":heu_modules",
-    ],
-)
-
-py_package(
-    name = "phe_pkg",
-    deps = [
-        ":package",
-    ],
-)
-
-py_wheel(
-    name = "pylib",
-    abi = "abi3",
-    distribution = "sf_heu",
-    license = "Apache 2.0",
-    platform = select({
-        "@bazel_tools//src/conditions:darwin_x86_64": "macosx_10_16_x86_64",
-        "@bazel_tools//src/conditions:darwin_arm64": "macosx_11_0_arm64",
-        "//conditions:default": "manylinux2014_x86_64",
-    }),
-    python_requires = "==3.8.*",
-    python_tag = "cp38",
-    requires = [
-        "numpy>=1.22.0",
-    ],
-    strip_path_prefixes = ["heu/pylib"],
-    version = HEU_VERSION,
-    deps = [":phe_pkg"],
-)

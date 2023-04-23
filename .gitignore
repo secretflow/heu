@@ -27,3 +27,8 @@ docs/_build
 
 pylib.name
 *.whl
+
+build/
+dist/
+
+*.egg-info/
