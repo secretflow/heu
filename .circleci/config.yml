@@ -76,7 +76,6 @@ jobs:
       - run:
           name: "build package and publish"
           command: |
-            conda update -n base -c defaults conda -y
             conda create -n build python=<< parameters.python_ver >> -y
             conda activate build  
 
@@ -115,7 +114,6 @@ jobs:
       - run:
           name: "build package and publish"
           command: |            
-            conda update -n base -c defaults conda -y
             conda create -n build python=<< parameters.python_ver >> -y
             conda activate build
         
@@ -152,7 +150,6 @@ jobs:
       - run:
           name: "build package and publish"
           command: |            
-            conda update -n base -c defaults conda -y
             conda create -n build python=<< parameters.python_ver >> -y
             conda activate build
             
