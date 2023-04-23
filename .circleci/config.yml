@@ -30,12 +30,28 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Checkout devtools
+          command: git clone https://github.com/secretflow/devtools.git
+      - run:
           name: "bazel test"
           command: |
+            set +e
+            declare -i test_status
+
             pip install numpy
-            bazel test //heu/... --test_timeout=1800 --test_output=errors --verbose_failures
+            bazel test //heu/... --test_timeout=1800 --test_output=errors --verbose_failures; test_status=${PIPESTATUS[0]}
+
+            sh devtools/rename-junit-xml.sh
+            find bazel-bin/ -perm +111 -type f -name "*_test"  -print0 | xargs -0 tar -cvzf test_binary.tar.gz
+            find bazel-testlogs/ -type f -name "test.log"  -print0 | xargs -0 tar -cvzf test_logs.tar.gz
+
+            exit ${test_status}
       - store_test_results:
-          path: ./bazel-testlogs
+          path: test-results
+      - store_artifacts:
+          path: test_binary.tar.gz
+      - store_artifacts:
+          path: test_logs.tar.gz
   macOS_ut:
     macos:
       xcode: 14.2
@@ -58,11 +74,24 @@ jobs:
             conda init bash zsh
             pip install numpy
       - run:
+          name: Checkout devtools
+          command: git clone https://github.com/secretflow/devtools.git
+      - run:
           name: "bazel test"
           command: |
             bazel test --ui_event_filters=-info,-debug,-warning --test_timeout=1800 --test_output=errors --verbose_failures -- //heu/... -//heu/experimental/tfhe/...
+
+            sh devtools/rename-junit-xml.sh
+            find bazel-bin/ -perm +111 -type f -name "*_test"  -print0 | xargs -0 tar -cvzf test_binary.tar.gz
+            find bazel-testlogs/ -type f -name "test.log"  -print0 | xargs -0 tar -cvzf test_logs.tar.gz
+
+            exit ${test_status}
       - store_test_results:
-          path: ./bazel-testlogs
+          path: test-results
+      - store_artifacts:
+          path: test_binary.tar.gz
+      - store_artifacts:
+          path: test_logs.tar.gz
   linux_publish:
     docker:
       - image: registry.hub.docker.com/secretflow/release-ci:0.7
