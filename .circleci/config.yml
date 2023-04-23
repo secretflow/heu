@@ -79,11 +79,8 @@ jobs:
             conda create -n build python=<< parameters.python_ver >> -y
             conda activate build  
 
-            bazel build -c opt //heu/pylib
-            heu_wheel=$(<bazel-bin/heu/pylib/pylib.name)
-            heu_wheel_path="bazel-bin/heu/pylib/${heu_wheel}"
-
-            ls $heu_wheel_path
+            sh ./build_wheel_entrypoint.sh
+            ls dist/*.whl
 
             # python3 -m pip install twine
             # python3 -m twine upload -r pypi -u __token__ -p ${PYPI_TWINE_TOKEN} $heu_wheel_path
@@ -117,11 +114,9 @@ jobs:
             conda create -n build python=<< parameters.python_ver >> -y
             conda activate build
         
-            bazel build -c opt //heu/pylib
-            heu_wheel=$(<bazel-bin/heu/pylib/pylib.name)
-            heu_wheel_path="bazel-bin/heu/pylib/${heu_wheel}"
+            sh ./build_wheel_entrypoint.sh
+            ls dist/*.whl
 
-            ls $heu_wheel_path
             # python3 -m pip install twine
             # python3 -m twine upload -r pypi -u __token__ -p ${PYPI_TWINE_TOKEN} $heu_wheel_path
   macOS_arm64_publish:
@@ -153,11 +148,9 @@ jobs:
             conda create -n build python=<< parameters.python_ver >> -y
             conda activate build
             
-            bazel build -c opt //heu/pylib
-            heu_wheel=$(<bazel-bin/heu/pylib/pylib.name)
-            heu_wheel_path="bazel-bin/heu/pylib/${heu_wheel}"
-
-            ls $heu_wheel_path
+            sh ./build_wheel_entrypoint.sh
+            ls dist/*.whl
+            
             # python3 -m pip install twine
             # python3 -m twine upload -r pypi -u __token__ -p ${PYPI_TWINE_TOKEN} $heu_wheel_path
 
