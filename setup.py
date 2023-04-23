@@ -225,6 +225,9 @@ setuptools.setup(
     url="https://github.com/secretflow/heu",
     classifiers=[
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
     ],
     packages=['heu'],
     cmdclass={"build_ext": build_ext},
