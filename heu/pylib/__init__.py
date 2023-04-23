@@ -1,6 +1,4 @@
-#! /bin/bash
-#
-# Copyright 2022 Ant Group Co., Ltd.
+# Copyright 2023 Ant Group Co., Ltd.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,5 +13,9 @@
 # limitations under the License.
 
 
-python setup.py bdist_wheel
+from .version import __version__  # type: ignore
+from .heu import *
 
+__all__ = [
+    "__version__",
+]
