@@ -17,7 +17,7 @@
 
 python setup.py bdist_wheel
 
-python3 -m pip install dist/*.whl --force-reinstall --no-deps
+python3 -m pip install dist/*.whl --force-reinstall
 # check import ok
 python -c "import heu"
 python -c "from heu import numpy"
