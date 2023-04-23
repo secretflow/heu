@@ -111,7 +111,7 @@ jobs:
             wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O ~/miniconda.sh
             bash ~/miniconda.sh -b -p $HOME/miniconda
             source $HOME/miniconda/bin/activate
-            conda init zsh
+            conda init bash zsh
       - run:
           name: "build package and publish"
           command: |            
@@ -148,7 +148,7 @@ jobs:
             wget https://repo.anaconda.com/miniconda/Miniconda3-py38_23.1.0-1-MacOSX-arm64.sh -O ~/miniconda.sh
             bash ~/miniconda.sh -b -p $HOME/miniconda
             source $HOME/miniconda/bin/activate
-            conda init zsh
+            conda init bash zsh
       - run:
           name: "build package and publish"
           command: |            
