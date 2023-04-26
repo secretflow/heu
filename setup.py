@@ -222,6 +222,7 @@ setuptools.setup(
     long_description=io.open(
         os.path.join(ROOT_DIR, "README.md"), "r", encoding="utf-8"
     ).read(),
+    long_description_content_type='text/markdown',
     url="https://github.com/secretflow/heu",
     classifiers=[
         "Programming Language :: Python :: 3.8",
