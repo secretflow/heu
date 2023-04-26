@@ -219,9 +219,9 @@ setuptools.setup(
     author="SecretFlow Team",
     author_email='secretflow-contact@service.alipay.com',
     description=(setup_spec.description),
-    long_description=io.open(
-        os.path.join(ROOT_DIR, "README.md"), "r", encoding="utf-8"
-    ).read(),
+    # long_description=io.open(
+    #     os.path.join(ROOT_DIR, "README.md"), "r", encoding="utf-8"
+    # ).read(),
     url="https://github.com/secretflow/heu",
     classifiers=[
         "Programming Language :: Python :: 3.8",
