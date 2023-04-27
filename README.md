@@ -15,8 +15,6 @@ https://www.secretflow.org.cn/docs/heu/
 
 ## Background
 
-TEST
-
 This project consists of two parts:
 
 HE Library (currently implemented): This project can be used as a
