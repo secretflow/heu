@@ -92,8 +92,7 @@ jobs:
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   ut:
-    when:
-      not: << pipeline.parameters.build-and-run >>
+    when: << pipeline.parameters.build-and-run >>
     jobs:
       - linux_ut
       - macOS_ut
