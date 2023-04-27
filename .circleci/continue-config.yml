@@ -1,0 +1,99 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+
+parameters:
+  build-and-run:
+    type: boolean
+    default: false
+
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+jobs:
+  linux_ut:
+    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+    docker:
+      - image: registry.hub.docker.com/secretflow/heu-ci:0.4
+    resource_class: 2xlarge
+    # Add steps to the job
+    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+    shell: /bin/bash --login -eo pipefail
+    steps:
+      - checkout
+      - run:
+          name: Checkout devtools
+          command: git clone https://github.com/secretflow/devtools.git
+      - run:
+          name: "bazel test"
+          command: |
+            set +e
+            declare -i test_status
+
+            pip install numpy
+            bazel test //heu/... --test_timeout=1800 --test_output=errors --verbose_failures; test_status=${PIPESTATUS[0]}
+
+            sh devtools/rename-junit-xml.sh
+            find bazel-bin/ -executable -type f -name "*_test"  -print0 | xargs -0 tar -cvzf test_binary.tar.gz
+            find bazel-testlogs/ -type f -name "test.log"  -print0 | xargs -0 tar -cvzf test_logs.tar.gz
+
+            exit ${test_status}
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test_binary.tar.gz
+      - store_artifacts:
+          path: test_logs.tar.gz
+  macOS_ut:
+    macos:
+      xcode: 14.2
+    environment:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    resource_class: macos.m1.large.gen1
+    steps:
+      - checkout
+      - when:
+            condition:
+              equal: [ main, << pipeline.git.branch >> ]
+            steps:
+              - run:
+                  name: "Install homebrew dependencies"
+                  command: |
+                    brew install bazel cmake ninja libomp wget
+                    (cd /opt/homebrew/Cellar/bazel/*.*.*/libexec/bin && curl -fLO https://github.com/bazelbuild/bazel/releases/download/5.4.1/bazel-5.4.1-darwin-arm64 && chmod +x bazel-5.4.1-darwin-arm64)
+              - run:
+                  name: "Install Miniconda"
+                  command: |
+                    wget https://repo.anaconda.com/miniconda/Miniconda3-py38_23.1.0-1-MacOSX-arm64.sh -O ~/miniconda.sh
+                    bash ~/miniconda.sh -b -p $HOME/miniconda
+                    source $HOME/miniconda/bin/activate
+                    conda init bash zsh
+                    pip install numpy
+              - run:
+                  name: Checkout devtools
+                  command: git clone https://github.com/secretflow/devtools.git
+              - run:
+                  name: "bazel test"
+                  command: |
+                    bazel test --ui_event_filters=-info,-debug,-warning --test_timeout=1800 --test_output=errors --verbose_failures -- //heu/... -//heu/experimental/tfhe/...
+
+                    sh devtools/rename-junit-xml.sh
+                    find bazel-bin/ -perm +111 -type f -name "*_test"  -print0 | xargs -0 tar -cvzf test_binary.tar.gz
+                    find bazel-testlogs/ -type f -name "test.log"  -print0 | xargs -0 tar -cvzf test_logs.tar.gz
+
+                    exit ${test_status}
+              - store_test_results:
+                  path: test-results
+              - store_artifacts:
+                  path: test_binary.tar.gz
+              - store_artifacts:
+                  path: test_logs.tar.gz
+# Invoke jobs via workflows
+# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+workflows:
+  ut:
+    when:
+      not: << pipeline.parameters.build-and-run >>
+    jobs:
+      - linux_ut
+      - macOS_ut
