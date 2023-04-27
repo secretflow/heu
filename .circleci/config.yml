@@ -60,38 +60,42 @@ jobs:
     resource_class: macos.m1.large.gen1
     steps:
       - checkout
-      - run:
-          name: "Install homebrew dependencies"
-          command: |
-            brew install bazel cmake ninja libomp wget
-            (cd /opt/homebrew/Cellar/bazel/*.*.*/libexec/bin && curl -fLO https://github.com/bazelbuild/bazel/releases/download/5.4.1/bazel-5.4.1-darwin-arm64 && chmod +x bazel-5.4.1-darwin-arm64)
-      - run:
-          name: "Install Miniconda"
-          command: |
-            wget https://repo.anaconda.com/miniconda/Miniconda3-py38_23.1.0-1-MacOSX-arm64.sh -O ~/miniconda.sh
-            bash ~/miniconda.sh -b -p $HOME/miniconda
-            source $HOME/miniconda/bin/activate
-            conda init bash zsh
-            pip install numpy
-      - run:
-          name: Checkout devtools
-          command: git clone https://github.com/secretflow/devtools.git
-      - run:
-          name: "bazel test"
-          command: |
-            bazel test --ui_event_filters=-info,-debug,-warning --test_timeout=1800 --test_output=errors --verbose_failures -- //heu/... -//heu/experimental/tfhe/...
+      - when:
+            condition:
+              equal: [ main, << pipeline.git.branch >> ]
+            steps:
+              - run:
+                  name: "Install homebrew dependencies"
+                  command: |
+                    brew install bazel cmake ninja libomp wget
+                    (cd /opt/homebrew/Cellar/bazel/*.*.*/libexec/bin && curl -fLO https://github.com/bazelbuild/bazel/releases/download/5.4.1/bazel-5.4.1-darwin-arm64 && chmod +x bazel-5.4.1-darwin-arm64)
+              - run:
+                  name: "Install Miniconda"
+                  command: |
+                    wget https://repo.anaconda.com/miniconda/Miniconda3-py38_23.1.0-1-MacOSX-arm64.sh -O ~/miniconda.sh
+                    bash ~/miniconda.sh -b -p $HOME/miniconda
+                    source $HOME/miniconda/bin/activate
+                    conda init bash zsh
+                    pip install numpy
+              - run:
+                  name: Checkout devtools
+                  command: git clone https://github.com/secretflow/devtools.git
+              - run:
+                  name: "bazel test"
+                  command: |
+                    bazel test --ui_event_filters=-info,-debug,-warning --test_timeout=1800 --test_output=errors --verbose_failures -- //heu/... -//heu/experimental/tfhe/...
 
-            sh devtools/rename-junit-xml.sh
-            find bazel-bin/ -perm +111 -type f -name "*_test"  -print0 | xargs -0 tar -cvzf test_binary.tar.gz
-            find bazel-testlogs/ -type f -name "test.log"  -print0 | xargs -0 tar -cvzf test_logs.tar.gz
+                    sh devtools/rename-junit-xml.sh
+                    find bazel-bin/ -perm +111 -type f -name "*_test"  -print0 | xargs -0 tar -cvzf test_binary.tar.gz
+                    find bazel-testlogs/ -type f -name "test.log"  -print0 | xargs -0 tar -cvzf test_logs.tar.gz
 
-            exit ${test_status}
-      - store_test_results:
-          path: test-results
-      - store_artifacts:
-          path: test_binary.tar.gz
-      - store_artifacts:
-          path: test_logs.tar.gz
+                    exit ${test_status}
+              - store_test_results:
+                  path: test-results
+              - store_artifacts:
+                  path: test_binary.tar.gz
+              - store_artifacts:
+                  path: test_logs.tar.gz
   linux_publish:
     docker:
       - image: registry.hub.docker.com/secretflow/release-ci:0.7
