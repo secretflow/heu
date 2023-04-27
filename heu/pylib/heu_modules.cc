@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// test me
-
 #include "pybind11/pybind11.h"
 
 #include "heu/pylib/numpy_binding/bind_numpy.h"
