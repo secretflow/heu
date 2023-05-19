@@ -1,11 +1,7 @@
-sphinx==5.3.0
+sphinx==6.2.1
 sphinx-intl
 sphinx-copybutton
 sphinx-togglebutton
 sphinx-inline-tabs
-# matplotlib
-# myst-parser
 sf-heu
-
-# theme
 pydata-sphinx-theme

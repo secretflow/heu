@@ -6,6 +6,14 @@
 
 # -- Path setup --------------------------------------------------------------
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from sphinx.util.tags import Tags
+
+    # Sphinx injects this during eval
+    tags: Tags = None
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -50,8 +58,10 @@ extensions = [
     'sphinx.ext.napoleon',
     "sphinx_inline_tabs",
     "sphinx_togglebutton",
-    # "myst_parser",
 ]
+
+if tags.has('mdx'):
+    extensions.append('sphinx_mdx')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -92,8 +102,6 @@ html_theme_options = {
             "type": "fontawesome",
         },
     ],
-    # https://pydata-sphinx-theme.readthedocs.io/en/stable/user_guide/layout.html
-    # the default "navbar-logo" section is redundant and has bugs, so remove it.
     # "navbar_start": [],
     "secondary_sidebar_items": ["page-toc"],
     "language_switch_button": True,

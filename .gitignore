@@ -32,3 +32,9 @@ build/
 dist/
 
 *.egg-info/
+
+.venv
+venv
+
+# gettext
+*.mo
