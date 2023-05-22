@@ -6,22 +6,13 @@
 
 # -- Path setup --------------------------------------------------------------
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from sphinx.util.tags import Tags
-
-    # Sphinx injects this during eval
-    tags: Tags = None
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
 import sys
-
-sys.path.insert(0, os.path.abspath('../bazel-bin/heu/pybind'))
+from typing import TYPE_CHECKING
 
 # -- Project information -----------------------------------------------------
 
@@ -59,6 +50,12 @@ extensions = [
     "sphinx_inline_tabs",
     "sphinx_togglebutton",
 ]
+
+if TYPE_CHECKING:
+    from sphinx.util.tags import Tags
+
+    # Sphinx injects this during eval
+    tags: Tags = None
 
 if tags.has('mdx'):
     extensions.append('sphinx_mdx')
