@@ -71,7 +71,10 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
 
   MPInt::InvertMod((gp - MPInt::_1_) / sk->p_, sk->p_, &sk->gp_inv_);
 
-  MPInt::RandomLtN(pk->n_, &g_);
+  // make sure 'g_' and 'p^2' are co-prime
+  do {
+    MPInt::RandomLtN(pk->n_, &g_);
+  } while (g_.Mod(sk->p_).IsZero());
   MPInt::PowMod(g, u, pk->n_, &pk->capital_g_);
   MPInt::PowMod(g_, pk->n_ * u, pk->n_, &pk->capital_h_);
 
