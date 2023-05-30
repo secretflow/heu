@@ -17,6 +17,7 @@
 #include "heu/library/algorithms/paillier_zahlen/ciphertext.h"
 #include "heu/library/algorithms/paillier_zahlen/encryptor.h"
 #include "heu/library/algorithms/paillier_zahlen/public_key.h"
+#include "heu/library/algorithms/util/spi_traits.h"
 
 namespace heu::lib::algorithms::paillier_z {
 
@@ -72,6 +73,12 @@ class Evaluator {
   // out = -a
   Ciphertext Negate(const Ciphertext& a) const;
   void NegateInplace(Ciphertext* a) const;
+
+  // Add cipher input to sum
+  void CalcSum(Ciphertext* sum, ConstSpan<Ciphertext> input) const {}
+  // Add plain input to sum
+  void CalcSum(Plaintext* sum, ConstSpan<Plaintext> input) const {}
+  std::string GetSchema() const { return "zpaillier"; }
 
  private:
   PublicKey pk_;

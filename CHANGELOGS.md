@@ -8,7 +8,10 @@
 
 ## [Unreleased]
 
-> please add your unreleased change here.
+- [Feature] Add ClustarFPGA to HEU
+- [Optimize] Optimize vectorized spi in mat mul
+- [Feature] New apis are added to make algorithms pass in optimized vectorized spi mat mul
+- [Add] Add test case Mul in NpBenchmarks
 
 ## [0.4.3]
 

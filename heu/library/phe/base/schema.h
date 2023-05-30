@@ -21,6 +21,7 @@
 #include "heu/library/algorithms/paillier_float/paillier.h"
 #include "heu/library/algorithms/paillier_ipcl/ipcl.h"
 #include "heu/library/algorithms/paillier_zahlen/paillier.h"
+#include "heu/library/algorithms/paillier_clustar_fpga/clustar_fpga.h"
 
 // [SPI: Please register your algorithm here] || progress: (1 of 5)
 // Do not forget to add your algo header file here
@@ -42,6 +43,7 @@ enum class SchemaType {
   ENUM_ELEMENT(ENABLE_IPCL, IPCL)
   ENUM_ELEMENT(true, ZPaillier)  // Preferred
   ENUM_ELEMENT(true, FPaillier)
+  ENUM_ELEMENT(ENABLE_CLUSTAR_FPGA, ClustarFPGA)
   // YOUR_ALGO
 };
 // clang-format on
@@ -79,7 +81,8 @@ std::ostream& operator<<(std::ostream& os, SchemaType st);
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::ou, ##__VA_ARGS__)                   \
   INVOKE(ENABLE_IPCL, func_or_macro, ::heu::lib::algorithms::paillier_ipcl, ##__VA_ARGS__) \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_z, ##__VA_ARGS__)           \
-  INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_f, ##__VA_ARGS__)
+  INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_f, ##__VA_ARGS__)           \
+  INVOKE(ENABLE_CLUSTAR_FPGA, func_or_macro, ::heu::lib::algorithms::paillier_clustar_fpga, ##__VA_ARGS__) 
 
 // [SPI: Please register your algorithm here] || progress: (4 of 5)
 // If you add a new schema, change this !!
@@ -90,6 +93,7 @@ std::ostream& operator<<(std::ostream& os, SchemaType st);
   func_or_macro(::heu::lib::algorithms, MPInt, ##__VA_ARGS__)                    \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::mock, Plaintext, ##__VA_ARGS__)                 \
   INVOKE(ENABLE_IPCL, func_or_macro, ::heu::lib::algorithms::paillier_ipcl, Plaintext, ##__VA_ARGS__) \
+  INVOKE(ENABLE_CLUSTAR_FPGA, func_or_macro, ::heu::lib::algorithms::paillier_clustar_fpga, Plaintext, ##__VA_ARGS__) \
   // INVOKE(true, func_or_macro, ::heu::lib::algorithms::your_algo, Plaintext, ##__VA_ARGS__)
 // clang-format on
 
