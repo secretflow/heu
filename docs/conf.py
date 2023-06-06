@@ -10,15 +10,14 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
+
 from typing import TYPE_CHECKING
 
 # -- Project information -----------------------------------------------------
 
-project = 'HEU'
-copyright = '2022 Ant Group Co., Ltd'
-author = 'HEU authors'
+project = "HEU"
+copyright = "2022 Ant Group Co., Ltd"
+author = "HEU authors"
 
 # The full version, including alpha/beta/rc tags
 # release = '0.0.6'
@@ -30,9 +29,9 @@ author = 'HEU authors'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = 'zh_CN'
+language = "zh_CN"
 
-locale_dirs = ['locale/']  # path is example but recommended.
+locale_dirs = ["locale/"]  # path is example but recommended.
 gettext_compact = False  # optional.
 gettext_uuid = False  # optional.
 
@@ -42,11 +41,12 @@ gettext_uuid = False  # optional.
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.napoleon',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.autosectionlabel",
     "sphinx_inline_tabs",
     "sphinx_togglebutton",
 ]
@@ -61,19 +61,19 @@ if tags.has('mdx'):
     extensions.append('sphinx_mdx')
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # -- Options for HTML output -------------------------------------------------
 
-html_favicon = '_static/favicon.ico'
+html_favicon = "_static/favicon.ico"
 
 html_css_files = [
-    'css/custom.css',
+    "css/custom.css",
 ]
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -107,4 +107,4 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
