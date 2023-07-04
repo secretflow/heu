@@ -128,6 +128,7 @@ def build():
 
     bazel_flags.extend(["-c", "opt"])
 
+
     return bazel_invoke(
         subprocess.check_call,
         bazel_precmd_flags + ["build"] + bazel_flags + ["--"] + bazel_targets,

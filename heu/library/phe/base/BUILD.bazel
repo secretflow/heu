@@ -20,6 +20,7 @@ yacl_cc_library(
         "//heu/library/algorithms/paillier_float",
         "//heu/library/algorithms/paillier_zahlen",
         "//heu/library/algorithms/paillier_ipcl",
+        "//heu/library/algorithms/elgamal",
     ],
 )
 

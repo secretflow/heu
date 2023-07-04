@@ -47,7 +47,7 @@ namespace heu::lib::phe {
 #define DEFINE_INVOKE_METHOD_RET_1(ret, func)                                \
   template <typename CLAZZ, typename TYPE1>                                  \
   using kHasScalar##func =                                                   \
-      decltype(std::declval<const CLAZZ&>().func(TYPE1()));                  \
+      decltype(std::declval<const CLAZZ&>().func(std::declval<TYPE1>()));    \
                                                                              \
   /* Call scalar SPI */                                                      \
   template <typename CLAZZ, typename TYPE1>                                  \
@@ -101,30 +101,30 @@ namespace heu::lib::phe {
 
 // invoke functions with 2 args (with return value) //
 
-#define DEFINE_INVOKE_METHOD_RET_2(ret, func)                        \
-  template <typename CLAZZ, typename TYPE1, typename TYPE2>          \
-  using kHasScalar##func =                                           \
-      decltype(std::declval<const CLAZZ&>().func(TYPE1(), TYPE2())); \
-                                                                     \
-  /* Call scalar SPI */                                              \
-  template <typename CLAZZ, typename TYPE1, typename TYPE2>          \
-  auto DoCall##func(const CLAZZ& sub_clazz, const TYPE1& in1,        \
-                    const TYPE2& in2)                                \
-      ->std::enable_if_t<std::experimental::is_detected_v<           \
-                             kHasScalar##func, CLAZZ, TYPE1, TYPE2>, \
-                         ret> {                                      \
-    return ret(sub_clazz.func(in1, in2));                            \
-  }                                                                  \
-                                                                     \
-  /* Call vectorized SPI */                                          \
-  template <typename CLAZZ, typename TYPE1, typename TYPE2>          \
-  auto DoCall##func(const CLAZZ& sub_clazz, const TYPE1& in1,        \
-                    const TYPE2& in2)                                \
-      ->std::enable_if_t<!std::experimental::is_detected_v<          \
-                             kHasScalar##func, CLAZZ, TYPE1, TYPE2>, \
-                         ret> {                                      \
-    return ret(sub_clazz.func(absl::MakeConstSpan<>({&in1}),         \
-                              absl::MakeConstSpan<>({&in2}))[0]);    \
+#define DEFINE_INVOKE_METHOD_RET_2(ret, func)                          \
+  template <typename CLAZZ, typename TYPE1, typename TYPE2>            \
+  using kHasScalar##func = decltype(std::declval<const CLAZZ&>().func( \
+      std::declval<TYPE1>(), std::declval<TYPE2>()));                  \
+                                                                       \
+  /* Call scalar SPI */                                                \
+  template <typename CLAZZ, typename TYPE1, typename TYPE2>            \
+  auto DoCall##func(const CLAZZ& sub_clazz, const TYPE1& in1,          \
+                    const TYPE2& in2)                                  \
+      ->std::enable_if_t<std::experimental::is_detected_v<             \
+                             kHasScalar##func, CLAZZ, TYPE1, TYPE2>,   \
+                         ret> {                                        \
+    return ret(sub_clazz.func(in1, in2));                              \
+  }                                                                    \
+                                                                       \
+  /* Call vectorized SPI */                                            \
+  template <typename CLAZZ, typename TYPE1, typename TYPE2>            \
+  auto DoCall##func(const CLAZZ& sub_clazz, const TYPE1& in1,          \
+                    const TYPE2& in2)                                  \
+      ->std::enable_if_t<!std::experimental::is_detected_v<            \
+                             kHasScalar##func, CLAZZ, TYPE1, TYPE2>,   \
+                         ret> {                                        \
+    return ret(sub_clazz.func(absl::MakeConstSpan<>({&in1}),           \
+                              absl::MakeConstSpan<>({&in2}))[0]);      \
   }
 
 #define DO_INVOKE_METHOD_RET_2(ns, clazz, func, type1, in1, type2, in2)      \
@@ -137,7 +137,7 @@ namespace heu::lib::phe {
 #define DEFINE_INVOKE_METHOD_VOID_2(func)                                     \
   template <typename CLAZZ, typename TYPE1, typename TYPE2>                   \
   using kHasScalar##func = decltype(std::declval<const CLAZZ&>().func(        \
-      std::declval<TYPE1*>(), TYPE2()));                                      \
+      std::declval<TYPE1*>(), std::declval<TYPE2>()));                        \
                                                                               \
   /* Call scalar SPI */                                                       \
   template <typename CLAZZ, typename TYPE1, typename TYPE2>                   \

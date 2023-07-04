@@ -23,4 +23,8 @@ void KeyGenerator::Generate(int key_size, SecretKey* sk, PublicKey* pk) {
   pk->max_int_ <<= (key_size - 2);
 }
 
+void KeyGenerator::Generate(SecretKey* sk, PublicKey* pk) {
+  Generate(2048, sk, pk);
+}
+
 }  // namespace heu::lib::algorithms::mock

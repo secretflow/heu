@@ -60,6 +60,7 @@ class HeKitSecretBase : public HeKitPublicBase {
 class HeKit : public HeKitSecretBase {
  public:
   HeKit(SchemaType schema_type, size_t key_size);
+  explicit HeKit(SchemaType schema_type);
 
   [[nodiscard]] const std::shared_ptr<Encryptor>& GetEncryptor() const {
     return encryptor_;

@@ -1,0 +1,35 @@
+load("@yacl//bazel:yacl.bzl", "yacl_cc_binary", "yacl_cc_library", "yacl_cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+test_suite(
+    name = "elgamal_tests",
+)
+
+yacl_cc_library(
+    name = "hash_map",
+    hdrs = ["hash_map.h"],
+    deps = [
+        "@yacl//yacl/base:exception",
+    ],
+)
+
+yacl_cc_library(
+    name = "lookup_table",
+    srcs = ["lookup_table.cc"],
+    hdrs = ["lookup_table.h"],
+    deps = [
+        ":hash_map",
+        "//heu/library/algorithms/util",
+        "@yacl//yacl/crypto/base/ecc",
+        "@yacl//yacl/utils:parallel",
+    ],
+)
+
+yacl_cc_test(
+    name = "lookup_table_test",
+    srcs = ["lookup_table_test.cc"],
+    deps = [
+        ":lookup_table",
+    ],
+)

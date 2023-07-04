@@ -14,6 +14,8 @@
 
 #include "heu/library/phe/base/serializable_types.h"
 
+#include <experimental/type_traits>
+
 #include "heu/library/phe/base/variant_helper.h"
 
 namespace heu::lib::phe {
@@ -40,10 +42,21 @@ SerializableVariant<Types...>::SerializableVariant(SchemaType schema_type) {
   var_ = schema2ns_vtable_[static_cast<int>(schema_type)];
 }
 
+template <typename T>
+using kHasSerializeWithMetaMethod =
+    decltype(std::declval<T &>().Serialize(std::declval<bool &>()));
+
 template <typename... Types>
-yacl::Buffer SerializableVariant<Types...>::Serialize() const {
-  yacl::Buffer payload = Visit([](const auto &clazz) -> yacl::Buffer {
-    FOR_EACH_TYPE(clazz) { return clazz.Serialize(); }
+yacl::Buffer SerializableVariant<Types...>::Serialize(bool with_meta) const {
+  yacl::Buffer payload = Visit([with_meta](const auto &clazz) -> yacl::Buffer {
+    FOR_EACH_TYPE(clazz) {
+      if constexpr (std::experimental::is_detected_v<
+                        kHasSerializeWithMetaMethod, decltype(clazz)>) {
+        return clazz.Serialize(with_meta);
+      } else {
+        return clazz.Serialize();
+      }
+    }
   });
   size_t idx = var_.index();
 
@@ -67,7 +80,7 @@ template <typename... Types>
 void SerializableVariant<Types...>::EmplaceInstance(size_t idx) {
   // total types: Types + monostate
   constexpr size_t max_idx = sizeof...(Types);
-  static_assert(max_idx <= 6,
+  static_assert(max_idx <= 14,
                 "For developer: please add more switch-case branches");
 
   switch (idx) {  // O(n)
@@ -78,8 +91,16 @@ void SerializableVariant<Types...>::EmplaceInstance(size_t idx) {
     EMPLACE_CASE(4);
     EMPLACE_CASE(5);
     EMPLACE_CASE(6);
+    EMPLACE_CASE(7);
+    EMPLACE_CASE(8);
+    EMPLACE_CASE(9);
+    EMPLACE_CASE(10);
+    EMPLACE_CASE(11);
+    EMPLACE_CASE(12);
+    EMPLACE_CASE(13);
+    EMPLACE_CASE(14);
     default:
-      YACL_THROW("Bug: please contact developers to fix problem");
+      YACL_THROW("Bug: please contact developers to fix this problem");
   }
 }
 

@@ -108,8 +108,8 @@ template <bool audit>
 Ciphertext Encryptor::EncryptImpl(const MPInt &m,
                                   std::string *audit_str) const {
   YACL_ENFORCE(m.CompareAbs(pk_.PlaintextBound()) < 0,
-               "message number out of range, message={}, max (abs)={}",
-               m.ToHexString(), pk_.PlaintextBound());
+               "message number out of range, message={}, max (abs)={}", m,
+               pk_.PlaintextBound());
 
   Ciphertext out;
   MPInt gm;

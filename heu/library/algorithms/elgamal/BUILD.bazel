@@ -1,0 +1,115 @@
+load("@yacl//bazel:yacl.bzl", "yacl_cc_binary", "yacl_cc_library", "yacl_cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+test_suite(
+    name = "elgamal_tests",
+)
+
+yacl_cc_library(
+    name = "elgamal",
+    hdrs = [
+        "elgamal.h",
+    ],
+    deps = [
+        ":decryptor",
+        ":encryptor",
+        ":evaluator",
+        ":key_generator",
+    ],
+)
+
+yacl_cc_library(
+    name = "secret_key",
+    srcs = ["secret_key.cc"],
+    hdrs = ["secret_key.h"],
+    deps = [
+        "//heu/library/algorithms/elgamal/utils:lookup_table",
+        "@com_github_msgpack_msgpack//:msgpack",
+    ],
+)
+
+yacl_cc_library(
+    name = "public_key",
+    srcs = ["public_key.cc"],
+    hdrs = ["public_key.h"],
+    deps = [
+        ":plaintext",
+        "//heu/library/algorithms/elgamal/utils:lookup_table",
+        "@com_github_msgpack_msgpack//:msgpack",
+    ],
+)
+
+yacl_cc_library(
+    name = "plaintext",
+    hdrs = ["plaintext.h"],
+    deps = [
+        "//heu/library/algorithms/util",
+    ],
+)
+
+yacl_cc_library(
+    name = "ciphertext",
+    srcs = ["ciphertext.cc"],
+    hdrs = ["ciphertext.h"],
+    deps = [
+        ":public_key",
+        "//heu/library/algorithms/util",
+        "@com_github_msgpack_msgpack//:msgpack",
+        "@yacl//yacl/crypto/base/ecc",
+    ],
+)
+
+yacl_cc_library(
+    name = "key_generator",
+    srcs = ["key_generator.cc"],
+    hdrs = ["key_generator.h"],
+    deps = [
+        ":ciphertext",
+        ":public_key",
+        ":secret_key",
+    ],
+)
+
+yacl_cc_library(
+    name = "encryptor",
+    srcs = ["scalar_encryptor.cc"],
+    hdrs = ["scalar_encryptor.h"],
+    deps = [
+        ":ciphertext",
+        ":public_key",
+        "//heu/library/algorithms/util",
+    ],
+)
+
+yacl_cc_library(
+    name = "decryptor",
+    srcs = ["scalar_decryptor.cc"],
+    hdrs = ["scalar_decryptor.h"],
+    deps = [
+        ":ciphertext",
+        ":public_key",
+        ":secret_key",
+        "//heu/library/algorithms/util",
+    ],
+)
+
+yacl_cc_library(
+    name = "evaluator",
+    srcs = ["scalar_evaluator.cc"],
+    hdrs = ["scalar_evaluator.h"],
+    deps = [
+        ":ciphertext",
+        ":encryptor",
+        ":public_key",
+        "//heu/library/algorithms/util",
+    ],
+)
+
+yacl_cc_test(
+    name = "elgamal_test",
+    srcs = ["elgamal_test.cc"],
+    deps = [
+        ":elgamal",
+    ],
+)

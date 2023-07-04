@@ -61,4 +61,8 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
   pk->Init();
 }
 
+void KeyGenerator::Generate(SecretKey* sk, PublicKey* pk) {
+  Generate(2048, sk, pk);
+}
+
 }  // namespace heu::lib::algorithms::paillier_z

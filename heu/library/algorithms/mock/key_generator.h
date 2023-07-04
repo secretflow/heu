@@ -24,6 +24,8 @@ class KeyGenerator {
   // Generate PHE key pair
   // [SPI: Critical]
   static void Generate(int key_size, SecretKey* sk, PublicKey* pk);
+  // Generate PHE key pair by default configs
+  static void Generate(SecretKey* sk, PublicKey* pk);
 };
 
 }  // namespace heu::lib::algorithms::mock

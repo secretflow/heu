@@ -48,8 +48,8 @@ PHE has been basically developed, LHE and FHE are under development
 
 Build all
 
-```shell
 
+```shell
 # build all
 bazel build heu/...
 
@@ -62,5 +62,5 @@ Build python lib
 ```shell
 # require Python 3.8
 # build and install python library
-sh heu/pylib/reinstall.sh
+sh build_wheel_entrypoint.sh
 ```

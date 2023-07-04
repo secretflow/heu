@@ -57,10 +57,10 @@ jobs:
             conda init bash zsh
       - run:
           name: "build package and publish"
-          command: |            
+          command: |
             conda create -n build python=<< parameters.python_ver >> -y
             conda activate build
-        
+
             sh ./build_wheel_entrypoint.sh
             ls dist/*.whl
 
@@ -91,7 +91,7 @@ jobs:
             conda init bash zsh
       - run:
           name: "build package and publish"
-          command: |            
+          command: |
             conda create -n build python=<< parameters.python_ver >> -y
             conda activate build
             
@@ -109,12 +109,12 @@ workflows:
       - linux_publish:
           matrix:
             parameters:
-              python_ver: ["3.8", "3.9", "3.10", "3.11"]
+              python_ver: [ "3.8", "3.9", "3.10", "3.11" ]
       - macOS_x64_publish:
           matrix:
             parameters:
-              python_ver: ['3.8', '3.9', '3.10', '3.11']
+              python_ver: [ '3.8', '3.9', '3.10', '3.11' ]
       - macOS_arm64_publish:
           matrix:
             parameters:
-              python_ver: ['3.8', '3.9', '3.10', '3.11']
+              python_ver: [ '3.8', '3.9', '3.10', '3.11' ]

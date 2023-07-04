@@ -20,6 +20,7 @@
 namespace heu::lib::algorithms::paillier_z {
 
 Encryptor::Encryptor(PublicKey pk) : pk_(std::move(pk)) {}
+
 Encryptor::Encryptor(const Encryptor &from) : Encryptor(from.pk_) {}
 
 MPInt Encryptor::GetRn() const {
@@ -38,8 +39,8 @@ template <bool audit>
 Ciphertext Encryptor::EncryptImpl(const MPInt &m,
                                   std::string *audit_str) const {
   YACL_ENFORCE(m.CompareAbs(pk_.PlaintextBound()) < 0,
-               "message number out of range, message={}, max (abs)={}",
-               m.ToHexString(), pk_.PlaintextBound());
+               "message number out of range, message={}, max (abs)={}", m,
+               pk_.PlaintextBound());
 
   // Note: g^m = (1 + n)^m = (1 + n*m) mod n^2
   // It is also correct when m is negative

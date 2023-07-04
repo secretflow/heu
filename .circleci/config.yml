@@ -57,4 +57,3 @@ workflows:
     jobs:
       - continuation/continue:
           configuration_path: .circleci/release-config.yml
-
