@@ -16,10 +16,10 @@
 
 #include "msgpack.hpp"
 
+#include "heu/library/algorithms/elgamal/elgamal.h"
 #include "heu/library/algorithms/mock/mock.h"
 #include "heu/library/algorithms/ou/ou.h"
 #include "heu/library/algorithms/paillier_float/paillier.h"
-#include "heu/library/algorithms/paillier_gpu/paillier.h"
 #include "heu/library/algorithms/paillier_ipcl/ipcl.h"
 #include "heu/library/algorithms/paillier_zahlen/paillier.h"
 
