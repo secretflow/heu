@@ -10,6 +10,10 @@
 
 > please add your unreleased change here.
 
+## [0.4.4]
+
+- [Feature] Add EC ElGamal cryptosystem
+
 ## [0.4.3]
 
 - [Feature] New api: TreePredictWithIndices support prediction with non-complete

@@ -3,7 +3,6 @@
 
 #include "heu/library/algorithms/paillier_ipcl/key_generator.h"
 
-#include "ipcl/bignum.h"
 #include "ipcl/ipcl.hpp"
 
 namespace heu::lib::algorithms::paillier_ipcl {
@@ -16,4 +15,9 @@ void KeyGenerator::Generate(int key_size, SecretKey* sk, PublicKey* pk) {
   pk->Init(key_pair.pub_key);
   sk->Init(key_pair.priv_key);
 }
+
+void KeyGenerator::Generate(SecretKey* sk, PublicKey* pk) {
+  Generate(2048, sk, pk);
+}
+
 }  // namespace heu::lib::algorithms::paillier_ipcl

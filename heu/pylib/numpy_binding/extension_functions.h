@@ -14,7 +14,9 @@
 
 #pragma once
 
-#include "Eigen/Core"
+#include "heu/library/numpy/eigen_traits.h"
+// keep eigen_traits.h in first line
+
 #include "pybind11/eigen.h"
 #include "pybind11/pybind11.h"
 

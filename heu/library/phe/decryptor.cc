@@ -20,7 +20,7 @@ namespace heu::lib::phe {
 
 template <typename CLAZZ, typename TYPE1, typename TYPE2>
 using kHasScalarDecryptVoid = decltype(std::declval<const CLAZZ&>().Decrypt(
-    TYPE1(), std::declval<TYPE2*>()));
+    std::declval<TYPE1>(), std::declval<TYPE2*>()));
 
 template <typename CLAZZ, typename TYPE1, typename TYPE2>
 auto DoCallDecrypt(const CLAZZ& sub_clazz, const TYPE1& in1, TYPE2* out2)

@@ -82,6 +82,7 @@ inline constexpr size_t kRandomBits3072 = 128;
 // Note 2: If max_plain_bits_ is adjusted, the memory size needs to be
 // multiplied by the factor accordingly
 void SetCacheTableDensity(size_t density);
+
 // The density parameter of each participant can be different, so density is
 // a local configuration and will not be automatically passed to other parties
 // through the protocol
@@ -163,4 +164,5 @@ struct convert<heu::lib::algorithms::ou::PublicKey> {
 }  // namespace adaptor
 }  // namespace msgpack
 }  // namespace msgpack
+
 // clang-format on

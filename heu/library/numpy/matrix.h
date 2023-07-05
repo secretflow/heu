@@ -13,13 +13,11 @@
 // limitations under the License.
 
 #pragma once
-#include "yacl/base/exception.h"
-#define eigen_assert(X) YACL_ENFORCE((X))
 
 #include <experimental/type_traits>
 
-#include "Eigen/Core"
 #include "msgpack.hpp"
+#include "yacl/base/buffer.h"
 #include "yacl/utils/parallel.h"
 
 #include "heu/library/numpy/eigen_traits.h"
@@ -30,7 +28,8 @@ namespace heu::lib::numpy {
 
 // Check if T has a member function .Serialize()
 template <typename T>
-using kHasSerializeMethod = decltype(std::declval<T&>().Serialize());
+using kHasSerializeWithMetaMethod =
+    decltype(std::declval<T&>().Serialize(std::declval<bool&>()));
 
 // Vector is cheated as an n*1 matrix
 template <typename T>
@@ -54,6 +53,7 @@ class DenseMatrix {
   explicit DenseMatrix(Eigen::Index rows) : m_(rows, 1), ndim_(1) {}
 
   T& operator()(Eigen::Index rows, Eigen::Index cols) { return m_(rows, cols); }
+
   const T& operator()(Eigen::Index rows, Eigen::Index cols) const {
     return m_(rows, cols);
   }
@@ -62,6 +62,7 @@ class DenseMatrix {
     YACL_ENFORCE(ndim_ == 1, "tensor is {}-dim, but index is 1-dim", ndim_);
     return m_(rows, 0);
   }
+
   const T& operator()(Eigen::Index rows) const {
     YACL_ENFORCE(ndim_ == 1, "tensor is {}-dim, but index is 1-dim", ndim_);
     return m_(rows, 0);
@@ -77,12 +78,13 @@ class DenseMatrix {
     const auto& view = m_(row_indices, col_indices);
 
     if (ndim_ == 1) {
-      YACL_ENFORCE(!squeeze_col,
-                   "axis not exist, you cannot squeeze shape[1] of a vector");
-    } else if (ndim_ == 0) {
       YACL_ENFORCE(
-          !squeeze_row && !squeeze_col,
-          "axis not exist, tensor is 0-d, but you want to squeeze dim 1 and 2");
+          !squeeze_col,
+          "axis doesn't exist, you cannot squeeze shape[1] of a vector");
+    } else if (ndim_ == 0) {
+      YACL_ENFORCE(!squeeze_row && !squeeze_col,
+                   "axis doesn't exist, tensor is 0-d, but you want to squeeze "
+                   "dim 1 and 2");
     }
 
     int64_t min_dim = view.rows() > 1 ? 1 : 0 + view.cols() > 1 ? 1 : 0;
@@ -127,9 +129,13 @@ class DenseMatrix {
   }
 
   [[nodiscard]] int64_t ndim() const { return ndim_; }
+
   [[nodiscard]] Eigen::Index rows() const { return m_.rows(); }
+
   [[nodiscard]] Eigen::Index cols() const { return m_.cols(); }
+
   [[nodiscard]] Eigen::Index size() const { return m_.size(); }
+
   [[nodiscard]] Shape shape() const {
     std::vector<int64_t> res = {m_.rows(), m_.cols()};
     res.resize(ndim_);
@@ -137,14 +143,15 @@ class DenseMatrix {
   }
 
   T* data() { return m_.data(); }
+
   const T* data() const { return m_.data(); }
 
   // if parallel = true, please make sure update() is thread safe
   void ForEach(
       const std::function<void(int64_t row, int64_t col, T* element)>& update,
       bool parallel = true) {
-    // Why not use static_assert: m_.IsRowMajor is not a constexpr value
-    // Why not use assert: C++ assert do not support custom message
+    // Why doesn't use static_assert: m_.IsRowMajor is not a constexpr value
+    // Why doesn't use assert: C++ assert do not support custom message
     YACL_ENFORCE(!m_.IsRowMajor,
                  "Internal bug: tensor must be stored in ColMajor way.");
 
@@ -209,8 +216,6 @@ class DenseMatrix {
     msgpack::sbuffer buffer;
     msgpack::packer<msgpack::sbuffer> o(buffer);
 
-    // Since element T is not POD, so we cannot pack underlying buffer
-    // directly
     o.pack_array(4);
     Eigen::Index rows = this->rows();
     Eigen::Index cols = this->cols();
@@ -221,14 +226,25 @@ class DenseMatrix {
     o.pack(ndim);
     o.pack_array(this->size());
 
-    for (Eigen::Index j = 0; j < cols; j++) {
-      for (Eigen::Index i = 0; i < rows; i++) {
-        if constexpr (std::experimental::is_detected_v<kHasSerializeMethod,
-                                                       T>) {
-          o.pack(std::string_view(m_(i, j).Serialize()));
-        } else {
-          o.pack(m_(i, j));
+    const T* buf = this->data();
+    if constexpr (std::experimental::is_detected_v<kHasSerializeWithMetaMethod,
+                                                   T>) {
+      std::vector<yacl::Buffer> tmp;
+      tmp.resize(this->size());
+      // parallel serialize
+      tmp[0] = buf[0].Serialize(true);
+      yacl::parallel_for(1, this->size(), 1, [&](int64_t beg, int64_t end) {
+        for (int64_t i = beg; i < end; ++i) {
+          tmp[i] = buf[i].Serialize();
         }
+      });
+
+      for (const auto& t : tmp) {
+        o.pack(std::string_view(t));
+      }
+    } else {
+      for (Eigen::Index i = 0; i < this->size(); i++) {
+        o.pack(buf[i]);
       }
     }
 
@@ -241,12 +257,8 @@ class DenseMatrix {
         msgpack::unpack(reinterpret_cast<const char*>(in.data()), in.size());
     msgpack::object o = msg.get();
 
-    if (o.type != msgpack::type::ARRAY) {
-      throw msgpack::type_error();
-    }
-    if (o.via.array.size != 4) {
-      throw msgpack::type_error();
-    }
+    YACL_ENFORCE(o.type == msgpack::type::ARRAY && o.via.array.size == 4,
+                 "Cannot parse: buffer format error");
 
     Eigen::Index rows = o.via.array.ptr[0].as<Eigen::Index>();
     Eigen::Index cols = o.via.array.ptr[1].as<Eigen::Index>();
@@ -254,21 +266,28 @@ class DenseMatrix {
     heu::lib::numpy::DenseMatrix<T> res(rows, cols, dim);
 
     auto inner_obj = o.via.array.ptr[3];
-    if (inner_obj.type != msgpack::type::ARRAY ||
-        inner_obj.via.array.size != res.size()) {
-      throw msgpack::type_error();
-    }
+    YACL_ENFORCE(inner_obj.type == msgpack::type::ARRAY &&
+                     inner_obj.via.array.size == res.size(),
+                 "Cannot parse inner_obj: buffer format error");
 
+    T* buf = res.data();
     msgpack::object* p = inner_obj.via.array.ptr;
-    for (Eigen::Index j = 0; j < cols; j++) {
-      for (Eigen::Index i = 0; i < rows; i++) {
-        if constexpr (std::experimental::is_detected_v<kHasSerializeMethod,
-                                                       T>) {
-          res(i, j).Deserialize(p++->template as<std::string_view>());
-        } else {
-          res(i, j) = p++->template as<T>();
+    if constexpr (std::experimental::is_detected_v<kHasSerializeWithMetaMethod,
+                                                   T>) {
+      buf[0].Deserialize((*p).as<std::string_view>());
+
+      // parallel serialize
+      yacl::parallel_for(1, res.size(), 1, [&](int64_t beg, int64_t end) {
+        for (int64_t i = beg; i < end; ++i) {
+          buf[i].Deserialize(p[i].template as<std::string_view>());
         }
-      }
+      });
+    } else {
+      yacl::parallel_for(0, res.size(), 1, [&](int64_t beg, int64_t end) {
+        for (int64_t i = beg; i < end; ++i) {
+          buf[i] = p[i].template as<T>();
+        }
+      });
     }
 
     return res;

@@ -29,7 +29,7 @@ class PheTest : public ::testing::TestWithParam<SchemaType> {
   }
 
  protected:
-  HeKit he_kit_ = HeKit(GetParam(), 2048);
+  HeKit he_kit_ = HeKit(GetParam());
   PlainEncoder edr = he_kit_.GetEncoder<PlainEncoder>(1);
 };
 
@@ -68,6 +68,10 @@ TEST_P(PheTest, Serialize) {
 
 // test batch encoding
 TEST_P(PheTest, BatchEncoding) {
+  if (GetParam() == SchemaType::ElGamal) {
+    GTEST_SKIP() << "Plaintext range is not enough, Skip ElGamal";
+  }
+
   auto encryptor = he_kit_.GetEncryptor();
   auto evaluator = he_kit_.GetEvaluator();
   auto decryptor = he_kit_.GetDecryptor();
@@ -115,6 +119,10 @@ TEST_P(PheTest, BatchEncoding) {
 }
 
 TEST_P(PheTest, BatchAdd) {
+  if (GetParam() == SchemaType::ElGamal) {
+    GTEST_SKIP() << "Plaintext range is not enough, Skip ElGamal";
+  }
+
   auto encryptor = he_kit_.GetEncryptor();
   auto evaluator = he_kit_.GetEvaluator();
   auto decryptor = he_kit_.GetDecryptor();

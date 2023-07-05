@@ -12,6 +12,8 @@ class KeyGenerator {
  public:
   // Generate PHE key pair
   static void Generate(int key_size, SecretKey* sk, PublicKey* pk);
+  // Generate PHE key pair by default configs
+  static void Generate(SecretKey* sk, PublicKey* pk);
 };
 
 }  // namespace heu::lib::algorithms::paillier_ipcl

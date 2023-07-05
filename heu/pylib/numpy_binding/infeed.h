@@ -69,7 +69,7 @@ template <typename EL_TYPE, typename Encoder_t,
 hnp::DenseMatrix<phe::Plaintext> DoEncodeMatrix(const py::array &ndarray,
                                                 const Encoder_t &encoder) {
   YACL_ENFORCE(ndarray.ndim() > 0 && ndarray.ndim() <= 2,
-               "HEU only support 1-dim or 2-dim array currently");
+               "HEU only supports 1-dim or 2-dim array currently");
 
   YACL_ENFORCE(
       // TODO: support dynamic shape

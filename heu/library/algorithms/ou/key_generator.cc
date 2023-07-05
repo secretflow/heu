@@ -42,7 +42,7 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
   MPInt u, prime_factor;
   do {
     MPInt::RandPrimeOver(prime_factor_size, &prime_factor);
-    // bits_of(a * b) <= bits_of(a) + bits_of(b)
+    // bits_of(a * b) <= bits_of(a) + bits_of(b),
     // So we add extra two bits to u:
     //    one bit for prime_factor * u; another one bit for p^2;
     // Also, make sure that u > prime_factor
@@ -92,6 +92,10 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
   // max_plaintext_ must be a power of 2, for ease of use
   pk->max_plaintext_ = MPInt::_1_ << (sk->p_half_.BitCount() - 1);
   pk->Init();
+}
+
+void KeyGenerator::Generate(SecretKey* sk, PublicKey* pk) {
+  Generate(2048, sk, pk);
 }
 
 }  // namespace heu::lib::algorithms::ou

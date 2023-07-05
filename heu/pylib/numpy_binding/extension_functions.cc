@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #include "heu/pylib/numpy_binding/extension_functions.h"
 
 #include <tuple>
@@ -175,7 +176,7 @@ RowMatrixXd PureNumpyExtensionFunctions::TreePredict(
   return res;
 }
 
-typedef std::tuple<int, float> NodeContent;
+typedef std::tuple<int, double> NodeContent;
 typedef std::unordered_map<int, NodeContent> SplitTree;
 
 namespace {

@@ -14,8 +14,9 @@
 
 #include "heu/library/numpy/numpy.h"
 
-#include "Eigen/Core"
 #include "gtest/gtest.h"
+
+#include "heu/library/numpy/eigen_traits.h"
 
 namespace heu::lib::numpy::test {
 
@@ -91,7 +92,7 @@ DenseMatrix<T> Apply(const DenseMatrix<T> &m1, const DenseMatrix<T> &m2,
 
 class NumpyTest : public ::testing::Test {
  protected:
-  HeKit he_kit_ = HeKit(phe::HeKit(phe::SchemaType::ZPaillier, 2048));
+  HeKit he_kit_ = HeKit(phe::HeKit(phe::SchemaType::OU, 2048));
 };
 
 TEST_F(NumpyTest, PtSerializeWorks) {
@@ -220,14 +221,25 @@ TEST_F(NumpyTest, BinSumWorks) {
 }
 
 TEST_F(NumpyTest, RangeCheckWorks) {
-  auto pmatrix = GenMatrix(he_kit_.GetSchemaType(), 30, 30);
+  auto pmatrix = GenMatrix(he_kit_.GetSchemaType(), 25, 25);
   auto cmatrix = he_kit_.GetEncryptor()->Encrypt(pmatrix);
   EXPECT_NO_THROW(he_kit_.GetDecryptor()->DecryptInRange(cmatrix, 64));
 
   he_kit_.GetEvaluator()->MulInplace(
-      &cmatrix(15, 15), phe::Plaintext(he_kit_.GetSchemaType(),
+      &cmatrix(3, 3), phe::Plaintext(he_kit_.GetSchemaType(),
+                                     std::numeric_limits<int64_t>::max()));
+  EXPECT_ANY_THROW(he_kit_.GetDecryptor()->DecryptInRange(cmatrix, 64));
+  EXPECT_NO_THROW(he_kit_.GetDecryptor()->Decrypt(cmatrix));
+
+  // two point overflows, test throw exception in different thread
+  he_kit_.GetEvaluator()->MulInplace(
+      &cmatrix(23, 23), phe::Plaintext(he_kit_.GetSchemaType(),
                                        std::numeric_limits<int64_t>::max()));
   EXPECT_ANY_THROW(he_kit_.GetDecryptor()->DecryptInRange(cmatrix, 64));
+  EXPECT_NO_THROW(he_kit_.GetDecryptor()->Decrypt(cmatrix));
+
+  // check all thread throw exception
+  EXPECT_ANY_THROW(he_kit_.GetDecryptor()->DecryptInRange(cmatrix, 1));
   EXPECT_NO_THROW(he_kit_.GetDecryptor()->Decrypt(cmatrix));
 }
 

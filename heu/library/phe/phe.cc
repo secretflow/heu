@@ -28,7 +28,7 @@ void HeKitPublicBase::Setup(std::shared_ptr<PublicKey> pk) {
       ++hit;
     }
   }
-  YACL_ENFORCE("Cannot detect schema type of public key {}, hit={}",
+  YACL_ENFORCE("Cannot detect the schema type of public key {}, hit={}",
                public_key_->ToString(), hit);
 }
 
@@ -54,6 +54,25 @@ HeKit::HeKit(SchemaType schema_type, size_t key_size) {
   auto pk = std::make_shared<PublicKey>(schema_type);
   auto sk =
       pk->Visit(HE_DISPATCH_RET(std::shared_ptr<SecretKey>, GEN_KEY_AND_INIT));
+  Setup(std::move(pk), std::move(sk));
+}
+
+#define GEN_KEY_AND_INIT_DEFAULT(ns)                                          \
+  [&](ns::PublicKey& pk) {                                                    \
+    ns::SecretKey sk;                                                         \
+    ns::KeyGenerator::Generate(&sk, &pk);                                     \
+                                                                              \
+    encryptor_ = std::make_shared<Encryptor>(schema_type, ns::Encryptor(pk)); \
+    decryptor_ =                                                              \
+        std::make_shared<Decryptor>(schema_type, ns::Decryptor(pk, sk));      \
+    evaluator_ = std::make_shared<Evaluator>(schema_type, ns::Evaluator(pk)); \
+    return std::make_shared<SecretKey>(std::move(sk));                        \
+  }
+
+HeKit::HeKit(SchemaType schema_type) {
+  auto pk = std::make_shared<PublicKey>(schema_type);
+  auto sk = pk->Visit(
+      HE_DISPATCH_RET(std::shared_ptr<SecretKey>, GEN_KEY_AND_INIT_DEFAULT));
   Setup(std::move(pk), std::move(sk));
 }
 

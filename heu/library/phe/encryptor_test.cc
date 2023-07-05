@@ -21,8 +21,8 @@ namespace heu::lib::phe::test {
 
 class EncryptorTest : public ::testing::TestWithParam<SchemaType> {
  protected:
-  HeKit he_kit_ = HeKit(GetParam(), 2048);
-  PlainEncoder edr = he_kit_.GetEncoder<PlainEncoder>(1);
+  HeKit he_kit_ = HeKit(GetParam());
+  PlainEncoder edr_ = he_kit_.GetEncoder<PlainEncoder>(1);
 };
 
 INSTANTIATE_TEST_SUITE_P(Schema, EncryptorTest,
@@ -42,13 +42,13 @@ TEST_P(EncryptorTest, EncryptZero) {
                                      he_kit_.GetEncryptor()->EncryptZero());
   ASSERT_EQ(he_kit_.GetDecryptor()->Decrypt(ct0).GetValue<int32_t>(), 0);
 
-  auto p = he_kit_.GetEvaluator()->Sub(edr.Encode(123), ct0);
-  ASSERT_EQ(he_kit_.GetDecryptor()->Decrypt(p), edr.Encode(123));
+  auto p = he_kit_.GetEvaluator()->Sub(edr_.Encode(123), ct0);
+  ASSERT_EQ(he_kit_.GetDecryptor()->Decrypt(p), edr_.Encode(123));
 
-  he_kit_.GetEvaluator()->MulInplace(&ct0, edr.Encode(0));
+  he_kit_.GetEvaluator()->MulInplace(&ct0, edr_.Encode(0));
   ASSERT_EQ(he_kit_.GetDecryptor()->Decrypt(ct0).GetValue<int32_t>(), 0);
 
-  he_kit_.GetEvaluator()->MulInplace(&ct0, edr.Encode(123456));
+  he_kit_.GetEvaluator()->MulInplace(&ct0, edr_.Encode(123456));
   ASSERT_EQ(he_kit_.GetDecryptor()->Decrypt(ct0).GetValue<int32_t>(), 0);
 
   he_kit_.GetEvaluator()->NegateInplace(&ct0);
@@ -66,7 +66,7 @@ TEST_P(EncryptorTest, MinMaxEnc) {
   EXPECT_THROW(encryptor->Encrypt(plain), std::exception);  // too small
 
   plain = he_kit_.GetPublicKey()->PlaintextBound();
-  plain -= edr.Encode(1);  // max
+  plain -= edr_.Encode(1);  // max
   Ciphertext ct0 = encryptor->Encrypt(plain);
   Plaintext plain2 = decryptor->Decrypt(ct0);
   EXPECT_EQ(plain, plain2);
@@ -76,7 +76,7 @@ TEST_P(EncryptorTest, MinMaxEnc) {
   decryptor->Decrypt(ct0, &plain2);
   EXPECT_EQ(plain, plain2);
 
-  plain -= edr.Encode(1);
+  plain -= edr_.Encode(1);
   EXPECT_THROW(encryptor->Encrypt(plain), std::exception);  // too small
 }
 
