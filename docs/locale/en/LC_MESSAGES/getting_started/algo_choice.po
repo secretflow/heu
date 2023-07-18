@@ -48,7 +48,7 @@ msgstr "Algorithm family"
 
 #: ../../getting_started/algo_choice.rst:25
 msgid "简要描述"
-msgstr "brief descirption"
+msgstr "brief description"
 
 #: ../../getting_started/algo_choice.rst:26
 msgid "推荐指数"
