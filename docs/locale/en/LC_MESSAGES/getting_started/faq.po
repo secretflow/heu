@@ -27,7 +27,7 @@ msgstr "Category: Install and deployment"
 
 #: ../../getting_started/faq.rst:10
 msgid "HEU 支持 Mac 吗？"
-msgstr "Does HEU support installation on Mac?"
+msgstr "Does HEU support installation on Mac ?"
 
 #: ../../getting_started/faq.rst:11
 msgid "支持，HEU 同时支持基于 Intel 和 Apple Silicon CPU 的 macOS。"
