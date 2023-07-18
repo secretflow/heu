@@ -107,7 +107,7 @@ msgstr "The SPI of ``Plaintext class`` is shown as follows:"
 
 #: ../../development/phe_dev.rst:33
 msgid "heu/library/algorithms/clean_template/plaintext.h"
-msgstr ""
+msgstr "heu/library/algorithms/clean_template/plaintext.h"
 
 #: ../../development/phe_dev.rst:39
 msgid ""
@@ -166,7 +166,7 @@ msgstr "The SPI of ``Ciphertext class`` is shown as follows:"
 
 #: ../../development/phe_dev.rst:52
 msgid "heu/library/algorithms/clean_template/ciphertext.h"
-msgstr ""
+msgstr "heu/library/algorithms/clean_template/ciphertext.h"
 
 #: ../../development/phe_dev.rst:60
 msgid "定义 KEYS"
@@ -180,27 +180,26 @@ msgstr ""
 
 #: ../../development/phe_dev.rst:64
 msgid "``PublicKey class``："
-msgstr ""
+msgstr "``PublicKey class``："
 
 #: ../../development/phe_dev.rst:66
 msgid "heu/library/algorithms/clean_template/public_key.h"
-msgstr ""
-
+msgstr "heu/library/algorithms/clean_template/public_key.h"
 #: ../../development/phe_dev.rst:72
 msgid "``SecretKey class``："
-msgstr ""
+msgstr  "``SecretKey class``："
 
 #: ../../development/phe_dev.rst:74
 msgid "heu/library/algorithms/clean_template/secret_key.h"
-msgstr ""
+msgstr  "heu/library/algorithms/clean_template/secret_key.h"
 
 #: ../../development/phe_dev.rst:80
 msgid "``KeyGenerator class``："
-msgstr ""
+msgstr "``KeyGenerator class``："
 
 #: ../../development/phe_dev.rst:82
 msgid "heu/library/algorithms/clean_template/key_generator.h"
-msgstr ""
+msgstr "heu/library/algorithms/clean_template/key_generator.h"
 
 #: ../../development/phe_dev.rst:90
 msgid "定义操纵单元"
@@ -278,11 +277,11 @@ msgstr ""
 
 #: ../../development/phe_dev.rst:129 ../../development/phe_dev.rst:194
 msgid "``Encryptor class``："
-msgstr ""
+msgstr "``Encryptor class``："
 
 #: ../../development/phe_dev.rst:131
 msgid "heu/library/algorithms/clean_template/scalar_encryptor.h"
-msgstr ""
+msgstr  "heu/library/algorithms/clean_template/scalar_encryptor.h" 
 
 #: ../../development/phe_dev.rst:137
 msgid ""
@@ -311,19 +310,19 @@ msgstr ""
 
 #: ../../development/phe_dev.rst:150 ../../development/phe_dev.rst:202
 msgid "``Decryptor class``："
-msgstr ""
+msgstr "``Decryptor class``："
 
 #: ../../development/phe_dev.rst:152
-msgid "heu/library/algorithms/clean_template/scalar_decryptor.h"
-msgstr ""
+msgid "heu/library/algorithms/clean_template/scalar_decryptor.h" 
+msgstr "heu/library/algorithms/clean_template/scalar_decryptor.h"
 
 #: ../../development/phe_dev.rst:158 ../../development/phe_dev.rst:210
 msgid "``Evaluator class``："
-msgstr ""
+msgstr "``Evaluator class``："
 
 #: ../../development/phe_dev.rst:160
 msgid "heu/library/algorithms/clean_template/scalar_evaluator.h"
-msgstr ""
+msgstr "heu/library/algorithms/clean_template/scalar_evaluator.h"
 
 #: ../../development/phe_dev.rst:168
 msgid "只实现 Vectorized SPI"
@@ -395,15 +394,15 @@ msgstr ""
 
 #: ../../development/phe_dev.rst:196
 msgid "heu/library/algorithms/clean_template/vector_encryptor.h"
-msgstr ""
+msgstr  "heu/library/algorithms/clean_template/vector_encryptor.h"
 
 #: ../../development/phe_dev.rst:204
 msgid "heu/library/algorithms/clean_template/vector_decryptor.h"
-msgstr ""
+msgstr  "heu/library/algorithms/clean_template/vector_decryptor.h"
 
 #: ../../development/phe_dev.rst:212
 msgid "heu/library/algorithms/clean_template/vector_evaluator.h"
-msgstr ""
+msgstr  "heu/library/algorithms/clean_template/vector_evaluator.h" 
 
 #: ../../development/phe_dev.rst:220
 msgid "混合实现 Scalar/Vectorized SPI"
@@ -424,7 +423,7 @@ msgstr ""
 
 #: ../../development/phe_dev.rst:224
 msgid "heu/library/algorithms/clean_template/mix_spi_demo.h"
-msgstr ""
+msgstr "heu/library/algorithms/clean_template/mix_spi_demo.h"
 
 #: ../../development/phe_dev.rst:232
 msgid "注册新算法"
@@ -441,13 +440,13 @@ msgstr ""
 msgid ""
 "`heu/library/phe/base/schema.h "
 "<https://github.com/secretflow/heu/blob/main/heu/library/phe/base/schema.h>`_"
-msgstr ""
+msgstr "`heu/library/phe/base/schema.h <https://github.com/secretflow/heu/blob/main/heu/library/phe/base/schema.h>`_"
 
 #: ../../development/phe_dev.rst:237
 msgid ""
 "`heu/library/phe/base/schema.cc "
 "<https://github.com/secretflow/heu/blob/main/heu/library/phe/base/schema.cc>`_"
-msgstr ""
+msgstr "`heu/library/phe/base/schema.cc <https://github.com/secretflow/heu/blob/main/heu/library/phe/base/schema.cc>`_"
 
 #: ../../development/phe_dev.rst:239
 msgid ""
@@ -461,21 +460,21 @@ msgstr ""
 
 #: ../../development/phe_dev.rst:242
 msgid "条件编译（可选）"
-msgstr ""
+msgstr "Conditional compilation (optional)"
 
 #: ../../development/phe_dev.rst:244
 msgid ""
 "我们鼓励开发者编写可移植性强，平台依赖低的代码，以便您的算法可以被不同平台的用户所使用。一般而言，隐语至少要求算法支持 "
 "Linux、Mac（Intel）、Mac（arm）三个平台，但是对于某些涉及硬件加速的算法支持全平台确实存在困难，则可以考虑条件编译。"
-msgstr ""
+msgstr "We encourage developers to write highly portable code with low platform dependencies, so that your algorithms can be used by users on different platforms. Generally speaking. SecretFlow requires at least the support of three platforms Linux Mac(Intel) Mac(arm). However, for some algorithms involving hardware acceleration, it can be challenging to support all platforms, and conditional compilation can be considered."
 
 #: ../../development/phe_dev.rst:246
 msgid "条件编译支持在编译时完全剥除您的算法，仅在支持的平台上包含您的算法，避免因为一个算法的加入导致整个 HEU 在某个平台上编译失败。"
-msgstr ""
+msgstr "Conditional compilation allows your algorithm to be completely stripped off during compilation, including your algorithm only on supported platforms. This prevents the entire HEU from failing to compile on a certain platform due to the inclusion of one algorithm."
 
 #: ../../development/phe_dev.rst:248
 msgid "条件编译的步骤为："
-msgstr ""
+msgstr "Steps of Conditional compilation:"
 
 #: ../../development/phe_dev.rst:250
 msgid ""
@@ -485,7 +484,7 @@ msgstr ""
 
 #: ../../development/phe_dev.rst:251
 msgid "在 schema.h/cc 注册算法时引用 ``ENABLE_YOUR_ALGO`` 宏，即不要写死 true，这一步也可以参考 IPCL 的做法"
-msgstr ""
+msgstr "When registering the algorithm in schema.h/cc, reference the ENABLE_YOUR_ALGO macro, that is, do not hard-code true. This step can also refer to IPCL's practice."
 
 #: ../../development/phe_dev.rst:255
 msgid "测试和使用"
@@ -517,17 +516,17 @@ msgstr ""
 
 #: ../../development/phe_dev.rst:262
 msgid "Bazel 脚本编写完成后，请把您的算法作为依赖项加入到 ``schema.h/cc`` 对应的 ``BUILD.bazel`` 文件中。"
-msgstr ""
+msgstr "After completing the Bazel script, please add your algorithm as a dependency to the corresponding ``BUILD.bazel`` file in ``schema.h/cc``."
 
 #: ../../development/phe_dev.rst:264
 msgid "您可以通过以下命令测试编译是否通过："
-msgstr ""
+msgstr "You can test that the compilation works with the following command:"
 
 #: ../../development/phe_dev.rst:270
 msgid ""
 "所有代码开发完成后，请立即更新 `CHANGELOGS "
 "<https://github.com/secretflow/heu/blob/main/CHANGELOGS.md>`_ 文件。"
-msgstr ""
+msgstr "Once all code development is complete, please immediately update the CHANGELOGS <https://github.com/secretflow/heu/blob/main/CHANGELOGS.md>_ file."
 
 #: ../../development/phe_dev.rst:274
 msgid "单元测试"
