@@ -8,7 +8,7 @@
 
 ## [Unreleased]
 
-> please add your unreleased change here.
+> - [Feature] Add LeichiPaillier algorithms to HEU.
 
 ## [0.4.4]
 
