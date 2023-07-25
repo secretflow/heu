@@ -96,16 +96,16 @@ class NpBenchmarks {
           [this, i](benchmark::State& st) { SubInt(st, i); })
           ->Unit(benchmark::kMillisecond);
     }
-    std::vector<std::pair<int, int>> cases = {{0, 1}, {2, 0}, {3, 3}};
-    for (const auto& c : cases) {
-      benchmark::RegisterBenchmark(
-          fmt::format("{:^9}|Matmul({}@{})", he_kit_->GetSchemaType(),
-                      pt_matrixs_[c.first].shape(),
-                      pt_matrixs_[c.second].shape())
-              .c_str(),
-          [this, c](benchmark::State& st) { Matmul(st, c.first, c.second); })
-          ->Unit(benchmark::kMillisecond);
-    }
+    // std::vector<std::pair<int, int>> cases = {{0, 1}, {2, 0}, {3, 3}};
+    // for (const auto& c : cases) {
+    //   benchmark::RegisterBenchmark(
+    //       fmt::format("{:^9}|Matmul({}@{})", he_kit_->GetSchemaType(),
+    //                   pt_matrixs_[c.first].shape(),
+    //                   pt_matrixs_[c.second].shape())
+    //           .c_str(),
+    //       [this, c](benchmark::State& st) { Matmul(st, c.first, c.second); })
+    //       ->Unit(benchmark::kMillisecond);
+    // }
     for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
       benchmark::RegisterBenchmark(
           fmt::format("{:^9}|Decrypt(shape={})", he_kit_->GetSchemaType(),

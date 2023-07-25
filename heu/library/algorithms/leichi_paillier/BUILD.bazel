@@ -1,0 +1,90 @@
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+test_suite(
+    name = "leichi_paillier_tests",
+)
+
+yacl_cc_library(
+    name = "leichi_paillier",
+    srcs = [
+        "vector_decryptor.cc",
+        "vector_encryptor.cc",
+        "vector_evaluator.cc",
+        "key_generator.cc",
+        "public_key.cc",
+        "secret_key.cc",
+        "plaintext.cc",
+        "ciphertext.cc",
+        "utils.cc",
+        "runtime.cc",
+    ],
+    hdrs = [
+        "plaintext.h",
+        "ciphertext.h",
+        "vector_decryptor.h",
+        "vector_encryptor.h",
+        "vector_evaluator.h",
+        "key_generator.h",
+        "public_key.h",
+        "secret_key.h",
+        "leichi.h",
+        "utils.h",
+        "runtime.h",    
+    ],
+    linkopts = ["-lm"],  # codec
+    visibility = ["//visibility:public"],
+    deps = [
+        "//heu/library/algorithms/util",
+        "@com_github_msgpack_msgpack//:msgpack",
+        "@com_github_openssl_openssl//:openssl",
+        "@com_github_uscilab_cereal//:cereal",
+        ":pcie",
+        "compiler",
+    ],
+)
+
+
+yacl_cc_library(
+    name = "pcie",
+    srcs = ["pcie/pcie.cc"],
+    hdrs = ["pcie/pcie.h"],
+    deps = [
+
+    ],
+)
+
+yacl_cc_library(
+    name = "compiler",
+    srcs = ["compiler/compiler.cc"],
+    hdrs = ["compiler/compiler.h"],
+    deps = [
+        
+    ],
+)
+
+yacl_cc_test(
+    name = "compiler_test",
+    srcs = ["compiler_test.cc"],
+    deps = [
+        ":compiler",
+    ],
+)
+
+yacl_cc_test(
+   name = "key_generator_test",
+   srcs = ["key_generator_test.cc"],
+   deps = [
+       ":leichi_paillier",
+       "@com_github_openssl_openssl//:openssl",
+   ],
+)
+
+yacl_cc_test(
+    name = "encryptor_test",
+    srcs = ["encryptor_test.cc"],
+    deps = [
+        ":leichi_paillier",
+    ],
+)

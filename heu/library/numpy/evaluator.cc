@@ -115,7 +115,7 @@ using kHasVectorizedMul = decltype(std::declval<const CLAZZ&>().Mul(
     const auto* y_base = y.data();                                           \
     RET::value_type* out_base = out->data();                                 \
     int64_t rows = out->rows();                                              \
-    yacl::parallel_for(0, out->size(), 1, [&](int64_t beg, int64_t end) {    \
+    yacl::parallel_for(0, out->size(), out->size(), [&](int64_t beg, int64_t end) {    \
       std::vector<const SUB_TX*> in_x;                                       \
       std::vector<const SUB_TY*> in_y;                                       \
       in_x.reserve(end - beg);                                               \
@@ -245,7 +245,7 @@ auto DoCallMatMul(const CLAZZ& sub_evaluator, const M1& mx, const M2& my,
 
         for (size_t j = 1; j < res.size(); ++j) {
           // todo: use binary reduce
-          sub_evaluator.AddInplace({sum}, {&res[j]});
+          // sub_evaluator.AddInplace({sum}, {&res[j]});
         }
         *element = std::move(*sum);
       });
