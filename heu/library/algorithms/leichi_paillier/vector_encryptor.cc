@@ -22,6 +22,10 @@ namespace heu::lib::algorithms::leichi_paillier {
         pt_neg_zero.Set(0);
 
         std::vector<uint8_t> m_flg;
+        for (int64_t i = 0;i<size;i++) 
+        {
+                m_flg.push_back(0);
+        }
         for (int64_t i = 0;i<size;i++) {
             BN_bn2binpad(Plaintext::generateRandom(pk_.n_).bn_,r_bytes+r_offset,BYTECOUNT(pk_.n_.numBits()));
             r_offset += BYTECOUNT(pk_.n_.numBits());

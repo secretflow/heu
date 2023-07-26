@@ -82,9 +82,10 @@ class PheBenchmarks {
   void AddCipher(benchmark::State& state) {
     // add (ciphertext + ciphertext)
     const auto& evaluator = he_kit_->GetEvaluator();
+    auto ct = he_kit_->GetEncryptor()->EncryptZero();
     for (auto _ : state) {
-      for (int i = 1; i < kTestSize; ++i) {
-        evaluator->AddInplace(&cts_[0], cts_[i]);
+      for (int i = 0; i < kTestSize; ++i) {
+        evaluator->AddInplace(&ct, cts_[i]);
       }
     }
   }
@@ -92,9 +93,10 @@ class PheBenchmarks {
   void SubCipher(benchmark::State& state) {
     // sub (ciphertext - ciphertext)
     const auto& evaluator = he_kit_->GetEvaluator();
+    auto ct = he_kit_->GetEncryptor()->EncryptZero();
     for (auto _ : state) {
-      for (int i = 1; i < kTestSize; ++i) {
-        evaluator->SubInplace(&cts_[0], cts_[i]);
+      for (int i = 0; i < kTestSize; ++i) {
+        evaluator->SubInplace(&ct, cts_[i]);
       }
     }
   }
@@ -104,7 +106,7 @@ class PheBenchmarks {
     const auto& evaluator = he_kit_->GetEvaluator();
     auto edr = he_kit_->GetEncoder<phe::PlainEncoder>(1);
     for (auto _ : state) {
-      for (int i = 1; i < kTestSize; ++i) {
+      for (int i = 0; i < kTestSize; ++i) {
         evaluator->AddInplace(&cts_[i], edr.Encode(i));
       }
     }
@@ -115,7 +117,7 @@ class PheBenchmarks {
     const auto& evaluator = he_kit_->GetEvaluator();
     auto edr = he_kit_->GetEncoder<phe::PlainEncoder>(1);
     for (auto _ : state) {
-      for (int i = 1; i < kTestSize; ++i) {
+      for (int i = 0; i < kTestSize; ++i) {
         evaluator->SubInplace(&cts_[i], edr.Encode(i));
       }
     }
@@ -125,9 +127,10 @@ class PheBenchmarks {
     // mul (ciphertext * plaintext)
     const auto& evaluator = he_kit_->GetEvaluator();
     auto edr = he_kit_->GetEncoder<phe::PlainEncoder>(1);
+    auto ct = he_kit_->GetEncryptor()->Encrypt(edr.Encode(1));
     for (auto _ : state) {
       for (int i = 1; i < kTestSize; ++i) {
-        evaluator->MulInplace(&cts_[i], edr.Encode(i));
+        evaluator->MulInplace(&ct, edr.Encode(i));
       }
     }
   }

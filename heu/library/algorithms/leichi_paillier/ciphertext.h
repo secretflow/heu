@@ -24,22 +24,15 @@ namespace heu::lib::algorithms::leichi_paillier {
         public:
             BIGNUM* bn_;
         public:
-            // Ciphertext() = default;
             Ciphertext() {
                 bn_ = BN_new();
                 }
             ~Ciphertext(){
                 BN_free(bn_);
-            } //BN_free(bn_);
-
-            // Ciphertext(BIGNUM* res) {bn_ = res;}
-            // Ciphertext(const Ciphertext& other){
-            //     bn_ = other.bn_;
-            // }
+            } 
 
             Ciphertext(const Ciphertext& other) {
                 bn_ = BN_dup(other.bn_);
-                // BN_copy(bn_, other.bn_);
             }
 
             Ciphertext& operator=(const Ciphertext& other) {
@@ -49,7 +42,6 @@ namespace heu::lib::algorithms::leichi_paillier {
                 return *this;
             }
 
-            // explicit Ciphertext(BIGNUM *bn) : bn_(bn){};
             explicit Ciphertext(BIGNUM *bn){ bn_ = bn;}//BN_dup(bn);} 
 
             std::string ToString() const;
