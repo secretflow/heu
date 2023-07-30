@@ -48,6 +48,7 @@ static const std::map<SchemaType, std::vector<std::string>>
                  "paillier_ipcl", "paillier-ipcl"),
         MAP_ITEM(true, ElGamal, "elgamal", "ec_elgamal", "exponential_elgamal",
                  "exp_elgamal", "lifted_elgamal"),
+        MAP_ITEM(ENABLE_LEICHI, Leichi, "leichi","leichi-paillier", "paillier-leichi"),
         // MAP_ITEM(ENABLE, YOUR_ALGO, "one_or_more_name_alias"),
 };
 
