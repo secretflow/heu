@@ -3,27 +3,24 @@ load("@yacl//bazel:yacl.bzl", "yacl_cc_library")
 yacl_cc_library(
     name = "fpga_operators",
     srcs = [
-        "paillier_operators.cc",
         "fpga_types.cc",
+        "paillier_operators.cc",
     ],
     hdrs = [
-        "paillier_operators.h",
         "fpga_types.h",
+        "paillier_operators.h",
     ],
     linkopts = [
-                "-lpthread",
+        "-lpthread",
     ],
     visibility = ["//visibility:public"],
     deps = [
         "//heu/library/algorithms/paillier_clustar_fpga/fpga_engine/config:fpga_config",
         "//heu/library/algorithms/paillier_clustar_fpga/fpga_engine/driver:fpga_driver",
-        "@yacl//yacl/base:exception",
-        "@yacl//yacl/base:byte_container_view",
-        "@com_github_fmtlib_fmt//:fmtlib",
-        "//heu/library/algorithms/util:mp_int",
         "//heu/library/algorithms/util",
+        "//heu/library/algorithms/util:mp_int",
+        "@com_github_fmtlib_fmt//:fmtlib",
+        "@yacl//yacl/base:byte_container_view",
+        "@yacl//yacl/base:exception",
     ],
 )
-
-
-

@@ -1,12 +1,12 @@
-load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_binary", "yacl_cc_test")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_binary", "yacl_cc_library", "yacl_cc_test")
 
 package(default_visibility = ["//visibility:public"])
 
 config_setting(
-  name = "use_clustar_fpga",
-  values = {
-    "define": "enable_clustar_fpga=true"
-  }
+    name = "use_clustar_fpga",
+    values = {
+        "define": "enable_clustar_fpga=true",
+    },
 )
 
 yacl_cc_library(
@@ -18,7 +18,7 @@ yacl_cc_library(
 yacl_cc_library(
     name = "paillier_clustar_fpga",
     srcs = select({
-        ":use_clustar_fpga":  [
+        ":use_clustar_fpga": [
             "plaintext.cc",
             "ciphertext.cc",
             "public_key.cc",
@@ -50,6 +50,10 @@ yacl_cc_library(
         ],
         "//conditions:default": [],
     }),
+    defines = select({
+        ":use_clustar_fpga": ["APPLY_CLUSTAR_FPGA"],
+        "//conditions:default": [],
+    }),
     visibility = ["//visibility:public"],
     deps = select({
         ":use_clustar_fpga": [
@@ -61,88 +65,84 @@ yacl_cc_library(
         ],
         "//conditions:default": [],
     }),
+)
+
+yacl_cc_test(
+    name = "plaintext_test",
+    srcs = select({
+        ":use_clustar_fpga": ["plaintext_test.cc"],
+        "//conditions:default": [],
+    }),
     defines = select({
         ":use_clustar_fpga": ["APPLY_CLUSTAR_FPGA"],
         "//conditions:default": [],
-    })
+    }),
+    deps = select({
+        ":use_clustar_fpga": [":paillier_clustar_fpga"],
+        "//conditions:default": [],
+    }),
 )
 
 yacl_cc_test(
-  name = "plaintext_test",
-  srcs = select({
-      ":use_clustar_fpga": ["plaintext_test.cc"],
-      "//conditions:default": [],
-  }),
-  deps = select({
-    ":use_clustar_fpga": [":paillier_clustar_fpga"],
-    "//conditions:default": [],
-  }),
-  defines = select({
-    ":use_clustar_fpga": ["APPLY_CLUSTAR_FPGA"],
-    "//conditions:default": [],
-  })
+    name = "key_gen_test",
+    srcs = select({
+        ":use_clustar_fpga": ["key_gen_test.cc"],
+        "//conditions:default": [],
+    }),
+    defines = select({
+        ":use_clustar_fpga": ["APPLY_CLUSTAR_FPGA"],
+        "//conditions:default": [],
+    }),
+    deps = select({
+        ":use_clustar_fpga": [":paillier_clustar_fpga"],
+        "//conditions:default": [],
+    }),
 )
 
 yacl_cc_test(
-  name = "key_gen_test",
-  srcs = select({
-      ":use_clustar_fpga": ["key_gen_test.cc"],
-      "//conditions:default": [],
-  }),
-  deps = select({
-    ":use_clustar_fpga": [":paillier_clustar_fpga"],
-    "//conditions:default": [],
-  }),
-  defines = select({
-    ":use_clustar_fpga": ["APPLY_CLUSTAR_FPGA"],
-    "//conditions:default": [],
-  })
+    name = "ciphertext_test",
+    srcs = select({
+        ":use_clustar_fpga": ["ciphertext_test.cc"],
+        "//conditions:default": [],
+    }),
+    defines = select({
+        ":use_clustar_fpga": ["APPLY_CLUSTAR_FPGA"],
+        "//conditions:default": [],
+    }),
+    deps = select({
+        ":use_clustar_fpga": [":paillier_clustar_fpga"],
+        "//conditions:default": [],
+    }),
 )
 
 yacl_cc_test(
-  name = "ciphertext_test",
-  srcs = select({
-      ":use_clustar_fpga": ["ciphertext_test.cc"],
-      "//conditions:default": [],
-  }),
-  deps = select({
-    ":use_clustar_fpga": [":paillier_clustar_fpga"],
-    "//conditions:default": [],
-  }),
-  defines = select({
-    ":use_clustar_fpga": ["APPLY_CLUSTAR_FPGA"],
-    "//conditions:default": [],
-  })
+    name = "enc_dec_test",
+    srcs = select({
+        ":use_clustar_fpga": ["enc_dec_test.cc"],
+        "//conditions:default": [],
+    }),
+    defines = select({
+        ":use_clustar_fpga": ["APPLY_CLUSTAR_FPGA"],
+        "//conditions:default": [],
+    }),
+    deps = select({
+        ":use_clustar_fpga": [":paillier_clustar_fpga"],
+        "//conditions:default": [],
+    }),
 )
 
 yacl_cc_test(
-  name = "enc_dec_test",
-  srcs = select({
-      ":use_clustar_fpga": ["enc_dec_test.cc"],
-      "//conditions:default": [],
-  }),
-  deps = select({
-    ":use_clustar_fpga": [":paillier_clustar_fpga"],
-    "//conditions:default": [],
-  }),
-  defines = select({
-    ":use_clustar_fpga": ["APPLY_CLUSTAR_FPGA"],
-    "//conditions:default": [],
-  })
-)
-
-yacl_cc_test(
-  name = "evaluator_test",
-  srcs = select({
-      ":use_clustar_fpga": ["evaluator_test.cc"],
-      "//conditions:default": [],
-  }),
-  deps = select({
-    ":use_clustar_fpga": [":paillier_clustar_fpga"],
-    "//conditions:default": [],
-  }),
-  defines = select({
-    ":use_clustar_fpga": ["APPLY_CLUSTAR_FPGA"],
-    "//conditions:default": [],
-  })
+    name = "evaluator_test",
+    srcs = select({
+        ":use_clustar_fpga": ["evaluator_test.cc"],
+        "//conditions:default": [],
+    }),
+    defines = select({
+        ":use_clustar_fpga": ["APPLY_CLUSTAR_FPGA"],
+        "//conditions:default": [],
+    }),
+    deps = select({
+        ":use_clustar_fpga": [":paillier_clustar_fpga"],
+        "//conditions:default": [],
+    }),
 )

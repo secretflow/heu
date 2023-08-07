@@ -5,29 +5,26 @@ yacl_cc_library(
     srcs = [
         "dma.cc",
         "driver.cc",
+        "mpint_wrapper.cc",
         "multi_driver.cc",
         "reg.cc",
         "task.cc",
-        "mpint_wrapper.cc",
     ],
     hdrs = [
         "dma.h",
         "driver.h",
+        "mpint_wrapper.h",
         "reg.h",
         "task.h",
-        "mpint_wrapper.h",
     ],
     linkopts = [
-                "-lpthread",
+        "-lpthread",
     ],
     visibility = ["//visibility:public"],
     deps = [
         "//heu/library/algorithms/paillier_clustar_fpga/fpga_engine/config:fpga_config",
-        "@yacl//yacl/base:byte_container_view",
-        "//heu/library/algorithms/util:mp_int",
         "//heu/library/algorithms/util",
+        "//heu/library/algorithms/util:mp_int",
+        "@yacl//yacl/base:byte_container_view",
     ],
 )
-
-
-

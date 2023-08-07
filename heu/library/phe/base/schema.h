@@ -19,10 +19,10 @@
 #include "heu/library/algorithms/elgamal/elgamal.h"
 #include "heu/library/algorithms/mock/mock.h"
 #include "heu/library/algorithms/ou/ou.h"
+#include "heu/library/algorithms/paillier_clustar_fpga/clustar_fpga.h"
 #include "heu/library/algorithms/paillier_float/paillier.h"
 #include "heu/library/algorithms/paillier_ipcl/ipcl.h"
 #include "heu/library/algorithms/paillier_zahlen/paillier.h"
-#include "heu/library/algorithms/paillier_clustar_fpga/clustar_fpga.h"
 
 // [SPI: Please register your algorithm here] || progress: (1 of 5)
 // Do not forget to add your algo header file here
