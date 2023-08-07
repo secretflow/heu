@@ -108,6 +108,14 @@ class NpBenchmarks {
     }
     for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
       benchmark::RegisterBenchmark(
+          fmt::format("{:^9}|Mul(shape={})", he_kit_->GetSchemaType(),
+                      pt_matrixs_[i].shape())
+              .c_str(),
+          [this, i](benchmark::State& st) { Mul(st, i); })
+          ->Unit(benchmark::kMillisecond);
+    }
+    for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
+      benchmark::RegisterBenchmark(
           fmt::format("{:^9}|Decrypt(shape={})", he_kit_->GetSchemaType(),
                       pt_matrixs_[i].shape())
               .c_str(),
@@ -166,6 +174,14 @@ class NpBenchmarks {
     for (auto _ : state) {
       benchmark::DoNotOptimize(
           evaluator->MatMul(ct_matrixs_1_[i1], pt_matrixs_[i2]));
+    }
+  }
+
+  void Mul(benchmark::State& state, size_t i) {
+    const auto& evaluator = he_kit_->GetEvaluator();
+    for (auto _ : state) {
+      benchmark::DoNotOptimize(
+          evaluator->Mul(ct_matrixs_1_[i], pt_matrixs_[i]));
     }
   }
 

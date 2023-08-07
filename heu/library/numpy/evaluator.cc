@@ -18,6 +18,9 @@
 
 #include "heu/library/numpy/shape.h"
 
+#include <typeinfo>
+#include <type_traits>
+
 namespace heu::lib::numpy {
 
 namespace {
@@ -200,7 +203,7 @@ CMatrix Evaluator::Mul(const PMatrix& x, const CMatrix& y) const {
 };
 
 /*********   MatMul  ***********/
-
+// Version CalcSum
 template <typename SUB_T1, typename SUB_T2, typename CLAZZ, typename M1,
           typename M2, typename RET>
 auto DoCallMatMul(const CLAZZ& sub_evaluator, const M1& mx, const M2& my,
@@ -242,11 +245,22 @@ auto DoCallMatMul(const CLAZZ& sub_evaluator, const M1& mx, const M2& my,
 
         auto res = sub_evaluator.Mul(in_x[row], in_y[col]);
         auto sum = &res[0];
+        //
+        if (sub_evaluator.GetSchema() == "ipcl") {
+          for (size_t j = 1; j < res.size(); ++j) {
+            // todo: use binary reduce
+            sub_evaluator.AddInplace({sum}, {&res[j]});
+          }
+        } else {
+          std::vector<decltype(&res[0])> sum_vec;
+          sum_vec.reserve(res.size());
+          for (size_t j = 0; j < res.size(); ++j) {
+            sum_vec.push_back(&res[j]);
+          }
 
-        for (size_t j = 1; j < res.size(); ++j) {
-          // todo: use binary reduce
-          sub_evaluator.AddInplace({sum}, {&res[j]});
+          sub_evaluator.CalcSum(sum, sum_vec);
         }
+
         *element = std::move(*sum);
       });
 }

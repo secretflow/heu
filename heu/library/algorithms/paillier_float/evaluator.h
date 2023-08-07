@@ -17,6 +17,7 @@
 #include "heu/library/algorithms/paillier_float/ciphertext.h"
 #include "heu/library/algorithms/paillier_float/encryptor.h"
 #include "heu/library/algorithms/paillier_float/public_key.h"
+#include "heu/library/algorithms/util/spi_traits.h"
 
 namespace heu::lib::algorithms::paillier_f {
 
@@ -77,6 +78,12 @@ class Evaluator {
   Ciphertext Negate(const Ciphertext& a) const;
   // a = -a
   void NegateInplace(Ciphertext* a) const;
+
+  // Add cipher input to sum
+  void CalcSum(Ciphertext* sum, ConstSpan<Ciphertext> input) const {}
+  // Add plain input to sum
+  void CalcSum(Plaintext* sum, ConstSpan<Plaintext> input) const {}
+  std::string GetSchema() const { return "fpaillier"; }
 
  private:
   MPInt AddRaw(const MPInt& a, const MPInt& b) const;
