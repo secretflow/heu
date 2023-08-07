@@ -18,20 +18,20 @@
 
 namespace heu::lib::algorithms::dj {
 
-#define VALIDATE(ct)                                         \
-  HE_ASSERT(!(ct).IsNegative() && (ct) < pk_.CipherModule(), \
+#define VALIDATE(ct)                                                   \
+  HE_ASSERT(!((ct).c_).IsNegative() && ((ct).c_) < pk_.CipherModule(), \
             "Evaluator: Invalid ciphertext")
 
 void Evaluator::Randomize(Ciphertext* ct) const {
   VALIDATE(*ct);
-  pk_.MulMod(*ct, pk_.RandomZnStar(), ct);
+  pk_.MulMod(ct->c_, pk_.RandomZnStar(), &ct->c_);
 }
 
 Ciphertext Evaluator::Add(const Ciphertext& a, const Ciphertext& b) const {
   VALIDATE(a);
   VALIDATE(b);
   Ciphertext c;
-  pk_.MulMod(a, b, &c);
+  pk_.MulMod(a.c_, b.c_, &c.c_);
   return c;
 }
 
@@ -39,7 +39,7 @@ Ciphertext Evaluator::Mul(const Ciphertext& a, const Plaintext& p) const {
   VALIDATE(a);
   return p.IsZero()          ? encryptor_.EncryptZero()
          : p == Plaintext{1} ? a
-                             : Ciphertext{pk_.Encode(pk_.Decode(a).PowMod(
+                             : Ciphertext{pk_.Encode(pk_.Decode(a.c_).PowMod(
                                    p, pk_.CipherModule()))};
 }
 

@@ -19,6 +19,5 @@
 #include "heu/library/algorithms/dj/encryptor.h"
 #include "heu/library/algorithms/dj/evaluator.h"
 #include "heu/library/algorithms/dj/key_generator.h"
-#include "heu/library/algorithms/dj/plaintext.h"
 #include "heu/library/algorithms/dj/public_key.h"
 #include "heu/library/algorithms/dj/secret_key.h"

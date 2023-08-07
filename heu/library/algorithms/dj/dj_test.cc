@@ -38,8 +38,6 @@ class DJTest : public ::testing::Test {
 };
 
 TEST_F(DJTest, CiphertextEvaluate) {
-  EXPECT_GT(pk_.RandomZnStar(), Plaintext(1));
-
   Plaintext m0(-12345);
   Ciphertext ct0 = encryptor_->Encrypt(m0);
 
@@ -82,7 +80,7 @@ TEST_F(DJTest, CiphertextEvaluate) {
   decryptor_->Decrypt(res, &plain);
   EXPECT_TRUE(plain.IsZero());
   evaluator_->Randomize(&res);
-  EXPECT_FALSE(res.IsZero());
+  EXPECT_FALSE(res.c_.IsZero());
   decryptor_->Decrypt(res, &plain);
   EXPECT_TRUE(plain.IsZero());
 

@@ -18,7 +18,6 @@
 #include <utility>
 
 #include "heu/library/algorithms/dj/ciphertext.h"
-#include "heu/library/algorithms/dj/plaintext.h"
 #include "heu/library/algorithms/dj/public_key.h"
 #include "heu/library/algorithms/dj/secret_key.h"
 
@@ -26,7 +25,7 @@ namespace heu::lib::algorithms::dj {
 
 class Encryptor {
  public:
-  explicit Encryptor(const PublicKey& pk) : pk_{pk} {}
+  explicit Encryptor(const PublicKey& pk) : pk_{std::move(pk)} {}
 
   Ciphertext EncryptZero() const;
   Ciphertext Encrypt(const Plaintext& m) const;
@@ -34,7 +33,7 @@ class Encryptor {
   std::pair<Ciphertext, std::string> EncryptWithAudit(const Plaintext& m) const;
 
  private:
-  PublicKey const& pk_;
+  const PublicKey pk_;
 };
 
 }  // namespace heu::lib::algorithms::dj

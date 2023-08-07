@@ -16,7 +16,6 @@
 
 #include "heu/library/algorithms/dj/ciphertext.h"
 #include "heu/library/algorithms/dj/encryptor.h"
-#include "heu/library/algorithms/dj/plaintext.h"
 #include "heu/library/algorithms/dj/public_key.h"
 
 namespace heu::lib::algorithms::dj {

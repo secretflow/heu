@@ -17,7 +17,6 @@
 #include <utility>
 
 #include "heu/library/algorithms/dj/ciphertext.h"
-#include "heu/library/algorithms/dj/plaintext.h"
 #include "heu/library/algorithms/dj/public_key.h"
 #include "heu/library/algorithms/dj/secret_key.h"
 
@@ -25,8 +24,8 @@ namespace heu::lib::algorithms::dj {
 
 class Decryptor {
  public:
-  explicit Decryptor(const PublicKey& pk, const SecretKey& sk)
-      : pk_{pk}, sk_{sk} {}
+  explicit Decryptor(PublicKey pk, SecretKey sk)
+      : pk_(std::move(pk)), sk_(std::move(sk)) {}
 
   void Decrypt(const Ciphertext& ct, Plaintext* out) const {
     *out = Decrypt(ct);
@@ -34,8 +33,8 @@ class Decryptor {
   Plaintext Decrypt(const Ciphertext& ct) const;
 
  private:
-  PublicKey const& pk_;
-  SecretKey const& sk_;
+  PublicKey pk_;
+  SecretKey sk_;
 };
 
 }  // namespace heu::lib::algorithms::dj

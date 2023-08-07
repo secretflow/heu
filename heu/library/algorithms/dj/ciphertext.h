@@ -14,14 +14,29 @@
 
 #pragma once
 
+#include "heu/library/algorithms/util/he_object.h"
 #include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::dj {
 
-struct Ciphertext : MPInt {
+using Plaintext = MPInt;
+
+class Ciphertext : public HeObject<Ciphertext> {
+ public:
   Ciphertext() = default;
-  Ciphertext(MPInt const& x) : MPInt{x} {}
-  Ciphertext(Ciphertext const&) = default;
+  explicit Ciphertext(MPInt c) : c_(std::move(c)) {}
+
+  [[nodiscard]] std::string ToString() const override { return c_.ToString(); }
+
+  bool operator==(const Ciphertext& other) const { return c_ == other.c_; }
+  bool operator!=(const Ciphertext& other) const {
+    return !this->operator==(other);
+  }
+
+  MSGPACK_DEFINE(c_);
+
+  // TODO: make this private.
+  MPInt c_;
 };
 
 }  // namespace heu::lib::algorithms::dj
