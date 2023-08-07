@@ -450,7 +450,7 @@ class BasicCase(unittest.TestCase):
         m1 = hnp.random.randbits(self.kit.get_schema(), 2048, sp)
         self.assertEqual(m1.ndim, 2)
         self.assertEqual(tuple(m1.shape), (10, 20))
-        
+
     def test_batch_select_sum(self):
         sample_size = 100 * 10000
         m1 = hnp.random.randint(
@@ -458,14 +458,16 @@ class BasicCase(unittest.TestCase):
             phe.Plaintext(self.kit.get_schema(), 100),
             (sample_size, 2),
         )
-       
+
         # select randon 150 row indices and create 50000 batches
-        select_indices = [np.random.randint(0,sample_size,150).tolist() for _ in range(50000)]
+        select_indices = [
+            np.random.randint(0, sample_size, 150).tolist() for _ in range(50000)
+        ]
         batch_select_result = self.evaluator.batch_select_sum(m1, select_indices)
         true_results = [self.evaluator.sum(m1[a]) for a in select_indices]
         for i in range(len(true_results)):
             self.assertEqual(batch_select_result[i], true_results[i])
-            
+
     def test_feature_wise_bucket_sum(self):
         sample_size = 450
         feature_size = 10
@@ -479,20 +481,24 @@ class BasicCase(unittest.TestCase):
         first_group[:50] = 1
         second_group[50:] = 1
         subgroup_map = [first_group, second_group]
-        
+
         order_map = np.zeros((sample_size, feature_size), dtype=np.int8)
         # first 50 samples goes to bucket 0, last 50 bucket 1.
-        order_map[50:,:] =  1
-        bucket_num = 2 
+        order_map[50:, :] = 1
+        bucket_num = 2
         # sums should be a list of length 2
         # each element should be a matrix of size 4 * 2
-        first_result = self.evaluator.feature_wise_bucket_sum(m1, subgroup_map[0], order_map,
-                                            bucket_num, False)
-        assert first_result[0, 0] == self.evaluator.select_sum(m1[:, 0], [i for i in range(50)])
-        assert first_result[0, 1] == self.evaluator.select_sum(m1[:, 1], [i for i in range(50)])
-        assert  first_result[1, 0] == self.evaluator.select_sum(m1, []) 
-        assert  first_result[1, 1] == self.evaluator.select_sum(m1, [])  
-
+        first_result = self.evaluator.feature_wise_bucket_sum(
+            m1, subgroup_map[0], order_map, bucket_num, False
+        )
+        assert first_result[0, 0] == self.evaluator.select_sum(
+            m1[:, 0], [i for i in range(50)]
+        )
+        assert first_result[0, 1] == self.evaluator.select_sum(
+            m1[:, 1], [i for i in range(50)]
+        )
+        assert first_result[1, 0] == self.evaluator.select_sum(m1, [])
+        assert first_result[1, 1] == self.evaluator.select_sum(m1, [])
 
     def test_batch_feature_wise_bucket_sum(self):
         sample_size = 100
@@ -507,49 +513,130 @@ class BasicCase(unittest.TestCase):
         first_group[:50] = 1
         second_group[50:] = 1
         subgroup_map = [first_group, second_group]
-        
+
         # 2 feature,
         order_map = np.zeros((sample_size, 2), dtype=np.int8)
         # first 50 samples goes to bucket 0, last 50 bucket 1.
-        order_map[50:,:] =  1
+        order_map[50:, :] = 1
         bucket_num = 2
         # sums should be a list of length 2
         # each element should be a matrix of size 4 * 2
-        sums = self.evaluator.batch_feature_wise_bucket_sum(m1, subgroup_map, order_map,
-                                            bucket_num, False)
+        sums = self.evaluator.batch_feature_wise_bucket_sum(
+            m1, subgroup_map, order_map, bucket_num, False
+        )
         first_result = sums[0]
-        assert first_result[0, 0] == self.evaluator.select_sum(m1[:, 0], [i for i in range(50)])
-        assert first_result[0, 1] == self.evaluator.select_sum(m1[:, 1], [i for i in range(50)])
-        assert  first_result[1, 0] == self.evaluator.select_sum(m1, []) 
-        assert  first_result[1, 1] == self.evaluator.select_sum(m1, [])  
+        assert first_result[0, 0] == self.evaluator.select_sum(
+            m1[:, 0], [i for i in range(50)]
+        )
+        assert first_result[0, 1] == self.evaluator.select_sum(
+            m1[:, 1], [i for i in range(50)]
+        )
+        assert first_result[1, 0] == self.evaluator.select_sum(m1, [])
+        assert first_result[1, 1] == self.evaluator.select_sum(m1, [])
         second_result = sums[1]
-        assert second_result[0, 0] == self.evaluator.select_sum(m1, []) 
-        assert second_result[0, 1] ==self.evaluator.select_sum(m1, []) 
-        assert  second_result[1, 0] == self.evaluator.select_sum(m1[:, 0], [i for i in range(50, 100, 1)])
-        assert  second_result[1, 1] == self.evaluator.select_sum(m1[:, 1], [i for i in range(50, 100, 1)])
-        
+        assert second_result[0, 0] == self.evaluator.select_sum(m1, [])
+        assert second_result[0, 1] == self.evaluator.select_sum(m1, [])
+        assert second_result[1, 0] == self.evaluator.select_sum(
+            m1[:, 0], [i for i in range(50, 100, 1)]
+        )
+        assert second_result[1, 1] == self.evaluator.select_sum(
+            m1[:, 1], [i for i in range(50, 100, 1)]
+        )
+
     def test_tree_predict(self):
-        x = np.array([[-0.51422644,  0.73001039 ,-0.7303912,   0.97048271, -0.35085386, -0.80080819,  -0.2015295,  -0.49920642, -0.75011241, -0.9106403 ],
-                      [-0.72553682,  0.48224366, -0.82322264,  0.20211923, -0.27067894, -0.13978112,0.36809838 ,-0.65290093 , 0.43806458  ,0.83020592]])
+        x = np.array(
+            [
+                [
+                    -0.51422644,
+                    0.73001039,
+                    -0.7303912,
+                    0.97048271,
+                    -0.35085386,
+                    -0.80080819,
+                    -0.2015295,
+                    -0.49920642,
+                    -0.75011241,
+                    -0.9106403,
+                ],
+                [
+                    -0.72553682,
+                    0.48224366,
+                    -0.82322264,
+                    0.20211923,
+                    -0.27067894,
+                    -0.13978112,
+                    0.36809838,
+                    -0.65290093,
+                    0.43806458,
+                    0.83020592,
+                ],
+            ]
+        )
         split_features = [-1, -1, 3, -1, -1, -1, 0]
-        split_points = [np.inf, np.inf, 0.0699642896652222, np.inf, np.inf, np.inf, 0.999987125396729]
-        correct_selects = np.array([[1, 1, 1 ,1, 0, 0 ,1, 0], [1, 1, 1 ,1, 0 ,0, 1, 0]])
-        assert (hnp.tree_predict(x, split_features, split_points) == correct_selects).all()
-    
+        split_points = [
+            np.inf,
+            np.inf,
+            0.0699642896652222,
+            np.inf,
+            np.inf,
+            np.inf,
+            0.999987125396729,
+        ]
+        correct_selects = np.array([[1, 1, 1, 1, 0, 0, 1, 0], [1, 1, 1, 1, 0, 0, 1, 0]])
+        assert (
+            hnp.tree_predict(x, split_features, split_points) == correct_selects
+        ).all()
+
     def test_tree_predict_with_indices(self):
-        x = np.array([[-0.51422644,  0.73001039 ,-0.7303912,   0.97048271, -0.35085386, -0.80080819,  -0.2015295,  -0.49920642, -0.75011241, -0.9106403 ],
-                      [-0.72553682,  0.48224366, -0.82322264,  0.20211923, -0.27067894, -0.13978112,0.36809838 ,-0.65290093 , 0.43806458  ,0.83020592]])
+        x = np.array(
+            [
+                [
+                    -0.51422644,
+                    0.73001039,
+                    -0.7303912,
+                    0.97048271,
+                    -0.35085386,
+                    -0.80080819,
+                    -0.2015295,
+                    -0.49920642,
+                    -0.75011241,
+                    -0.9106403,
+                ],
+                [
+                    -0.72553682,
+                    0.48224366,
+                    -0.82322264,
+                    0.20211923,
+                    -0.27067894,
+                    -0.13978112,
+                    0.36809838,
+                    -0.65290093,
+                    0.43806458,
+                    0.83020592,
+                ],
+            ]
+        )
         split_features = [-1, -1, 3, -1, -1, -1, 0]
         num_split_node = len(split_features)
         leaf_num = num_split_node + 1
-        split_points = [np.inf, np.inf, 0.0699642896652222, np.inf, np.inf, np.inf, 0.999987125396729]
+        split_points = [
+            np.inf,
+            np.inf,
+            0.0699642896652222,
+            np.inf,
+            np.inf,
+            np.inf,
+            0.999987125396729,
+        ]
         indices = [*range(num_split_node)]
         leaf_indices = [num_split_node + i for i in range(leaf_num)]
-        correct_selects = np.array([[1, 1, 1 ,1, 0, 0 ,1, 0], [1, 1, 1 ,1, 0 ,0, 1, 0]])
-        assert (hnp.tree_predict_with_indices(x, split_features, split_points, indices, leaf_indices) == correct_selects).all()
-        
-        
-        
+        correct_selects = np.array([[1, 1, 1, 1, 0, 0, 1, 0], [1, 1, 1, 1, 0, 0, 1, 0]])
+        assert (
+            hnp.tree_predict_with_indices(
+                x, split_features, split_points, indices, leaf_indices
+            )
+            == correct_selects
+        ).all()
 
 
 if __name__ == "__main__":
