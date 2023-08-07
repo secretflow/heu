@@ -34,6 +34,7 @@ class PyBatchEncoder {
   virtual ~PyBatchEncoder() = default;
 
   [[nodiscard]] yacl::Buffer Serialize() const { return encoder_.Serialize(); }
+
   static RealEncoderT LoadFrom(yacl::ByteContainerView buf) {
     return RealEncoderT(lib::phe::BatchEncoder::LoadFrom(buf));
   }
@@ -53,7 +54,9 @@ class PyBatchEncoder {
   }
 
   lib::phe::SchemaType GetSchema() const { return encoder_.GetSchema(); }
+
   size_t GetScale() const { return encoder_.GetScale(); }
+
   size_t GetPaddingBits() const { return encoder_.GetPaddingBits(); }
 
   [[nodiscard]] std::string ToString() const {
@@ -66,6 +69,7 @@ class PyBatchEncoder {
   explicit PyBatchEncoder(lib::phe::SchemaType schema, int64_t scale,
                           size_t padding_bits = 32)
       : encoder_(schema, scale, padding_bits) {}
+
   explicit PyBatchEncoder(const lib::phe::BatchEncoder &encoder)
       : encoder_(encoder) {}
 

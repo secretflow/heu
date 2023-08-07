@@ -33,6 +33,7 @@ class Encryptor {
   std::pair<Ciphertext, std::string> EncryptWithAudit(const MPInt& m) const;
 
   MPInt GetHr() const;
+
   void SetEnableCache(bool enable_cache) { enable_cache_ = enable_cache; }
 
  private:

@@ -23,7 +23,9 @@ namespace heu::lib::numpy {
 class Shape : public algorithms::HeObject<Shape> {
  public:
   Shape() {}
+
   explicit Shape(std::vector<int64_t> shape) : shape_(std::move(shape)) {}
+
   Shape(std::initializer_list<int64_t> il) : shape_(il) {}
 
   int64_t Ndim() const { return static_cast<int64_t>(shape_.size()); }
@@ -43,12 +45,14 @@ class Shape : public algorithms::HeObject<Shape> {
   [[nodiscard]] int64_t RowsAlloc() const {
     return !shape_.empty() ? shape_[0] : 1;
   }
+
   // alias for shape[1]
   [[nodiscard]] int64_t ColsAlloc() const {
     return shape_.size() > 1 ? shape_[1] : 1;
   }
 
   auto begin() const { return shape_.begin(); }
+
   auto end() const { return shape_.end(); }
 
   std::string ToString() const {

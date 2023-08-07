@@ -37,6 +37,22 @@ parameters:
     type: boolean
     default: false
 
+jobs:
+  lint:
+    # Use machine executor for convenient data sharing between the host and docker-compose cluster
+    docker:
+      - image: secretflow/lint-ci:latest
+    resource_class: medium
+    shell: /bin/bash --login -eo pipefail
+    steps:
+      - checkout
+      - run:
+          name: Checkout devtools
+          command: git clone https://github.com/secretflow/devtools.git ../devtools
+      - run:
+          name: Whitespace check
+          command: bash ../devtools/lint-whitespace.sh
+
 workflows:
   unittest-workflow:
     when:
@@ -52,6 +68,7 @@ workflows:
             third_party/.* build-and-run true
             .bazelrc build-and-run true
             requirements.txt build-and-run true
+      - lint
   publish-workflow:
     when:
       equal: [ "release", << pipeline.parameters.GHA_Event >> ]

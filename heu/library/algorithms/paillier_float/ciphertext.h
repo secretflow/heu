@@ -44,6 +44,7 @@ class Ciphertext : public HeObject<Ciphertext> {
       : c_(std::move(c)), exponent_(exponent) {}
 
   bool operator==(const Ciphertext& other) const { return c_ == other.c_; }
+
   bool operator!=(const Ciphertext& other) const {
     return !this->operator==(other);
   }

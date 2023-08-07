@@ -31,6 +31,7 @@ class PyIntegerEncoder {
 
   explicit PyIntegerEncoder(lib::phe::SchemaType schema, int64_t scale = 1e6)
       : encoder_(schema, scale) {}
+
   explicit PyIntegerEncoder(const lib::phe::PlainEncoder &encoder)
       : encoder_(encoder) {}
 
@@ -94,6 +95,7 @@ struct PyIntegerEncoderParams
   MSGPACK_DEFINE(scale);
 
   explicit PyIntegerEncoderParams(int64_t scale = 1e6) : scale(scale) {}
+
   PyIntegerEncoder Instance(lib::phe::SchemaType schema) const {
     return PyIntegerEncoder(schema, scale);
   }

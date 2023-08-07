@@ -90,6 +90,7 @@ class Plaintext {
   static Plaintext Absolute(const Plaintext &pt);
 
   operator BigNumber() { return bn_; }
+
   BigNumber bn_;
 };
 

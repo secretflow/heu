@@ -29,10 +29,10 @@ void PublicKey::Init() {
 }
 
 std::string PublicKey::ToString() const {
-  return fmt::format(
-      "F-paillier PK: n={}[{}bits], max_plaintext={}[~{}bits]",
-      n_.ToHexString(), n_.BitCount(), PlaintextBound().ToHexString(),
-      PlaintextBound().BitCount());
+  return fmt::format("F-paillier PK: n={}[{}bits], max_plaintext={}[~{}bits]",
+                     n_.ToHexString(), n_.BitCount(),
+                     PlaintextBound().ToHexString(),
+                     PlaintextBound().BitCount());
 }
 
 }  // namespace heu::lib::algorithms::paillier_f

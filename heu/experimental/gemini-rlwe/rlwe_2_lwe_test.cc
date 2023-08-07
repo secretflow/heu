@@ -29,6 +29,7 @@ namespace heu::expt::rlwe::test {
 class RLWE2LWETest : public testing::Test {
  protected:
   static constexpr size_t poly_deg = 4096;
+
   void SetUp() override {
     rdv_.seed(std::time(0));
     auto scheme_type = seal::scheme_type::ckks;
