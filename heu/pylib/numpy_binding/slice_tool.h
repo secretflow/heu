@@ -24,6 +24,7 @@ template <typename INDICES_T>
 struct PySlice {
   ssize_t items;
   INDICES_T indices;
+
   std::string ToString() { return fmt::format("PySlice index {}", indices); }
 };
 

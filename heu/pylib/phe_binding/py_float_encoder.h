@@ -31,6 +31,7 @@ class PyFloatEncoder {
 
   explicit PyFloatEncoder(lib::phe::SchemaType schema, int64_t scale = 1e6)
       : encoder_(schema, scale) {}
+
   explicit PyFloatEncoder(const lib::phe::PlainEncoder &encoder)
       : encoder_(encoder) {}
 
@@ -82,6 +83,7 @@ struct PyFloatEncoderParams : lib::algorithms::HeObject<PyFloatEncoderParams> {
   MSGPACK_DEFINE(scale);
 
   explicit PyFloatEncoderParams(int64_t scale = 1e6) : scale(scale) {}
+
   PyFloatEncoder Instance(lib::phe::SchemaType schema) const {
     return PyFloatEncoder(schema, scale);
   }

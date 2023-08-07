@@ -39,6 +39,7 @@ template <> struct next_size<uint128_t> : tag<uint128_t> {};
 
 template <> struct next_size<float> : tag<double> {};
 template <> struct next_size<double> : tag<double> {};
+
 // clang-format on
 }  // namespace
 
@@ -70,6 +71,7 @@ class PlainEncoder : public algorithms::HeObject<PlainEncoder> {
   MSGPACK_DEFINE(schema_, scale_);
 
   [[nodiscard]] int64_t GetScale() const { return scale_; }
+
   SchemaType GetSchema() const { return schema_; }
 
   [[nodiscard]] std::string ToString() const override {

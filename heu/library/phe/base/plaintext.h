@@ -23,6 +23,7 @@ class Plaintext : public SerializableVariant<HE_PLAINTEXT_TYPES> {
  public:
   using SerializableVariant<HE_PLAINTEXT_TYPES>::SerializableVariant;
   using SerializableVariant<HE_PLAINTEXT_TYPES>::operator=;
+
   template <typename T, std::enable_if_t<std::is_fundamental_v<T>, int> = 0>
   Plaintext(SchemaType schema, T init_value) : Plaintext(schema) {
     SetValue(init_value);

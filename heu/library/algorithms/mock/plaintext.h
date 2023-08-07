@@ -62,6 +62,7 @@ class Plaintext {
 
   // [SPI: Critical]
   [[nodiscard]] std::string ToString() const { return bn_.ToString(); }
+
   // [SPI: Important]
   friend std::ostream &operator<<(std::ostream &os, const Plaintext &pt) {
     return os << pt.ToString();
@@ -84,36 +85,44 @@ class Plaintext {
   size_t BitCount() const { return bn_.BitCount(); }  // [SPI: Critical]
 
   Plaintext operator-() const { return Wrap(-bn_); }  // [SPI: Critical]
-  void NegateInplace() { bn_.NegateInplace(); }       // [SPI: Critical]
+
+  void NegateInplace() { bn_.NegateInplace(); }  // [SPI: Critical]
 
   // [SPI: Critical]
   Plaintext operator+(const Plaintext &op2) const {
     return Wrap(bn_ + op2.bn_);
   }
+
   // [SPI: Critical]
   Plaintext operator-(const Plaintext &op2) const {
     return Wrap(bn_ - op2.bn_);
   }
+
   // [SPI: Critical]
   Plaintext operator*(const Plaintext &op2) const {
     return Wrap(bn_ * op2.bn_);
   }
+
   // [SPI: Important]
   Plaintext operator/(const Plaintext &op2) const {
     return Wrap(bn_ / op2.bn_);
   }
+
   // [SPI: Important]
   Plaintext operator%(const Plaintext &op2) const {
     return Wrap(bn_ % op2.bn_);
   }
+
   // [SPI: Important]
   Plaintext operator&(const Plaintext &op2) const {
     return Wrap(bn_ & op2.bn_);
   }
+
   // [SPI: Important]
   Plaintext operator|(const Plaintext &op2) const {
     return Wrap(bn_ | op2.bn_);
   }
+
   // [SPI: Important]
   Plaintext operator^(const Plaintext &op2) const {
     return Wrap(bn_ ^ op2.bn_);
@@ -121,6 +130,7 @@ class Plaintext {
 
   // [SPI: Important]
   Plaintext operator<<(size_t op2) const { return Wrap(bn_ << op2); }
+
   // [SPI: Important]
   Plaintext operator>>(size_t op2) const { return Wrap(bn_ >> op2); }
 
@@ -186,19 +196,26 @@ class Plaintext {
 
   // [SPI: Important]
   bool operator>(const Plaintext &other) const { return bn_ > other.bn_; }
+
   // [SPI: Important]
   bool operator<(const Plaintext &other) const { return bn_ < other.bn_; }
+
   // [SPI: Important]
   bool operator>=(const Plaintext &other) const { return bn_ >= other.bn_; }
+
   // [SPI: Important]
   bool operator<=(const Plaintext &other) const { return bn_ <= other.bn_; }
+
   // [SPI: Important]
   bool operator==(const Plaintext &other) const { return bn_ == other.bn_; }
+
   // [SPI: Important]
   bool operator!=(const Plaintext &other) const { return bn_ != other.bn_; }
 
-  bool IsZero() const { return bn_.IsZero(); }          // [SPI: Critical]
+  bool IsZero() const { return bn_.IsZero(); }  // [SPI: Critical]
+
   bool IsPositive() const { return bn_.IsPositive(); }  // [SPI: Important]
+
   bool IsNegative() const { return bn_.IsNegative(); }  // [SPI: Important]
 
   MSGPACK_DEFINE(bn_);

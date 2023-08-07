@@ -16,6 +16,7 @@ class PublicKey {
     ipcl_pubkey_ = pk;
     pt_bound_.bn_ = *pk.getN() / 2;
   }
+
   bool operator==(const PublicKey &other) const;
   bool operator!=(const PublicKey &other) const;
 

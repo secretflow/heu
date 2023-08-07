@@ -7,6 +7,7 @@
 
 #include "heu/library/algorithms/paillier_ipcl/utils.h"
 #include "heu/library/algorithms/util/he_assert.h"
+
 namespace heu::lib::algorithms::paillier_ipcl {
 
 Evaluator::Evaluator(const PublicKey& pk) : pk_(pk) {}
@@ -136,6 +137,7 @@ void Evaluator::SubInplace(Span<Ciphertext> a, ConstSpan<Ciphertext> b) const {
     *a[i] = res[i];
   }
 }
+
 void Evaluator::SubInplace(Span<Ciphertext> a, ConstSpan<Plaintext> p) const {
   auto res = Sub(a, p);
   size_t vec_size = res.size();
@@ -143,6 +145,7 @@ void Evaluator::SubInplace(Span<Ciphertext> a, ConstSpan<Plaintext> p) const {
     *a[i] = res[i];
   }
 }
+
 void Evaluator::SubInplace(Span<Plaintext> a, ConstSpan<Plaintext> b) const {
   auto res = Sub(a, b);
   size_t vec_size = res.size();

@@ -24,10 +24,12 @@ class Ciphertext : public HeObject<Ciphertext> {
  public:
   // [SPI: Critical]
   Ciphertext() = default;
+
   explicit Ciphertext(const MPInt &c) : bn_(c) {}
 
   // [SPI: Critical]
   [[nodiscard]] std::string ToString() const override { return bn_.ToString(); }
+
   // [SPI: Important]
   friend std::ostream &operator<<(std::ostream &os, const Ciphertext &c) {
     return os << c.ToString();
@@ -35,6 +37,7 @@ class Ciphertext : public HeObject<Ciphertext> {
 
   // [SPI: Important]
   bool operator==(const Ciphertext &other) const { return bn_ == other.bn_; }
+
   // [SPI: Important]
   bool operator!=(const Ciphertext &other) const {
     return !this->operator==(other);

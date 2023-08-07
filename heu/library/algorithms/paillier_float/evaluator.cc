@@ -48,6 +48,7 @@ Ciphertext Evaluator::Add(const Ciphertext& a, const MPInt& b) const {
   Ciphertext cipher_b = encryptor_.EncryptEncoded(encoded_b, 1);
   return Add(a, cipher_b);
 }
+
 Ciphertext Evaluator::Add(const Ciphertext& a, double b) const {
   internal::EncodedNumber encoded_b = internal::Codec(pk_).Encode(b);
 
@@ -58,9 +59,11 @@ Ciphertext Evaluator::Add(const Ciphertext& a, double b) const {
 void Evaluator::AddInplace(Ciphertext* a, const Ciphertext& b) const {
   *a = Add(*a, b);
 }
+
 void Evaluator::AddInplace(Ciphertext* a, const MPInt& b) const {
   *a = Add(*a, b);
 }
+
 void Evaluator::AddInplace(Ciphertext* a, double b) const { *a = Add(*a, b); }
 
 MPInt Evaluator::AddRaw(const MPInt& a, const MPInt& b) const {
@@ -112,6 +115,7 @@ Ciphertext Evaluator::Mul(const Ciphertext& a, double b) const {
 void Evaluator::MulInplace(Ciphertext* a, const MPInt& b) const {
   *a = Mul(*a, b);
 }
+
 void Evaluator::MulInplace(Ciphertext* a, double b) const { *a = Mul(*a, b); }
 
 Ciphertext Evaluator::Negate(const Ciphertext& a) const {
