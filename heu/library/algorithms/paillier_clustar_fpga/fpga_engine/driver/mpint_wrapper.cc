@@ -16,9 +16,9 @@
 
 namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine {
 
-void CMPIntWrapper::MPIntToBytes(const MPInt& v, char *ptr, size_t len) {
-    memset(ptr, 0, len);
-    v.ToMagBytes(reinterpret_cast<unsigned char*>(ptr), len, Endian::little);
+void CMPIntWrapper::MPIntToBytes(const MPInt& v, char* ptr, size_t len) {
+  memset(ptr, 0, len);
+  v.ToMagBytes(reinterpret_cast<unsigned char*>(ptr), len, Endian::little);
 }
 
-} // heu::lib::algorithms::paillier_clustar_fpga::fpga_engine
+}  // namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine

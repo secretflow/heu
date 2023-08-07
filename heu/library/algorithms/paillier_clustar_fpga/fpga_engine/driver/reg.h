@@ -21,7 +21,6 @@ namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine {
 #define TASK_MANAGER_BASE_ADDR 0x00010000
 #define TASK_MANAGER_ADDR_SIZE 0x0100
 
-
 #define TASK_STATE_ADDR 0x00
 #define SRCDATA_STATE_ADDR 0x04
 #define BACKDATA_STATE_ADDR 0x08
@@ -33,7 +32,8 @@ namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine {
 #define LOOPBACK_EN_ADDR 0x12000
 #define RESULT_BUFFER_CNT_ADDR 0x1801C
 
-#define SYS_PROCESS_ERR_ADDR 0x1C104  //bit0: FPGA internal error, bit1: FPGA timeout
+#define SYS_PROCESS_ERR_ADDR \
+  0x1C104  // bit0: FPGA internal error, bit1: FPGA timeout
 #define TASK_BUF_HOLF_TIMEOUT_ADDR 0x1C108
 #define BUFFER_CLEAR_REG_ADDR 0x12008
 #define BUFFER_CLEAR_FB_REG_ADDR 0x1200C
@@ -42,7 +42,7 @@ namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine {
 #define TASK_BUSY_COUNT_ADDR 0x12018
 #define BUFF_HOLD_TIMEOUT 0x1c108
 #define TASK_SPACE_SIZE_CONFIG 0x1201c
-#define TASK_SPACE_SIZE_CONFIG_RESP  0x12020
+#define TASK_SPACE_SIZE_CONFIG_RESP 0x12020
 
 #define CMD_ADDR_LEN 0x4000
 #define PARA_ADDR_LEN 0x4000
@@ -95,11 +95,10 @@ void clear_status(int user_fd, void *addr, uint8_t pos);
 
 /*
  * Function       : check_and_clear_status
- * Description    : used to clear bit status of FPGA's register if the original status is 1, otherwise return error
- * Para:
- *   addr         : reg address
- *   pos          : bit position of 32bits' register
+ * Description    : used to clear bit status of FPGA's register if the original
+ * status is 1, otherwise return error Para: addr         : reg address pos :
+ * bit position of 32bits' register
  */
 int check_and_clear_status(int user_fd, void *addr, uint8_t pos);
 
-} // heu::lib::algorithms::paillier_clustar_fpga::fpga_engine
+}  // namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine

@@ -14,67 +14,66 @@
 
 #pragma once
 
-#include <memory>
-#include <vector>
 #include <cstdint>
+#include <memory>
 #include <string>
-#include "heu/library/algorithms/util/spi_traits.h"
+#include <vector>
+
 #include "heu/library/algorithms/paillier_clustar_fpga/ciphertext.h"
 #include "heu/library/algorithms/paillier_clustar_fpga/plaintext.h"
+#include "heu/library/algorithms/util/spi_traits.h"
 
 namespace heu::lib::algorithms::paillier_clustar_fpga {
 
 class CMonoFacility {
-public:
-    CMonoFacility() = default;
-    ~CMonoFacility() = default;
+ public:
+  CMonoFacility() = default;
+  ~CMonoFacility() = default;
 
-    static void CipherHeuToFpga(ConstSpan<Ciphertext> input_span,
-                                const unsigned cipher_byte,
-                                const std::shared_ptr<char>& pen, 
-                                const std::shared_ptr<char>& base,
-                                const std::shared_ptr<char>& exp);
+  static void CipherHeuToFpga(ConstSpan<Ciphertext> input_span,
+                              const unsigned cipher_byte,
+                              const std::shared_ptr<char>& pen,
+                              const std::shared_ptr<char>& base,
+                              const std::shared_ptr<char>& exp);
 
-    static void CipherFpgaToHeu(const std::shared_ptr<char>& pen,
-                                const std::shared_ptr<char>& exp,
-                                size_t size,
-                                const unsigned cipher_byte,
-                                std::vector<Ciphertext>& result);
+  static void CipherFpgaToHeu(const std::shared_ptr<char>& pen,
+                              const std::shared_ptr<char>& exp, size_t size,
+                              const unsigned cipher_byte,
+                              std::vector<Ciphertext>& result);
 
-    static void CipherVecToFpga(const std::vector<Ciphertext>&input_vec,
-                                const unsigned cipher_byte,
-                                const std::shared_ptr<char>& pen, 
-                                const std::shared_ptr<char>& base,
-                                const std::shared_ptr<char>& exp);
+  static void CipherVecToFpga(const std::vector<Ciphertext>& input_vec,
+                              const unsigned cipher_byte,
+                              const std::shared_ptr<char>& pen,
+                              const std::shared_ptr<char>& base,
+                              const std::shared_ptr<char>& exp);
 
-    static void PlainHeuToFpga(ConstSpan<Plaintext> input_span,
-                               const std::shared_ptr<int64_t[]>& pt_arr);
+  static void PlainHeuToFpga(ConstSpan<Plaintext> input_span,
+                             const std::shared_ptr<int64_t[]>& pt_arr);
 
-    static void PlainFpgaToHeu(const std::shared_ptr<char>& res_sptr, 
-                               size_t res_size, 
-                               std::vector<Plaintext>& res_vec);
+  static void PlainFpgaToHeu(const std::shared_ptr<char>& res_sptr,
+                             size_t res_size, std::vector<Plaintext>& res_vec);
 
-    static void FpgaEncode(char *pub_key_n, 
-                           size_t pt_size,
-                           const unsigned plain_bits,
-                           const std::shared_ptr<int64_t[]>& pt_arr,
-                           const std::shared_ptr<char>& res_fpn,
-                           const std::shared_ptr<char>& res_base_fpn,
-                           const std::shared_ptr<char>& res_exp_fpn);
+  static void FpgaEncode(char* pub_key_n, size_t pt_size,
+                         const unsigned plain_bits,
+                         const std::shared_ptr<int64_t[]>& pt_arr,
+                         const std::shared_ptr<char>& res_fpn,
+                         const std::shared_ptr<char>& res_base_fpn,
+                         const std::shared_ptr<char>& res_exp_fpn);
 
-    template <typename T>
-    static void ValueVecToPtrVec(std::vector<T>& value_vec, std::vector<T*>& ptr_vec);
+  template <typename T>
+  static void ValueVecToPtrVec(std::vector<T>& value_vec,
+                               std::vector<T*>& ptr_vec);
 
-    static std::string CharToString(char* input_str, size_t size);
+  static std::string CharToString(char* input_str, size_t size);
 };
 
 template <typename T>
-void CMonoFacility::ValueVecToPtrVec(std::vector<T>& value_vec, std::vector<T*>& ptr_vec) {
-    size_t size = value_vec.size();
-    for (size_t i = 0; i < size; i++) {
-        ptr_vec.push_back(&value_vec[i]);
-    }
+void CMonoFacility::ValueVecToPtrVec(std::vector<T>& value_vec,
+                                     std::vector<T*>& ptr_vec) {
+  size_t size = value_vec.size();
+  for (size_t i = 0; i < size; i++) {
+    ptr_vec.push_back(&value_vec[i]);
+  }
 }
 
-} // heu::lib::algorithms::paillier_clustar_fpga
-
+}  // namespace heu::lib::algorithms::paillier_clustar_fpga

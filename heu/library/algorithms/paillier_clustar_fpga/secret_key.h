@@ -14,51 +14,52 @@
 
 #pragma once
 
+#include "heu/library/algorithms/paillier_clustar_fpga/fpga_engine/paillier_operators/fpga_types.h"
+#include "heu/library/algorithms/paillier_clustar_fpga/public_key.h"
 #include "heu/library/algorithms/util/he_object.h"
 #include "heu/library/algorithms/util/mp_int.h"
-#include "heu/library/algorithms/paillier_clustar_fpga/public_key.h"
-#include "heu/library/algorithms/paillier_clustar_fpga/fpga_engine/paillier_operators/fpga_types.h"
 
 namespace heu::lib::algorithms::paillier_clustar_fpga {
 
 class CSecrKeyHelper;
+
 class SecretKey : public HeObject<SecretKey> {
-public:
-    SecretKey() = default;
-    explicit SecretKey(const PublicKey& pub_key, const MPInt& p, const MPInt& q);
+ public:
+  SecretKey() = default;
+  explicit SecretKey(const PublicKey& pub_key, const MPInt& p, const MPInt& q);
 
-    bool operator==(const SecretKey &other) const;
-    bool operator!=(const SecretKey &other) const;
+  bool operator==(const SecretKey& other) const;
+  bool operator!=(const SecretKey& other) const;
 
-    std::string ToString() const override;
+  std::string ToString() const override;
 
-    // Serialize and Deserialize
-    MSGPACK_DEFINE(p_, q_, p_square_, q_square_, q_inverse_, hp_, hq_, pub_key_);
+  // Serialize and Deserialize
+  MSGPACK_DEFINE(p_, q_, p_square_, q_square_, q_inverse_, hp_, hq_, pub_key_);
 
-    // Functions for unit test
-    const MPInt& GetP() const;
-    const MPInt& GetQ() const;
-    const MPInt& GetPSquare() const;
-    const MPInt& GetQSquare() const;
-    const MPInt& GetQInverse() const;
-    const MPInt& GetHP() const;
-    const MPInt& GetHQ() const;
-    const PublicKey& GetPubKey() const;
+  // Functions for unit test
+  const MPInt& GetP() const;
+  const MPInt& GetQ() const;
+  const MPInt& GetPSquare() const;
+  const MPInt& GetQSquare() const;
+  const MPInt& GetQInverse() const;
+  const MPInt& GetHP() const;
+  const MPInt& GetHQ() const;
+  const PublicKey& GetPubKey() const;
 
-private:
-    void HFunc(const MPInt& x, const MPInt& x_square, MPInt& result);
+ private:
+  void HFunc(const MPInt& x, const MPInt& x_square, MPInt& result);
 
-    friend class CSecrKeyHelper;
+  friend class CSecrKeyHelper;
 
-private:
-    MPInt p_;
-    MPInt q_;
-    MPInt p_square_;
-    MPInt q_square_;
-    MPInt q_inverse_;
-    MPInt hp_;
-    MPInt hq_;
-    PublicKey pub_key_;
+ private:
+  MPInt p_;
+  MPInt q_;
+  MPInt p_square_;
+  MPInt q_square_;
+  MPInt q_inverse_;
+  MPInt hp_;
+  MPInt hq_;
+  PublicKey pub_key_;
 };
 
-} // heu::lib::algorithms::paillier_clustar_fpga
+}  // namespace heu::lib::algorithms::paillier_clustar_fpga

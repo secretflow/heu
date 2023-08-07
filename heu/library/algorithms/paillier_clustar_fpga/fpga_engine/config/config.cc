@@ -15,20 +15,19 @@
 #include "config.h"
 
 namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine {
- 
-struct timeval time_point[40]; 
-struct timeval fpgaid_time_point[8][30];                     
+
+struct timeval time_point[40];
+struct timeval fpgaid_time_point[8][30];
 
 // FPGA's longest wait_time in all cases(unit: us)
 
-
 #ifdef MULTI_CARD_DEBUG
-  long double maximum_time = 10000000.0;
-  long double single_task_maximum_time = 10000000.0;
+long double maximum_time = 10000000.0;
+long double single_task_maximum_time = 10000000.0;
 #else
-  long double maximum_time = 3600000000.0;
-  long double single_task_maximum_time = 3600000000.0;
+long double maximum_time = 3600000000.0;
+long double single_task_maximum_time = 3600000000.0;
 
-} // heu::lib::algorithms::paillier_clustar_fpga::fpga_engine
+}  // heu::lib::algorithms::paillier_clustar_fpga::fpga_engine
 
 #endif

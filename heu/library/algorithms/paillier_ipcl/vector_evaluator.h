@@ -58,8 +58,10 @@ class Evaluator {
 
   // Add cipher input to sum
   void CalcSum(Ciphertext* sum, ConstSpan<Ciphertext> input) const {}
+
   // Add plain input to sum
   void CalcSum(Plaintext* sum, ConstSpan<Plaintext> input) const {}
+
   std::string GetSchema() const { return "ipcl"; }
 
   PublicKey pk_;

@@ -15,60 +15,63 @@
 #pragma once
 
 #include <cmath>
+
 #include "msgpack.hpp"
+
+#include "heu/library/algorithms/paillier_clustar_fpga/fpga_engine/paillier_operators/fpga_types.h"
+#include "heu/library/algorithms/paillier_clustar_fpga/plaintext.h"
 #include "heu/library/algorithms/util/he_object.h"
 #include "heu/library/algorithms/util/mp_int.h"
-#include "heu/library/algorithms/paillier_clustar_fpga/plaintext.h"
-#include "heu/library/algorithms/paillier_clustar_fpga/fpga_engine/paillier_operators/fpga_types.h"
 
 namespace heu::lib::algorithms::paillier_clustar_fpga {
 
 using fpga_engine::CFPGATypes;
 class CPubKeyHelper;
+
 class PublicKey : public HeObject<PublicKey> {
-public:
-    PublicKey() = default;
-    PublicKey(const PublicKey& pub_key);
-    PublicKey(PublicKey&& pub_key);
-    explicit PublicKey(const MPInt& n);
-    explicit PublicKey(MPInt&& n);
-    
-    PublicKey& operator=(const PublicKey& pub_key);
-    PublicKey& operator=(PublicKey&& pub_key);
-    PublicKey& operator=(const MPInt& n);
-    PublicKey& operator=(MPInt&& n);
+ public:
+  PublicKey() = default;
+  PublicKey(const PublicKey& pub_key);
+  PublicKey(PublicKey&& pub_key);
+  explicit PublicKey(const MPInt& n);
+  explicit PublicKey(MPInt&& n);
 
-    bool operator==(const PublicKey &other) const;
-    bool operator!=(const PublicKey &other) const;
+  PublicKey& operator=(const PublicKey& pub_key);
+  PublicKey& operator=(PublicKey&& pub_key);
+  PublicKey& operator=(const MPInt& n);
+  PublicKey& operator=(MPInt&& n);
 
-    std::string ToString() const override;
+  bool operator==(const PublicKey& other) const;
+  bool operator!=(const PublicKey& other) const;
 
-    // Valid plaintext range: (-max_int_, max_int_)
-    const Plaintext &PlaintextBound() const &;
+  std::string ToString() const override;
 
-    // Serialize and Deserialize
-    MSGPACK_DEFINE(n_, n_square_, g_, max_int_, pt_bound_);
+  // Valid plaintext range: (-max_int_, max_int_)
+  const Plaintext& PlaintextBound() const&;
 
-    // Functions for unit test
-    const MPInt& GetN() const;
-    const MPInt& GetG() const;
-    const MPInt& GetNSquare() const;
-    const Plaintext GetMaxInt() const;
+  // Serialize and Deserialize
+  MSGPACK_DEFINE(n_, n_square_, g_, max_int_, pt_bound_);
 
-private:
-    void Init();
-    void InitCopy(const PublicKey& pub_key);
-    void InitMove(PublicKey&& pub_key);
-    void CalcPlaintextBound();
+  // Functions for unit test
+  const MPInt& GetN() const;
+  const MPInt& GetG() const;
+  const MPInt& GetNSquare() const;
+  const Plaintext GetMaxInt() const;
 
-    friend class CPubKeyHelper;
+ private:
+  void Init();
+  void InitCopy(const PublicKey& pub_key);
+  void InitMove(PublicKey&& pub_key);
+  void CalcPlaintextBound();
 
-private:
-    MPInt g_;            // n + 1
-    MPInt n_;   
-    MPInt n_square_;     // n^2 
-    Plaintext max_int_;  // n / 3 - 1
-    Plaintext pt_bound_; // std::numeric_limits<int64_t>::max() + 1
+  friend class CPubKeyHelper;
+
+ private:
+  MPInt g_;  // n + 1
+  MPInt n_;
+  MPInt n_square_;      // n^2
+  Plaintext max_int_;   // n / 3 - 1
+  Plaintext pt_bound_;  // std::numeric_limits<int64_t>::max() + 1
 };
 
-} // heu::lib::algorithms::paillier_clustar_fpga
+}  // namespace heu::lib::algorithms::paillier_clustar_fpga

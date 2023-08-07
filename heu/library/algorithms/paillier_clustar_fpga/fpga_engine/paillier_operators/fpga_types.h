@@ -14,59 +14,70 @@
 
 #pragma once
 
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
+
 namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine {
 
 // Monostate-class to define FPGA types
 class CFPGATypes {
-public:
-    CFPGATypes() = default;
-    ~CFPGATypes()= default;
+ public:
+  CFPGATypes() = default;
+  ~CFPGATypes() = default;
 
-public:
-    // This is determined by FATE + FPGA
-    static constexpr unsigned MAX_NUMBER_BITS = 64;
-    static constexpr unsigned CIPHER_BITS = 2048; // varies according to key length
-    static constexpr unsigned PLAIN_BITS = 2048;  // varies according to key length
-    static constexpr unsigned BYTE_LEN = 8;
-    static constexpr unsigned CIPHER_BYTE = CFPGATypes::CIPHER_BITS / CFPGATypes::BYTE_LEN; // varies according to key length
-    static constexpr unsigned PLAIN_BYTE = CFPGATypes::PLAIN_BITS / CFPGATypes::BYTE_LEN;   // varies according to key length
+ public:
+  // This is determined by FATE + FPGA
+  static constexpr unsigned MAX_NUMBER_BITS = 64;
+  static constexpr unsigned CIPHER_BITS =
+      2048;  // varies according to key length
+  static constexpr unsigned PLAIN_BITS =
+      2048;  // varies according to key length
+  static constexpr unsigned BYTE_LEN = 8;
+  static constexpr unsigned CIPHER_BYTE =
+      CFPGATypes::CIPHER_BITS /
+      CFPGATypes::BYTE_LEN;  // varies according to key length
+  static constexpr unsigned PLAIN_BYTE =
+      CFPGATypes::PLAIN_BITS /
+      CFPGATypes::BYTE_LEN;  // varies according to key length
 
-    static constexpr unsigned U_INT32_BYTE = 4;
-    static constexpr unsigned INT64_BYTE = 8;
-    static constexpr unsigned DOUBLE_BYTE = 8;
- 
-    static constexpr unsigned ENCR_RANDOM_BIT_LEN = 1024; // varies according to key length
-    static constexpr unsigned ENCR_RANDOM_BYTE = CFPGATypes::ENCR_RANDOM_BIT_LEN / CFPGATypes::BYTE_LEN; // varies according to key length
+  static constexpr unsigned U_INT32_BYTE = 4;
+  static constexpr unsigned INT64_BYTE = 8;
+  static constexpr unsigned DOUBLE_BYTE = 8;
 
-    static constexpr unsigned CIPHER_BASE = 16; // used in encoded format, hard code to 16 in FPGA case
+  static constexpr unsigned ENCR_RANDOM_BIT_LEN =
+      1024;  // varies according to key length
+  static constexpr unsigned ENCR_RANDOM_BYTE =
+      CFPGATypes::ENCR_RANDOM_BIT_LEN /
+      CFPGATypes::BYTE_LEN;  // varies according to key length
+
+  static constexpr unsigned CIPHER_BASE =
+      16;  // used in encoded format, hard code to 16 in FPGA case
 };
 
 class CKeyLenConfig {
-public:
-    CKeyLenConfig(size_t key_len);
-    ~CKeyLenConfig() = default;
-    
-private:
-    // Config key length related parameters
-    void Config(); 
+ public:
+  CKeyLenConfig(size_t key_len);
+  ~CKeyLenConfig() = default;
 
-    void ConfigKeyLen512();
-    void ConfigKeyLen1024();
-    void ConfigKeyLen2048();
+ private:
+  // Config key length related parameters
+  void Config();
 
-public:
-    size_t key_len_; // options: 512, 1024, 2048
+  void ConfigKeyLen512();
+  void ConfigKeyLen1024();
+  void ConfigKeyLen2048();
 
-    unsigned cipher_bits_;
-    unsigned cipher_byte_;
+ public:
+  size_t key_len_;  // options: 512, 1024, 2048
 
-    unsigned plain_bits_;
-    unsigned plain_byte_;
- 
-    unsigned encr_random_bit_len_;
-    unsigned encr_random_byte_;
+  unsigned cipher_bits_;
+  unsigned cipher_byte_;
+
+  unsigned plain_bits_;
+  unsigned plain_byte_;
+
+  unsigned encr_random_bit_len_;
+  unsigned encr_random_byte_;
 };
 
-} // heu::lib::algorithms::paillier_clustar_fpga::fpga_engine
+}  // namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine

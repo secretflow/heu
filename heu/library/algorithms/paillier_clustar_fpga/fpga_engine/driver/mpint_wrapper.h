@@ -14,19 +14,19 @@
 
 #pragma once
 
-#include "heu/library/algorithms/util/spi_traits.h"
-#include "heu/library/algorithms/util/mp_int.h"
 #include <string.h>
+
+#include "heu/library/algorithms/util/mp_int.h"
+#include "heu/library/algorithms/util/spi_traits.h"
 
 namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine {
 
 class CMPIntWrapper {
-public:
-    CMPIntWrapper() = default;
-    ~CMPIntWrapper() = default;
+ public:
+  CMPIntWrapper() = default;
+  ~CMPIntWrapper() = default;
 
-    static void MPIntToBytes(const MPInt& v, char *ptr, size_t len);
+  static void MPIntToBytes(const MPInt& v, char* ptr, size_t len);
 };
 
-} // heu::lib::algorithms::paillier_clustar_fpga::fpga_engine
-
+}  // namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine

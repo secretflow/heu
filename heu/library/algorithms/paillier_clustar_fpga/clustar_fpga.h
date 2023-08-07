@@ -16,19 +16,19 @@
 
 #ifdef APPLY_CLUSTAR_FPGA
 #define ENABLE_CLUSTAR_FPGA true
-#else 
+#else
 #define ENABLE_CLUSTAR_FPGA false
 #endif
 
 #if ENABLE_CLUSTAR_FPGA == true
 
-#include "heu/library/algorithms/paillier_clustar_fpga/plaintext.h"
 #include "heu/library/algorithms/paillier_clustar_fpga/ciphertext.h"
 #include "heu/library/algorithms/paillier_clustar_fpga/key_generator.h"
+#include "heu/library/algorithms/paillier_clustar_fpga/plaintext.h"
 #include "heu/library/algorithms/paillier_clustar_fpga/public_key.h"
 #include "heu/library/algorithms/paillier_clustar_fpga/secret_key.h"
-#include "heu/library/algorithms/paillier_clustar_fpga/vector_encryptor.h"
 #include "heu/library/algorithms/paillier_clustar_fpga/vector_decryptor.h"
+#include "heu/library/algorithms/paillier_clustar_fpga/vector_encryptor.h"
 #include "heu/library/algorithms/paillier_clustar_fpga/vector_evaluator.h"
 
 #endif

@@ -13,29 +13,30 @@
 // limitations under the License.
 
 #include "key_generator.h"
+
 #include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::paillier_clustar_fpga {
 
 // key_size: unit in bit, 1024 bits is recommended in FPGA case
 void KeyGenerator::Generate(int key_size, SecretKey* sk, PublicKey* pk) {
-    MPInt p;
-    MPInt q;
-    MPInt n;
+  MPInt p;
+  MPInt q;
+  MPInt n;
 
-    int n_len = 0;
-    while (n_len != key_size) {
-        MPInt::RandPrimeOver(key_size / 2, &p);
-        q = p;
-        while (q == p) {
-            MPInt::RandPrimeOver(key_size / 2, &q);
-        }
-        MPInt::Mul(p, q, &n); // n = p * q;
-        n_len = n.BitCount();
+  int n_len = 0;
+  while (n_len != key_size) {
+    MPInt::RandPrimeOver(key_size / 2, &p);
+    q = p;
+    while (q == p) {
+      MPInt::RandPrimeOver(key_size / 2, &q);
     }
+    MPInt::Mul(p, q, &n);  // n = p * q;
+    n_len = n.BitCount();
+  }
 
-    *pk = PublicKey(std::move(n));
-    *sk = SecretKey(*pk, p, q);
+  *pk = PublicKey(std::move(n));
+  *sk = SecretKey(*pk, p, q);
 }
 
-}
+}  // namespace heu::lib::algorithms::paillier_clustar_fpga

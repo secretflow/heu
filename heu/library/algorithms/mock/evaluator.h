@@ -154,6 +154,7 @@ class Evaluator {
   void CalcSum(Ciphertext* sum, ConstSpan<Ciphertext> input) const;
   // Add plain input to sum
   void CalcSum(Plaintext* sum, ConstSpan<Plaintext> input) const;
+
   std::string GetSchema() const { return "mock"; }
 #endif
 

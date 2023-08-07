@@ -16,47 +16,50 @@
 
 #include <ostream>
 #include <string>
+
 #include "yacl/base/byte_container_view.h"
+
 #include "heu/library/algorithms/paillier_clustar_fpga/fpga_engine/paillier_operators/fpga_types.h"
+
 namespace heu::lib::algorithms::paillier_clustar_fpga {
 
 using fpga_engine::CFPGATypes;
 
 class Ciphertext {
-public:
-    Ciphertext() = default;
-    explicit Ciphertext(unsigned size);
-    Ciphertext(const Ciphertext& other);
-    Ciphertext(Ciphertext&& other);
-    explicit Ciphertext(char* mantissa, unsigned size, int exp);
-    ~Ciphertext();
+ public:
+  Ciphertext() = default;
+  explicit Ciphertext(unsigned size);
+  Ciphertext(const Ciphertext& other);
+  Ciphertext(Ciphertext&& other);
+  explicit Ciphertext(char* mantissa, unsigned size, int exp);
+  ~Ciphertext();
 
-    Ciphertext& operator=(const Ciphertext& other);
-    Ciphertext& operator=(Ciphertext&& other);
+  Ciphertext& operator=(const Ciphertext& other);
+  Ciphertext& operator=(Ciphertext&& other);
 
-    std::string ToString() const;
+  std::string ToString() const;
 
-    bool operator==(const Ciphertext &other) const;
-    bool operator!=(const Ciphertext &other) const;
+  bool operator==(const Ciphertext& other) const;
+  bool operator!=(const Ciphertext& other) const;
 
-    yacl::Buffer Serialize() const;
-    void Deserialize(yacl::ByteContainerView in);
+  yacl::Buffer Serialize() const;
+  void Deserialize(yacl::ByteContainerView in);
 
-    //
-    char *GetMantissa() const;
-    void SetExp(int exp);
-    int GetExp() const;
-    unsigned GetSize() const;
+  //
+  char* GetMantissa() const;
+  void SetExp(int exp);
+  int GetExp() const;
+  unsigned GetSize() const;
 
-private:
-    void CopyInit(const Ciphertext& other);
-    void MoveInit(Ciphertext&& other);
-    void Release();
+ private:
+  void CopyInit(const Ciphertext& other);
+  void MoveInit(Ciphertext&& other);
+  void Release();
 
-private:
-    char* mantissa_ = nullptr;
-    unsigned size_ = 0;
-    int exp_ = 0;
+ private:
+  char* mantissa_ = nullptr;
+  unsigned size_ = 0;
+  int exp_ = 0;
 };
 
-} // heu::lib::algorithms::paillier_clustar_fpga
+}  // namespace heu::lib::algorithms::paillier_clustar_fpga

@@ -15,40 +15,41 @@
 #pragma once
 
 #include <memory>
+
+#include "heu/library/algorithms/paillier_clustar_fpga/ciphertext.h"
+#include "heu/library/algorithms/paillier_clustar_fpga/fpga_engine/paillier_operators/fpga_types.h"
 #include "heu/library/algorithms/paillier_clustar_fpga/plaintext.h"
 #include "heu/library/algorithms/paillier_clustar_fpga/public_key.h"
-#include "heu/library/algorithms/paillier_clustar_fpga/ciphertext.h"
 #include "heu/library/algorithms/paillier_clustar_fpga/utils/pub_key_helper.h"
-#include "heu/library/algorithms/paillier_clustar_fpga/fpga_engine/paillier_operators/fpga_types.h"
 
 namespace heu::lib::algorithms::paillier_clustar_fpga {
 
 class Encryptor {
-public:
-    Encryptor() = default;
-    explicit Encryptor(const PublicKey& pk);
-    ~Encryptor() = default;
+ public:
+  Encryptor() = default;
+  explicit Encryptor(const PublicKey& pk);
+  ~Encryptor() = default;
 
-    std::vector<Ciphertext> EncryptZero(int64_t size) const;
-    std::vector<Ciphertext> Encrypt(ConstSpan<Plaintext> pts) const;
-    std::vector<Ciphertext> EncryptWithoutObf(ConstSpan<Plaintext> pts) const;
+  std::vector<Ciphertext> EncryptZero(int64_t size) const;
+  std::vector<Ciphertext> Encrypt(ConstSpan<Plaintext> pts) const;
+  std::vector<Ciphertext> EncryptWithoutObf(ConstSpan<Plaintext> pts) const;
 
-    std::pair<std::vector<Ciphertext>, std::vector<std::string>> EncryptWithAudit(
-        ConstSpan<Plaintext> pts) const;
+  std::pair<std::vector<Ciphertext>, std::vector<std::string>> EncryptWithAudit(
+      ConstSpan<Plaintext> pts) const;
 
-    void Encode(ConstSpan<Plaintext> pts,
-                std::shared_ptr<char>& res_fpn,
-                std::shared_ptr<char>& res_base_fpn,
-                std::shared_ptr<char>& res_exp_fpn) const;
+  void Encode(ConstSpan<Plaintext> pts, std::shared_ptr<char>& res_fpn,
+              std::shared_ptr<char>& res_base_fpn,
+              std::shared_ptr<char>& res_exp_fpn) const;
 
-private:
-    std::shared_ptr<char> GenRandom(size_t count) const;
-    std::vector<Ciphertext> EncryptImpl(ConstSpan<Plaintext> pts, std::vector<std::string>* audit_vec) const;
+ private:
+  std::shared_ptr<char> GenRandom(size_t count) const;
+  std::vector<Ciphertext> EncryptImpl(
+      ConstSpan<Plaintext> pts, std::vector<std::string>* audit_vec) const;
 
-private:
-    PublicKey pub_key_;
-    CPubKeyHelper pub_key_helper_;
-    fpga_engine::CKeyLenConfig key_conf_;
+ private:
+  PublicKey pub_key_;
+  CPubKeyHelper pub_key_helper_;
+  fpga_engine::CKeyLenConfig key_conf_;
 };
 
-} // heu::lib::algorithms::paillier_clustar_fpga
+}  // namespace heu::lib::algorithms::paillier_clustar_fpga

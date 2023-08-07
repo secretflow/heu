@@ -27,8 +27,9 @@ namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine {
  *   buffer    : send_data buffer
  *   size      : size of data to send
  *   base      : base address of send_buffer
- */ 
-uint32_t transfer_to_fpga(const char *fname, int fd, char *buffer, uint32_t size, uint64_t base);
+ */
+uint32_t transfer_to_fpga(const char *fname, int fd, char *buffer,
+                          uint32_t size, uint64_t base);
 
 /*
  * Function    : transfer_from_fpga
@@ -40,6 +41,7 @@ uint32_t transfer_to_fpga(const char *fname, int fd, char *buffer, uint32_t size
  *   size      : size of data to receive
  *   base      : base address of recv_data buffer
  */
-uint32_t transfer_from_fpga(const char *fname, int fd, char *buffer, uint32_t size, uint64_t base);
+uint32_t transfer_from_fpga(const char *fname, int fd, char *buffer,
+                            uint32_t size, uint64_t base);
 
-} // heu::lib::algorithms::paillier_clustar_fpga::fpga_engine
+}  // namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine

@@ -16,74 +16,76 @@
 
 #include <memory>
 #include <vector>
+
 #include "heu/library/algorithms/paillier_clustar_fpga/ciphertext.h"
+#include "heu/library/algorithms/paillier_clustar_fpga/fpga_engine/paillier_operators/fpga_types.h"
 #include "heu/library/algorithms/paillier_clustar_fpga/plaintext.h"
 #include "heu/library/algorithms/paillier_clustar_fpga/public_key.h"
-#include "heu/library/algorithms/util/spi_traits.h"
-#include "heu/library/algorithms/paillier_clustar_fpga/vector_encryptor.h"
 #include "heu/library/algorithms/paillier_clustar_fpga/utils/pub_key_helper.h"
-#include "heu/library/algorithms/paillier_clustar_fpga/fpga_engine/paillier_operators/fpga_types.h"
+#include "heu/library/algorithms/paillier_clustar_fpga/vector_encryptor.h"
+#include "heu/library/algorithms/util/spi_traits.h"
 
 namespace heu::lib::algorithms::paillier_clustar_fpga {
 
 class Evaluator {
-public:
-    explicit Evaluator(const PublicKey& pk);
+ public:
+  explicit Evaluator(const PublicKey& pk);
 
-    void Randomize(Span<Ciphertext> ct) const;
+  void Randomize(Span<Ciphertext> ct) const;
 
-    std::vector<Ciphertext> Add(ConstSpan<Ciphertext> a,
-                                ConstSpan<Ciphertext> b) const;
-    std::vector<Ciphertext> Add(ConstSpan<Ciphertext> a,
-                                ConstSpan<Plaintext> b) const;
-    std::vector<Ciphertext> Add(ConstSpan<Plaintext> a,
-                                ConstSpan<Ciphertext> b) const;
-    std::vector<Plaintext> Add(ConstSpan<Plaintext> a,
-                                ConstSpan<Plaintext> b) const;
+  std::vector<Ciphertext> Add(ConstSpan<Ciphertext> a,
+                              ConstSpan<Ciphertext> b) const;
+  std::vector<Ciphertext> Add(ConstSpan<Ciphertext> a,
+                              ConstSpan<Plaintext> b) const;
+  std::vector<Ciphertext> Add(ConstSpan<Plaintext> a,
+                              ConstSpan<Ciphertext> b) const;
+  std::vector<Plaintext> Add(ConstSpan<Plaintext> a,
+                             ConstSpan<Plaintext> b) const;
 
-    void AddInplace(Span<Ciphertext> a, ConstSpan<Ciphertext> b) const;
-    void AddInplace(Span<Ciphertext> a, ConstSpan<Plaintext> b) const;
-    void AddInplace(Span<Plaintext> a, ConstSpan<Plaintext> b) const;
+  void AddInplace(Span<Ciphertext> a, ConstSpan<Ciphertext> b) const;
+  void AddInplace(Span<Ciphertext> a, ConstSpan<Plaintext> b) const;
+  void AddInplace(Span<Plaintext> a, ConstSpan<Plaintext> b) const;
 
-    std::vector<Ciphertext> Sub(ConstSpan<Ciphertext> a,
-                                ConstSpan<Ciphertext> b) const;
-    std::vector<Ciphertext> Sub(ConstSpan<Ciphertext> a,
-                                ConstSpan<Plaintext> b) const;
-    std::vector<Ciphertext> Sub(ConstSpan<Plaintext> a,
-                                ConstSpan<Ciphertext> b) const;
-    std::vector<Plaintext> Sub(ConstSpan<Plaintext> a,
-                                ConstSpan<Plaintext> b) const;
+  std::vector<Ciphertext> Sub(ConstSpan<Ciphertext> a,
+                              ConstSpan<Ciphertext> b) const;
+  std::vector<Ciphertext> Sub(ConstSpan<Ciphertext> a,
+                              ConstSpan<Plaintext> b) const;
+  std::vector<Ciphertext> Sub(ConstSpan<Plaintext> a,
+                              ConstSpan<Ciphertext> b) const;
+  std::vector<Plaintext> Sub(ConstSpan<Plaintext> a,
+                             ConstSpan<Plaintext> b) const;
 
-    void SubInplace(Span<Ciphertext> a, ConstSpan<Ciphertext> b) const;
-    void SubInplace(Span<Ciphertext> a, ConstSpan<Plaintext> p) const;
-    void SubInplace(Span<Plaintext> a, ConstSpan<Plaintext> b) const;
+  void SubInplace(Span<Ciphertext> a, ConstSpan<Ciphertext> b) const;
+  void SubInplace(Span<Ciphertext> a, ConstSpan<Plaintext> p) const;
+  void SubInplace(Span<Plaintext> a, ConstSpan<Plaintext> b) const;
 
-    std::vector<Ciphertext> Mul(ConstSpan<Ciphertext> a,
-                                ConstSpan<Plaintext> b) const;
-    std::vector<Ciphertext> Mul(ConstSpan<Plaintext> a,
-                                ConstSpan<Ciphertext> b) const;
-    std::vector<Plaintext> Mul(ConstSpan<Plaintext> a,
-                                ConstSpan<Plaintext> b) const;
+  std::vector<Ciphertext> Mul(ConstSpan<Ciphertext> a,
+                              ConstSpan<Plaintext> b) const;
+  std::vector<Ciphertext> Mul(ConstSpan<Plaintext> a,
+                              ConstSpan<Ciphertext> b) const;
+  std::vector<Plaintext> Mul(ConstSpan<Plaintext> a,
+                             ConstSpan<Plaintext> b) const;
 
-    void MulInplace(Span<Ciphertext> a, ConstSpan<Plaintext> b) const;
-    void MulInplace(Span<Plaintext> a, ConstSpan<Plaintext> b) const;
+  void MulInplace(Span<Ciphertext> a, ConstSpan<Plaintext> b) const;
+  void MulInplace(Span<Plaintext> a, ConstSpan<Plaintext> b) const;
 
-    // out = -a
-    std::vector<Ciphertext> Negate(ConstSpan<Ciphertext> a) const;
-    void NegateInplace(Span<Ciphertext> a) const;
+  // out = -a
+  std::vector<Ciphertext> Negate(ConstSpan<Ciphertext> a) const;
+  void NegateInplace(Span<Ciphertext> a) const;
 
-    // Sum
-    // Add cipher input to sum
-    void CalcSum(Ciphertext* sum, ConstSpan<Ciphertext> input) const;
-    // Add plain input to sum
-    void CalcSum(Plaintext* sum, ConstSpan<Plaintext> input) const;
-    std::string GetSchema() const { return "clustarfpga"; }
+  // Sum
+  // Add cipher input to sum
+  void CalcSum(Ciphertext* sum, ConstSpan<Ciphertext> input) const;
+  // Add plain input to sum
+  void CalcSum(Plaintext* sum, ConstSpan<Plaintext> input) const;
 
-private:
-    PublicKey pub_key_;
-    Encryptor encryptor_;
-    CPubKeyHelper pub_key_helper_;
-    fpga_engine::CKeyLenConfig key_conf_;
+  std::string GetSchema() const { return "clustarfpga"; }
+
+ private:
+  PublicKey pub_key_;
+  Encryptor encryptor_;
+  CPubKeyHelper pub_key_helper_;
+  fpga_engine::CKeyLenConfig key_conf_;
 };
 
-} // heu::lib::algorithms::paillier_clustar_fpga
+}  // namespace heu::lib::algorithms::paillier_clustar_fpga

@@ -165,24 +165,24 @@ void Evaluator::NegateInplace(Span<Ciphertext> a) const {
 
 // Add cipher input to sum
 void Evaluator::CalcSum(Ciphertext* sum, ConstSpan<Ciphertext> input) const {
-    Ciphertext loc_sum;
-    int64_t zero_num = 0;
-    loc_sum.bn_.Set(zero_num);
-    for (const auto& item : input) {
-        loc_sum.bn_ += item->bn_;
-    }
-    *sum = std::move(loc_sum);
+  Ciphertext loc_sum;
+  int64_t zero_num = 0;
+  loc_sum.bn_.Set(zero_num);
+  for (const auto& item : input) {
+    loc_sum.bn_ += item->bn_;
+  }
+  *sum = std::move(loc_sum);
 }
 
 // Add plain input to sum
 void Evaluator::CalcSum(Plaintext* sum, ConstSpan<Plaintext> input) const {
-    Plaintext loc_sum;
-    int64_t zero_num = 0;
-    loc_sum.bn_.Set(zero_num);
-    for (const auto& item : input) {
-        loc_sum += *item;
-    }
-    *sum = std::move(loc_sum);
+  Plaintext loc_sum;
+  int64_t zero_num = 0;
+  loc_sum.bn_.Set(zero_num);
+  for (const auto& item : input) {
+    loc_sum += *item;
+  }
+  *sum = std::move(loc_sum);
 }
 
 #endif

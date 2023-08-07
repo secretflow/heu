@@ -98,7 +98,7 @@ class BasicCase(unittest.TestCase):
             harr = self.kit.array(input, edr)
             self.assert_array_equal(harr, input, edr)
 
-        edr = phe.FloatEncoder(self.kit.get_schema(), scale=10**8)
+        edr = phe.FloatEncoder(self.kit.get_schema(), scale=10 ** 8)
         for idx in range(50):
             input = np.random.rand(100, 100)
             harr = self.kit.array(input, edr)
@@ -122,9 +122,9 @@ class BasicCase(unittest.TestCase):
         # batch float
         for idx in range(50):
             input = np.random.rand(5000, 2)
-            harr = self.kit.array(input, phe.BatchFloatEncoderParams(scale=2**62))
+            harr = self.kit.array(input, phe.BatchFloatEncoderParams(scale=2 ** 62))
             self.assert_array_equal(
-                harr, input, self.kit.batch_float_encoder(scale=2**62)
+                harr, input, self.kit.batch_float_encoder(scale=2 ** 62)
             )
 
     def test_encrypt_with_audit(self):
@@ -584,7 +584,7 @@ class BasicCase(unittest.TestCase):
         ]
         correct_selects = np.array([[1, 1, 1, 1, 0, 0, 1, 0], [1, 1, 1, 1, 0, 0, 1, 0]])
         assert (
-            hnp.tree_predict(x, split_features, split_points) == correct_selects
+                hnp.tree_predict(x, split_features, split_points) == correct_selects
         ).all()
 
     def test_tree_predict_with_indices(self):
@@ -632,10 +632,10 @@ class BasicCase(unittest.TestCase):
         leaf_indices = [num_split_node + i for i in range(leaf_num)]
         correct_selects = np.array([[1, 1, 1, 1, 0, 0, 1, 0], [1, 1, 1, 1, 0, 0, 1, 0]])
         assert (
-            hnp.tree_predict_with_indices(
-                x, split_features, split_points, indices, leaf_indices
-            )
-            == correct_selects
+                hnp.tree_predict_with_indices(
+                    x, split_features, split_points, indices, leaf_indices
+                )
+                == correct_selects
         ).all()
 
 

@@ -13,14 +13,15 @@
 // limitations under the License.
 
 #include "dma.h"
-#include <stdio.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <time.h>
+
 #include <errno.h>
-#include <sys/types.h>
 #include <fcntl.h>
-#include<sys/file.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <sys/file.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
 
 namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine {
 
@@ -31,7 +32,7 @@ namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine {
  *	actually transferred.  (This is true on both 32-bit and 64-bit
  *	systems.)
  */
-#define RW_MAX_SIZE	0x7ffff000
+#define RW_MAX_SIZE 0x7ffff000
 
 /*
  * Function    : transfer_to_fpga
@@ -43,47 +44,44 @@ namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine {
  *   size      : size of data to send
  *   base      : base address of send_buffer
  */
-uint32_t transfer_to_fpga(const char *fname, int fd, char *buffer, uint32_t size, uint64_t base)
-{
-	ssize_t rc;
-	char *buf = buffer;
-	uint32_t count = 0;
-	uint64_t offset = base;
+uint32_t transfer_to_fpga(const char *fname, int fd, char *buffer,
+                          uint32_t size, uint64_t base) {
+  ssize_t rc;
+  char *buf = buffer;
+  uint32_t count = 0;
+  uint64_t offset = base;
 
-	while (count < size) {
-		uint32_t bytes = size - count;
-		if (bytes > RW_MAX_SIZE)
-			bytes = RW_MAX_SIZE;
+  while (count < size) {
+    uint32_t bytes = size - count;
+    if (bytes > RW_MAX_SIZE) bytes = RW_MAX_SIZE;
 
-		if (offset) {
-			rc = lseek(fd, offset, SEEK_SET);
-			if (static_cast<uint64_t>(rc) != offset) {
-				fprintf(stdout, "%s, seek off 0x%lx != 0x%lx.\n",
-					fname, rc, offset);
-				perror("seek file");
-				return -EIO;
-			}
-		}
-		/* write data to file from memory buffer */
-		rc = write(fd, buf, bytes);
-		if (rc != bytes) {
-			fprintf(stdout, "%s, W off 0x%lx, 0x%lx != 0x%x.\n",
-				fname, offset, rc, bytes);
-				perror("write file");
-			return -EIO;
-		}
+    if (offset) {
+      rc = lseek(fd, offset, SEEK_SET);
+      if (static_cast<uint64_t>(rc) != offset) {
+        fprintf(stdout, "%s, seek off 0x%lx != 0x%lx.\n", fname, rc, offset);
+        perror("seek file");
+        return -EIO;
+      }
+    }
+    /* write data to file from memory buffer */
+    rc = write(fd, buf, bytes);
+    if (rc != bytes) {
+      fprintf(stdout, "%s, W off 0x%lx, 0x%lx != 0x%x.\n", fname, offset, rc,
+              bytes);
+      perror("write file");
+      return -EIO;
+    }
 
-		count += bytes;
-		buf += bytes;
-		offset += bytes;
-	}
+    count += bytes;
+    buf += bytes;
+    offset += bytes;
+  }
 
-	if (count != size) {
-		fprintf(stdout, "%s, R failed 0x%x != 0x%x.\n",
-				fname, count, size);
-		return -EIO;
-	}
-	return count;
+  if (count != size) {
+    fprintf(stdout, "%s, R failed 0x%x != 0x%x.\n", fname, count, size);
+    return -EIO;
+  }
+  return count;
 }
 
 /*
@@ -96,49 +94,46 @@ uint32_t transfer_to_fpga(const char *fname, int fd, char *buffer, uint32_t size
  *   size      : size of data to receive
  *   base      : base address of recv_data buffer
  */
-uint32_t transfer_from_fpga(const char *fname, int fd, char *buffer, uint32_t size, uint64_t base)
-{
-	ssize_t rc;
-	char *buf = buffer;
-	uint32_t count = 0;
-	uint64_t offset = base;
+uint32_t transfer_from_fpga(const char *fname, int fd, char *buffer,
+                            uint32_t size, uint64_t base) {
+  ssize_t rc;
+  char *buf = buffer;
+  uint32_t count = 0;
+  uint64_t offset = base;
 
-	while (count < size) {
-		uint32_t bytes = size - count;
+  while (count < size) {
+    uint32_t bytes = size - count;
 
-		if (bytes > RW_MAX_SIZE)
-			bytes = RW_MAX_SIZE;
+    if (bytes > RW_MAX_SIZE) bytes = RW_MAX_SIZE;
 
-		if (offset) {
-			rc = lseek(fd, offset, SEEK_SET);
-			if (static_cast<uint64_t>(rc) != offset) {
-				fprintf(stderr, "%s, seek off 0x%lx != 0x%lx.\n",
-					fname, rc, offset);
-				perror("seek file");
-				return -EIO;
-			}
-		}
+    if (offset) {
+      rc = lseek(fd, offset, SEEK_SET);
+      if (static_cast<uint64_t>(rc) != offset) {
+        fprintf(stderr, "%s, seek off 0x%lx != 0x%lx.\n", fname, rc, offset);
+        perror("seek file");
+        return -EIO;
+      }
+    }
 
-		/* read data from file into memory buffer */
-		rc = read(fd, buf, bytes);
-		if (rc != bytes) {
-			fprintf(stderr, "%s, R off 0x%x, 0x%lx != 0x%x.\n",
-				fname, count, rc, bytes);
-				perror("read file");
-			return -EIO;
-		}
+    /* read data from file into memory buffer */
+    rc = read(fd, buf, bytes);
+    if (rc != bytes) {
+      fprintf(stderr, "%s, R off 0x%x, 0x%lx != 0x%x.\n", fname, count, rc,
+              bytes);
+      perror("read file");
+      return -EIO;
+    }
 
-		count += bytes;
-		buf += bytes;
-		offset += bytes;
-	}
+    count += bytes;
+    buf += bytes;
+    offset += bytes;
+  }
 
-	if (count != size) {
-		fprintf(stderr, "%s, R failed 0x%x != 0x%x.\n",
-				fname, count, size);
-		return -EIO;
-	}
-	return count;
+  if (count != size) {
+    fprintf(stderr, "%s, R failed 0x%x != 0x%x.\n", fname, count, size);
+    return -EIO;
+  }
+  return count;
 }
 
-} // heu::lib::algorithms::paillier_clustar_fpga::fpga_engine
+}  // namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine

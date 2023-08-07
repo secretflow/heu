@@ -16,56 +16,54 @@
 
 namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine {
 
-CKeyLenConfig::CKeyLenConfig(size_t key_len) : key_len_(key_len) {
-    Config();
-}
+CKeyLenConfig::CKeyLenConfig(size_t key_len) : key_len_(key_len) { Config(); }
 
 void CKeyLenConfig::Config() {
-    if (key_len_ == 0) {
-        // TODO: give a warning later
-        return;
-    }
+  if (key_len_ == 0) {
+    // TODO: give a warning later
+    return;
+  }
 
-    if (key_len_ == 512) {
-        ConfigKeyLen512();
-    } else if (key_len_ == 1024) {
-        ConfigKeyLen1024();
-    } else if (key_len_ == 2048) {
-        ConfigKeyLen2048();
-    }
+  if (key_len_ == 512) {
+    ConfigKeyLen512();
+  } else if (key_len_ == 1024) {
+    ConfigKeyLen1024();
+  } else if (key_len_ == 2048) {
+    ConfigKeyLen2048();
+  }
 }
 
 void CKeyLenConfig::ConfigKeyLen512() {
-    cipher_bits_ = CFPGATypes::CIPHER_BITS / 2;
-    cipher_byte_ = cipher_bits_ / CFPGATypes::BYTE_LEN;
+  cipher_bits_ = CFPGATypes::CIPHER_BITS / 2;
+  cipher_byte_ = cipher_bits_ / CFPGATypes::BYTE_LEN;
 
-    plain_bits_ = CFPGATypes::PLAIN_BITS / 2;
-    plain_byte_ = plain_bits_ / CFPGATypes::BYTE_LEN;
+  plain_bits_ = CFPGATypes::PLAIN_BITS / 2;
+  plain_byte_ = plain_bits_ / CFPGATypes::BYTE_LEN;
 
-    encr_random_bit_len_ = CFPGATypes::ENCR_RANDOM_BIT_LEN / 2;
-    encr_random_byte_ = encr_random_bit_len_ / CFPGATypes::BYTE_LEN;
+  encr_random_bit_len_ = CFPGATypes::ENCR_RANDOM_BIT_LEN / 2;
+  encr_random_byte_ = encr_random_bit_len_ / CFPGATypes::BYTE_LEN;
 }
 
 void CKeyLenConfig::ConfigKeyLen1024() {
-    cipher_bits_ = CFPGATypes::CIPHER_BITS;
-    cipher_byte_ = cipher_bits_ / CFPGATypes::BYTE_LEN;
+  cipher_bits_ = CFPGATypes::CIPHER_BITS;
+  cipher_byte_ = cipher_bits_ / CFPGATypes::BYTE_LEN;
 
-    plain_bits_ = CFPGATypes::PLAIN_BITS;
-    plain_byte_ = plain_bits_ / CFPGATypes::BYTE_LEN;
+  plain_bits_ = CFPGATypes::PLAIN_BITS;
+  plain_byte_ = plain_bits_ / CFPGATypes::BYTE_LEN;
 
-    encr_random_bit_len_ = CFPGATypes::ENCR_RANDOM_BIT_LEN;
-    encr_random_byte_ = encr_random_bit_len_ / CFPGATypes::BYTE_LEN;
+  encr_random_bit_len_ = CFPGATypes::ENCR_RANDOM_BIT_LEN;
+  encr_random_byte_ = encr_random_bit_len_ / CFPGATypes::BYTE_LEN;
 }
 
 void CKeyLenConfig::ConfigKeyLen2048() {
-    cipher_bits_ = CFPGATypes::CIPHER_BITS * 2;
-    cipher_byte_ = cipher_bits_ / CFPGATypes::BYTE_LEN;
+  cipher_bits_ = CFPGATypes::CIPHER_BITS * 2;
+  cipher_byte_ = cipher_bits_ / CFPGATypes::BYTE_LEN;
 
-    plain_bits_ = CFPGATypes::PLAIN_BITS * 2;
-    plain_byte_ = plain_bits_ / CFPGATypes::BYTE_LEN;
+  plain_bits_ = CFPGATypes::PLAIN_BITS * 2;
+  plain_byte_ = plain_bits_ / CFPGATypes::BYTE_LEN;
 
-    encr_random_bit_len_ = CFPGATypes::ENCR_RANDOM_BIT_LEN * 2;
-    encr_random_byte_ = encr_random_bit_len_ / CFPGATypes::BYTE_LEN;
+  encr_random_bit_len_ = CFPGATypes::ENCR_RANDOM_BIT_LEN * 2;
+  encr_random_byte_ = encr_random_bit_len_ / CFPGATypes::BYTE_LEN;
 }
 
-} // heu::lib::algorithms::paillier_clustar_fpga::fpga_engine
+}  // namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine
