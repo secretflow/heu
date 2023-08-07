@@ -17,6 +17,7 @@
 #include "heu/library/algorithms/ou/ciphertext.h"
 #include "heu/library/algorithms/ou/encryptor.h"
 #include "heu/library/algorithms/ou/public_key.h"
+#include "heu/library/algorithms/util/spi_traits.h"
 
 namespace heu::lib::algorithms::ou {
 
@@ -80,6 +81,14 @@ class Evaluator {
   // out = -a
   Ciphertext Negate(const Ciphertext& a) const;
   void NegateInplace(Ciphertext* a) const;
+
+  // Add cipher input to sum
+  void CalcSum(Ciphertext* sum, ConstSpan<Ciphertext> input) const {}
+
+  // Add plain input to sum
+  void CalcSum(Plaintext* sum, ConstSpan<Plaintext> input) const {}
+
+  std::string GetSchema() const { return "ou"; }
 
  private:
   PublicKey pk_;

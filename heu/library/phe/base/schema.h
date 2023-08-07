@@ -19,6 +19,7 @@
 #include "heu/library/algorithms/elgamal/elgamal.h"
 #include "heu/library/algorithms/mock/mock.h"
 #include "heu/library/algorithms/ou/ou.h"
+#include "heu/library/algorithms/paillier_clustar_fpga/clustar_fpga.h"
 #include "heu/library/algorithms/paillier_float/paillier.h"
 #include "heu/library/algorithms/paillier_ipcl/ipcl.h"
 #include "heu/library/algorithms/paillier_zahlen/paillier.h"
@@ -43,6 +44,7 @@ enum class SchemaType {
   ENUM_ELEMENT(ENABLE_IPCL, IPCL)
   ENUM_ELEMENT(true, ZPaillier)  // Preferred
   ENUM_ELEMENT(true, FPaillier)
+  ENUM_ELEMENT(ENABLE_CLUSTAR_FPGA, ClustarFPGA)
   ENUM_ELEMENT(true, ElGamal)
   // YOUR_ALGO
 };
@@ -81,7 +83,8 @@ std::ostream& operator<<(std::ostream& os, SchemaType st);
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::ou, ##__VA_ARGS__)                   \
   INVOKE(ENABLE_IPCL, func_or_macro, ::heu::lib::algorithms::paillier_ipcl, ##__VA_ARGS__) \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_z, ##__VA_ARGS__)           \
-  INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_f, ##__VA_ARGS__) \
+  INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_f, ##__VA_ARGS__)           \
+  INVOKE(ENABLE_CLUSTAR_FPGA, func_or_macro, ::heu::lib::algorithms::paillier_clustar_fpga, ##__VA_ARGS__) \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::elgamal, ##__VA_ARGS__)
 
 // [SPI: Please register your algorithm here] || progress: (4 of 5)
@@ -93,6 +96,7 @@ std::ostream& operator<<(std::ostream& os, SchemaType st);
   func_or_macro(::heu::lib::algorithms, MPInt, ##__VA_ARGS__)                    \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::mock, Plaintext, ##__VA_ARGS__)                 \
   INVOKE(ENABLE_IPCL, func_or_macro, ::heu::lib::algorithms::paillier_ipcl, Plaintext, ##__VA_ARGS__) \
+  INVOKE(ENABLE_CLUSTAR_FPGA, func_or_macro, ::heu::lib::algorithms::paillier_clustar_fpga, Plaintext, ##__VA_ARGS__) \
   // INVOKE(true, func_or_macro, ::heu::lib::algorithms::your_algo, Plaintext, ##__VA_ARGS__)
 // clang-format on
 

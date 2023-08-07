@@ -18,6 +18,7 @@ yacl_cc_library(
         "//heu/library/algorithms/elgamal",
         "//heu/library/algorithms/mock",
         "//heu/library/algorithms/ou",
+        "//heu/library/algorithms/paillier_clustar_fpga:paillier_clustar_fpga_defs",
         "//heu/library/algorithms/paillier_float",
         "//heu/library/algorithms/paillier_ipcl",
         "//heu/library/algorithms/paillier_zahlen",
