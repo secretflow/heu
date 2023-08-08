@@ -24,7 +24,7 @@ Decryption(sk, c):
 - The plaintext is $m=\lambda^{-1}i_s \bmod n^s$
 
 
-Additive omomorphisms:
+Additive homomorphisms:
 
 - Add$(c_1, c_2) = c_1 \cdot c_2 \bmod n^{s+1}$
 - AddPlain$(c, m) = c \cdot (1+n)^m \bmod n^{s+1}$

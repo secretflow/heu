@@ -16,7 +16,7 @@
 
 namespace heu::lib::algorithms::dj {
 
-void SecretKey::Init(MPInt const& p, MPInt const& q, uint32_t s) {
+void SecretKey::Init(const MPInt& p, const MPInt& q, uint32_t s) {
   auto n{p * q};
   n_ = {p, q};
   s_ = s;

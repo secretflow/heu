@@ -21,15 +21,15 @@ namespace heu::lib::algorithms::dj {
 
 class PublicKey : public HeObject<PublicKey> {
  public:
-  void Init(MPInt const& n, uint32_t s, MPInt const& hs = MPInt{0});
+  void Init(const MPInt& n, uint32_t s, const MPInt& hs = MPInt{0});
 
-  inline MPInt const& N() const { return n_; }
-  inline uint32_t S() const { return s_; }
+  const MPInt& N() const { return n_; }
+  uint32_t S() const { return s_; }
   // hs = h^(n^s) mod n^(s+1): h is a generator of Zn*
-  inline MPInt const& Hs() const { return hs_; }
-  inline MPInt const& PlainModule() const { return pmod_; }
-  inline const MPInt& PlaintextBound() const& { return bound_; }
-  inline MPInt const& CipherModule() const { return cmod_; }
+  const MPInt& Hs() const { return hs_; }
+  const MPInt& PlainModule() const { return pmod_; }
+  const MPInt& PlaintextBound() const& { return bound_; }
+  const MPInt& CipherModule() const { return cmod_; }
 
   bool operator==(const PublicKey&) const;
   bool operator!=(const PublicKey&) const;
@@ -37,15 +37,13 @@ class PublicKey : public HeObject<PublicKey> {
 
  public:
   // Random Zn* element of form r^(n^s) mod n^(s+1)
-  MPInt RandomZnStar() const;
+  MPInt RandomHsR() const;
   // Deterministic encryption
-  MPInt Encrypt(MPInt const&) const;
-  // Encode into Montgomery form
-  MPInt Encode(MPInt const&) const;
-  // Decode from Montgomery form
-  MPInt Decode(MPInt const&) const;
+  MPInt Encrypt(const MPInt&) const;
+  MPInt MapIntoMSpace(const MPInt&) const;
+  MPInt MapBackToZSpace(const MPInt&) const;
 
-  void MulMod(MPInt const& a, MPInt const& b, MPInt* dst) const {
+  void MulMod(const MPInt& a, const MPInt& b, MPInt* dst) const {
     lut_->m_space->MulMod(a, b, dst);
   }
 

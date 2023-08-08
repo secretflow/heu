@@ -20,7 +20,7 @@ namespace {
 constexpr size_t kExpUnitBits = 10;
 }  // namespace
 
-void PublicKey::Init(MPInt const& n, uint32_t s, MPInt const& hs) {
+void PublicKey::Init(const MPInt& n, uint32_t s, const MPInt& hs) {
   n_ = n;
   s_ = s;
   hs_ = hs;
@@ -67,7 +67,7 @@ std::string PublicKey::ToString() const {
       PlaintextBound().BitCount());
 }
 
-MPInt PublicKey::RandomZnStar() const {
+MPInt PublicKey::RandomHsR() const {
   MPInt r, hs_r;
   MPInt::RandomExactBits(n_.BitCount() / 2, &r);
   lut_->m_space->PowMod(*lut_->hs_pow, r, &hs_r);
@@ -78,19 +78,19 @@ MPInt PublicKey::Encrypt(const MPInt& m) const {
   MPInt ctR{lut_->m_space->GetIdentity()}, tmp{1}, prodR;
   for (auto i = 1u; i <= s_; ++i) {
     MPInt::MulMod(tmp, m - MPInt{i - 1}, lut_->n_pow[s_ - i + 1], &tmp);
-    lut_->m_space->MulMod(Encode(tmp), lut_->precomp[i], &prodR);
+    lut_->m_space->MulMod(MapIntoMSpace(tmp), lut_->precomp[i], &prodR);
     ctR += prodR;
   }
   return ctR % cmod_;
 }
 
-MPInt PublicKey::Encode(MPInt const& x) const {
+MPInt PublicKey::MapIntoMSpace(const MPInt& x) const {
   MPInt xR{x};
   lut_->m_space->MapIntoMSpace(&xR);
   return xR;
 }
 
-MPInt PublicKey::Decode(MPInt const& xR) const {
+MPInt PublicKey::MapBackToZSpace(const MPInt& xR) const {
   MPInt x{xR};
   lut_->m_space->MapBackToZSpace(&x);
   return x;

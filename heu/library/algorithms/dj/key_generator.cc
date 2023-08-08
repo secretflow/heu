@@ -34,7 +34,7 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
 }
 
 void KeyGenerator::Generate(SecretKey* sk, PublicKey* pk) {
-  Generate(1024, sk, pk);
+  Generate(2048, sk, pk);
 }
 
 }  // namespace heu::lib::algorithms::dj

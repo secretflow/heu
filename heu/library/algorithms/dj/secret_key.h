@@ -25,10 +25,10 @@ class SecretKey : public HeObject<SecretKey> {
   };
 
  public:
-  void Init(MPInt const &p, MPInt const &q, uint32_t s);
+  void Init(const MPInt &p, const MPInt &q, uint32_t s);
 
-  inline auto const& N() const { return n_; }
-  inline uint32_t S() const { return s_; }
+  const auto &N() const { return n_; }
+  uint32_t S() const { return s_; }
 
   bool operator==(const SecretKey &) const;
   bool operator!=(const SecretKey &) const;

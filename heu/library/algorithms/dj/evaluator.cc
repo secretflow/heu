@@ -24,7 +24,7 @@ namespace heu::lib::algorithms::dj {
 
 void Evaluator::Randomize(Ciphertext* ct) const {
   VALIDATE(*ct);
-  pk_.MulMod(ct->c_, pk_.RandomZnStar(), &ct->c_);
+  pk_.MulMod(ct->c_, pk_.RandomHsR(), &ct->c_);
 }
 
 Ciphertext Evaluator::Add(const Ciphertext& a, const Ciphertext& b) const {
@@ -37,10 +37,11 @@ Ciphertext Evaluator::Add(const Ciphertext& a, const Ciphertext& b) const {
 
 Ciphertext Evaluator::Mul(const Ciphertext& a, const Plaintext& p) const {
   VALIDATE(a);
-  return p.IsZero()          ? encryptor_.EncryptZero()
-         : p == Plaintext{1} ? a
-                             : Ciphertext{pk_.Encode(pk_.Decode(a.c_).PowMod(
-                                   p, pk_.CipherModule()))};
+  return p.IsZero() ? encryptor_.EncryptZero()
+         : p == Plaintext{1}
+             ? a
+             : Ciphertext{pk_.MapIntoMSpace(
+                   pk_.MapBackToZSpace(a.c_).PowMod(p, pk_.CipherModule()))};
 }
 
 }  // namespace heu::lib::algorithms::dj

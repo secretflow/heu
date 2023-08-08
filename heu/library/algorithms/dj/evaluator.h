@@ -70,8 +70,8 @@ class Evaluator {
   void NegateInplace(Ciphertext* a) const { *a = Negate(*a); }
 
  private:
-  PublicKey const& pk_;
-  Encryptor const encryptor_;
+  const PublicKey pk_;
+  const Encryptor encryptor_;
 };
 
 }  // namespace heu::lib::algorithms::dj
