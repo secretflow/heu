@@ -84,6 +84,10 @@ TEST_P(EvaluatorTest, Evaluate) {
   ct1 = evaluator->Mul(ct0, edr.Encode((2)));
   EXPECT_EQ(decryptor->Decrypt(ct1).GetValue<int64_t>(), -12345 * 2);
 
+  if (GetParam() == SchemaType::DGK) {
+    GTEST_SKIP() << "Plaintext range is not enough, Skip DGK";
+  }
+
   ct1 = evaluator->Mul(ct0, edr.Encode((10)));
   EXPECT_EQ(decryptor->Decrypt(ct1).GetValue<int64_t>(), -12345 * 10);
 }
@@ -126,6 +130,9 @@ TEST_P(EvaluatorTest, EvaluateInplace) {
   pt0 -= edr.Encode(852);
   EXPECT_EQ(decryptor->Decrypt(ct0), pt0);
 
+  if (GetParam() == SchemaType::DGK) {
+    GTEST_SKIP() << "Plaintext range is not enough, Skip DGK";
+  }
   // MUL //
   evaluator->MulInplace(&ct0, edr.Encode(10));
   pt0 *= edr.Encode(10);
