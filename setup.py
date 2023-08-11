@@ -134,7 +134,7 @@ def build():
 
 
 def remove_prefix(text, prefix):
-    return text[text.startswith(prefix) and len(prefix):]
+    return text[text.startswith(prefix) and len(prefix) :]
 
 
 def copy_file(target_dir, filename, rootdir):
