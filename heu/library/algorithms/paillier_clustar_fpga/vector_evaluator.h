@@ -75,11 +75,9 @@ class Evaluator {
 
   // Sum
   // Add cipher input to sum
-  void CalcSum(Ciphertext* sum, ConstSpan<Ciphertext> input) const;
+  Ciphertext ReduceSum(ConstSpan<Ciphertext> input) const;
   // Add plain input to sum
-  void CalcSum(Plaintext* sum, ConstSpan<Plaintext> input) const;
-
-  std::string GetSchema() const { return "clustarfpga"; }
+  Plaintext ReduceSum(ConstSpan<Plaintext> input) const;
 
  private:
   PublicKey pub_key_;

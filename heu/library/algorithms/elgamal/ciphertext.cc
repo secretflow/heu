@@ -89,7 +89,8 @@ void Ciphertext::Deserialize(yacl::ByteContainerView in) {
   if (object.via.array.size == 4) {
     auto curve_name = object.via.array.ptr[idx++].as<yacl::crypto::CurveName>();
     auto lib_name = object.via.array.ptr[idx++].as<std::string>();
-    ec = ::yacl::crypto::EcGroupFactory::Create(curve_name, lib_name);
+    ec = ::yacl::crypto::EcGroupFactory::Instance().Create(
+        curve_name, yacl::Lib = lib_name);
     EnableEcGroup(ec);
   } else {
     auto hash = object.via.array.ptr[idx++].as<size_t>();

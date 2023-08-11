@@ -33,9 +33,10 @@ author = 'HEU authors'
 # Usually you set "language" from the command line for these cases.
 language = 'zh_CN'
 
-locale_dirs = ['locale/']  # path is example but recommended.
+locale_dirs = ['locale/']
 gettext_compact = False  # optional.
 gettext_uuid = False  # optional.
+# gettext_location = False
 
 # -- General configuration ---------------------------------------------------
 
@@ -96,7 +97,7 @@ html_theme_options = {
     # the default "navbar-logo" section is redundant and has bugs, so remove it.
     # "navbar_start": [],
     "secondary_sidebar_items": ["page-toc"],
-    "language_switch_button": True,
+    # "language_switch_button": True,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,

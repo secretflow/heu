@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-06 20:43+0800\n"
+"POT-Creation-Date: 2023-07-26 11:37+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,7 +23,9 @@ msgstr "Algorithm Selection"
 
 #: ../../getting_started/algo_choice.rst:4
 msgid "HEU 提供了多种 PHE 算法，本文档描述每种算法的特性，有助于您选择合适的算法。"
-msgstr "HEU provides a variety of PHE algorithms, and this document describes the characteristics of each to help you choose the right one."
+msgstr ""
+"HEU provides a variety of PHE algorithms, and this document describes the"
+" characteristics of each to help you choose the right one."
 
 #: ../../getting_started/algo_choice.rst:7
 msgid "初始化 HEU 时需要指定 SchemaType 参数，例如："
@@ -43,7 +45,7 @@ msgid "SchemaType"
 msgstr "SchemaType"
 
 #: ../../getting_started/algo_choice.rst:24
-msgid "算法族"
+msgid "算法簇"
 msgstr "Algorithm family"
 
 #: ../../getting_started/algo_choice.rst:25
@@ -51,8 +53,8 @@ msgid "简要描述"
 msgstr "brief description"
 
 #: ../../getting_started/algo_choice.rst:26
-msgid "推荐指数"
-msgstr "推荐指数"
+msgid "综合推荐度"
+msgstr ""
 
 #: ../../getting_started/algo_choice.rst:1
 #: ../../getting_started/algo_choice.rst:27
@@ -63,9 +65,9 @@ msgstr "ZPaillier"
 #: ../../getting_started/algo_choice.rst:32
 #: ../../getting_started/algo_choice.rst:36
 #: ../../getting_started/algo_choice.rst:56
-#: ../../getting_started/algo_choice.rst:155
-#: ../../getting_started/algo_choice.rst:181
-#: ../../getting_started/algo_choice.rst:228
+#: ../../getting_started/algo_choice.rst:98
+#: ../../getting_started/algo_choice.rst:126
+#: ../../getting_started/algo_choice.rst:175
 msgid "Paillier"
 msgstr "Paillier"
 
@@ -88,7 +90,7 @@ msgid "性能很低，推荐用 ZPaillier 代替"
 msgstr "The performance is very low and ZPaillier is recommended instead"
 
 #: ../../getting_started/algo_choice.rst:34
-#: ../../getting_started/algo_choice.rst:46
+#: ../../getting_started/algo_choice.rst:50
 msgid "★"
 msgstr "★"
 
@@ -98,7 +100,10 @@ msgstr "IPCL"
 
 #: ../../getting_started/algo_choice.rst:37
 msgid "Intel 贡献的 Paillier 实现，支持 AVX512-IFMA 指令集和 Intel QAT 硬件加速，目前还在逐步完善中"
-msgstr "Intel's contributed implementation of Paillier, which supports AVX512-IFMA instruction set and Intel QAT hardware acceleration, is currently being gradually improved and refined."
+msgstr ""
+"Intel's contributed implementation of Paillier, which supports "
+"AVX512-IFMA instruction set and Intel QAT hardware acceleration, is "
+"currently being gradually improved and refined."
 
 #: ../../getting_started/algo_choice.rst:38
 msgid "★★★"
@@ -110,500 +115,927 @@ msgid "OU"
 msgstr "OU"
 
 #: ../../getting_started/algo_choice.rst:40
-#: ../../getting_started/algo_choice.rst:78
-#: ../../getting_started/algo_choice.rst:253
+#: ../../getting_started/algo_choice.rst:193
+#: ../../getting_started/algo_choice.rst:285
 msgid "Okamoto-Uchiyama"
 msgstr "Okamoto-Uchiyama"
 
 #: ../../getting_started/algo_choice.rst:41
 msgid "功能与 Paillier 一致，且性能更高，密文膨胀度更低，但安全性略低，请见下文详细描述"
-msgstr "Functionality is the same as Paillier, but with higher performance and less ciphertext bloat, but with slightly lower security, see below for a detailed description."
+msgstr ""
+"Functionality is the same as Paillier, but with higher performance and "
+"less ciphertext bloat, but with slightly lower security, see below for a "
+"detailed description."
 
 #: ../../getting_started/algo_choice.rst:43
+msgid "EC ElGamal"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:44
+#: ../../getting_started/algo_choice.rst:304
+#: ../../getting_started/algo_choice.rst:368
+msgid "ElGamal"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:45
+msgid "基于椭圆曲线的 ElGamal 算法，性能和密文膨胀率比 Paillier、OU 都好，缺点是解密比较慢，且值域空间很小，一旦超过大小解密将失败"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:46
+msgid "★★★★"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:47
 msgid "Mock"
 msgstr "Mock"
 
-#: ../../getting_started/algo_choice.rst:44
+#: ../../getting_started/algo_choice.rst:48
 msgid "None"
 msgstr "None"
 
-#: ../../getting_started/algo_choice.rst:45
-msgid "不加密，仅可用于测试或 Debug 目的，严谨在线上使用"
-msgstr "Not encrypted, for testing or debugging purposes only, strictly for online use."
+#: ../../getting_started/algo_choice.rst:49
+msgid "不加密，仅可用于测试或 Debug 目的，严禁在线上使用"
+msgstr ""
+"Not encrypted, for testing or debugging purposes only, strictly for "
+"online use."
 
-#: ../../getting_started/algo_choice.rst:48
-msgid "说明：推荐指数综合根据性能、安全性、适用面、稳定程度得出，并随着算法迭代升级动态变化。"
-msgstr "Note: The recommendation index is comprehensively based on performance, security, applicability and stability, and dynamically changes with the iterative upgrading of the algorithm."
+#: ../../getting_started/algo_choice.rst:52
+msgid "说明：综合推荐度根据算法性能、安全性、适用面、稳定程度等等因素综合给出，并随着算法迭代升级动态变化。"
+msgstr ""
+"Note: The recommendation index is comprehensively based on performance, "
+"security, applicability and stability, and dynamically changes with the "
+"iterative upgrading of the algorithm."
 
-#: ../../getting_started/algo_choice.rst:51
+#: ../../getting_started/algo_choice.rst:59
+#: ../../getting_started/algo_choice.rst:196
+#: ../../getting_started/algo_choice.rst:307
 msgid "算法理论介绍"
 msgstr "Introduction to Algorithmic Theory"
 
-#: ../../getting_started/algo_choice.rst:53
-msgid "本节介绍同态加密算法本身，与实现无关。"
-msgstr "This section describes the homomorphic encryption algorithm itself, independent of the implementation."
-
-#: ../../getting_started/algo_choice.rst:58
+#: ../../getting_started/algo_choice.rst:61
 msgid ""
 "Paillier 算法由 Pascal Paillier 在 1999 年提出，参见：`算法详情 "
 "<https://en.wikipedia.org/wiki/Paillier_cryptosystem>`__"
-msgstr "Paillier's algorithm was proposed by Pascal Paillier in 1999, see: `Algorithm details <https://en.wikipedia.org/wiki/Paillier_cryptosystem>`__."
-
-#: ../../getting_started/algo_choice.rst:60
-#: ../../getting_started/algo_choice.rst:82
-msgid "Paillier 算法信息"
-msgstr "Paillier algorithm information"
+msgstr ""
+"Paillier's algorithm was proposed by Pascal Paillier in 1999, see: "
+"`Algorithm details "
+"<https://en.wikipedia.org/wiki/Paillier_cryptosystem>`__."
 
 #: ../../getting_started/algo_choice.rst:63
-#: ../../getting_started/algo_choice.rst:85
-msgid "项目"
-msgstr "project"
-
-#: ../../getting_started/algo_choice.rst:64
-#: ../../getting_started/algo_choice.rst:86
-msgid "值"
-msgstr "value"
+msgid "Paillier 算法信息"
+msgstr "Information of Paillier"
 
 #: ../../getting_started/algo_choice.rst:65
-#: ../../getting_started/algo_choice.rst:87
+#: ../../getting_started/algo_choice.rst:202
+#: ../../getting_started/algo_choice.rst:330
+#: ../../getting_started/algo_choice.rst:343
 msgid "算法类型"
 msgstr "Type of Algorithm"
 
 #: ../../getting_started/algo_choice.rst:66
-#: ../../getting_started/algo_choice.rst:88
+#: ../../getting_started/algo_choice.rst:203
+#: ../../getting_started/algo_choice.rst:370
 msgid "加法同态加密"
 msgstr "Additive homomorphic encryption"
 
 #: ../../getting_started/algo_choice.rst:67
-#: ../../getting_started/algo_choice.rst:89
+#: ../../getting_started/algo_choice.rst:204
+#: ../../getting_started/algo_choice.rst:332
+#: ../../getting_started/algo_choice.rst:345
 msgid "安全性"
 msgstr "security"
 
 #: ../../getting_started/algo_choice.rst:68
-#: ../../getting_started/algo_choice.rst:90
+#: ../../getting_started/algo_choice.rst:205
 msgid "IND-CPA 安全，语义安全（Semantic Security）"
 msgstr "IND-CPA Security, Semantic Security"
 
 #: ../../getting_started/algo_choice.rst:69
-#: ../../getting_started/algo_choice.rst:91
+#: ../../getting_started/algo_choice.rst:206
+#: ../../getting_started/algo_choice.rst:334
+#: ../../getting_started/algo_choice.rst:347
 msgid "困难假设"
 msgstr "Hard Assumption"
 
 #: ../../getting_started/algo_choice.rst
-msgid "复合剩余类的困难问题"
-msgstr "Difficult problems with composite residual classes"
+msgid "判定性复合剩余假设"
+msgstr ""
 
 #: ../../getting_started/algo_choice.rst
 msgid "decisional composite residuosity assumption (DCRA)"
 msgstr "decisional composite residuosity assumption (DCRA)"
 
 #: ../../getting_started/algo_choice.rst:72
-#: ../../getting_started/algo_choice.rst:94
+#: ../../getting_started/algo_choice.rst:208
+#: ../../getting_started/algo_choice.rst:336
+#: ../../getting_started/algo_choice.rst:349
 msgid "安全强度（Security Strength）"
 msgstr "Security Strength"
 
 #: ../../getting_started/algo_choice.rst
-msgid "2048 位密钥长度等效 112 bits 安全强度"
-msgstr "2048-bit key length corresponds to 112 bits of security strength"
+msgid "2048 位密钥长度等于或略低于 112 bits 安全强度"
+msgstr ""
+"2048-bit key length equal to or slightly lower than 112 bits of security "
+"strength"
 
 #: ../../getting_started/algo_choice.rst
-msgid "3072 位密钥长度等效 128 bits 安全强度"
-msgstr "3072-bit key length corresponds to 128 bits of security strength"
+msgid "3072 位密钥长度等于或略低于 128 bits 安全强度"
+msgstr ""
+"3072-bit key length equal to or slightly lower than 128 bits of security "
+"strength"
+
+#: ../../getting_started/algo_choice.rst:76
+msgid "Decisional composite residuosity assumption"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:78
+msgid ""
+"DCRA states that given a composite N and an integer z, it is hard to "
+"decide whether z is an :math:`N`-residue modulo :math:`N^2` (whether "
+"there exists a y such that :math:`z \\equiv y^N \\bmod N^2`)"
+msgstr ""
 
 #: ../../getting_started/algo_choice.rst:80
+#: ../../getting_started/algo_choice.rst:216
+msgid "**关于安全强度**"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:82
+msgid ""
+"目前未有直接的文献表明 DCRA 密钥长度与安全比特位数之间的关联，一般认为的难度 DCRA <= FACTORING（因数分解）<= DLP "
+"in :math:`\\mathbb{Z}^*_N` [#]_，在 DLP（离散对数难题）中，2048 group size 对应 112 "
+"bits，3072 group size 对应 128 bits [#]_，因此 Paillier 的安全强度等效或略低于这个数值。"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:84
+msgid ""
+"European Network of Excellence in Cryptology II. "
+"https://www.ecrypt.eu.org/ecrypt2/documents/D.MAYA.6.pdf"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:85
+msgid "https://www.keylength.com/en/4/"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:89
+msgid "算法实现: ZPaillier"
+msgstr "Implementation: Paillier"
+
+#: ../../getting_started/algo_choice.rst:91
+msgid ""
+"ZPaillier 中的 Z 与数学中表示整数的 :math:`\\mathbb{Z}` 含义相同，即实现了一套支持整数运算的 Paillier "
+"算法。"
+msgstr ""
+"Z in ZPaillier has the same meaning as :math:`\\mathbb{Z}` in "
+"mathematics, which represents integers, that is, a set of Paillier"
+
+#: ../../getting_started/algo_choice.rst:93
+msgid "ZPaillier 特性速查"
+msgstr "ZPaillier Feature Quick Check"
+
+#: ../../getting_started/algo_choice.rst:95
+#: ../../getting_started/algo_choice.rst:123
+#: ../../getting_started/algo_choice.rst:172
+#: ../../getting_started/algo_choice.rst:282
+#: ../../getting_started/algo_choice.rst:365
+msgid "SchemaType 参数名称"
+msgstr "SchemaType parameter name"
+
+#: ../../getting_started/algo_choice.rst:96
+msgid "phe.SchemaType.ZPaillier"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:97
+#: ../../getting_started/algo_choice.rst:125
+#: ../../getting_started/algo_choice.rst:174
+#: ../../getting_started/algo_choice.rst:284
+#: ../../getting_started/algo_choice.rst:367
+msgid "实现算法"
+msgstr "Implementation Algorithm"
+
+#: ../../getting_started/algo_choice.rst:99
+#: ../../getting_started/algo_choice.rst:127
+#: ../../getting_started/algo_choice.rst:176
+#: ../../getting_started/algo_choice.rst:286
+#: ../../getting_started/algo_choice.rst:371
+msgid "稳定性"
+msgstr "stability"
+
+#: ../../getting_started/algo_choice.rst:100
+#: ../../getting_started/algo_choice.rst:128
+#: ../../getting_started/algo_choice.rst:287
+msgid "稳定"
+msgstr "stabilize"
+
+#: ../../getting_started/algo_choice.rst:101
+#: ../../getting_started/algo_choice.rst:129
+#: ../../getting_started/algo_choice.rst:178
+#: ../../getting_started/algo_choice.rst:288
+#: ../../getting_started/algo_choice.rst:373
+msgid "支持的平台"
+msgstr "Supported Platforms"
+
+#: ../../getting_started/algo_choice.rst:102
+#: ../../getting_started/algo_choice.rst:130
+#: ../../getting_started/algo_choice.rst:289
+msgid "Linux，macOS（Intel & Arm）"
+msgstr "Linux，macOS（Intel & Arm）"
+
+#: ../../getting_started/algo_choice.rst:103
+#: ../../getting_started/algo_choice.rst:131
+#: ../../getting_started/algo_choice.rst:180
+#: ../../getting_started/algo_choice.rst:290
+#: ../../getting_started/algo_choice.rst:375
+msgid "是否依赖特定硬件"
+msgstr "Whether it depends on specific hardware"
+
+#: ../../getting_started/algo_choice.rst:104
+#: ../../getting_started/algo_choice.rst:132
+#: ../../getting_started/algo_choice.rst:181
+#: ../../getting_started/algo_choice.rst:291
+#: ../../getting_started/algo_choice.rst:376
+msgid "不依赖"
+msgstr "Independent"
+
+#: ../../getting_started/algo_choice.rst:105
+#: ../../getting_started/algo_choice.rst:133
+#: ../../getting_started/algo_choice.rst:182
+#: ../../getting_started/algo_choice.rst:292
+#: ../../getting_started/algo_choice.rst:377
+msgid "是否支持硬件加速"
+msgstr "Whether hardware acceleration is supported"
+
+#: ../../getting_started/algo_choice.rst:106
+#: ../../getting_started/algo_choice.rst:134
+#: ../../getting_started/algo_choice.rst:293
+msgid "不支持"
+msgstr "Not supported"
+
+#: ../../getting_started/algo_choice.rst:107
+#: ../../getting_started/algo_choice.rst:135
+#: ../../getting_started/algo_choice.rst:184
+#: ../../getting_started/algo_choice.rst:294
+#: ../../getting_started/algo_choice.rst:379
+msgid "相对性能"
+msgstr "Relative performance"
+
+#: ../../getting_started/algo_choice.rst:108
+#: ../../getting_started/algo_choice.rst:185
+#: ../../getting_started/algo_choice.rst:295
+#: ../../getting_started/algo_choice.rst:380
+msgid "高"
+msgstr "High"
+
+#: ../../getting_started/algo_choice.rst:110
+msgid ""
+"HEU 对 ZPaillier 做了大量优化，ZPaillier 是一套性能较高的 Paillier "
+"算法实现，且不依赖特定硬件，全平台使用，当您不知道如何选择算法时，可以默认使用 ZPaillier"
+msgstr ""
+"HEU has made a number of optimizations to ZPaillier, which is a high "
+"performance set of Paillier algorithm implementations and does not depend"
+" on specific hardware. ZPaillier is a high performance Paillier algorithm"
+" implementation that is hardware-independent and available on all "
+"platforms, so when you don't know how to choose an algorithm, you can use"
+" ZPaillier by default."
+
+#: ../../getting_started/algo_choice.rst:112
+#: ../../getting_started/algo_choice.rst:298
+msgid "实现基于的 Paper："
+msgstr "Implementation of Paper based on:"
+
+#: ../../getting_started/algo_choice.rst:114
+msgid ""
+"Jurik, M. (2003). Extensions to the paillier cryptosystem with "
+"applications to cryptological protocols. Brics, August. "
+"http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.4.2396&amp;rep=rep1&amp;type=pdf"
+msgstr ""
+"Jurik, M. (2003). Extensions to the paillier cryptosystem with "
+"applications to cryptological protocols. Brics, August. "
+"http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.4.2396&amp;rep=rep1&amp;type=pdf"
+
+#: ../../getting_started/algo_choice.rst:117
+msgid "算法实现: FPaillier"
+msgstr "Implementation: Paillier"
+
+#: ../../getting_started/algo_choice.rst:119
+msgid ""
+"FPaillier 中的 F 表示浮点数 :math:`\\mathbb{F}`，Paillier 算法本身只支持整数，FPaillier "
+"对Paillier 做了扩展，使其可以支持浮点数。"
+msgstr ""
+"The F in FPaillier denotes a floating point number :math:`\\\\mathbb{F}`,"
+" the Paillier algorithm itself only supports integers, FPaillier "
+"FPaillier extends Paillier to support floating point numbers."
+
+#: ../../getting_started/algo_choice.rst:121
+msgid "FPaillier 特性速查"
+msgstr "FPaillier Features Quick Facts"
+
+#: ../../getting_started/algo_choice.rst:124
+msgid "phe.SchemaType.FPaillier"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:136
+msgid "低"
+msgstr "Low"
+
+#: ../../getting_started/algo_choice.rst:138
+msgid ""
+"FPaillier 的算法原理与 `Python-Paillier <https://github.com/data61/python-"
+"paillier>`_ 库类似"
+msgstr ""
+"The algorithm principle of FPaillier is similar to the `Python-Paillier "
+"<https://github.com/data61/pythonpaillier>`_ library."
+
+#: ../../getting_started/algo_choice.rst:140
+msgid ""
+"FPaillier 支持浮点数的原理是将输入数据表示成 int_rep 形式：``scalar = int_rep * (BASE ** "
+"exponent)``"
+msgstr ""
+"The principle of FPaillier supporting floating point numbers is to "
+"represent the input data in the form of int_rep: ``scalar = int_rep * "
+"(BASE ** exponent)``"
+
+#: ../../getting_started/algo_choice.rst:142
+msgid "int_rep 和 exponent 计算示意"
+msgstr "Calculation of int_rep and exponent"
+
+#: ../../getting_started/algo_choice.rst:154
+msgid "**加密**"
+msgstr "**Encryption**"
+
+#: ../../getting_started/algo_choice.rst:156
+msgid "Scalar 加密时只加密 int_rep 的值，exponent 明文存储，请注意安全风险。"
+msgstr ""
+"When scalar is encrypted, only the value of int_rep is encrypted, and "
+"exponent is stored in plaintext. Please note the security risk."
+
+#: ../../getting_started/algo_choice.rst:158
+msgid "**同态运算**"
+msgstr "**Homomorphic Operation**"
+
+#: ../../getting_started/algo_choice.rst:160
+msgid ""
+"先对齐 exponent，将 exponent 较大的数的 exponent 降低到较小的 exponent（new_exp），即 "
+"``int_rep =  int_rep * (base**(exponent-new_exp))``，再执行同态运算。"
+msgstr ""
+"First align the exponents, reduce the exponent of the number with the "
+"larger exponent to the smaller exponent (new_exp), that is, ``int_rep =  "
+"int_rep * (base**(exponent-new_exp))``, then perform the homomorphic "
+"operation."
+
+#: ../../getting_started/algo_choice.rst:162
+msgid ""
+"FPaillier 的浮点数运算接口并没有在 Python 层暴露，在 Python 端 FPaillier 提供的接口与 ZPaillier "
+"一致。若要使用 FPaillier 浮点功能，必须通过 C++ 接口调用，详细参考 `FPaillier 单测 "
+"<https://github.com/secretflow/heu/blob/main/heu/library/algorithms/paillier_float/paillier_test.cc>`_"
+msgstr ""
+"The floating-point operation interface of FPaillier is not exposed at the"
+" Python level. The interface provided by FPaillier at the Python end is "
+"consistent with ZPaillier. To use the FPaillier floating-point "
+"functionality, you must call it through the C++ interface. For more "
+"details, please refer to `FPaillier Unit Test "
+"<https://github.com/secretflow/heu/blob/main/heu/library/algorithms/paillier_float/paillier_test.cc>`_."
+
+#: ../../getting_started/algo_choice.rst:166
+msgid "算法实现: IPCL"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:168
+msgid ""
+"IPCL 全称 Intel Paillier Cryptosystem Library，是 Intel 贡献的一种 Paillier "
+"算法实现，其特点是支持 AVX512-IFMA 指令集和 Intel QAT 硬件加速器加速。"
+msgstr ""
+"IPCL stands for Intel Paillier Cryptosystem Library, which is a Paillier "
+"algorithm implementation contributed by Intel. Its features are that it "
+"supports AVX512-IFMA instruction set and Intel QAT hardware accelerator "
+"for acceleration."
+
+#: ../../getting_started/algo_choice.rst:170
+msgid "IPCL 特性速查"
+msgstr "IPCL Feature Quick Check"
+
+#: ../../getting_started/algo_choice.rst:173
+msgid "phe.SchemaType.IPCL"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:177
+msgid "**实验性质，仅供测试和评估目的，还在持续完善中**"
+msgstr ""
+"Experimental, for testing and evaluation purposes only, still in "
+"continuous improvement"
+
+#: ../../getting_started/algo_choice.rst:179
+msgid "Linux，macOS（Intel）"
+msgstr "Linux，macOS（Intel）"
+
+#: ../../getting_started/algo_choice.rst:183
+msgid "支持 AVX512-IFMA 指令集和/或 Intel QAT 加速器"
+msgstr "Supports AVX512-IFMA instruction set and/or Intel QAT accelerator"
+
+#: ../../getting_started/algo_choice.rst:187
+msgid "实现基于的代码库："
+msgstr "Implementation is based on this code library:"
+
+#: ../../getting_started/algo_choice.rst:189
+msgid "`pailliercryptolib <https://github.com/intel/pailliercryptolib>`_"
+msgstr "`pailliercryptolib <https://github.com/intel/pailliercryptolib>`_"
+
+#: ../../getting_started/algo_choice.rst:198
 #, python-format
 msgid ""
 "Okamoto-Uchiyama 算法由 Tatsuaki Okamoto 和 Shigenori Uchiyama 在 1998 "
 "年提出，参见：`算法详情 "
 "<https://en.wikipedia.org/wiki/Okamoto%E2%80%93Uchiyama_cryptosystem>`__"
-msgstr "The Okamoto-Uchiyama algorithm was proposed by Tatsuaki Okamoto and Shigenori Uchiyama in 1998. See Algorithm Details <https://en.wikipedia.org/wiki/Okamoto%E2%80%93Uchiyama_cryptosystem>`__"
+msgstr ""
+"The Okamoto-Uchiyama algorithm was proposed by Tatsuaki Okamoto and "
+"Shigenori Uchiyama in 1998. See Algorithm Details "
+"<https://en.wikipedia.org/wiki/Okamoto%E2%80%93Uchiyama_cryptosystem>`__"
 
-#: ../../getting_started/algo_choice.rst
+#: ../../getting_started/algo_choice.rst:200
+msgid "Okamoto-Uchiyama 算法信息"
+msgstr "Information of Okamoto-Uchiyama"
+
+#: ../../getting_started/algo_choice.rst:207
+#: ../../getting_started/algo_choice.rst:211
 msgid "**p**-subgroup assumption"
 msgstr "**p**-subgroup assumption"
 
 #: ../../getting_started/algo_choice.rst
-msgid ""
-"Detail: It is difficult to determine whether an element x in "
-":math:`({\\mathbb Z}/n{\\mathbb Z})^{*}` is in the subgroup of order p"
-msgstr "Detail: It is difficult to determine whether an element x in :math:`({\\mathbb Z}/n{\\mathbb Z})^{*}` is in the subgroup of order p"
+msgid "存在争议，相同的密钥长度下 OU 的强度比特与 Paillier 相同或略低，见下文解释"
+msgstr ""
 
-#: ../../getting_started/algo_choice.rst:100
+#: ../../getting_started/algo_choice.rst:213
+msgid ""
+"It is difficult to determine whether an element x in :math:`({\\mathbb "
+"Z}/n{\\mathbb Z})^{*}` is in the subgroup of order p"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:218
+msgid ""
+"Paillier 的 :math:`n=pq`，而 OU 的 :math:`n=p^2q`，当 n "
+"长度相同时两者安全强度是否相同，存在不同的观点。OU 的原始论文 [#]_ 认为目前最快的因式分解算法是 Field sieve "
+"method，这种算法的复杂度只和 n 相关，因此只要对齐 n 就可以得到相同的安全强度。"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:220
+msgid ""
+"但也有一些 Paper 认为 OU 的 n 需要比 Paillier 多 500~600 比特两者安全性才相等 [#]_，甚至还有文章 [#]_ "
+"说 n 的分解只与 p 相关。因此如果您特别在意安全性，请适当加大 OU 密钥长度。"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:222
+msgid ""
+"Okamoto, T., & Uchiyama, S. (1998). A new public-key cryptosystem as "
+"secure as factoring. Lecture Notes in Computer Science (Including "
+"Subseries Lecture Notes in Artificial Intelligence and Lecture Notes in "
+"Bioinformatics), 1403, 308-318. https://doi.org/10.1007/BFb0054135"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:223
+msgid ""
+"Boneh, D., Durfee, G., Howgrave-Graham, N. (1999). Factoring N = p r q "
+"for Large r . In: Wiener, M. (eds) Advances in Cryptology — CRYPTO’ 99. "
+"CRYPTO 1999. Lecture Notes in Computer Science, vol 1666. Springer, "
+"Berlin, Heidelberg. https://doi.org/10.1007/3-540-48405-1_21"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:224
+msgid "https://crypto.stanford.edu/cs359c/17sp/projects/NathanManoharBenFisch.pdf"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:228
 msgid "OU 与 Paillier 比较"
 msgstr "Comparison between OU and Paillier"
 
-#: ../../getting_started/algo_choice.rst:102
+#: ../../getting_started/algo_choice.rst:230
 msgid "OU 的优点："
 msgstr "Advantages of OU:"
 
-#: ../../getting_started/algo_choice.rst:104
+#: ../../getting_started/algo_choice.rst:232
 msgid "相同的使用场景下，OU 的计算性能远高于 Paillier。"
-msgstr "In the same usage scenario, the computational performance of OU is much higher than that of Paillier."
+msgstr ""
+"In the same usage scenario, the computational performance of OU is much "
+"higher than that of Paillier."
 
-#: ../../getting_started/algo_choice.rst:105
+#: ../../getting_started/algo_choice.rst:233
 msgid ""
 "相同的使用场景下，OU 的密文大小只有 Paillier 的一半。假设密钥长度为 N，则 Paillier 的密文大小为 2N 比特，而 OU "
 "密文为 N 比特。"
-msgstr "In the same usage scenario, the ciphertext size of OU is only half that of Paillier. Assuming the key length is N, the ciphertext size of Paillier is 2N bits, while the ciphertext of OU is N bits."
+msgstr ""
+"In the same usage scenario, the ciphertext size of OU is only half that "
+"of Paillier. Assuming the key length is N, the ciphertext size of "
+"Paillier is 2N bits, while the ciphertext of OU is N bits."
 
-#: ../../getting_started/algo_choice.rst:106
+#: ../../getting_started/algo_choice.rst:234
 msgid "OU 的安全性与 Paillier 相同，两者都达到了 IND-CPA 安全，且都不满足 IND-CCA 安全。"
-msgstr "The security of OU is the same as that of Paillier, both achieve IND-CPA security, and neither satisfy IND-CCA security"
+msgstr ""
+"The security of OU is the same as that of Paillier, both achieve IND-CPA "
+"security, and neither satisfy IND-CCA security"
 
-#: ../../getting_started/algo_choice.rst:108
+#: ../../getting_started/algo_choice.rst:236
 msgid "OU 的缺点："
 msgstr "Disadvantages of OU."
 
-#: ../../getting_started/algo_choice.rst:110
+#: ../../getting_started/algo_choice.rst:238
 msgid "OU 在学术上的知名度不如 Paillier。"
 msgstr "OU is not as well-known academically as Paillier."
 
-#: ../../getting_started/algo_choice.rst:111
+#: ../../getting_started/algo_choice.rst:239
 msgid ""
 "OU 的明文值域空间不明确。假设密钥长度为 N，则 Paillier 的明文值域空间为 :math:`Z_N`，而 OU 的明文值域空间为 "
 ":math:`Z_p`，其中 p 是 private key 中的参数，因此 OU 的值域空间不是公开的。"
-msgstr "The plaintext value range of OU is not clear. Assuming the key length is N, the plaintext value range of Paillier is :math:Z_N, while the plaintext value range of OU is :math:Z_p, where p is a parameter in the private key, so the value range of OU is not public."
+msgstr ""
+"The plaintext value range of OU is not clear. Assuming the key length is "
+"N, the plaintext value range of Paillier is :math:Z_N, while the "
+"plaintext value range of OU is :math:Z_p, where p is a parameter in the "
+"private key, so the value range of OU is not public."
 
-#: ../../getting_started/algo_choice.rst:112
+#: ../../getting_started/algo_choice.rst:240
 msgid "虽然理论上两者都不满足 IND-CCA 安全定义，但在实际 IND-CCA 场景下 OU 存在已知攻击，而 Paillier 暂未发现有效攻击。"
-msgstr "Although theoretically neither satisfy the IND-CCA security definition, in practical IND-CCA scenarios OU has known attacks, while no effective attacks have been found for Paillier."
+msgstr ""
+"Although theoretically neither satisfy the IND-CCA security definition, "
+"in practical IND-CCA scenarios OU has known attacks, while no effective "
+"attacks have been found for Paillier."
 
-#: ../../getting_started/algo_choice.rst:116
-msgid "已知攻击"
-msgstr "Known Attacks"
+#: ../../getting_started/algo_choice.rst:244
+msgid "风险提示"
+msgstr ""
 
-#: ../../getting_started/algo_choice.rst:118
+#: ../../getting_started/algo_choice.rst:246
+#, fuzzy
 msgid ""
-"虽然 OU 与 Paillier 在学术上的安全级别相同，两者都满足 IND-CPA 安全，且都达不到 IND-CCA 安全，但实际在 IND-"
-"CCA 场景下 OU 存在明文空间溢出攻击，而 Paillier 暂无有效攻击。"
-msgstr "Although OU and Paillier have the same academic security level, both satisfy IND-CPA security and neither achieve IND-CCA security, in practice in IND-CCA scenarios, OU has a plaintext space overflow attack, while no effective attacks have been found for Paillier."
+"虽然 OU 与 Paillier 在学术上的安全级别相同，两者都满足 IND-CPA 安全，且都达不到 IND-CCA 安全，但实际情况是 OU "
+"已经被发现有高效的攻击手段，而 Paillier 尚未发现有效攻击。"
+msgstr ""
+"Although OU and Paillier have the same academic security level, both "
+"satisfy IND-CPA security and neither achieve IND-CCA security, in "
+"practice in IND-CCA scenarios, OU has a plaintext space overflow attack, "
+"while no effective attacks have been found for Paillier."
 
-#: ../../getting_started/algo_choice.rst:121
+#: ../../getting_started/algo_choice.rst:249
 msgid "OU 明文空间溢出攻击"
 msgstr "OU Plaintext Space Overflow Attack"
 
-#: ../../getting_started/algo_choice.rst:122
+#: ../../getting_started/algo_choice.rst:250
 msgid ""
 "OU 的明文空间为 :math:`Z_p`，即 OU 的密文解密以后存在 mod p 的效果。如果允许攻击者加密一个大于 p 的明文，则容易反推出"
 " p，导致私钥泄漏，具体原理如下："
-msgstr "The plaintext space of OU is :math:Z_p, that is, the decryption of OU's ciphertext exists with a mod p effect. If an attacker is allowed to encrypt a plaintext larger than p, it is easy to infer p, leading to the leakage of the private key. The specific principle is as follows:"
+msgstr ""
+"The plaintext space of OU is :math:Z_p, that is, the decryption of OU's "
+"ciphertext exists with a mod p effect. If an attacker is allowed to "
+"encrypt a plaintext larger than p, it is easy to infer p, leading to the "
+"leakage of the private key. The specific principle is as follows:"
 
-#: ../../getting_started/algo_choice.rst:124
+#: ../../getting_started/algo_choice.rst:252
 msgid "攻击者选择一个比 p 大的明文：:math:`m_1 > p`，进行加密，并且能够得到解密结果 :math:`m_2`。"
-msgstr "The attacker chooses a plaintext :math:`m_1 > p`, encrypts it, and can get the decrypted result :math:`m_2`."
+msgstr ""
+"The attacker chooses a plaintext :math:`m_1 > p`, encrypts it, and can "
+"get the decrypted result :math:`m_2`."
 
-#: ../../getting_started/algo_choice.rst:125
-msgid "显然：:math:`m_1 > p, m_2 < p`，并且：:math:`m_1 \\equiv m_2 \\mod p`。"
-msgstr "Obviously, :math:`m_1 > p, m_2 < p`，and:math:`m_1 \\equiv m_2 \\mod p`。"
+#: ../../getting_started/algo_choice.rst:253
+msgid "显然：:math:`m_1 > p, m_2 < p`，并且：:math:`m_1 \\equiv m_2 \\bmod p`。"
+msgstr "Obviously, :math:`m_1 > p, m_2 < p`，and :math:`m_1 \\equiv m_2 \\bmod p`。"
 
-#: ../../getting_started/algo_choice.rst:126
+#: ../../getting_started/algo_choice.rst:254
 msgid "通过计算最大公约数 :math:`gcd(m_1 - m_2, n)` 即可得到 p。"
-msgstr "By calculating the greatest common divisor :math:`gcd(m_1 - m_2, n)`, p can be obtained."
+msgstr ""
+"By calculating the greatest common divisor :math:`gcd(m_1 - m_2, n)`, p "
+"can be obtained."
 
-#: ../../getting_started/algo_choice.rst:128
+#: ../../getting_started/algo_choice.rst:256
 msgid "OU 在实现时一般做了限制，不允许直接加密大于 p 的明文，但是由于 OU 支持密态加法和明密文乘法，上述溢出攻击仍旧是可能的："
-msgstr "OU usually has restrictions in its implementation and does not directly allow encryption of plaintext larger than p. However, since OU supports homomorphic addition and plaintext-ciphertext multiplication, the above overflow attack is still possible:"
+msgstr ""
+"OU usually has restrictions in its implementation and does not directly "
+"allow encryption of plaintext larger than p. However, since OU supports "
+"homomorphic addition and plaintext-ciphertext multiplication, the above "
+"overflow attack is still possible:"
 
-#: ../../getting_started/algo_choice.rst:130
+#: ../../getting_started/algo_choice.rst:258
 msgid "攻击者选择一个接近但是小于 :math:`p` 的明文 m 加密得到 c"
-msgstr "The attacker selects a plaintext m close to but less than :math:`p`, encrypts it to get c"
+msgstr ""
+"The attacker selects a plaintext m close to but less than :math:`p`, "
+"encrypts it to get c"
 
-#: ../../getting_started/algo_choice.rst:131
-msgid "对该密文 c 执行 t 次密文加法满足 :math:`m * t > p`，然后解密得到 :math:`m'`"
-msgstr "Execute t times ciphertext addition for this ciphertext c to satisfy :math:`m * t > p`, and then decrypt to get :math:`m'`"
+#: ../../getting_started/algo_choice.rst:259
+#, fuzzy
+msgid "对该密文 c 执行 t 次密文加法（或一次明密文乘法）满足 :math:`m * t > p`，然后解密得到 :math:`m'`"
+msgstr ""
+"Execute t times ciphertext addition for this ciphertext c to satisfy "
+":math:`m * t > p`, and then decrypt to get :math:`m'`"
 
-#: ../../getting_started/algo_choice.rst:132
+#: ../../getting_started/algo_choice.rst:260
 msgid "攻击者获取 :math:`m'`，利用同余关系即可获取私钥 :math:`p`"
-msgstr "The attacker obtains :math:`m', and can get the private key :math:`p` using the congruence relation"
+msgstr ""
+"The attacker obtains :math:`m', and can get the private key :math:`p` "
+"using the congruence relation"
 
-#: ../../getting_started/algo_choice.rst:135
-msgid "OU 还可以使用吗"
-msgstr "Can OU still be used"
+#: ../../getting_started/algo_choice.rst:262
+msgid "在使用 OU 算法时，请务必判断上层应用环境中该攻击是否成立，如果成立，请立刻使用下文的防御方法来检测和阻断攻击，确保上层应用可以规避这种攻击。"
+msgstr ""
 
-#: ../../getting_started/algo_choice.rst:137
+#: ../../getting_started/algo_choice.rst:266
+msgid "攻击防御"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:268
 msgid ""
 "上述攻击成立的关键有两点，一是攻击者需要能构造出一个大于 p "
 "的密文，二是攻击者需要能获取解密的结果，两者缺一不可，这是一个典型的选择密文攻击（CCA）场景，实际使用 OU 时，应当 **避免在 CCA "
 "成立的场景下使用 OU**。"
-msgstr "The key to the above attack lies in two points, one is that the attacker needs to be able to construct a ciphertext larger than p, and the other is that the attacker needs to obtain the decryption result. Both are indispensable. This is a typical chosen ciphertext attack (CCA) scenario. When using OU, **one should avoid using OU where CCA is valid**."
+msgstr ""
+"The key to the above attack lies in two points, one is that the attacker "
+"needs to be able to construct a ciphertext larger than p, and the other "
+"is that the attacker needs to obtain the decryption result. Both are "
+"indispensable. This is a typical chosen ciphertext attack (CCA) scenario."
+" When using OU, **one should avoid using OU where CCA is valid**."
 
-#: ../../getting_started/algo_choice.rst:139
+#: ../../getting_started/algo_choice.rst:270
 msgid ""
 "对于一些简单的场景，比如 Alice、Bob 两方计算，假设 Alice 有私钥，Bob 为恶意参与方，计算的过程为 Alice 将数据加密后发给"
 " Bob 计算，Bob 把计算结果返回给 Alice，此时，即使 Bob 构造了恶意的密文 c，但是 Bob 拿不到 c 对应的解密结果，Bob "
 "的攻击会造成计算错误，但是密钥不会泄露。"
-msgstr "For some simple scenarios, such as the calculation between Alice and Bob, assuming Alice has a private key and Bob is a malicious participant, the calculation process is that Alice encrypts the data and sends it to Bob for calculation, and Bob returns the calculation result to Alice. At this time, even if Bob constructs a malicious ciphertext c, Bob cannot get the decryption result of c. Bob's attack will cause calculation errors, but the key will not be leaked."
+msgstr ""
+"For some simple scenarios, such as the calculation between Alice and Bob,"
+" assuming Alice has a private key and Bob is a malicious participant, the"
+" calculation process is that Alice encrypts the data and sends it to Bob "
+"for calculation, and Bob returns the calculation result to Alice. At this"
+" time, even if Bob constructs a malicious ciphertext c, Bob cannot get "
+"the decryption result of c. Bob's attack will cause calculation errors, "
+"but the key will not be leaked."
 
-#: ../../getting_started/algo_choice.rst:141
+#: ../../getting_started/algo_choice.rst:272
+#, fuzzy
 msgid ""
 "在一些复杂的隐私计算场景中，下一轮的交互取决于上一轮交互的结果，CCA 场景成立也许是不可避免的，但并非说明 OU 就一定无法使用，如果 "
 "Alice 有有效的手段阻断攻击，OU 仍旧可以选用。让我们再来回顾一下攻击的过程：Bob 构造的密文 c 对应明文 m，Alice 解密后得到 "
-":math:`m'=m \\mod p`，实际的问题是，:math:`m'` 有可能非常大，远超一般业务中使用的 int64 所能表达的范围，因为"
-" Bob 想要构造一个 **略大于** p 的密文是非常困难的，p 一般非常大，key size 为 2048 时 p 大约为 "
-"682bits，Bob 盲猜一个数 m 满足 :math:`m' < 2^{64}`，其概率小于 "
+":math:`m'=m \\bmod p`，实际的问题是，:math:`m'` 有可能非常大，远超一般业务中使用的 int64 "
+"所能表达的范围，因为 Bob 想要构造一个 **略大于** p 的密文是非常困难的，p 一般非常大，key size 为 2048 时 p 大约为"
+" 682bits，Bob 盲猜一个数 m 满足 :math:`m' < 2^{64}`，其概率小于 "
 ":math:`2^{-(682-64)}`，即盲猜的 m 的高 618bits 与 p exactly "
 "same，这个概率是可以忽略不计的，因此可以认为 :math:`m'` 仍旧是一个大数，当 Alice 解密发现明文不在合理值域范围时，可以拒绝 "
 "Bob 的结果，从而阻止 Bob 的攻击。"
-msgstr "In some complex privacy computing scenarios, the interaction in the next round depends on the result of the previous round of interaction. The CCA scenario may be inevitable, but it does not mean that OU cannot be used. If "
-"Alice has an effective means to block the attack, OU can still be selected. Let's review the attack process again: the plaintext m corresponding to the ciphertext c constructed by Bob, Alice decrypts to get "
-":math:`m'=m \\mod p`. The actual problem is that :math:`m'` might be very large, far exceeding the range that can be expressed by int64 commonly used in business, because"
-" it is very difficult for Bob to **construct** a ciphertext slightly larger than p, p is usually very large, when the key size is 2048, p is about "
-"682bits. The probability of Bob blindly guessing a number m satisfying :math:`m' < 2^{64}` is less than "
-":math:`2^{-(682-64)}`, that is, the high 618bits of the m guessed by Bob is exactly the "
-"same as p, this probability can be ignored, so it can be considered that :math:`m'` is still a large number. When Alice decrypts and finds that the plaintext is not within the reasonable value range, she can reject "
-"Bob's result, thereby preventing Bob's attack."
+msgstr ""
+"In some complex privacy computing scenarios, the interaction in the next "
+"round depends on the result of the previous round of interaction. The CCA"
+" scenario may be inevitable, but it does not mean that OU cannot be used."
+" If Alice has an effective means to block the attack, OU can still be "
+"selected. Let's review the attack process again: the plaintext m "
+"corresponding to the ciphertext c constructed by Bob, Alice decrypts to "
+"get :math:`m'=m \\mod p`. The actual problem is that :math:`m'` might be "
+"very large, far exceeding the range that can be expressed by int64 "
+"commonly used in business, because it is very difficult for Bob to "
+"**construct** a ciphertext slightly larger than p, p is usually very "
+"large, when the key size is 2048, p is about 682bits. The probability of "
+"Bob blindly guessing a number m satisfying :math:`m' < 2^{64}` is less "
+"than :math:`2^{-(682-64)}`, that is, the high 618bits of the m guessed by"
+" Bob is exactly the same as p, this probability can be ignored, so it can"
+" be considered that :math:`m'` is still a large number. When Alice "
+"decrypts and finds that the plaintext is not within the reasonable value "
+"range, she can reject Bob's result, thereby preventing Bob's attack."
 
-#: ../../getting_started/algo_choice.rst:145
-msgid "算法实现介绍"
-msgstr "`m' < 2^{64}`"
+#: ../../getting_started/algo_choice.rst:276
+msgid "算法实现: OU"
+msgstr ""
 
-#: ../../getting_started/algo_choice.rst:148
-msgid "SchemaType.ZPaillier"
-msgstr "SchemaType.ZPaillier"
-
-#: ../../getting_started/algo_choice.rst:150
-msgid ""
-"ZPaillier 中的 Z 与数学中表示整数的 :math:`\\mathbb{Z}` 含义相同，即实现了一套支持整数运算的 Paillier 算法。"
-msgstr "Z in ZPaillier has the same meaning as :math:`\\mathbb{Z}` in mathematics, which represents integers, that is, a set of Paillier"
-
-#: ../../getting_started/algo_choice.rst:152
-msgid "ZPaillier 特性速查"
-msgstr "ZPaillier Feature Quick Check"
-
-#: ../../getting_started/algo_choice.rst:154
-#: ../../getting_started/algo_choice.rst:180
-#: ../../getting_started/algo_choice.rst:227
-#: ../../getting_started/algo_choice.rst:252
-msgid "实现算法"
-msgstr "Implementation Algorithm"
-
-#: ../../getting_started/algo_choice.rst:156
-#: ../../getting_started/algo_choice.rst:182
-#: ../../getting_started/algo_choice.rst:229
-#: ../../getting_started/algo_choice.rst:254
-msgid "稳定性"
-msgstr "stability"
-
-#: ../../getting_started/algo_choice.rst:157
-#: ../../getting_started/algo_choice.rst:183
-#: ../../getting_started/algo_choice.rst:255
-msgid "稳定"
-msgstr "stabilize"
-
-#: ../../getting_started/algo_choice.rst:158
-#: ../../getting_started/algo_choice.rst:184
-#: ../../getting_started/algo_choice.rst:231
-#: ../../getting_started/algo_choice.rst:256
-msgid "支持的平台"
-msgstr "Supported Platforms"
-
-#: ../../getting_started/algo_choice.rst:159
-#: ../../getting_started/algo_choice.rst:185
-#: ../../getting_started/algo_choice.rst:257
-msgid "Linux，macOS（Intel & Arm）"
-msgstr "Linux，macOS（Intel & Arm）"
-
-#: ../../getting_started/algo_choice.rst:160
-#: ../../getting_started/algo_choice.rst:186
-#: ../../getting_started/algo_choice.rst:233
-#: ../../getting_started/algo_choice.rst:258
-msgid "是否依赖特定硬件"
-msgstr "Whether it depends on specific hardware"
-
-#: ../../getting_started/algo_choice.rst:161
-#: ../../getting_started/algo_choice.rst:187
-#: ../../getting_started/algo_choice.rst:234
-#: ../../getting_started/algo_choice.rst:259
-msgid "不依赖"
-msgstr "Independent"
-
-#: ../../getting_started/algo_choice.rst:162
-#: ../../getting_started/algo_choice.rst:188
-#: ../../getting_started/algo_choice.rst:235
-#: ../../getting_started/algo_choice.rst:260
-msgid "是否支持硬件加速"
-msgstr "Whether hardware acceleration is supported"
-
-#: ../../getting_started/algo_choice.rst:163
-#: ../../getting_started/algo_choice.rst:189
-#: ../../getting_started/algo_choice.rst:261
-msgid "不支持"
-msgstr "Not supported"
-
-#: ../../getting_started/algo_choice.rst:164
-#: ../../getting_started/algo_choice.rst:190
-#: ../../getting_started/algo_choice.rst:237
-#: ../../getting_started/algo_choice.rst:262
-msgid "相对性能"
-msgstr "Relative performance"
-
-#: ../../getting_started/algo_choice.rst:165
-#: ../../getting_started/algo_choice.rst:238
-#: ../../getting_started/algo_choice.rst:263
-msgid "高"
-msgstr "High"
-
-#: ../../getting_started/algo_choice.rst:167
-msgid ""
-"HEU 对 ZPaillier 做了大量优化，ZPaillier 是一套性能较高的 Paillier "
-"算法实现，且不依赖特定硬件，全平台使用，当您不知道如何选择算法时，可以默认使用 ZPaillier"
-msgstr "HEU has made a number of optimizations to ZPaillier, which is a high performance set of Paillier algorithm implementations and does not depend on specific hardware. ZPaillier is a high performance Paillier algorithm implementation that is hardware-independent and available on all platforms, so when you don't know how to choose an algorithm, you can use ZPaillier by default."
-
-#: ../../getting_started/algo_choice.rst:169
-#: ../../getting_started/algo_choice.rst:266
-msgid "实现基于的 Paper："
-msgstr "Implementation of Paper based on:"
-
-#: ../../getting_started/algo_choice.rst:171
-msgid ""
-"Jurik, M. (2003). Extensions to the paillier cryptosystem with "
-"applications to cryptological protocols. Brics, August. "
-"http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.4.2396&amp;rep=rep1&amp;type=pdf"
-msgstr "Jurik, M. (2003). Extensions to the paillier cryptosystem with applications to cryptological protocols. Brics, August. http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.4.2396&amp;rep=rep1&amp;type=pdf"
-
-#: ../../getting_started/algo_choice.rst:174
-msgid "SchemaType.FPaillier"
-msgstr "SchemaType.FPaillier"
-
-#: ../../getting_started/algo_choice.rst:176
-msgid ""
-"FPaillier 中的 F 表示浮点数 :math:`\\mathbb{F}`，Paillier 算法本身只支持整数，FPaillier "
-"对Paillier 做了扩展，使其可以支持浮点数。"
-msgstr "The F in FPaillier denotes a floating point number :math:`\\\mathbb{F}`, the Paillier algorithm itself only supports integers, FPaillier FPaillier extends Paillier to support floating point numbers."
-
-#: ../../getting_started/algo_choice.rst:178
-msgid "FPaillier 特性速查"
-msgstr "FPaillier Features Quick Facts"
-
-#: ../../getting_started/algo_choice.rst:191
-msgid "低"
-msgstr "Low"
-
-#: ../../getting_started/algo_choice.rst:193
-msgid ""
-"FPaillier 的算法原理与 `Python-Paillier <https://github.com/data61/python-"
-"paillier>`_ 库类似"
-msgstr "The algorithm principle of FPaillier is similar to the `Python-Paillier <https://github.com/data61/pythonpaillier>`_ library."
-
-#: ../../getting_started/algo_choice.rst:195
-msgid ""
-"FPaillier 支持浮点数的原理是将输入数据表示成 int_rep 形式：``scalar = int_rep * (BASE ** "
-"exponent)``"
-msgstr "The principle of FPaillier supporting floating point numbers is to represent the input data in the form of int_rep: ``scalar = int_rep * (BASE ** exponent)``"
-
-#: ../../getting_started/algo_choice.rst:197
-msgid "int_rep 和 exponent 计算示意"
-msgstr "Calculation of int_rep and exponent"
-
-#: ../../getting_started/algo_choice.rst:209
-msgid "**加密**"
-msgstr "**Encryption**"
-
-#: ../../getting_started/algo_choice.rst:211
-msgid "Scalar 加密时只加密 int_rep 的值，exponent 明文存储，请注意安全风险。"
-msgstr "When scalar is encrypted, only the value of int_rep is encrypted, and exponent is stored in plaintext. Please note the security risk."
-
-#: ../../getting_started/algo_choice.rst:213
-msgid "**同态运算**"
-msgstr "**Homomorphic Operation**"
-
-#: ../../getting_started/algo_choice.rst:215
-msgid ""
-"先对齐 exponent，将 exponent 较大的数的 exponent 降低到较小的 exponent（new_exp），即 "
-"``int_rep =  int_rep * (base**(exponent-new_exp))``，再执行同态运算。"
-msgstr "First align the exponents, reduce the exponent of the number with the larger exponent to the smaller exponent (new_exp), that is, ``int_rep =  int_rep * (base**(exponent-new_exp))``, then perform the homomorphic operation."
-
-#: ../../getting_started/algo_choice.rst:217
-msgid ""
-"FPaillier 的浮点数运算接口并没有在 Python 层暴露，在 Python 端 FPaillier 提供的接口与 ZPaillier "
-"一致。若要使用 FPaillier 浮点功能，必须通过 C++ 接口调用，详细参考 `FPaillier 单测 "
-"<https://github.com/secretflow/heu/blob/main/heu/library/algorithms/paillier_float/paillier_test.cc>`_"
-msgstr "The floating-point operation interface of FPaillier is not exposed at the Python level. The interface provided by FPaillier at the Python end is consistent with ZPaillier. To use the FPaillier floating-point functionality, you must call it through the C++ interface. For more details, please refer to `FPaillier Unit Test <https://github.com/secretflow/heu/blob/main/heu/library/algorithms/paillier_float/paillier_test.cc>`_."
-
-#: ../../getting_started/algo_choice.rst:221
-msgid "SchemaType.IPCL"
-msgstr "SchemaType.IPCL"
-
-#: ../../getting_started/algo_choice.rst:223
-msgid ""
-"IPCL 全称 Intel Paillier Cryptosystem Library，是 Intel 贡献的一种 Paillier "
-"算法实现，其特点是支持 AVX512-IFMA 指令集和 Intel QAT 硬件加速器加速。"
-msgstr "IPCL stands for Intel Paillier Cryptosystem Library, which is a Paillier algorithm implementation contributed by Intel. Its features are that it supports AVX512-IFMA instruction set and Intel QAT hardware accelerator for acceleration."
-
-#: ../../getting_started/algo_choice.rst:225
-msgid "IPCL 特性速查"
-msgstr "IPCL Feature Quick Check"
-
-#: ../../getting_started/algo_choice.rst:230
-msgid "实验性质，仅供测试和评估目的，还在持续完善中"
-msgstr "Experimental, for testing and evaluation purposes only, still in continuous improvement"
-
-#: ../../getting_started/algo_choice.rst:232
-msgid "Linux，macOS（Intel）"
-msgstr "Linux，macOS（Intel）"
-
-#: ../../getting_started/algo_choice.rst:236
-msgid "支持 AVX512-IFMA 指令集和/或 Intel QAT 加速器"
-msgstr "Supports AVX512-IFMA instruction set and/or Intel QAT accelerator"
-
-#: ../../getting_started/algo_choice.rst:240
-msgid "实现基于该代码库："
-msgstr "Implementation is based on this code library:"
-
-#: ../../getting_started/algo_choice.rst:242
-msgid "`pailliercryptolib <https://github.com/intel/pailliercryptolib>`_"
-msgstr "`pailliercryptolib <https://github.com/intel/pailliercryptolib>`_"
-
-#: ../../getting_started/algo_choice.rst:246
-msgid "SchemaType.OU"
-msgstr "SchemaType.OU"
-
-#: ../../getting_started/algo_choice.rst:248
+#: ../../getting_started/algo_choice.rst:278
+#, fuzzy
 msgid ""
 "OU 实现了 Okamoto-Uchiyama 算法，其功能与 ZPaillier 一致，且性能更高，很多时候可以成为 ZPaillier "
-"的替代品，但 OU 存在一个已知攻击，详见 `Okamoto-Uchiyama`_ 算法理论介绍章节。"
-msgstr "OU has implemented the Okamoto-Uchiyama algorithm, its functionality is consistent with ZPaillier, and its performance is higher. It can often be a substitute for ZPaillier. However, OU has a known attack. For details, see the `Okamoto-Uchiyama`_ algorithm theory introduction section"
+"的替代品，但 OU 存在一个已知攻击，详见上文关于安全性的论述，使用时需评估该攻击造成的影响。"
+msgstr ""
+"OU has implemented the Okamoto-Uchiyama algorithm, its functionality is "
+"consistent with ZPaillier, and its performance is higher. It can often be"
+" a substitute for ZPaillier. However, OU has a known attack. For details,"
+" see the `Okamoto-Uchiyama`_ algorithm theory introduction section"
 
-#: ../../getting_started/algo_choice.rst:250
+#: ../../getting_started/algo_choice.rst:280
 msgid "OU 特性速查"
 msgstr "OU Feature Quick Check"
 
-#: ../../getting_started/algo_choice.rst:268
+#: ../../getting_started/algo_choice.rst:283
+msgid "phe.SchemaType.OU"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:300
 msgid ""
 "Coron, J. S., Naccache, D., & Paillier, P. (1999). Accelerating Okamoto-"
 "Uchiyama public-key cryptosystem. Electronics Letters, 35(4), 291–292. "
 "https://doi.org/10.1049/el:19990229"
-msgstr "Coron, J. S., Naccache, D., & Paillier, P. (1999). Accelerating Okamoto-Uchiyama public-key cryptosystem. Electronics Letters, 35(4), 291–292. https://doi.org/10.1049/el:19990229"
+msgstr ""
+"Coron, J. S., Naccache, D., & Paillier, P. (1999). Accelerating Okamoto-"
+"Uchiyama public-key cryptosystem. Electronics Letters, 35(4), 291–292. "
+"https://doi.org/10.1049/el:19990229"
 
-#: ../../getting_started/algo_choice.rst:272
+#: ../../getting_started/algo_choice.rst:309
+msgid ""
+"ElGamal 是一个基于 Diffie–Hellman 密钥交换的非对称加密算法，由 Taher Elgamal 在 1985 年提出 "
+"[#]_。原始的 ElGamal 具有乘法同态性质，其同态性来自于密文块 :math:`mh^r`。"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:311
+msgid ""
+"在之后的 Generalized ElGamal 算法中，整个密码体制被定义在循环群 G 上，其加密的安全性也取决于 G "
+"上离散对数问题的困难性，为此，用于构建 Generalized ElGamal 的循环群 G 必须满足以下两项要求："
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:313
+msgid "高效性：G 上的计算必须非常快速"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:314
+msgid "安全性：求解 G 上的离散对数问题(DLP)非常困难"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:316
+msgid "以下是一些满足上述要求的具体的 G 的例子："
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:318
+msgid ""
+"The multiplicative group :math:`\\mathbb{Z}^*_p` of the integers modulo a"
+" prime :math:`p`."
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:319
+msgid ""
+"The multiplicative group :math:`\\mathbb{F}^*_{2^m}` of the finite field "
+":math:`\\mathbb{F}_{2^m}` of characteristic two."
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:320
+msgid "The group of points on an elliptic curve over a finite field."
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:321
+msgid ""
+"The multiplicative group :math:`\\mathbb{F}^*_q` of the finite field "
+":math:`\\mathbb{F}_q`, where :math:`q=p^m` and p is a prime."
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:322
+msgid ""
+"The group of units :math:`\\mathbb{Z}^*_n`, where n is a composite "
+"integer."
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:323
+msgid "The jacobian of a hyperelliptic curve defined over a finite field"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:324
+msgid "The class group of an imaginary quadratic number field."
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:326
+msgid ""
+"为了获得加法同态特性，以及兼顾计算上的高效性，我们选择了 3 将椭圆曲线上的点群（EC Group）作为 ElGamal 底层的 G，因此 HEU"
+" 中的 ElGamal 也称为 EC ElGamal。"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:328
+msgid "ElGamal 算法信息"
+msgstr "Information of ElGamal"
+
+#: ../../getting_started/algo_choice.rst:331
+msgid "同态特性取决于底层循环群 G 的定义，根据 G 的不同 Elgamal 可能为加法同态、乘法同态或没有同态特性。"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:333
+msgid "取决于 G 上离散对数问题（DLP）的困难性"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:335
+msgid "离散对数难题 DLP"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:337
+msgid "取决于 G"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:339
+msgid "若循环群选定为椭圆曲线点群（EC Group），则算法信息如下："
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:341
+msgid "EC ElGamal 算法信息"
+msgstr "Information of EC ElGamal"
+
+#: ../../getting_started/algo_choice.rst:344
+msgid "取决于明文到 EC Group 的映射方式，如果映射妥当，则 EC ElGamal 满足加法同态特性"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:346
+msgid "取决于椭圆曲线离散对数问题（ECDLP）的困难性"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:348
+msgid "椭圆曲线离散对数难题 ECDLP"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:350
+msgid "取决于具体选择的曲线，`此处 <http://safecurves.cr.yp.to/rho.html>`__ 列出了一部分曲线的安全强度"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:352
+msgid ""
+"ElGamal, T. (1985). A Public Key Cryptosystem and a Signature Scheme "
+"Based on Discrete Logarithms. Lecture Notes in Computer Science "
+"(Including Subseries Lecture Notes in Artificial Intelligence and Lecture"
+" Notes in Bioinformatics), 196 LNCS(4), 10–18. "
+"https://doi.org/10.1007/3-540-39568-7_2"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:356
+msgid "算法实现: EC ElGamal"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:358
+msgid ""
+"HEU 实现了 EC ElGamal 算法，这是一种定义在椭圆曲线点群（EC Group）上的 ElGamal 算法，相比其他循环群 G，EC "
+"Group 的计算效率更高，使得 EC ElGamal 最终性能表现非常优秀。"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:360
+msgid ""
+"另一方面，为了维持加法同态特性，EC ElGamal 将明文映射到 EC Group 的方式为：:math:`m'=mG`，其中 "
+":math:`m` 是明文，:math:`m'` 是映射后的明文，即椭圆曲线上的一个点，G 是 EC Group 的生成元。这是一个典型的单向函数"
+"（one-way function），EC ElGamal 解密之后得到 :math:`m'` 想要反向计算出真正的明文 :math:`m` "
+"是非常困难的，没有直接求解算法，以至于 EC ElGamal 解密非常慢，这是 EC ElGamal 的缺点。"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:363
+msgid "EC ElGamal 特性速查"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:366
+msgid "phe.SchemaType.ElGamal"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:369
+msgid "同态特性"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:372
+msgid "仅供非生产环境使用"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:374
+msgid "Linux，macOS"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:378
+msgid "取决于曲线种类的选择。（注：目前所有曲线都不支持硬件加速）"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:382
+msgid ""
+"EC ElGamal 底层椭圆曲线计算基于 `Yacl ECC SPI "
+"<https://github.com/secretflow/yacl/tree/main/yacl/crypto/base/ecc>`__。"
+msgstr ""
+
+#: ../../getting_started/algo_choice.rst:386
 msgid "算法性能"
 msgstr "Algorithm Performance"
 
-#: ../../getting_started/algo_choice.rst:274
+#: ../../getting_started/algo_choice.rst:388
 msgid ""
 "HEU 提供了一个 Benchmark 用以测试每个算法的性能，若要运行 Benchmark 请先 clone HEU "
 "代码库，然后在项目根目录下执行："
-msgstr "HEU provides a Benchmark to test the performance of each algorithm. To run the Benchmark, please clone the HEU code repository, then execute the following command in the project root directory:"
+msgstr ""
+"HEU provides a Benchmark to test the performance of each algorithm. To "
+"run the Benchmark, please clone the HEU code repository, then execute the"
+" following command in the project root directory:"
 
-#: ../../getting_started/algo_choice.rst:286
+#: ../../getting_started/algo_choice.rst:400
 msgid "注：通过更换上述命令中的 schema 参数可以运行不同算法的 Benchmark。第一次运行 Benchmark 会自动触发代码编译。"
-msgstr "Note: By changing the schema parameter in the above command, you can run the Benchmark of different algorithms. The first run of Benchmark will automatically trigger code compilation."
+msgstr ""
+"Note: By changing the schema parameter in the above command, you can run "
+"the Benchmark of different algorithms. The first run of Benchmark will "
+"automatically trigger code compilation."
 
-#: ../../getting_started/algo_choice.rst:290
+#: ../../getting_started/algo_choice.rst:404
 msgid "参考性能"
 msgstr "Reference Performance"
 
-#: ../../getting_started/algo_choice.rst:292
+#: ../../getting_started/algo_choice.rst:406
 msgid "以下是部分算法的参考性能，不涉及加速硬件。配置参数："
-msgstr "Below are the reference performances of some algorithms, excluding acceleration hardware. Configuration parameters:"
+msgstr ""
+"Below are the reference performances of some algorithms, excluding "
+"acceleration hardware. Configuration parameters:"
 
-#: ../../getting_started/algo_choice.rst:294
+#: ../../getting_started/algo_choice.rst:408
 msgid "CPU Intel(R) Xeon(R) Gold 5218 CPU @ 2.30GHz"
 msgstr "CPU Intel(R) Xeon(R) Gold 5218 CPU @ 2.30GHz"
 
-#: ../../getting_started/algo_choice.rst:295
+#: ../../getting_started/algo_choice.rst:409
 msgid "Key size = 2048"
 msgstr "Key size = 2048"
+
+#: ../../getting_started/algo_choice.rst:411
+msgid "表格的项表示单线程1万次计算的总时间，单位 ms。"
+msgstr ""
+"The entries in the table indicate the total time in ms for 10,000 "
+"operations in a single thread."
 
 #: ../../getting_started/algo_choice.rst:1
 msgid "加密"
@@ -685,7 +1117,12 @@ msgstr "1692"
 msgid "150580"
 msgstr "150580"
 
-#: ../../getting_started/algo_choice.rst:304
-msgid "表格的项表示1万次操作的总时间，单位 ms。"
-msgstr "The entries in the table indicate the total time in ms for 10,000 operations."
+#: ../../getting_started/algo_choice.rst:420
+msgid ""
+"再次提醒，即使算法的 Key size 相同，他们的安全强度未必一致，OU 的安全性可能弱于 Paillier，详见 `Okamoto-"
+"Uchiyama`_ 算法理论介绍章节。"
+msgstr ""
 
+#: ../../getting_started/algo_choice.rst:423
+msgid "本页面的英文文档较为陈旧，您愿意翻译吗？感谢您对隐语社区做出的贡献！"
+msgstr ""

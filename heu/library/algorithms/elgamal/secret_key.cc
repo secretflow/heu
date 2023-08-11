@@ -45,7 +45,8 @@ void SecretKey::Deserialize(yacl::ByteContainerView in) {
   auto lib_name = object.via.array.ptr[1].as<std::string>();
   x_ = object.via.array.ptr[2].as<MPInt>();
 
-  curve_ = ::yacl::crypto::EcGroupFactory::Create(curve_name, lib_name);
+  curve_ = ::yacl::crypto::EcGroupFactory::Instance().Create(
+      curve_name, yacl::Lib = lib_name);
   table_ = std::make_shared<LookupTable>();
   table_->Init(curve_);
 }

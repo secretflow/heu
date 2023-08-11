@@ -127,6 +127,8 @@ class Plaintext {
   MPInt mp_int_;
 };
 
+inline auto format_as(const Plaintext &p) { return fmt::streamed(p); }
+
 }  // namespace heu::lib::algorithms::paillier_clustar_fpga
 
 namespace msgpack {

@@ -97,6 +97,13 @@ TEST_F(SchemaTest, SchemaParse) {
   EXPECT_EQ(SchemaToString(SchemaType::OU), "OU");
   EXPECT_EQ(SchemaToString(SchemaType::ZPaillier), "ZPaillier");
   EXPECT_EQ(SchemaToString(SchemaType::FPaillier), "FPaillier");
+  EXPECT_EQ(SchemaToString(SchemaType::ElGamal), "ElGamal");
+
+  EXPECT_EQ(fmt::format("{}", SchemaType::Mock), "Mock");
+  EXPECT_EQ(fmt::format("{}", SchemaType::OU), "OU");
+  EXPECT_EQ(fmt::format("{}", SchemaType::ZPaillier), "ZPaillier");
+  EXPECT_EQ(fmt::format("{}", SchemaType::FPaillier), "FPaillier");
+  EXPECT_EQ(fmt::format("{}", SchemaType::ElGamal), "ElGamal");
 }
 
 }  // namespace heu::lib::phe::test

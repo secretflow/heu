@@ -242,4 +242,7 @@ class Plaintext {
   }
 };
 
+// for fmt lib
+inline auto format_as(const Plaintext &p) { return fmt::streamed(p); }
+
 }  // namespace heu::lib::algorithms::mock
