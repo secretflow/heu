@@ -65,8 +65,7 @@ msgid ""
 ":doc:`从源码编译<./installation>`，同时还需要修改 `此文件 "
 "<https://github.com/secretflow/heu/blob/main/heu/pylib/BUILD.bazel>`_ 中关于"
 " Python 版本的声明。"
-msgstr "
-The package in the PyPI repository only supports the Python 3.8 environment. If you want to support more Python versions, you can try :doc:compiling from source<./installation>. Additionally, you need to modify the declaration regarding the Python version in this file<https://github.com/secretflow/heu/blob/main/heu/pylib/BUILD.bazel>."
+msgstr "The package in the PyPI repository only supports the Python 3.8 environment. If you want to support more Python versions, you can try :doc:compiling from source<./installation>. Additionally, you need to modify the declaration regarding the Python version in this file<https://github.com/secretflow/heu/blob/main/heu/pylib/BUILD.bazel>."
 
 #: ../../getting_started/faq.rst:27
 msgid ""

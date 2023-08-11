@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-01 21:05+0800\n"
+"POT-Creation-Date: 2023-07-20 10:37+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,12 +29,8 @@ msgstr "Please use ``from heu import phe`` to import phe module"
 msgid "A high-performance partial homomorphic encryption library"
 msgstr ""
 
-#: ../../docstring heu.phe.BatchEncoder:1 of
-msgid "Encode two cleartexts into one plaintext."
-msgstr ""
-
-#: ../../docstring heu.phe.BatchEncoder:3 of
-msgid "Cleartexts must be integers and cannot exceed 64bit."
+#: ../../docstring heu.phe.BatchFloatEncoder:1 of
+msgid "BatchFloatEncoder can encode two floating number into one plaintext"
 msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.decode:1 of
@@ -45,8 +41,28 @@ msgstr ""
 msgid "Batch encode two cleartexts into one plaintext"
 msgstr ""
 
+#: ../../docstring heu.phe.BatchFloatEncoderParams:1 of
+msgid "Store parameters for BatchFloatEncoder"
+msgstr ""
+
 #: ../../docstring heu.phe.PyCapsule.instance:1 of
-msgid "Create BatchEncoder instance"
+msgid "Create BatchFloatEncoder instance"
+msgstr ""
+
+#: ../../docstring heu.phe.BatchIntegerEncoder:1 of
+msgid "BatchIntegerEncoder can encode two integers into one plaintext"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.encode:1 of
+msgid "Encode two int64 cleartexts into one plaintext"
+msgstr ""
+
+#: ../../docstring heu.phe.BatchIntegerEncoderParams:1 of
+msgid "Store parameters for BatchIntegerEncoder"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.instance:1 of
+msgid "Create BatchIntegerEncoder instance"
 msgstr ""
 
 #: ../../docstring heu.phe.BigintDecoder:1 of
@@ -87,6 +103,14 @@ msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.decrypt:1 of
 msgid "Decrypt ciphertext to plaintext"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.decrypt_in_range:1 of
+msgid ""
+"Decrypt ciphertext and make sure plaintext is in range (-2^range_bits, "
+"2^range_bits). Range checking is used to block OU plaintext overflow "
+"attack, see HEU documentation for details. throws an exception if "
+"plaintext is out of range."
 msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.decrypt_raw:1 of
@@ -225,10 +249,16 @@ msgstr ""
 msgid "Get decryptor"
 msgstr ""
 
-#: ../../docstring heu.phe.PyCapsule.batch_encoder:1 of
+#: ../../docstring heu.phe.PyCapsule.batch_float_encoder:1 of
 msgid ""
-"Get an instance of BatchEncoder, equal to `phe.BatchEncoder(schema, "
-"padding_size)`"
+"Get an instance of BatchIntegerEncoder, equal to "
+"`phe.BatchFloatEncoder(schema, scale, padding_size)`"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.batch_integer_encoder:1 of
+msgid ""
+"Get an instance of BatchIntegerEncoder, equal to "
+"`phe.BatchIntegerEncoder(schema, scale, padding_size)`"
 msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.bigint_encoder:1 of
@@ -327,15 +357,23 @@ msgid "Mock"
 msgstr ""
 
 #: ../../docstring heu.phe.SchemaType:5 of
-msgid "ZPaillier"
+msgid "OU"
 msgstr ""
 
 #: ../../docstring heu.phe.SchemaType:7 of
-msgid "FPaillier"
+msgid "IPCL"
 msgstr ""
 
 #: ../../docstring heu.phe.SchemaType:9 of
-msgid "OU"
+msgid "ZPaillier"
+msgstr ""
+
+#: ../../docstring heu.phe.SchemaType:11 of
+msgid "FPaillier"
+msgstr ""
+
+#: ../../docstring heu.phe.SchemaType:13 of
+msgid "ElGamal"
 msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.parse_schema_type:1 of
@@ -344,7 +382,7 @@ msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.setup:3 of
 msgid ""
-"setup(schema_type: heu.phe.SchemaType = <SchemaType.ZPaillier: 1>, "
+"setup(schema_type: heu.phe.SchemaType = <SchemaType.ZPaillier: 3>, "
 "key_size: int = 2048) -> heu.phe.HeKit"
 msgstr ""
 

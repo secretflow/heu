@@ -103,4 +103,6 @@ std::ostream& operator<<(std::ostream& os, SchemaType st) {
   return os << SchemaToString(st);
 }
 
+std::string format_as(SchemaType i) { return SchemaToString(i); }
+
 }  // namespace heu::lib::phe

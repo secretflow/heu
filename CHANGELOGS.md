@@ -8,9 +8,8 @@
 
 ## [Unreleased]
 
-- [Feature] Add ClustarFPGA to HEU
+- [Feature] Add a new paillier impl based on ClustarFPGA hardware from Clustar Technology
 - [Optimize] Optimize vectorized spi in mat mul
-- [Feature] New apis are added to make algorithms pass in optimized vectorized spi mat mul
 - [Add] Add test case Mul in NpBenchmarks
 
 ## [0.4.4]

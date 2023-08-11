@@ -150,12 +150,6 @@ class Evaluator {
   std::vector<Ciphertext> Negate(ConstSpan<Ciphertext> a) const;
   void NegateInplace(Span<Ciphertext> a) const;  // [SPI: Critical]
 
-  // Add cipher input to sum
-  void CalcSum(Ciphertext* sum, ConstSpan<Ciphertext> input) const;
-  // Add plain input to sum
-  void CalcSum(Plaintext* sum, ConstSpan<Plaintext> input) const;
-
-  std::string GetSchema() const { return "mock"; }
 #endif
 
  private:

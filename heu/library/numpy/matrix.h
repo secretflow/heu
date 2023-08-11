@@ -309,6 +309,11 @@ class DenseMatrix {
   int64_t ndim_;
 };
 
+template <typename T>
+inline auto format_as(const DenseMatrix<T>& i) {
+  return fmt::streamed(i);
+}
+
 using PMatrix = DenseMatrix<phe::Plaintext>;
 using CMatrix = DenseMatrix<phe::Ciphertext>;
 

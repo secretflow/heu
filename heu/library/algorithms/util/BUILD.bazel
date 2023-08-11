@@ -20,7 +20,7 @@ yacl_cc_library(
     name = "spi_traits",
     hdrs = ["spi_traits.h"],
     deps = [
-        "@yacl//yacl/crypto/base/mpint:type_traits",
+        "@yacl//yacl/utils/spi:type_traits",
     ],
 )
 
@@ -28,8 +28,8 @@ yacl_cc_library(
     name = "mp_int",
     hdrs = ["mp_int.h"],
     deps = [
-        "@yacl//yacl/crypto/base/mpint",
-        "@yacl//yacl/crypto/base/mpint:montgomery_math",
+        "@yacl//yacl/math/mpint",
+        "@yacl//yacl/math/mpint:montgomery_math",
     ],
 )
 

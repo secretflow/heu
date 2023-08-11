@@ -1296,7 +1296,7 @@ TEST_P(CEvaluatorTest, NegateInplace) {
   }
 }
 
-TEST_P(CEvaluatorTest, CalcSum) {
+TEST_P(CEvaluatorTest, ReduceSum) {
   // prepare
   std::vector<int32_t> input_vec{-123, 456, -789, 0, -1, 10001, 0, -1002};
   int32_t expected_result = 0;
@@ -1315,10 +1315,8 @@ TEST_P(CEvaluatorTest, CalcSum) {
   auto input_const_cipher_span =
       TextToConstSpan(input_cipher_vec, input_ciphertext_ptrs);
 
-  Ciphertext result_cipher;
-
   // sum
-  evaluator_->CalcSum(&result_cipher, input_const_cipher_span);
+  Ciphertext result_cipher = evaluator_->ReduceSum(input_const_cipher_span);
 
   // decrypt
   Plaintext res_plain;
@@ -1328,7 +1326,7 @@ TEST_P(CEvaluatorTest, CalcSum) {
   EXPECT_EQ(res_plain, Plaintext(expected_result));
 }
 
-TEST_P(CEvaluatorTest, PlaintextCalcSum) {
+TEST_P(CEvaluatorTest, PlaintextReduceSum) {
   // prepare
   std::vector<int32_t> input_vec{-123, 456, -789, 0, -1, 10001, 0, -1002};
   size_t input_size = input_vec.size();
@@ -1348,8 +1346,7 @@ TEST_P(CEvaluatorTest, PlaintextCalcSum) {
   CMonoFacility::ValueVecToPtrVec(input_plain_vec, input_plain_ptrs);
 
   // calc sum
-  Plaintext plain_sum;
-  evaluator_->CalcSum(&plain_sum, input_plain_ptrs);
+  Plaintext plain_sum = evaluator_->ReduceSum(input_plain_ptrs);
 
   // check results
   EXPECT_EQ(Plaintext(expected_result), plain_sum);

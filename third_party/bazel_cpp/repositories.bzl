@@ -1,6 +1,7 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
+
 def heu_cpp_deps():
     _com_github_eigenteam_eigen()
     _com_github_madler_zlib()

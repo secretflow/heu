@@ -23,7 +23,7 @@ namespace heu::lib::algorithms::elgamal {
 void KeyGenerator::Generate(const yacl::crypto::CurveName &curve_name,
                             SecretKey *sk, PublicKey *pk) {
   std::shared_ptr<yacl::crypto::EcGroup> curve =
-      ::yacl::crypto::EcGroupFactory::Create(curve_name);
+      ::yacl::crypto::EcGroupFactory::Instance().Create(curve_name);
   MPInt x;
   do {
     MPInt::RandomLtN(curve->GetField(), &x);

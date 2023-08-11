@@ -65,7 +65,8 @@ void PublicKey::Deserialize(yacl::ByteContainerView in) {
 
   auto curve_name = object.via.array.ptr[0].as<yacl::crypto::CurveName>();
   auto lib_name = object.via.array.ptr[1].as<std::string>();
-  curve_ = ::yacl::crypto::EcGroupFactory::Create(curve_name, lib_name);
+  curve_ = ::yacl::crypto::EcGroupFactory::Instance().Create(
+      curve_name, yacl::Lib = lib_name);
 
   h_ = curve_->DeserializePoint(object.via.array.ptr[2].as<std::string_view>());
 }

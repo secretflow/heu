@@ -17,13 +17,14 @@
 import io
 import logging
 import os
+import platform
 import re
 import shutil
 import subprocess
 import sys
+
 import setuptools
 import setuptools.command.build_ext
-import platform
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +34,6 @@ SUPPORTED_PYTHONS = [(3, 8), (3, 9), (3, 10), (3, 11)]
 BAZEL_MAX_JOBS = os.getenv("BAZEL_MAX_JOBS")
 ROOT_DIR = os.path.dirname(__file__)
 SKIP_BAZEL_CLEAN = os.getenv("SKIP_BAZEL_CLEAN")
-
 
 pyd_suffix = ".so"
 
@@ -82,8 +82,6 @@ setup_spec = SetupSpec(
 
 heu_lib_files = [
     "bazel-bin/heu/pylib/heu" + pyd_suffix,
-    "heu/pylib/version.py",
-    "heu/pylib/__init__.py",
 ]
 
 # These are the directories where automatically generated Python protobuf
@@ -136,14 +134,14 @@ def build():
 
 
 def remove_prefix(text, prefix):
-    return text[text.startswith(prefix) and len(prefix) :]
+    return text[text.startswith(prefix) and len(prefix):]
 
 
 def copy_file(target_dir, filename, rootdir):
     source = os.path.relpath(filename, rootdir)
     fn = remove_prefix(source, 'bazel-bin/')
     fn = remove_prefix(fn, 'heu/pylib/')
-    destination = os.path.join(target_dir, 'heu', fn)
+    destination = os.path.join(target_dir, fn)
 
     # Create the target directory if it doesn't already exist.
     os.makedirs(os.path.dirname(destination), exist_ok=True)
@@ -178,6 +176,7 @@ def pip_run(build_ext):
     for filename in setup_spec.files_to_include:
         copied_files += copy_file(build_ext.build_lib, filename, ROOT_DIR)
     print("# of files copied to {}: {}".format(build_ext.build_lib, copied_files))
+    assert copied_files == 1, "only heu.so is allowed"
 
     deleted_files = 0
     for filename in files_to_remove:

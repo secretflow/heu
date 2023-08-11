@@ -508,9 +508,8 @@ void Evaluator::NegateInplace(Span<Ciphertext> a) const {
   }
 }
 
-void Evaluator::CalcSum(Ciphertext *sum, ConstSpan<Ciphertext> input) const {
-  YACL_ENFORCE((input.size() > 0) && (sum != nullptr),
-               "CalcSum error: input size is 0");
+Ciphertext Evaluator::ReduceSum(ConstSpan<Ciphertext> input) const {
+  YACL_ENFORCE(input.size() > 0, "ReduceSum error: input size is 0");
   size_t elem_size = input.size();
 
   // Part 1 data prepare
@@ -558,20 +557,18 @@ void Evaluator::CalcSum(Ciphertext *sum, ConstSpan<Ciphertext> input) const {
   memcpy(&sum_exp, res_exp.get(), CFPGATypes::U_INT32_BYTE);
   sum_cipher.SetExp(sum_exp);
 
-  *sum = std::move(sum_cipher);
+  return sum_cipher;
 }
 
-void Evaluator::CalcSum(Plaintext *sum, ConstSpan<Plaintext> input) const {
-  YACL_ENFORCE((input.size() > 0) && (sum != nullptr),
-               "CalcSum error: input size is 0");
+Plaintext Evaluator::ReduceSum(ConstSpan<Plaintext> input) const {
+  YACL_ENFORCE(input.size() > 0, "ReduceSum error: input size is 0");
 
   Plaintext loc_sum;
-  int64_t zero_num = 0;
-  loc_sum.Set(zero_num);
+  loc_sum.Set(0);
   for (const auto &item : input) {
     loc_sum += *item;
   }
-  *sum = std::move(loc_sum);
+  return loc_sum;
 }
 
 }  // namespace heu::lib::algorithms::paillier_clustar_fpga

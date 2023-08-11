@@ -62,6 +62,8 @@ std::vector<SchemaType> SelectSchemas(const std::string& regex_pattern,
 std::string SchemaToString(SchemaType schema_type);
 std::vector<std::string> GetSchemaAliases(SchemaType schema_type);
 std::ostream& operator<<(std::ostream& os, SchemaType st);
+// for fmt lib
+std::string format_as(SchemaType i);
 
 // Below are some helper macros
 #define INVOKE_true(func_or_macro, schema_ns, ...) \

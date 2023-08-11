@@ -14,9 +14,7 @@
 
 #pragma once
 
-#ifdef APPLY_CLUSTAR_FPGA
-#define ENABLE_CLUSTAR_FPGA true
-#else
+#ifndef ENABLE_CLUSTAR_FPGA
 #define ENABLE_CLUSTAR_FPGA false
 #endif
 

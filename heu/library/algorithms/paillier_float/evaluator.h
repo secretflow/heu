@@ -79,14 +79,6 @@ class Evaluator {
   // a = -a
   void NegateInplace(Ciphertext* a) const;
 
-  // Add cipher input to sum
-  void CalcSum(Ciphertext* sum, ConstSpan<Ciphertext> input) const {}
-
-  // Add plain input to sum
-  void CalcSum(Plaintext* sum, ConstSpan<Plaintext> input) const {}
-
-  std::string GetSchema() const { return "fpaillier"; }
-
  private:
   MPInt AddRaw(const MPInt& a, const MPInt& b) const;
 
