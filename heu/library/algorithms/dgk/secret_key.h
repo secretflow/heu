@@ -45,16 +45,6 @@ class SecretKey : public HeObject<SecretKey> {
 
 }  // namespace heu::lib::algorithms::dgk
 
-template <>
-struct std::hash<yacl::crypto::MPInt> {
-  size_t operator()(const yacl::crypto::MPInt &x) const {
-    size_t h;
-    MPINT_ENFORCE_OK(mp_hash(
-        const_cast<mp_int *>(reinterpret_cast<const mp_int *>(&x)), &h));
-    return h;
-  }
-};
-
 // clang-format off
 namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
