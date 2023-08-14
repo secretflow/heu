@@ -44,16 +44,18 @@ class PublicKey : public HeObject<PublicKey> {
   MPInt MapBackToZSpace(const MPInt&) const;
 
   void MulMod(const MPInt& a, const MPInt& b, MPInt* dst) const {
-    lut_->m_space->MulMod(a, b, dst);
+    lut_->m_space.MulMod(a, b, dst);
   }
 
  private:
   MPInt n_, g_, h_, u_;
 
   struct LUT {
-    std::unique_ptr<MontgomerySpace> m_space;  // m-space for mod n
-    std::unique_ptr<BaseTable> g_pow;          // powers of g mod n
-    std::unique_ptr<BaseTable> h_pow;          // powers of h mod n
+    LUT(const PublicKey* pub);
+
+    MontgomerySpace m_space;  // m-space for mod n
+    BaseTable g_pow;          // powers of g mod n
+    BaseTable h_pow;          // powers of h mod n
   };
 
   std::shared_ptr<LUT> lut_;
