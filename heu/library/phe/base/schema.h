@@ -35,6 +35,7 @@ namespace heu::lib::phe {
 #define ENUM_ELEMENT_HELPER(enable, name) ECHO_##enable(name)
 #define ENUM_ELEMENT(enable, name) ENUM_ELEMENT_HELPER(enable, name)
 
+
 // [SPI: Please register your algorithm here] || progress: (2 of 5)
 // If you add a new schema, change this !!
 // clang-format off
@@ -87,7 +88,7 @@ std::string format_as(SchemaType i);
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_z, ##__VA_ARGS__)           \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_f, ##__VA_ARGS__)           \
   INVOKE(ENABLE_CLUSTAR_FPGA, func_or_macro, ::heu::lib::algorithms::paillier_clustar_fpga, ##__VA_ARGS__) \
-  INVOKE(true, func_or_macro, ::heu::lib::algorithms::elgamal, ##__VA_ARGS__)
+  INVOKE(true, func_or_macro, ::heu::lib::algorithms::elgamal, ##__VA_ARGS__) \
 
 // [SPI: Please register your algorithm here] || progress: (4 of 5)
 // If you add a new schema, change this !!

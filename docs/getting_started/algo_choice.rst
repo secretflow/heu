@@ -330,9 +330,9 @@ ElGamal 是一个基于 Diffie–Hellman 密钥交换的非对称加密算法，
    * - 算法类型
      - 同态特性取决于底层循环群 G 的定义，根据 G 的不同 Elgamal 可能为加法同态、乘法同态或没有同态特性。
    * - 安全性
-     - 取决于 G 上离散对数问题（DLP）的困难性
+     - 如果定义在 G 上的 Decisional Diffie–Hellman assumption (DDH) 是困难的，则算法是语义安全（Semantic Security）的，不可区分性满足 IND-CPA
    * - 困难假设
-     - 离散对数难题 DLP
+     - CDH & DDH
    * - 安全强度（Security Strength）
      - 取决于 G
 
@@ -343,9 +343,9 @@ ElGamal 是一个基于 Diffie–Hellman 密钥交换的非对称加密算法，
    * - 算法类型
      - 取决于明文到 EC Group 的映射方式，如果映射妥当，则 EC ElGamal 满足加法同态特性
    * - 安全性
-     - 取决于椭圆曲线离散对数问题（ECDLP）的困难性
+     - IND-CPA 安全，语义安全（Semantic Security）
    * - 困难假设
-     - 椭圆曲线离散对数难题 ECDLP
+     - 定义在椭圆曲线上的 CDH & DDH
    * - 安全强度（Security Strength）
      - 取决于具体选择的曲线，`此处 <http://safecurves.cr.yp.to/rho.html>`__ 列出了一部分曲线的安全强度
 
