@@ -35,7 +35,6 @@ namespace heu::lib::phe {
 #define ENUM_ELEMENT_HELPER(enable, name) ECHO_##enable(name)
 #define ENUM_ELEMENT(enable, name) ENUM_ELEMENT_HELPER(enable, name)
 
-
 // [SPI: Please register your algorithm here] || progress: (2 of 5)
 // If you add a new schema, change this !!
 // clang-format off
