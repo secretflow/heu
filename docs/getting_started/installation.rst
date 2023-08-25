@@ -37,14 +37,13 @@ HEU 安装包已经发布到了 PyPi，您可以通过 pip 工具安装 HEU
  - `Bazel <https://docs.bazel.build/versions/main/install.html>`_
  - GCC >= 11
 
-安装：
+编译和安装：
 
 .. code-block:: bash
 
   git clone --recursive git@github.com:secretflow/heu.git
   cd heu
-  bazel build //heu/pylib -c opt
-  pip install bazel-bin/heu/pylib/(cat bazel-bin/heu/pylib/pylib.name) --force-reinstall
+  sh build_wheel_entrypoint.sh
 
 
 测试运行

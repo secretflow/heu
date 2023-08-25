@@ -326,10 +326,9 @@ HEU 单元测试使用 `GoogleTest <github.com/google/googletest>`_ 框架，有
 
 .. code-block:: shell
 
-   # Please switch to Python 3.8 environment
    pip install pybind11 # Only need to run once
 
-   sh heu/pylib/reinstall.sh
+   sh build_wheel_entrypoint.sh
 
 基本使用：
 

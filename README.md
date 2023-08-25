@@ -60,7 +60,6 @@ bazel test heu/...
 Build python lib
 
 ```shell
-# require Python 3.8
 # build and install python library
 sh build_wheel_entrypoint.sh
 ```

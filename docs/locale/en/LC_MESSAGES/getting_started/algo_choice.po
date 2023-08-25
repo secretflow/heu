@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-26 11:37+0800\n"
+"POT-Creation-Date: 2023-08-21 18:43+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -207,6 +207,7 @@ msgstr "security"
 
 #: ../../getting_started/algo_choice.rst:68
 #: ../../getting_started/algo_choice.rst:205
+#: ../../getting_started/algo_choice.rst:346
 msgid "IND-CPA 安全，语义安全（Semantic Security）"
 msgstr "IND-CPA Security, Semantic Security"
 
@@ -901,11 +902,13 @@ msgid "同态特性取决于底层循环群 G 的定义，根据 G 的不同 Elg
 msgstr ""
 
 #: ../../getting_started/algo_choice.rst:333
-msgid "取决于 G 上离散对数问题（DLP）的困难性"
+msgid ""
+"如果定义在 G 上的 Decisional Diffie–Hellman assumption (DDH) "
+"是困难的，则算法是语义安全（Semantic Security）的，不可区分性满足 IND-CPA"
 msgstr ""
 
 #: ../../getting_started/algo_choice.rst:335
-msgid "离散对数难题 DLP"
+msgid "CDH & DDH"
 msgstr ""
 
 #: ../../getting_started/algo_choice.rst:337
@@ -924,12 +927,8 @@ msgstr "Information of EC ElGamal"
 msgid "取决于明文到 EC Group 的映射方式，如果映射妥当，则 EC ElGamal 满足加法同态特性"
 msgstr ""
 
-#: ../../getting_started/algo_choice.rst:346
-msgid "取决于椭圆曲线离散对数问题（ECDLP）的困难性"
-msgstr ""
-
 #: ../../getting_started/algo_choice.rst:348
-msgid "椭圆曲线离散对数难题 ECDLP"
+msgid "定义在椭圆曲线上的 CDH & DDH"
 msgstr ""
 
 #: ../../getting_started/algo_choice.rst:350

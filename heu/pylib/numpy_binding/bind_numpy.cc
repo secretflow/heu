@@ -237,19 +237,36 @@ void PyBindNumpy(pybind11::module& m) {
       [](phe::SchemaType schema_type, size_t key_size) {
         return hnp::HeKit(phe::HeKit(schema_type, key_size));
       },
-      py::arg("schema_type") = phe::SchemaType::ZPaillier,
-      py::arg("key_size") = 2048, py::return_value_policy::move,
+      py::arg("schema_type"), py::arg("key_size"),
+      py::return_value_policy::move,
       "Setup phe (numpy) environment by schema type and key size");
 
   m.def(
       "setup",
-      [](const std::string& schema_string, size_t key_size) -> hnp::HeKit {
+      [](const std::string& schema_string, size_t key_size) {
         return hnp::HeKit(
             phe::HeKit(phe::ParseSchemaType(schema_string), key_size));
       },
-      py::arg("schema_string") = "z-paillier", py::arg("key_size") = 2048,
+      py::arg("schema_string"), py::arg("key_size"),
       py::return_value_policy::move,
       "Setup phe (numpy) environment by schema string and key size");
+
+  m.def(
+      "setup",
+      [](phe::SchemaType schema_type) {
+        return hnp::HeKit(phe::HeKit(schema_type));
+      },
+      py::arg("schema_type") = phe::SchemaType::ZPaillier,
+      py::return_value_policy::move,
+      "Setup phe (numpy) environment by schema type");
+
+  m.def(
+      "setup",
+      [](const std::string& schema_string) {
+        return hnp::HeKit(phe::HeKit(phe::ParseSchemaType(schema_string)));
+      },
+      py::arg("schema_string") = "z-paillier", py::return_value_policy::move,
+      "Setup phe (numpy) environment by schema string");
 
   // api for evaluator party
   auto dhe_kit = py::class_<hnp::DestinationHeKit, phe::HeKitPublicBase>(

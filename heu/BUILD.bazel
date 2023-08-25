@@ -1,7 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 
-
-
+### global configs ###
 
 config_setting(
     name = "enable_clustar_fpga",

@@ -190,23 +190,35 @@ void PyBindPhe(pybind11::module& m) {
 
   m.def(
       "setup",
-      [](phe::SchemaType schema_type, size_t key_size) {
-        phe::HeKit ahe(schema_type, key_size);
-        return ahe;
+      [](phe::SchemaType schema_type, size_t key_size) -> phe::HeKit {
+        return {schema_type, key_size};
       },
-      py::arg("schema_type") = phe::SchemaType::ZPaillier,
-      py::arg("key_size") = 2048, py::return_value_policy::move,
+      py::arg("schema_type"), py::arg("key_size"),
+      py::return_value_policy::move,
       "Setup phe environment by schema type and key size");
 
   m.def(
       "setup",
-      [](const std::string& schema_string, size_t key_size) {
-        phe::HeKit ahe(phe::ParseSchemaType(schema_string), key_size);
-        return ahe;
+      [](const std::string& schema_string, size_t key_size) -> phe::HeKit {
+        return {phe::ParseSchemaType(schema_string), key_size};
       },
-      py::arg("schema_string") = "z-paillier", py::arg("key_size") = 2048,
+      py::arg("schema_string"), py::arg("key_size"),
       py::return_value_policy::move,
       "Setup phe environment by schema string and key size");
+
+  m.def(
+      "setup",
+      [](phe::SchemaType schema_type) { return phe::HeKit(schema_type); },
+      py::arg("schema_type") = phe::SchemaType::ZPaillier,
+      py::return_value_policy::move, "Setup phe environment by schema type");
+
+  m.def(
+      "setup",
+      [](const std::string& schema_string) -> phe::HeKit {
+        return phe::HeKit(phe::ParseSchemaType(schema_string));
+      },
+      py::arg("schema_string") = "z-paillier", py::return_value_policy::move,
+      "Setup phe environment by schema string");
 
   // api for evaluator party
   py::class_<phe::DestinationHeKit, phe::HeKitPublicBase>(m, "DestinationHeKit")

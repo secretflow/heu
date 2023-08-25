@@ -126,7 +126,6 @@ class NpBenchmarks {
 
   void Encrypt(benchmark::State& state, size_t idx) {
     std::call_once(flag_, []() { fmt::print("{:-^80}\n", ""); });
-
     // encrypt
     const auto& encryptor = he_kit_->GetEncryptor();
     for (auto _ : state) {

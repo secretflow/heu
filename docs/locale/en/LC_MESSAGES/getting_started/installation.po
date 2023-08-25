@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-02 20:22+0800\n"
+"POT-Creation-Date: 2023-08-23 11:26+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
+#: ../../getting_started/installation.rst:2
 #: ../../getting_started/installation.rst:16
 msgid "安装"
 msgstr "Installation"
@@ -80,18 +81,18 @@ msgid "GCC >= 11"
 msgstr ""
 
 #: ../../getting_started/installation.rst:40
-msgid "安装："
+msgid "编译和安装："
 msgstr "Compile and install:"
 
-#: ../../getting_started/installation.rst:51
+#: ../../getting_started/installation.rst:50
 msgid "测试运行"
 msgstr "Test running"
 
-#: ../../getting_started/installation.rst:53
+#: ../../getting_started/installation.rst:52
 msgid "安装完成后，建议执行以下命令检查 HEU 是否工作正常"
 msgstr "After installation, it is a good idea to test HEU using:"
 
-#: ../../getting_started/installation.rst:59
+#: ../../getting_started/installation.rst:58
 msgid ""
 "上述命令，如果没有任何输出，则说明安装成功；反之如果报错，则说明安装未成功，请参考 :doc:`FAQ "
 "</getting_started/faq>`"
