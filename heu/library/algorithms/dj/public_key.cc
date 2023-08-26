@@ -41,7 +41,7 @@ void PublicKey::Init(const MPInt& n, uint32_t s, const MPInt& hs) {
   lut_ = std::make_shared<LUT>();
   lut_->m_space = std::make_unique<MontgomerySpace>(cmod_);
   lut_->hs_pow = std::make_unique<BaseTable>();
-  lut_->m_space->MakeBaseTable(hs_, kExpUnitBits, N().BitCount() / 2,
+  lut_->m_space->MakeBaseTable(hs_, kExpUnitBits, n_.BitCount() / 2,
                                lut_->hs_pow.get());
   lut_->n_pow.resize(s + 1);
   lut_->n_pow[0] = MPInt::_1_;

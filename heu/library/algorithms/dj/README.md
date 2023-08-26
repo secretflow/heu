@@ -1,13 +1,13 @@
 Implementation of Damgard Jurik Algorithm
 
 Setup:
-- Plaintext space: $\Z_{n^s}$
-- Ciphertext space: $\Z_{n^{s+1}}$
+- Plaintext space: $\mathbb{Z}_{n^s}$
+- Ciphertext space: $\mathbb{Z}_{n^{s+1}}$
 
 KeyGen($1^k$):
 
-- Sample a $k$-bit semiprime $n = p \times q$ such that $\gcd(\lambda(n), n)=1$, where $\lambda(n) = \operatorname{lcm}(p-1,q-1)$
-- Sample $x \gets \Z_n^*$
+- Sample a $k$-bit semiprime $n = p \times q$ such that $\gcd(\lambda(n), n)=1$, where $\lambda(n) = \text{lcm}(p-1,q-1)$
+- Sample $x \gets \mathbb{Z}_n^*$
 - Compute $h = -x^2 \bmod n$ and $h_s = h^{n^s} \bmod n^{s+1}$
 - The public key is $(n, h_s)$ and the private key is $\lambda$
 
@@ -26,13 +26,13 @@ Decryption(sk, c):
 
 Additive homomorphisms:
 
-- Add$(c_1, c_2) = c_1 \cdot c_2 \bmod n^{s+1}$
-- AddPlain$(c, m) = c \cdot (1+n)^m \bmod n^{s+1}$
-- Negate$(c) = c^{-1} \bmod n^{s+1}$
+- Add $(c_1, c_2) = c_1 \cdot c_2 \bmod n^{s+1}$
+- AddPlain $(c, m) = c \cdot (1+n)^m \bmod n^{s+1}$
+- Negate $(c) = c^{-1} \bmod n^{s+1}$
 
 Multiplicative homomorphism:
 
-- ScalarMul$(c, s) = c^s \bmod n^{s+1}$
+- ScalarMul $(c, s) = c^s \bmod n^{s+1}$
 
 Reference:
 
