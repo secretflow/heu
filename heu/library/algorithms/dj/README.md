@@ -36,4 +36,6 @@ Multiplicative homomorphism:
 
 Reference:
 
-- Damgård, I. and Jurik, M., 2001. A generalisation, a simplification and some applications of Paillier's probabilistic public-key system. In Public Key Cryptography: 4th International Workshop on Practice and Theory in Public Key Cryptosystems, PKC 2001 Cheju Island, Korea, February 13–15, 2001 Proceedings 4 (pp. 119-136). Springer Berlin Heidelberg.
+- [DJ01] Damgård, I. and Jurik, M., 2001. A generalisation, a simplification and some applications of Paillier's probabilistic public-key system. In Public Key Cryptography: 4th International Workshop on Practice and Theory in Public Key Cryptosystems, PKC 2001 Cheju Island, Korea, February 13–15, 2001 Proceedings 4 (pp. 119-136). Springer Berlin Heidelberg. https://www.brics.dk/RS/00/45/BRICS-RS-00-45.pdf
+
+- [DJN10] Damgård, Ivan, Mads Jurik, and Jesper Buus Nielsen. 2010. “A Generalization of Paillier’s Public-Key System with Applications to Electronic Voting.” International Journal of Information Security 9 (6): 371–85. https://doi.org/10.1007/s10207-010-0119-9.
