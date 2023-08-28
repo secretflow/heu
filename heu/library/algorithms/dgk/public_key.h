@@ -35,6 +35,8 @@ class PublicKey : public HeObject<PublicKey> {
   bool operator!=(const PublicKey&) const;
   std::string ToString() const override;
 
+  // ---Helper functions--- //
+  // Warning: DO NOT USE THE FOLLOWING FUNCTIONS DIRECTLY
  public:
   // Random element of form h^r mod n
   MPInt RandomHr() const;

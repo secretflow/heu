@@ -27,10 +27,10 @@ void SecretKey::Init(const MPInt& p, const MPInt& q, const MPInt& vp,
   log_table_ =
       std::make_shared<std::unordered_map<MPInt, MPInt>>(u.Get<size_t>());
   MPInt qm{g.PowMod(vp, p)}, ct{1};
-  (*log_table_)[ct] = MPInt{0};
+  log_table_->emplace(ct, MPInt{0});
   for (MPInt i{1}; i < u; i.IncrOne()) {
     ct = ct.MulMod(qm, p);
-    (*log_table_)[ct] = i;
+    log_table_->emplace(ct, i);
   }
 }
 
@@ -51,7 +51,9 @@ std::string SecretKey::ToString() const {
 }
 
 MPInt SecretKey::Decrypt(const MPInt& ct) const {
-  return (*log_table_)[(ct % p_).PowMod(vp_, p_)];
+  auto it = log_table_->find((ct % p_).PowMod(vp_, p_));
+  YACL_ENFORCE(it != log_table_->end(), "SecretKey: Invalid ciphertext");
+  return it->second;
 }
 
 }  // namespace heu::lib::algorithms::dgk

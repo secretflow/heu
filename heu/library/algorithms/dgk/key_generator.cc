@@ -22,8 +22,8 @@ namespace heu::lib::algorithms::dgk {
 
 void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
   YACL_ENFORCE(key_size % 2 == 0, "Key size must be even");
-  YACL_ENFORCE(key_size >= 1024 && key_size <= 2048,
-               "Key size is recommended to be within 1024-2048 bits");
+  YACL_ENFORCE(key_size >= 1024 && key_size <= 3072,
+               "Key size must be in [1024, 3072] and 2048 bits is recommended");
 
   MPInt u, vp, vq;
   // MPINT_ENFORCE_OK(

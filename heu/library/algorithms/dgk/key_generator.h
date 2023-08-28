@@ -25,7 +25,7 @@ class KeyGenerator {
   static void Generate(SecretKey* sk, PublicKey* pk);
 
   constexpr static size_t l{16};   // recommended u size
-  constexpr static size_t t{160};  // recommended v size
+  constexpr static size_t t{160};  // recommended v size; FIXME
 };
 
 }  // namespace heu::lib::algorithms::dgk
