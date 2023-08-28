@@ -37,6 +37,16 @@ class DGKTest : public ::testing::Test {
   std::shared_ptr<Decryptor> decryptor_;
 };
 
+TEST_F(DGKTest, KeySerialization) {
+  auto pk_serialization = pk_.Serialize();
+  auto sk_serialization = sk_.Serialize();
+  PublicKey pk;
+  pk.Deserialize(pk_serialization);
+  SecretKey sk;
+  sk.Deserialize(sk_serialization);
+  EXPECT_EQ(sk.Decrypt(pk.MapBackToZSpace(pk.Encrypt(MPInt{123}))), MPInt{123});
+}
+
 TEST_F(DGKTest, CiphertextEvaluate) {
   Plaintext m0(-12345);
   Ciphertext ct0 = encryptor_->Encrypt(m0);

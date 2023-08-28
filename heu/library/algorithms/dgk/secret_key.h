@@ -72,7 +72,7 @@ struct convert<heu::lib::algorithms::dgk::SecretKey> {
   msgpack::object const &operator()(const msgpack::object &object,
       heu::lib::algorithms::dgk::SecretKey &sk) const {
     if (object.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-    if (object.via.array.size != 4) { throw msgpack::type_error(); }
+    if (object.via.array.size != 6) { throw msgpack::type_error(); }
 
     // The order here corresponds to the packer above
     auto p = object.via.array.ptr[0].as<heu::lib::algorithms::MPInt>();
