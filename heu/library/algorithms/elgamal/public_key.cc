@@ -19,7 +19,8 @@
 namespace heu::lib::algorithms::elgamal {
 
 bool PublicKey::operator==(const PublicKey& other) const {
-  return curve_->GetCurveName() == other.curve_->GetCurveName() &&
+  return IsValid() && other.IsValid() &&
+         curve_->GetCurveName() == other.curve_->GetCurveName() &&
          curve_->GetLibraryName() == other.curve_->GetLibraryName() &&
          curve_->PointEqual(h_, other.h_);
 }

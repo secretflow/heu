@@ -41,7 +41,8 @@ std::ostream& operator<<(std::ostream& os, const Ciphertext& c) {
 }
 
 bool Ciphertext::operator==(const Ciphertext& other) const {
-  return ec->PointEqual(c1, other.c1) && ec->PointEqual(c2, other.c2);
+  return ec && other.ec && ec->PointEqual(c1, other.c1) &&
+         ec->PointEqual(c2, other.c2);
 }
 
 bool Ciphertext::operator!=(const Ciphertext& other) const {
