@@ -94,6 +94,4 @@ class Plaintext : public SerializableVariant<HE_PLAINTEXT_TYPES> {
   static void RandomLtN(const Plaintext &ir, Plaintext *r);
 };
 
-inline auto format_as(const Plaintext &i) { return fmt::streamed(i); }
-
 }  // namespace heu::lib::phe

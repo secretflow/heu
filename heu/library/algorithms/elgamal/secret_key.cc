@@ -34,12 +34,9 @@ void SecretKey::Deserialize(yacl::ByteContainerView in) {
       msgpack::unpack(reinterpret_cast<const char *>(in.data()), in.size());
   msgpack::object object = msg.get();
 
-  if (object.type != msgpack::type::ARRAY) {
-    throw msgpack::type_error();
-  }
-  if (object.via.array.size != 3) {
-    throw msgpack::type_error();
-  }
+  YACL_ENFORCE(
+      object.type == msgpack::type::ARRAY && object.via.array.size == 3,
+      "Cannot parse buffer, format error");
 
   auto curve_name = object.via.array.ptr[0].as<yacl::crypto::CurveName>();
   auto lib_name = object.via.array.ptr[1].as<std::string>();
@@ -52,7 +49,8 @@ void SecretKey::Deserialize(yacl::ByteContainerView in) {
 }
 
 bool SecretKey::operator==(const SecretKey &other) const {
-  return curve_->GetCurveName() == other.curve_->GetCurveName() &&
+  return IsValid() && other.IsValid() &&
+         curve_->GetCurveName() == other.curve_->GetCurveName() &&
          curve_->GetLibraryName() == other.curve_->GetLibraryName() &&
          x_ == other.x_;
 }

@@ -22,6 +22,7 @@ build --enable_platform_specific_config
 build --cxxopt=-std=c++17
 build --host_cxxopt=-std=c++17
 build --linkopt -fvisibility=hidden
+build --linkopt -fvisibility-inlines-hidden
 build --linkopt -lm
 
 

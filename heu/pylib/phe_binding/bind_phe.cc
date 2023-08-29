@@ -19,7 +19,7 @@
 #include "pybind11/pybind11.h"
 #include "yacl/base/exception.h"
 
-#include "heu/library/phe/key_def.h"
+#include "heu/library/phe/base/key_def.h"
 #include "heu/pylib/common/py_utils.h"
 #include "heu/pylib/phe_binding/py_encoders.h"
 

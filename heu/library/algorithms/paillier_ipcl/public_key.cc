@@ -38,6 +38,8 @@ yacl::Buffer PublicKey::Serialize() const {
   return buf;
 }
 
+// todo: UT NOT PASSED
+// see heu/library/phe/phe_test.cc:40
 void PublicKey::Deserialize(yacl::ByteContainerView in) {
   std::istringstream is((std::string)in);
   {

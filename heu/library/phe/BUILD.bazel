@@ -10,16 +10,7 @@ yacl_cc_library(
         ":decryptor",
         ":encryptor",
         ":evaluator",
-        ":key_def",
         "//heu/library/phe/encoding",
-    ],
-)
-
-yacl_cc_library(
-    name = "key_def",
-    hdrs = ["key_def.h"],
-    deps = [
-        "//heu/library/phe/base:serializable_types",
     ],
 )
 

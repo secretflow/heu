@@ -140,4 +140,9 @@ class SerializableVariant {
 using MPInt = algorithms::MPInt;
 using Ciphertext = SerializableVariant<HE_NAMESPACE_LIST(Ciphertext)>;
 
+template <typename... Types>
+inline auto format_as(const SerializableVariant<Types...> &i) {
+  return fmt::streamed(i);
+}
+
 }  // namespace heu::lib::phe

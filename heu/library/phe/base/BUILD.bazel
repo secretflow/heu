@@ -5,6 +5,7 @@ package(default_visibility = ["//visibility:public"])
 yacl_cc_library(
     name = "base",
     deps = [
+        ":key_def",
         ":schema",
         ":serializable_types",
     ],
@@ -47,6 +48,14 @@ yacl_cc_library(
     hdrs = [
         "predefined_functions.h",
         "variant_helper.h",
+    ],
+)
+
+yacl_cc_library(
+    name = "key_def",
+    hdrs = ["key_def.h"],
+    deps = [
+        ":serializable_types",
     ],
 )
 

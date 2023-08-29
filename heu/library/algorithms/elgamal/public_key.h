@@ -48,6 +48,8 @@ class PublicKey {
   const yacl::crypto::EcPoint &GetH() const { return h_; }
 
  private:
+  bool IsValid() const { return (bool)curve_; }
+
   std::shared_ptr<yacl::crypto::EcGroup> curve_;
 
   yacl::crypto::EcPoint h_;  // h = xG

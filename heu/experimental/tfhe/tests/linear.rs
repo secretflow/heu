@@ -64,10 +64,10 @@ fn test_add() {
     let mut res = encryptor.encrypt(0).unwrap();
     measure_duration!("Add", {
         for i in 0..TEST_SIZE {
-            evaluator.mul_u32_inplace(&mut cts[i], 801).unwrap();
+            evaluator.mul_u32_inplace(&mut cts[i], 101).unwrap();
             evaluator.add_inplace(&mut res, &cts[i]).unwrap();
         }
     });
 
-    assert_eq!(decryptor.decrypt(&res).unwrap(), (TEST_SIZE * 801 * (TEST_SIZE - 1) / 2) as u32);
+    assert_eq!(decryptor.decrypt(&res).unwrap(), (TEST_SIZE * 101 * (TEST_SIZE - 1) / 2) as u32);
 }
