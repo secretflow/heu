@@ -31,6 +31,8 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
   u = MPInt{65423};  // use the largest l(16)-bit prime instead
   MPInt::RandPrimeOver(t, &vp);
   MPInt::RandPrimeOver(t, &vq);
+  // Question: can we consider the following generations of p, q secure?
+  // TODO: check NIST.FIPS.186-5 Appendix A.1.1
   MPInt wp, wq, p, q, gcd;
   do {
     MPInt::RandomMonicExactBits(key_size / 2 - t - l, &wp);
@@ -39,7 +41,7 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
     p = u * vp * wp + MPInt::_1_;
   } while (!p.IsPrime() || gcd != MPInt::_1_);
   do {
-    MPInt::RandomMonicExactBits(key_size / 2 - t - l, &wq);
+    MPInt::RandomMonicExactBits(key_size / 2 - t, &wq);
     MPInt::Gcd(wq, vp, &gcd);
     wq *= MPInt::_2_;
     q = vq * wq + MPInt::_1_;
