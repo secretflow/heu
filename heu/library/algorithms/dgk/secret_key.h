@@ -25,10 +25,15 @@ class SecretKey : public HeObject<SecretKey> {
             const MPInt &u, const MPInt &g);
 
   const MPInt &P() const { return p_; }
+
   const MPInt &Q() const { return q_; }
+
   const MPInt &Vp() const { return vp_; }
+
   const MPInt &Vq() const { return vq_; }
+
   const MPInt &U() const { return u_; }
+
   const MPInt &G() const { return g_; }
 
   bool operator==(const SecretKey &) const;

@@ -24,11 +24,17 @@ class PublicKey : public HeObject<PublicKey> {
   void Init(const MPInt& n, const MPInt& g, const MPInt& h, const MPInt& u);
 
   const MPInt& N() const { return n_; }
+
   const MPInt& G() const { return g_; }
+
   const MPInt& H() const { return h_; }
+
   const MPInt& U() const { return u_; }
+
   MPInt PlainModule() const { return u_; }
+
   MPInt PlaintextBound() const { return u_ / MPInt::_2_; }
+
   MPInt CipherModule() const { return n_; }
 
   bool operator==(const PublicKey&) const;
