@@ -51,6 +51,8 @@ static const std::map<SchemaType, std::vector<std::string>>
                  "paillier_clustarfpga", "paillier-clustarfpga"),
         MAP_ITEM(true, ElGamal, "elgamal", "ec_elgamal", "exponential_elgamal",
                  "exp_elgamal", "lifted_elgamal"),
+        MAP_ITEM(true, DGK, "dgk", "damgard-geisler-kroigaard",
+                 "damgard_geisler_kroigaard"),
         // MAP_ITEM(ENABLE, YOUR_ALGO, "one_or_more_name_alias"),
 };
 

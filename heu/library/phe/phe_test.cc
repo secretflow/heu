@@ -62,11 +62,12 @@ TEST_P(PheTest, KeySerialize) {
 
 TEST_P(PheTest, VarSerialize) {
   // test serialize plaintext
-  auto plain = Plaintext(he_kit_.GetSchemaType(), -963258741);
+  auto clear = he_kit_.GetSchemaType() == SchemaType::DGK ? -9632 : -963258741;
+  auto plain = Plaintext(he_kit_.GetSchemaType(), clear);
   EXPECT_NE(plain, Plaintext());
   EXPECT_NE(plain, Plaintext(he_kit_.GetSchemaType()));
-  EXPECT_NE(plain, Plaintext(he_kit_.GetSchemaType(), 963258741));
-  EXPECT_EQ(plain, Plaintext(he_kit_.GetSchemaType(), -963258741));
+  EXPECT_NE(plain, Plaintext(he_kit_.GetSchemaType(), -clear));
+  EXPECT_EQ(plain, Plaintext(he_kit_.GetSchemaType(), clear));
   auto buffer = plain.Serialize();
   Plaintext pt2;
   pt2.Deserialize(buffer);
@@ -102,6 +103,9 @@ TEST_P(PheTest, VarSerialize) {
 TEST_P(PheTest, BatchEncoding) {
   if (GetParam() == SchemaType::ElGamal) {
     GTEST_SKIP() << "Plaintext range is not enough, Skip ElGamal";
+  }
+  if (GetParam() == SchemaType::DGK) {
+    GTEST_SKIP() << "Plaintext range is not enough, Skip DGK";
   }
 
   auto encryptor = he_kit_.GetEncryptor();
@@ -153,6 +157,9 @@ TEST_P(PheTest, BatchEncoding) {
 TEST_P(PheTest, BatchAdd) {
   if (GetParam() == SchemaType::ElGamal) {
     GTEST_SKIP() << "Plaintext range is not enough, Skip ElGamal";
+  }
+  if (GetParam() == SchemaType::DGK) {
+    GTEST_SKIP() << "Plaintext range is not enough, Skip DGK";
   }
 
   auto encryptor = he_kit_.GetEncryptor();

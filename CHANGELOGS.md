@@ -8,6 +8,7 @@
 
 ## [Unreleased]
 
+- [Feature] Add DGK cryptosystem
 - [Feature] Add a new paillier impl based on ClustarFPGA hardware from Clustar Technology
 - [Optimize] Optimize vectorized spi in mat mul
 - [Add] Add test case Mul in NpBenchmarks
