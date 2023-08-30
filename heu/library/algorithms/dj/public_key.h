@@ -24,11 +24,16 @@ class PublicKey : public HeObject<PublicKey> {
   void Init(const MPInt& n, uint32_t s, const MPInt& hs = MPInt{0});
 
   const MPInt& N() const { return n_; }
+
   uint32_t S() const { return s_; }
+
   // hs = h^(n^s) mod n^(s+1): h is a generator of Zn*
   const MPInt& Hs() const { return hs_; }
+
   const MPInt& PlainModule() const { return pmod_; }
+
   const MPInt& PlaintextBound() const& { return bound_; }
+
   const MPInt& CipherModule() const { return cmod_; }
 
   bool operator==(const PublicKey&) const;
@@ -101,4 +106,5 @@ struct convert<heu::lib::algorithms::dj::PublicKey> {
 }  // namespace adaptor
 }  // namespace msgpack
 }  // namespace msgpack
+
 // clang-format on

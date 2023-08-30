@@ -30,6 +30,7 @@ class Decryptor {
   void Decrypt(const Ciphertext& ct, Plaintext* out) const {
     *out = Decrypt(ct);
   }
+
   Plaintext Decrypt(const Ciphertext& ct) const;
 
  private:

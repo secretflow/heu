@@ -28,6 +28,7 @@ class SecretKey : public HeObject<SecretKey> {
   void Init(const MPInt &p, const MPInt &q, uint32_t s);
 
   const auto &N() const { return n_; }
+
   uint32_t S() const { return s_; }
 
   bool operator==(const SecretKey &) const;
@@ -92,4 +93,5 @@ struct convert<heu::lib::algorithms::dj::SecretKey> {
 }  // namespace adaptor
 }  // namespace msgpack
 }  // namespace msgpack
+
 // clang-format on
