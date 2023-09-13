@@ -110,7 +110,9 @@ class BatchEncoder : public algorithms::HeObject<BatchEncoder> {
   MSGPACK_DEFINE(schema_, scale_, padding_bits_);
 
   SchemaType GetSchema() const { return schema_; }
+
   int64_t GetScale() const { return scale_; }
+
   size_t GetPaddingBits() const { return padding_bits_; }
 
   [[nodiscard]] std::string ToString() const override {

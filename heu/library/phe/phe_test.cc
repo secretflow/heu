@@ -11,8 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #include "heu/library/phe/phe.h"
 
+#include "fmt/format.h"
 #include "gtest/gtest.h"
 
 #include "heu/library/phe/encoding/encoding.h"
@@ -35,9 +37,37 @@ class PheTest : public ::testing::TestWithParam<SchemaType> {
 
 INSTANTIATE_TEST_SUITE_P(Schema, PheTest, ::testing::ValuesIn(GetAllSchema()));
 
-TEST_P(PheTest, Serialize) {
+TEST_P(PheTest, KeySerialize) {
+  if (he_kit_.GetSchemaType() == SchemaType::IPCL) {
+    // todo: IPCL should support pk/sk serialize
+    GTEST_SKIP() << "Wait for IPCL to impl";
+  }
+
+  // test pk
+  auto buffer_pk = he_kit_.GetPublicKey()->Serialize();
+  EXPECT_NE(*he_kit_.GetPublicKey(), PublicKey());
+  EXPECT_NE(*he_kit_.GetPublicKey(), PublicKey(he_kit_.GetSchemaType()));
+  PublicKey pk;
+  pk.Deserialize(buffer_pk);
+  EXPECT_EQ(*he_kit_.GetPublicKey(), pk);
+
+  // test sk
+  auto buffer_sk = he_kit_.GetSecretKey()->Serialize();
+  EXPECT_NE(*he_kit_.GetSecretKey(), SecretKey());
+  EXPECT_NE(*he_kit_.GetSecretKey(), SecretKey(he_kit_.GetSchemaType()));
+  SecretKey sk;
+  sk.Deserialize(buffer_sk);
+  EXPECT_EQ(*he_kit_.GetSecretKey(), sk);
+}
+
+TEST_P(PheTest, VarSerialize) {
   // test serialize plaintext
-  auto plain = Plaintext(he_kit_.GetSchemaType(), -963258741);
+  auto clear = he_kit_.GetSchemaType() == SchemaType::DGK ? -9632 : -963258741;
+  auto plain = Plaintext(he_kit_.GetSchemaType(), clear);
+  EXPECT_NE(plain, Plaintext());
+  EXPECT_NE(plain, Plaintext(he_kit_.GetSchemaType()));
+  EXPECT_NE(plain, Plaintext(he_kit_.GetSchemaType(), -clear));
+  EXPECT_EQ(plain, Plaintext(he_kit_.GetSchemaType(), clear));
   auto buffer = plain.Serialize();
   Plaintext pt2;
   pt2.Deserialize(buffer);
@@ -46,11 +76,14 @@ TEST_P(PheTest, Serialize) {
   // test serialize ciphertext
   auto ct0 = he_kit_.GetEncryptor()->Encrypt(plain);
   EXPECT_GE(ct0.ToString().length(), 10) << ct0.ToString();
+  EXPECT_NE(ct0, Ciphertext());
+  EXPECT_NE(ct0, Ciphertext(he_kit_.GetSchemaType()));
   buffer = ct0.Serialize();
   EXPECT_GT(buffer.size(), sizeof(size_t)) << buffer;
 
   Ciphertext ct1;
   ct1.Deserialize(buffer);
+  EXPECT_EQ(ct0, ct1);
   EXPECT_EQ(he_kit_.GetDecryptor()->Decrypt(ct1), plain);
 
   // test serialize public key
@@ -62,7 +95,7 @@ TEST_P(PheTest, Serialize) {
 
   // send back to client
   Ciphertext ct2;
-  ct2.Deserialize(yacl::ByteContainerView(buffer));
+  ct2.Deserialize(buffer);
   EXPECT_EQ(he_kit_.GetDecryptor()->Decrypt(ct1), plain + edr.Encode(666));
 }
 
@@ -70,6 +103,9 @@ TEST_P(PheTest, Serialize) {
 TEST_P(PheTest, BatchEncoding) {
   if (GetParam() == SchemaType::ElGamal) {
     GTEST_SKIP() << "Plaintext range is not enough, Skip ElGamal";
+  }
+  if (GetParam() == SchemaType::DGK) {
+    GTEST_SKIP() << "Plaintext range is not enough, Skip DGK";
   }
 
   // if (GetParam() == SchemaType::Leichi) {
@@ -125,6 +161,9 @@ TEST_P(PheTest, BatchEncoding) {
 TEST_P(PheTest, BatchAdd) {
   if (GetParam() == SchemaType::ElGamal) {
     GTEST_SKIP() << "Plaintext range is not enough, Skip ElGamal";
+  }
+  if (GetParam() == SchemaType::DGK) {
+    GTEST_SKIP() << "Plaintext range is not enough, Skip DGK";
   }
 
   // if (GetParam() == SchemaType::Leichi) {

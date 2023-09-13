@@ -28,6 +28,7 @@ class Ciphertext {
   void Deserialize(yacl::ByteContainerView in);
 
   operator BigNumber() { return bn_; }
+
   BigNumber bn_;
 };
 

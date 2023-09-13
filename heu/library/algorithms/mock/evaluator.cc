@@ -34,6 +34,7 @@ void CheckRange(const PublicKey& pk, const Plaintext& p, const Ciphertext&) {
 }
 
 void CheckRange(const PublicKey& pk, const Ciphertext&, const Ciphertext&) {}
+
 void CheckRange(const PublicKey& pk, const Plaintext&, const Plaintext&) {}
 
 #define SCALAR_FUNCTION_IMPL(NAME, RET, T1, OP, T2)     \

@@ -149,6 +149,7 @@ class Evaluator {
   // [SPI: Critical]
   std::vector<Ciphertext> Negate(ConstSpan<Ciphertext> a) const;
   void NegateInplace(Span<Ciphertext> a) const;  // [SPI: Critical]
+
 #endif
 
  private:

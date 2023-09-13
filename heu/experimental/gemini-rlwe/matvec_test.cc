@@ -60,6 +60,7 @@ class MatVecTest : public ::testing::TestWithParam<
                        std::tuple<size_t, std::tuple<size_t, size_t>>> {
  protected:
   static constexpr size_t poly_deg = 4096;
+
   void SetUp() override {
     rdv_.seed(std::time(0));
     auto scheme_type = seal::scheme_type::ckks;

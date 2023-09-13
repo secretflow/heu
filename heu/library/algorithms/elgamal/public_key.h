@@ -25,6 +25,7 @@ namespace heu::lib::algorithms::elgamal {
 class PublicKey {
  public:
   PublicKey() {}
+
   PublicKey(const std::shared_ptr<yacl::crypto::EcGroup> &curve,
             const yacl::crypto::EcPoint &h)
       : curve_(curve), h_(h) {}
@@ -47,6 +48,8 @@ class PublicKey {
   const yacl::crypto::EcPoint &GetH() const { return h_; }
 
  private:
+  bool IsValid() const { return (bool)curve_; }
+
   std::shared_ptr<yacl::crypto::EcGroup> curve_;
 
   yacl::crypto::EcPoint h_;  // h = xG

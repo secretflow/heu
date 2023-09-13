@@ -1,0 +1,92 @@
+load("@yacl//bazel:yacl.bzl", "yacl_cc_binary", "yacl_cc_library", "yacl_cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+yacl_cc_library(
+    name = "paillier_clustar_fpga",
+    hdrs = ["clustar_fpga.h"],
+    defines = select({
+        "//heu:enable_clustar_fpga": ["ENABLE_CLUSTAR_FPGA=true"],
+        "//conditions:default": ["ENABLE_CLUSTAR_FPGA=false"],
+    }),
+    deps = select({
+        "//heu:enable_clustar_fpga": [":paillier_clustar_fpga_impl"],
+        "//conditions:default": [],
+    }),
+)
+
+yacl_cc_library(
+    name = "paillier_clustar_fpga_impl",
+    srcs = [
+        "ciphertext.cc",
+        "key_generator.cc",
+        "plaintext.cc",
+        "public_key.cc",
+        "secret_key.cc",
+        "utils/facility.cc",
+        "utils/pub_key_helper.cc",
+        "utils/secr_key_helper.cc",
+        "vector_decryptor.cc",
+        "vector_encryptor.cc",
+        "vector_evaluator.cc",
+    ],
+    hdrs = [
+        "ciphertext.h",
+        "clustar_fpga.h",
+        "key_generator.h",
+        "plaintext.h",
+        "public_key.h",
+        "secret_key.h",
+        "utils/facility.h",
+        "utils/pub_key_helper.h",
+        "utils/secr_key_helper.h",
+        "vector_decryptor.h",
+        "vector_encryptor.h",
+        "vector_evaluator.h",
+    ],
+    target_compatible_with = select(
+        {
+            "//heu:enable_clustar_fpga": [],
+            "//conditions:default": [
+                "@platforms//:incompatible",
+            ],
+        },
+    ),
+    deps = [
+        "//heu/library/algorithms/paillier_clustar_fpga/fpga_engine/paillier_operators:fpga_operators",
+        "//heu/library/algorithms/util",
+        "//heu/library/algorithms/util:mp_int",
+        "@com_github_msgpack_msgpack//:msgpack",
+        "@yacl//yacl/base:byte_container_view",
+    ],
+)
+
+yacl_cc_test(
+    name = "plaintext_test",
+    srcs = ["plaintext_test.cc"],
+    deps = [":paillier_clustar_fpga_impl"],
+)
+
+yacl_cc_test(
+    name = "key_gen_test",
+    srcs = ["key_gen_test.cc"],
+    deps = [":paillier_clustar_fpga_impl"],
+)
+
+yacl_cc_test(
+    name = "ciphertext_test",
+    srcs = ["ciphertext_test.cc"],
+    deps = [":paillier_clustar_fpga_impl"],
+)
+
+yacl_cc_test(
+    name = "enc_dec_test",
+    srcs = ["enc_dec_test.cc"],
+    deps = [":paillier_clustar_fpga_impl"],
+)
+
+yacl_cc_test(
+    name = "evaluator_test",
+    srcs = ["evaluator_test.cc"],
+    deps = [":paillier_clustar_fpga_impl"],
+)

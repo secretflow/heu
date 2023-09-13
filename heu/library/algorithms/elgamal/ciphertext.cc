@@ -41,7 +41,8 @@ std::ostream& operator<<(std::ostream& os, const Ciphertext& c) {
 }
 
 bool Ciphertext::operator==(const Ciphertext& other) const {
-  return ec->PointEqual(c1, other.c1) && ec->PointEqual(c2, other.c2);
+  return ec && other.ec && ec->PointEqual(c1, other.c1) &&
+         ec->PointEqual(c2, other.c2);
 }
 
 bool Ciphertext::operator!=(const Ciphertext& other) const {
@@ -89,7 +90,8 @@ void Ciphertext::Deserialize(yacl::ByteContainerView in) {
   if (object.via.array.size == 4) {
     auto curve_name = object.via.array.ptr[idx++].as<yacl::crypto::CurveName>();
     auto lib_name = object.via.array.ptr[idx++].as<std::string>();
-    ec = ::yacl::crypto::EcGroupFactory::Create(curve_name, lib_name);
+    ec = ::yacl::crypto::EcGroupFactory::Instance().Create(
+        curve_name, yacl::Lib = lib_name);
     EnableEcGroup(ec);
   } else {
     auto hash = object.via.array.ptr[idx++].as<size_t>();

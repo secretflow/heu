@@ -32,6 +32,7 @@ class Encryptor {
   Ciphertext Encrypt(const Plaintext& m) const {
     YACL_THROW("To be implemented");
   }
+
   std::vector<Ciphertext> Encrypt(ConstSpan<Plaintext> pts) const {
     YACL_THROW("To be implemented");
   }

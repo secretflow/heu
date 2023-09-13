@@ -229,6 +229,7 @@ float Plaintext::Get() const {
   int64_t ret = this->Get<int64_t>();
   return (float)ret;
 }
+
 // For Passing CI test
 
 yacl::Buffer Plaintext::Serialize() const {
@@ -520,6 +521,7 @@ Plaintext Plaintext::operator&=(const Plaintext &op2) {
   *this = *this & op2;
   return *this;
 }
+
 Plaintext Plaintext::operator|=(const Plaintext &op2) {
   *this = *this | op2;
   return *this;
@@ -539,6 +541,7 @@ Plaintext Plaintext::operator<<=(size_t op2) {
   bn_ = tmp;
   return *this;
 }
+
 Plaintext Plaintext::operator>>=(size_t op2) {
   std::vector<uint32_t> bn_vec;
   bn_.num2vec(bn_vec);

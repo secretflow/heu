@@ -105,7 +105,6 @@ yacl_cc_test(
     srcs = ["evaluator_test.cc"],
     deps = [
         ":ou",
-        "//heu/library/phe/encoding",
     ],
 )
 

@@ -90,4 +90,5 @@ struct convert<heu::lib::algorithms::paillier_z::PublicKey> {
 }  // namespace adaptor
 }  // namespace msgpack
 }  // namespace msgpack
+
 // clang-format on
