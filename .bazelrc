@@ -23,7 +23,7 @@ build --cxxopt=-std=c++17
 build --host_cxxopt=-std=c++17
 build --linkopt -fvisibility=hidden
 build --linkopt -fvisibility-inlines-hidden
-
+build --linkopt -lm
 
 # Binary safety flags
 build --host_copt=-fPIE
