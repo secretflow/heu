@@ -17,6 +17,7 @@
 #include "msgpack.hpp"
 
 #include "heu/library/algorithms/dgk/dgk.h"
+#include "heu/library/algorithms/dj/dj.h"
 #include "heu/library/algorithms/elgamal/elgamal.h"
 #include "heu/library/algorithms/mock/mock.h"
 #include "heu/library/algorithms/ou/ou.h"
@@ -48,6 +49,7 @@ enum class SchemaType {
   ENUM_ELEMENT(ENABLE_CLUSTAR_FPGA, ClustarFPGA)
   ENUM_ELEMENT(true, ElGamal)
   ENUM_ELEMENT(true, DGK)
+  ENUM_ELEMENT(true, DJ)
   // YOUR_ALGO
 };
 // clang-format on
@@ -90,7 +92,8 @@ std::string format_as(SchemaType i);
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_f, ##__VA_ARGS__)           \
   INVOKE(ENABLE_CLUSTAR_FPGA, func_or_macro, ::heu::lib::algorithms::paillier_clustar_fpga, ##__VA_ARGS__) \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::elgamal, ##__VA_ARGS__) \
-  INVOKE(true, func_or_macro, ::heu::lib::algorithms::dgk, ##__VA_ARGS__)
+  INVOKE(true, func_or_macro, ::heu::lib::algorithms::dgk, ##__VA_ARGS__)     \
+  INVOKE(true, func_or_macro, ::heu::lib::algorithms::dj, ##__VA_ARGS__)
 
 // [SPI: Please register your algorithm here] || progress: (4 of 5)
 // If you add a new schema, change this !!
