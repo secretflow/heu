@@ -37,6 +37,10 @@ build:macos --features=-supports_dynamic_linker
 build:macos --cxxopt -Wno-error=unused-const-variable
 build:macos --macos_minimum_os=11.0
 
+# static link libstdc++ & libgcc
+build:linux --action_env=BAZEL_LINKOPTS=-static-libstdc++:-static-libgcc
+build:linux --action_env=BAZEL_LINKLIBS=-l%:libstdc++.a:-l%:libgcc.a
+
 build:asan --strip=never
 build:asan --copt -fno-sanitize-recover=all
 build:asan --copt -fsanitize=address
