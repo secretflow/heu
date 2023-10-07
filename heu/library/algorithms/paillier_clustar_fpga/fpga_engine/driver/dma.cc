@@ -16,6 +16,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <sys/file.h>
@@ -53,12 +54,15 @@ uint32_t transfer_to_fpga(const char *fname, int fd, char *buffer,
 
   while (count < size) {
     uint32_t bytes = size - count;
-    if (bytes > RW_MAX_SIZE) bytes = RW_MAX_SIZE;
+    if (bytes > RW_MAX_SIZE) {
+      bytes = RW_MAX_SIZE;
+    }
 
     if (offset) {
       rc = lseek(fd, offset, SEEK_SET);
       if (static_cast<uint64_t>(rc) != offset) {
-        fprintf(stdout, "%s, seek off 0x%lx != 0x%lx.\n", fname, rc, offset);
+        fprintf(stdout, "%s, seek off 0x%lx != 0x%" PRIx64 ".\n", fname, rc,
+                offset);
         perror("seek file");
         return -EIO;
       }
@@ -66,8 +70,8 @@ uint32_t transfer_to_fpga(const char *fname, int fd, char *buffer,
     /* write data to file from memory buffer */
     rc = write(fd, buf, bytes);
     if (rc != bytes) {
-      fprintf(stdout, "%s, W off 0x%lx, 0x%lx != 0x%x.\n", fname, offset, rc,
-              bytes);
+      fprintf(stdout, "%s, W off 0x%" PRIx64 ", 0x%lx != 0x%x.\n", fname,
+              offset, rc, bytes);
       perror("write file");
       return -EIO;
     }
@@ -104,12 +108,15 @@ uint32_t transfer_from_fpga(const char *fname, int fd, char *buffer,
   while (count < size) {
     uint32_t bytes = size - count;
 
-    if (bytes > RW_MAX_SIZE) bytes = RW_MAX_SIZE;
+    if (bytes > RW_MAX_SIZE) {
+      bytes = RW_MAX_SIZE;
+    }
 
     if (offset) {
       rc = lseek(fd, offset, SEEK_SET);
       if (static_cast<uint64_t>(rc) != offset) {
-        fprintf(stderr, "%s, seek off 0x%lx != 0x%lx.\n", fname, rc, offset);
+        fprintf(stderr, "%s, seek off 0x%lx != 0x%" PRIx64 ".\n", fname, rc,
+                offset);
         perror("seek file");
         return -EIO;
       }

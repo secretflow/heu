@@ -3,7 +3,6 @@ load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
 def heu_cpp_deps():
     _com_github_eigenteam_eigen()
-    _com_github_madler_zlib()
     _com_github_microsoft_seal()
     _com_github_intel_ipcl()
     _com_github_uscilab_cereal()
@@ -17,19 +16,6 @@ def _com_github_eigenteam_eigen():
         strip_prefix = "eigen-3.4",
         urls = [
             "https://gitlab.com/libeigen/eigen/-/archive/3.4/eigen-3.4.tar.gz",
-        ],
-    )
-
-def _com_github_madler_zlib():
-    maybe(
-        http_archive,
-        name = "zlib",
-        build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:zlib.BUILD",
-        strip_prefix = "zlib-1.2.12",
-        sha256 = "d8688496ea40fb61787500e863cc63c9afcbc524468cedeb478068924eb54932",
-        type = ".tar.gz",
-        urls = [
-            "https://github.com/madler/zlib/archive/refs/tags/v1.2.12.tar.gz",
         ],
     )
 
