@@ -19,8 +19,8 @@ Encryption(pk, m):
 Decryption(sk, c):
 
 - For each $j=1$ to $s$, do the following:
-  - Compute $l_j = L_j(c^\lambda \bmod n^j)$, where $L_j(z) = \frac{z-1}{n}\bmod n^{j+1}$
-  - Compute $i_j=l_j-\sum_{k=2}^i{i_{j-1}\choose i}n^{i-1} \bmod n^i$
+  - Compute $l_j = L_j(c^\lambda \bmod n^{j+1})$, where $L_j(z) = \frac{z-1}{n}\bmod n^j$
+  - Compute $i_j=l_j-\sum_{k=2}^j{i_{j-1}\choose k}n^{k-1} \bmod n^k$
 - The plaintext is $m=\lambda^{-1}i_s \bmod n^s$
 
 

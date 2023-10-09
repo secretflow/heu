@@ -41,6 +41,7 @@ harness = false
 concrete = "0.1.11"
 concrete-core = "0.1.10"
 concrete-boolean = "0.1.0"
+# tfhe = { version = "0.3.1", features = [ "boolean", "shortint", "integer", "x86_64-unix" ] }
 colored = "2.0.0"
 log = "0.4.14"
 simple_logger = "2.1.0"

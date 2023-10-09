@@ -8,7 +8,8 @@ KeyGen($1^k$):
 
 - Sample a $l$-bit (usually $l=16$) prime $u$
 - Sample two $t$-bit (usually $t=160$) primes $v_p, v_q$
-- Sample two $k/2$-bit numbers $p, q$ such that $u, v_p \mid p-1$ and $u, v_q \mid q-1$, also $\gcd(v_q, p-1) = 1$
+- Sample two $k/2$-bit numbers $p, q$ such that $u, v_p \mid p-1$ and $u, v_q \mid q-1$, also $\gcd(v_q, p-1) = 1$ and $\gcd(v_p, q-1) = 1$
+- Set $n=pq$
 - Sample an element $g$ of order $uv_pv_q$ modulo $n$
 - Compute $h = g^u \bmod n$
 - The public key is $(n, g, h, u)$ and the private key is $(p, q, v_p, v_q)$
@@ -26,13 +27,13 @@ Decryption(sk, c):
 
 Additive homomorphisms:
 
-- Add$(c_1, c_2) = c_1 \cdot c_2 \bmod n$
-- AddPlain$(c, m) = c \cdot g^m \bmod n$
-- Negate$(c) = c^{-1} \bmod n$
+- Add $(c_1, c_2) = c_1 \cdot c_2 \bmod n$
+- AddPlain $(c, m) = c \cdot g^m \bmod n$
+- Negate $(c) = c^{-1} \bmod n$
 
 Multiplicative homomorphism:
 
-- ScalarMul$(c, s) = c^s \bmod n$
+- ScalarMul $(c, s) = c^s \bmod n$
 
 Reference:
 

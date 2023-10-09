@@ -7,7 +7,7 @@ rustup update stable
 ## update deps in cargo.toml
 
 ```shell
-cargo upgrade      
+cargo upgrade
 ```
 
 ## generate bazel build file from cargo.toml

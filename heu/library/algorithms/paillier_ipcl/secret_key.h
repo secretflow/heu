@@ -9,7 +9,7 @@
 namespace heu::lib::algorithms::paillier_ipcl {
 
 class SecretKey {
- public:
+public:
   void Init(ipcl::PrivateKey sk) { ipcl_prikey_ = sk; }
 
   bool operator==(const SecretKey &other) const;
@@ -19,11 +19,9 @@ class SecretKey {
 
   yacl::Buffer Serialize() const { YACL_THROW("Not implemented."); }
 
-  void Deserialize(yacl::ByteContainerView in) {
-    YACL_THROW("Not implemented.");
-  }
+  void Deserialize(yacl::ByteContainerView) { YACL_THROW("Not implemented."); }
 
   ipcl::PrivateKey ipcl_prikey_;
 };
 
-}  // namespace heu::lib::algorithms::paillier_ipcl
+} // namespace heu::lib::algorithms::paillier_ipcl

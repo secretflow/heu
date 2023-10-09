@@ -281,7 +281,7 @@ msgstr "``Encryptor class``："
 
 #: ../../development/phe_dev.rst:131
 msgid "heu/library/algorithms/clean_template/scalar_encryptor.h"
-msgstr  "heu/library/algorithms/clean_template/scalar_encryptor.h" 
+msgstr  "heu/library/algorithms/clean_template/scalar_encryptor.h"
 
 #: ../../development/phe_dev.rst:137
 msgid ""
@@ -313,7 +313,7 @@ msgid "``Decryptor class``："
 msgstr "``Decryptor class``："
 
 #: ../../development/phe_dev.rst:152
-msgid "heu/library/algorithms/clean_template/scalar_decryptor.h" 
+msgid "heu/library/algorithms/clean_template/scalar_decryptor.h"
 msgstr "heu/library/algorithms/clean_template/scalar_decryptor.h"
 
 #: ../../development/phe_dev.rst:158 ../../development/phe_dev.rst:210
@@ -402,7 +402,7 @@ msgstr  "heu/library/algorithms/clean_template/vector_decryptor.h"
 
 #: ../../development/phe_dev.rst:212
 msgid "heu/library/algorithms/clean_template/vector_evaluator.h"
-msgstr  "heu/library/algorithms/clean_template/vector_evaluator.h" 
+msgstr  "heu/library/algorithms/clean_template/vector_evaluator.h"
 
 #: ../../development/phe_dev.rst:220
 msgid "混合实现 Scalar/Vectorized SPI"

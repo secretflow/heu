@@ -39,17 +39,17 @@
 namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine {
 
 #define MAX_SUM_GROUPS 8192
-long MAX_MEMSPACE = 8589672448;  // unit in bits
+long MAX_MEMSPACE = 8589672448; // unit in bits
 unsigned CPU_CORE_NUM = 3;
 
 void init_params() {
-  char* maxmem = getenv("MAX_MEMSPACE");
+  char *maxmem = getenv("MAX_MEMSPACE");
   if (maxmem) {
     MAX_MEMSPACE = atol(maxmem) * 1024 * 1024 * 8;
   }
   printf("MAX_MEMSPACE: %ld\n", MAX_MEMSPACE);
 
-  char* env_cpu_core_num = getenv("CPU_CORE_NUM");
+  char *env_cpu_core_num = getenv("CPU_CORE_NUM");
   if (env_cpu_core_num) {
     CPU_CORE_NUM = atoi(env_cpu_core_num);
   }
@@ -58,15 +58,15 @@ void init_params() {
 
 // 1 alloc byte_length memory and init to 0
 // 2 return char*
-char* c_malloc_init_zero(size_t byte_length) {
-  void* ptr;
-  int rc = posix_memalign((void**)&ptr, 4096, byte_length);
+char *c_malloc_init_zero(size_t byte_length) {
+  void *ptr;
+  int rc = posix_memalign((void **)&ptr, 4096, byte_length);
   if (rc != 0) {
     YACL_THROW("FPGA c_malloc failed");
   }
 
   memset(ptr, 0, byte_length);
-  return static_cast<char*>(ptr);
+  return static_cast<char *>(ptr);
 }
 
 struct mpint_numbers {
@@ -77,16 +77,16 @@ struct mpint_numbers {
 };
 
 struct mpint_para_powmod {
-  char* fpn_encode;
-  char* pen_cipher;
-  char* data1;
-  char* data2;
-  struct mpint_numbers* keys;
-  uint32_t* res_exp;
-  uint32_t* res_base;
-  uint32_t* fpn_exp;
-  uint32_t* pen_exp;
-  uint32_t* fpn_base;
+  char *fpn_encode;
+  char *pen_cipher;
+  char *data1;
+  char *data2;
+  struct mpint_numbers *keys;
+  uint32_t *res_exp;
+  uint32_t *res_base;
+  uint32_t *fpn_exp;
+  uint32_t *pen_exp;
+  uint32_t *fpn_base;
   size_t batch_index;
   size_t s_index;
   size_t e_index;
@@ -99,9 +99,9 @@ struct mpint_para_powmod {
   size_t r_length;
 };
 
-void cpu_invert_pen_mul_fpn(void* th_para) {
-  struct mpint_para_powmod* para = (struct mpint_para_powmod*)th_para;
-  struct mpint_numbers* keys = para->keys;
+void cpu_invert_pen_mul_fpn(void *th_para) {
+  struct mpint_para_powmod *para = (struct mpint_para_powmod *)th_para;
+  struct mpint_numbers *keys = para->keys;
   size_t i, op1_line, op1_col, op2_line, op2_col, src_1, src_2, src_data;
 
   MPInt neg_c_cal;
@@ -159,19 +159,19 @@ void cpu_invert_pen_mul_fpn(void* th_para) {
 }
 
 void fpn_matrix_elementwise_multiply_pen_matrix(
-    char* fpn_encode, void* fpn_base_void, void* fpn_exp_void, char* pen_cipher,
-    void* pen_base_void, void* pen_exp_void, char* res_cipher,
-    void* res_base_void, void* res_exp_void, size_t fpn_dim0, size_t fpn_dim1,
-    size_t pen_dim0, size_t pen_dim1, char* n, char* g, char* nsquare,
-    char* max_int, size_t encode_bitlength, size_t cipher_bitlength,
+    char *fpn_encode, void *fpn_base_void, void *fpn_exp_void, char *pen_cipher,
+    void * /*pen_base_void*/, void *pen_exp_void, char *res_cipher,
+    void *res_base_void, void *res_exp_void, size_t fpn_dim0, size_t fpn_dim1,
+    size_t pen_dim0, size_t pen_dim1, char *n, char * /*g*/, char *nsquare,
+    char *max_int, size_t /*encode_bitlength*/, size_t cipher_bitlength,
     size_t device_num) {
   // change the pointer types
-  uint32_t* fpn_base = (uint32_t*)fpn_base_void;
-  uint32_t* fpn_exp = (uint32_t*)fpn_exp_void;
+  uint32_t *fpn_base = (uint32_t *)fpn_base_void;
+  uint32_t *fpn_exp = (uint32_t *)fpn_exp_void;
   // uint32_t* pen_base = (uint32_t*) pen_base_void;
-  uint32_t* pen_exp = (uint32_t*)pen_exp_void;
-  uint32_t* res_base = (uint32_t*)res_base_void;
-  uint32_t* res_exp = (uint32_t*)res_exp_void;
+  uint32_t *pen_exp = (uint32_t *)pen_exp_void;
+  uint32_t *res_base = (uint32_t *)res_base_void;
+  uint32_t *res_exp = (uint32_t *)res_exp_void;
 
   size_t para_length = cipher_bitlength;
   size_t data1_length = cipher_bitlength;
@@ -188,9 +188,9 @@ void fpn_matrix_elementwise_multiply_pen_matrix(
   char *para, *data1, *data2, *result;
   result = res_cipher;
 
-  fpga_config* cfg;
-  cfg = (fpga_config*)malloc(sizeof(fpga_config));
-  cfg->operate_mode = 7;  // call encrypted mul2 function of FPGA to calulate
+  fpga_config *cfg;
+  cfg = (fpga_config *)malloc(sizeof(fpga_config));
+  cfg->operate_mode = 7; // call encrypted mul2 function of FPGA to calulate
   cfg->para_data_size = para_length / 8;
   cfg->data3_size = 0;
   cfg->para_bitlen = get_data_width(para_length);
@@ -206,7 +206,7 @@ void fpn_matrix_elementwise_multiply_pen_matrix(
   cfg->fpga_dev_id = device_num;
   cfg->task_space_size_req = FPGA_TASK_SIZE;
 
-  int rc = posix_memalign((void**)&para, 4096,
+  int rc = posix_memalign((void **)&para, 4096,
                           (sizeof(char) * cfg->para_data_size) + 4096);
   if (rc != 0) {
     check_error_status(rc);
@@ -219,7 +219,7 @@ void fpn_matrix_elementwise_multiply_pen_matrix(
       batch_size_res > batch_size_max ? batch_size_max : batch_size_res;
   size_t data1_alloc_size =
       (sizeof(char) * malloc_size * data1_length / 8) + 4096;
-  rc = posix_memalign((void**)&data1, 4096, data1_alloc_size);
+  rc = posix_memalign((void **)&data1, 4096, data1_alloc_size);
   if (rc != 0) {
     check_error_status(rc);
     free(cfg);
@@ -230,7 +230,7 @@ void fpn_matrix_elementwise_multiply_pen_matrix(
 
   size_t data2_alloc_size =
       (sizeof(char) * malloc_size * data2_length / 8) + 4096;
-  rc = posix_memalign((void**)&data2, 4096, data2_alloc_size);
+  rc = posix_memalign((void **)&data2, 4096, data2_alloc_size);
   if (rc != 0) {
     check_error_status(rc);
     free(cfg);
@@ -241,7 +241,7 @@ void fpn_matrix_elementwise_multiply_pen_matrix(
   memset(data2, 0, data2_alloc_size);
 
   std::shared_ptr<mpint_numbers> keys_sptr = std::make_shared<mpint_numbers>();
-  mpint_numbers* keys = keys_sptr.get();
+  mpint_numbers *keys = keys_sptr.get();
   keys->n_cal.SetZero();
   keys->nsquare_cal.SetZero();
   keys->maxint_cal.SetZero();
@@ -320,17 +320,17 @@ void fpn_matrix_elementwise_multiply_pen_matrix(
   free(data2);
 }
 
-void pen_sum_with_same_exp(char* pen_cipher, void* pen_base_void,
-                           void* pen_exp_void, char* res_cipher,
-                           void* res_base_void, void* res_exp_void,
-                           size_t pen_dim0, size_t pen_dim1, char* n, char* g,
-                           char* nsquare, char* max_int,
+void pen_sum_with_same_exp(char *pen_cipher, void *pen_base_void,
+                           void *pen_exp_void, char *res_cipher,
+                           void *res_base_void, void *res_exp_void,
+                           size_t pen_dim0, size_t pen_dim1, char * /*n*/,
+                           char * /*g*/, char *nsquare, char * /*max_int*/,
                            size_t cipher_bitlength, size_t device_num) {
   // change the pointer types
-  uint32_t* pen_base = (uint32_t*)pen_base_void;
-  uint32_t* pen_exp = (uint32_t*)pen_exp_void;
-  uint32_t* res_base = (uint32_t*)res_base_void;
-  uint32_t* res_exp = (uint32_t*)res_exp_void;
+  uint32_t *pen_base = (uint32_t *)pen_base_void;
+  uint32_t *pen_exp = (uint32_t *)pen_exp_void;
+  uint32_t *res_base = (uint32_t *)res_base_void;
+  uint32_t *res_exp = (uint32_t *)res_exp_void;
 
   size_t para_length = cipher_bitlength;
   size_t data1_length = cipher_bitlength;
@@ -345,8 +345,8 @@ void pen_sum_with_same_exp(char* pen_cipher, void* pen_base_void,
     return;
   }
 
-  fpga_config* cfg = (fpga_config*)malloc(sizeof(fpga_config));
-  cfg->operate_mode = 16;  // call pi_sum function of FPGA to calulate
+  fpga_config *cfg = (fpga_config *)malloc(sizeof(fpga_config));
+  cfg->operate_mode = 16; // call pi_sum function of FPGA to calulate
   cfg->para_data_size = para_length / 8 + 4;
   cfg->data2_size = 0;
   cfg->data3_size = 0;
@@ -363,8 +363,8 @@ void pen_sum_with_same_exp(char* pen_cipher, void* pen_base_void,
   cfg->fpga_dev_id = device_num;
   cfg->task_space_size_req = FPGA_TASK_SIZE;
   cfg->pisum_cfg = 1;
-  char* para;
-  int rc = posix_memalign((void**)&para, 4096,
+  char *para;
+  int rc = posix_memalign((void **)&para, 4096,
                           (sizeof(char) * cfg->para_data_size) + 4096);
   if (rc != 0) {
     check_error_status(rc);
@@ -373,23 +373,23 @@ void pen_sum_with_same_exp(char* pen_cipher, void* pen_base_void,
   }
   memcpy(para, nsquare, para_length / 8);
 
-  char* data1 = pen_cipher;
-  char* result = res_cipher;
+  char *data1 = pen_cipher;
+  char *result = res_cipher;
   size_t batch_size_max = floor(MAX_MEMSPACE / (double)para_length);
   size_t max_row_per_batch, cur_row, batch_num_per_row, batch_size_extra;
-  uint32_t sum_length;  // length of each summation, maximum length 2^32
+  uint32_t sum_length; // length of each summation, maximum length 2^32
   size_t cur_pen_dim1 = pen_dim1;
-  char* tmp_result = NULL;
+  char *tmp_result = NULL;
   size_t i = 0;
   size_t j = 0;
   if (batch_size_max < pen_dim1) {
     cfg->pisum_block_num = 1;
-    fpga_config* cfg_extra;
-    cfg_extra = (fpga_config*)malloc(sizeof(fpga_config));
-    char* para_extra;
-    rc = posix_memalign((void**)&para_extra, 4096,
+    fpga_config *cfg_extra;
+    cfg_extra = (fpga_config *)malloc(sizeof(fpga_config));
+    char *para_extra;
+    rc = posix_memalign((void **)&para_extra, 4096,
                         (sizeof(char) * (cfg->para_data_size + 4)) +
-                            4096);  // 4 bytes are reserved for sum
+                            4096); // 4 bytes are reserved for sum
     if (rc != 0) {
       check_error_status(rc);
       free(cfg);
@@ -403,7 +403,7 @@ void pen_sum_with_same_exp(char* pen_cipher, void* pen_base_void,
 
     char *result_sum, *pointer_swap;
     rc = posix_memalign(
-        (void**)&tmp_result, 4096,
+        (void **)&tmp_result, 4096,
         (sizeof(char) *
          (pen_dim0 * (size_t)ceil((double)pen_dim1 / batch_size_max) *
           para_length / 8)) +
@@ -505,19 +505,19 @@ void pen_sum_with_same_exp(char* pen_cipher, void* pen_base_void,
   free(cfg);
 }
 
-void encrypt_without_obf(char* fpn_encode, void* fpn_base_void,
-                         void* fpn_exp_void, char* res_cipher,
-                         void* res_base_void, void* res_exp_void, char* n,
-                         char* g, char* nsquare, char* max_int,
-                         size_t encode_bitlength, size_t cipher_bitlength,
+void encrypt_without_obf(char *fpn_encode, void *fpn_base_void,
+                         void *fpn_exp_void, char *res_cipher,
+                         void *res_base_void, void *res_exp_void, char *n,
+                         char * /*g*/, char *nsquare, char * /*max_int*/,
+                         size_t /*encode_bitlength*/, size_t cipher_bitlength,
                          size_t vector_size, size_t device_num) {
   int rc;
   size_t i, j;
 
-  uint32_t* fpn_base = (uint32_t*)fpn_base_void;
-  uint32_t* fpn_exp = (uint32_t*)fpn_exp_void;
-  uint32_t* res_base = (uint32_t*)res_base_void;
-  uint32_t* res_exp = (uint32_t*)res_exp_void;
+  uint32_t *fpn_base = (uint32_t *)fpn_base_void;
+  uint32_t *fpn_exp = (uint32_t *)fpn_exp_void;
+  uint32_t *res_base = (uint32_t *)res_base_void;
+  uint32_t *res_exp = (uint32_t *)res_exp_void;
 
   size_t para_length = cipher_bitlength;
   size_t data1_length = cipher_bitlength / 2;
@@ -531,10 +531,10 @@ void encrypt_without_obf(char* fpn_encode, void* fpn_base_void,
   char *para, *data1, *result;
   result = res_cipher;
 
-  fpga_config* cfg;
-  cfg = (fpga_config*)malloc(sizeof(fpga_config));
+  fpga_config *cfg;
+  cfg = (fpga_config *)malloc(sizeof(fpga_config));
   cfg->operate_mode =
-      15;  // call encrypt without obfucation function of FPGA to calculate
+      15; // call encrypt without obfucation function of FPGA to calculate
   cfg->para_data_size = (para_length + data2_length) / 8;
   cfg->data2_size = 0;
   cfg->data3_size = 0;
@@ -551,7 +551,7 @@ void encrypt_without_obf(char* fpn_encode, void* fpn_base_void,
   cfg->fpga_dev_id = device_num;
   cfg->task_space_size_req = FPGA_TASK_SIZE;
 
-  rc = posix_memalign((void**)&para, 4096,
+  rc = posix_memalign((void **)&para, 4096,
                       (sizeof(char) * cfg->para_data_size) + 4096);
   if (rc != 0) {
     check_error_status(rc);
@@ -564,7 +564,7 @@ void encrypt_without_obf(char* fpn_encode, void* fpn_base_void,
 
   size_t malloc_size =
       batch_size_res > batch_size_max ? batch_size_max : batch_size_res;
-  rc = posix_memalign((void**)&data1, 4096,
+  rc = posix_memalign((void **)&data1, 4096,
                       (sizeof(char) * malloc_size * data1_length / 8) + 4096);
   if (rc != 0) {
     check_error_status(rc);
@@ -611,9 +611,9 @@ void encrypt_without_obf(char* fpn_encode, void* fpn_base_void,
 
 //  compute modexp with montgomery multiplication for gen_obf_seed
 //  res = randoms ^ n mod nsquare
-void obf_modular_exponentiation(char* randoms, size_t random_bitlength, char* n,
-                                char* g, char* nsquare, char* max_int,
-                                char* res, size_t res_bitlength,
+void obf_modular_exponentiation(char *randoms, size_t random_bitlength, char *n,
+                                char * /*g*/, char *nsquare, char * /*max_int*/,
+                                char *res, size_t res_bitlength,
                                 size_t vector_size, size_t device_num) {
   int rc;
   size_t i;
@@ -631,9 +631,9 @@ void obf_modular_exponentiation(char* randoms, size_t random_bitlength, char* n,
   data1 = randoms;
   result = res;
 
-  fpga_config* cfg;
-  cfg = (fpga_config*)malloc(sizeof(fpga_config));
-  cfg->operate_mode = 1;  // call modexp function of FPGA to calulate
+  fpga_config *cfg;
+  cfg = (fpga_config *)malloc(sizeof(fpga_config));
+  cfg->operate_mode = 1; // call modexp function of FPGA to calulate
   cfg->para_data_size = (para_length + data2_length) / 8;
   cfg->data2_size = 0;
   cfg->data3_size = 0;
@@ -650,7 +650,7 @@ void obf_modular_exponentiation(char* randoms, size_t random_bitlength, char* n,
   cfg->fpga_dev_id = device_num;
   cfg->task_space_size_req = FPGA_TASK_SIZE;
 
-  rc = posix_memalign((void**)&para, 4096,
+  rc = posix_memalign((void **)&para, 4096,
                       (sizeof(char) * cfg->para_data_size) + 4096);
   if (rc != 0) {
     check_error_status(rc);
@@ -690,20 +690,21 @@ void obf_modular_exponentiation(char* randoms, size_t random_bitlength, char* n,
 
 //  compute mulmod for obfuscator
 //  res_cipher = pen_cipher * obf_seeds mod nsquare
-void obf_modular_multiplication(char* pen_cipher, void* pen_base_void,
-                                void* pen_exp_void, char* obf_seeds,
-                                char* res_cipher, void* res_base_void,
-                                void* res_exp_void, char* n, char* g,
-                                char* nsquare, char* max_int,
-                                size_t cipher_bitlength, size_t res_bitlength,
-                                size_t vector_size, size_t device_num) {
+void obf_modular_multiplication(char *pen_cipher, void *pen_base_void,
+                                void *pen_exp_void, char *obf_seeds,
+                                char *res_cipher, void *res_base_void,
+                                void *res_exp_void, char * /*n*/, char * /*g*/,
+                                char *nsquare, char * /*max_int*/,
+                                size_t /*cipher_bitlength*/,
+                                size_t res_bitlength, size_t vector_size,
+                                size_t device_num) {
   int rc;
   size_t i;
 
-  uint32_t* pen_base = (uint32_t*)pen_base_void;
-  uint32_t* pen_exp = (uint32_t*)pen_exp_void;
-  uint32_t* res_base = (uint32_t*)res_base_void;
-  uint32_t* res_exp = (uint32_t*)res_exp_void;
+  uint32_t *pen_base = (uint32_t *)pen_base_void;
+  uint32_t *pen_exp = (uint32_t *)pen_exp_void;
+  uint32_t *res_base = (uint32_t *)res_base_void;
+  uint32_t *res_exp = (uint32_t *)res_exp_void;
 
   size_t para_length = res_bitlength;
   size_t data1_length = res_bitlength;
@@ -720,9 +721,9 @@ void obf_modular_multiplication(char* pen_cipher, void* pen_base_void,
   data2 = obf_seeds;
   result = res_cipher;
 
-  fpga_config* cfg;
-  cfg = (fpga_config*)malloc(sizeof(fpga_config));
-  cfg->operate_mode = 2;  // call mulmod function of FPGA to calulate
+  fpga_config *cfg;
+  cfg = (fpga_config *)malloc(sizeof(fpga_config));
+  cfg->operate_mode = 2; // call mulmod function of FPGA to calulate
   cfg->para_data_size = para_length / 8;
   cfg->data3_size = 0;
   cfg->para_bitlen = get_data_width(para_length);
@@ -738,7 +739,7 @@ void obf_modular_multiplication(char* pen_cipher, void* pen_base_void,
   cfg->fpga_dev_id = device_num;
   cfg->task_space_size_req = FPGA_TASK_SIZE;
 
-  rc = posix_memalign((void**)&para, 4096,
+  rc = posix_memalign((void **)&para, 4096,
                       (sizeof(char) * cfg->para_data_size) + 4096);
   if (rc != 0) {
     check_error_status(rc);
@@ -780,23 +781,23 @@ void obf_modular_multiplication(char* pen_cipher, void* pen_base_void,
   free(cfg);
 }
 
-void decrypt(char* pen_cipher, void* pen_base_void, void* pen_exp_void,
-             char* res_encode, void* res_base_void, void* res_exp_void, char* n,
-             char* g, char* nsquare, char* max_int, char* p, char* q,
-             char* psquare, char* qsquare, char* q_inverse, char* hp, char* hq,
-             size_t encode_bitlength, size_t cipher_bitlength,
+void decrypt(char *pen_cipher, void *pen_base_void, void *pen_exp_void,
+             char *res_encode, void *res_base_void, void *res_exp_void, char *n,
+             char * /*g*/, char * /*nsquare*/, char * /*max_int*/, char *p,
+             char *q, char *psquare, char *qsquare, char *q_inverse, char *hp,
+             char *hq, size_t /*encode_bitlength*/, size_t cipher_bitlength,
              size_t vector_size, size_t device_num) {
   int rc;
   size_t i, j;
 
   // change the pointer types
-  uint32_t* pen_base = (uint32_t*)pen_base_void;
-  uint32_t* pen_exp = (uint32_t*)pen_exp_void;
-  uint32_t* res_base = (uint32_t*)res_base_void;
-  uint32_t* res_exp = (uint32_t*)res_exp_void;
+  uint32_t *pen_base = (uint32_t *)pen_base_void;
+  uint32_t *pen_exp = (uint32_t *)pen_exp_void;
+  uint32_t *res_base = (uint32_t *)res_base_void;
+  uint32_t *res_exp = (uint32_t *)res_exp_void;
 
   size_t para_length =
-      cipher_bitlength / 4;  // special treatment in FPGA, bitlength of q
+      cipher_bitlength / 4; // special treatment in FPGA, bitlength of q
   size_t data1_length = cipher_bitlength;
   size_t data2_length = 0;
   size_t data3_length = 0;
@@ -809,9 +810,9 @@ void decrypt(char* pen_cipher, void* pen_base_void, void* pen_exp_void,
   char *para, *data1, *result;
   data1 = pen_cipher;
 
-  fpga_config* cfg;
-  cfg = (fpga_config*)malloc(sizeof(fpga_config));
-  cfg->operate_mode = 10;  // call decrypt function of FPGA to calulate
+  fpga_config *cfg;
+  cfg = (fpga_config *)malloc(sizeof(fpga_config));
+  cfg->operate_mode = 10; // call decrypt function of FPGA to calulate
   cfg->para_data_size = (para_length * 11) / 8;
   cfg->data2_size = 0;
   cfg->data3_size = 0;
@@ -828,7 +829,7 @@ void decrypt(char* pen_cipher, void* pen_base_void, void* pen_exp_void,
   cfg->fpga_dev_id = device_num;
   cfg->task_space_size_req = FPGA_TASK_SIZE;
 
-  rc = posix_memalign((void**)&para, 4096,
+  rc = posix_memalign((void **)&para, 4096,
                       (sizeof(char) * cfg->para_data_size) + 4096);
   if (rc != 0) {
     check_error_status(rc);
@@ -838,9 +839,9 @@ void decrypt(char* pen_cipher, void* pen_base_void, void* pen_exp_void,
 
   malloc_size =
       batch_size_res > batch_size_max ? batch_size_max : batch_size_res;
-  rc = posix_memalign(
-      (void**)&result, 4096,
-      (sizeof(char) * malloc_size * cipher_bitlength / 8) + 4096);
+  rc = posix_memalign((void **)&result, 4096,
+                      (sizeof(char) * malloc_size * cipher_bitlength / 8) +
+                          4096);
   if (rc != 0) {
     check_error_status(rc);
     free(cfg);
@@ -894,22 +895,22 @@ void decrypt(char* pen_cipher, void* pen_base_void, void* pen_exp_void,
 }
 
 // Calculate pen1 + pen2, where pen1's exp == pen2's exp
-void pen_add_with_same_exp(char* pen1_cipher, void* pen1_base_void,
-                           void* pen1_exp_void, char* pen2_cipher,
-                           void* pen2_base_void, void* pen2_exp_void,
-                           char* res_cipher, void* res_base_void,
-                           void* res_exp_void, size_t pen1_dim0,
+void pen_add_with_same_exp(char *pen1_cipher, void *pen1_base_void,
+                           void *pen1_exp_void, char *pen2_cipher,
+                           void * /*pen2_base_void*/, void * /*pen2_exp_void*/,
+                           char *res_cipher, void *res_base_void,
+                           void *res_exp_void, size_t pen1_dim0,
                            size_t pen1_dim1, size_t pen2_dim0, size_t pen2_dim1,
-                           char* nsquare, size_t cipher_bitlength,
+                           char *nsquare, size_t cipher_bitlength,
                            size_t device_num) {
   int rc;
   size_t i, j;
 
   // change the pointer types
-  uint32_t* pen1_base = (uint32_t*)pen1_base_void;
-  uint32_t* pen1_exp = (uint32_t*)pen1_exp_void;
-  uint32_t* res_base = (uint32_t*)res_base_void;
-  uint32_t* res_exp = (uint32_t*)res_exp_void;
+  uint32_t *pen1_base = (uint32_t *)pen1_base_void;
+  uint32_t *pen1_exp = (uint32_t *)pen1_exp_void;
+  uint32_t *res_base = (uint32_t *)res_base_void;
+  uint32_t *res_exp = (uint32_t *)res_exp_void;
 
   size_t para_length = cipher_bitlength;
   size_t data1_length = cipher_bitlength;
@@ -928,8 +929,8 @@ void pen_add_with_same_exp(char* pen1_cipher, void* pen1_base_void,
 
   size_t src, op1_line, op1_col, op2_line, op2_col, src_1, src_2;
 
-  fpga_config* cfg;
-  cfg = (fpga_config*)malloc(sizeof(fpga_config));
+  fpga_config *cfg;
+  cfg = (fpga_config *)malloc(sizeof(fpga_config));
   cfg->operate_mode = 2;
   cfg->para_data_size = para_length / 8;
   cfg->para_bitlen = get_data_width(para_length);
@@ -946,7 +947,7 @@ void pen_add_with_same_exp(char* pen1_cipher, void* pen1_base_void,
   cfg->fpga_dev_id = device_num;
   cfg->task_space_size_req = FPGA_TASK_SIZE;
 
-  rc = posix_memalign((void**)&para, 4096,
+  rc = posix_memalign((void **)&para, 4096,
                       (sizeof(char) * cfg->para_data_size) + 4096);
   if (rc != 0) {
     check_error_status(rc);
@@ -956,7 +957,7 @@ void pen_add_with_same_exp(char* pen1_cipher, void* pen1_base_void,
 
   size_t malloc_size =
       batch_size_res > batch_size_max ? batch_size_max : batch_size_res;
-  rc = posix_memalign((void**)&data1, 4096,
+  rc = posix_memalign((void **)&data1, 4096,
                       (sizeof(char) * malloc_size * data1_length / 8) + 4096);
   if (rc != 0) {
     check_error_status(rc);
@@ -964,7 +965,7 @@ void pen_add_with_same_exp(char* pen1_cipher, void* pen1_base_void,
     free(para);
     return;
   }
-  rc = posix_memalign((void**)&data2, 4096,
+  rc = posix_memalign((void **)&data2, 4096,
                       (sizeof(char) * malloc_size * data2_length / 8) + 4096);
   if (rc != 0) {
     check_error_status(rc);
@@ -1029,23 +1030,23 @@ void pen_add_with_same_exp(char* pen1_cipher, void* pen1_base_void,
 }
 
 struct para_encode {
-  double* doubles;
-  int64_t* ints;
-  char* res_encode;
-  uint32_t* res_base;
-  uint32_t* res_exp;
+  double *doubles;
+  int64_t *ints;
+  char *res_encode;
+  uint32_t *res_base;
+  uint32_t *res_exp;
   size_t bitlength;
-  mpint_numbers* keys;
+  mpint_numbers *keys;
   int32_t precision;
   size_t s_index;
   size_t e_index;
   int error_status;
 };
 
-void cpu_encode_int(void* th_para) {
-  para_encode* para = (para_encode*)th_para;
+void cpu_encode_int(void *th_para) {
+  para_encode *para = (para_encode *)th_para;
 
-  mpint_numbers* keys = para->keys;
+  mpint_numbers *keys = para->keys;
   size_t i;
   uint32_t log2_base;
   int exp, positive;
@@ -1078,17 +1079,17 @@ void cpu_encode_int(void* th_para) {
   }
 }
 
-void encode_int(void* ints_void, char* res_encode, void* res_base_void,
-                void* res_exp_void, int32_t precision, char* n, char* max_int,
+void encode_int(void *ints_void, char *res_encode, void *res_base_void,
+                void *res_exp_void, int32_t precision, char *n, char */*max_int*/,
                 size_t encode_bitlength, size_t vector_size,
-                size_t device_num) {
+                size_t /*device_num*/) {
   // change the pointer types
-  int64_t* ints = (int64_t*)ints_void;
-  uint32_t* res_base = (uint32_t*)res_base_void;
-  uint32_t* res_exp = (uint32_t*)res_exp_void;
+  int64_t *ints = (int64_t *)ints_void;
+  uint32_t *res_base = (uint32_t *)res_base_void;
+  uint32_t *res_exp = (uint32_t *)res_exp_void;
 
   std::shared_ptr<mpint_numbers> keys_sptr = std::make_shared<mpint_numbers>();
-  mpint_numbers* keys = keys_sptr.get();
+  mpint_numbers *keys = keys_sptr.get();
   keys->n_cal.SetZero();
   memset(res_encode, 0, (uint64_t)vector_size * encode_bitlength / 8);
   keys->n_cal.FromMagBytes({n, encode_bitlength / 8}, Endian::little);
@@ -1116,7 +1117,7 @@ void encode_int(void* ints_void, char* res_encode, void* res_base_void,
   }
 
   std::exception_ptr eptr;
-  for (auto& fut : fut_vec) {
+  for (auto &fut : fut_vec) {
     try {
       fut.get();
     } catch (...) {
@@ -1130,21 +1131,21 @@ void encode_int(void* ints_void, char* res_encode, void* res_base_void,
 }
 
 struct para_decode {
-  double* doubles;
-  int64_t* ints;
-  char* numbers_encode;
-  uint32_t* numbers_base;
-  uint32_t* numbers_exp;
+  double *doubles;
+  int64_t *ints;
+  char *numbers_encode;
+  uint32_t *numbers_base;
+  uint32_t *numbers_exp;
   size_t bitlength;
-  struct mpint_numbers* keys;
+  struct mpint_numbers *keys;
   size_t s_index;
   size_t e_index;
   int error_status;
 };
 
-void cpu_decode_int(void* th_para) {
-  para_decode* para = (para_decode*)th_para;
-  mpint_numbers* keys = para->keys;
+void cpu_decode_int(void *th_para) {
+  para_decode *para = (para_decode *)th_para;
+  mpint_numbers *keys = para->keys;
   uint32_t j, k, decimal;
   size_t i;
   int positive;
@@ -1154,7 +1155,7 @@ void cpu_decode_int(void* th_para) {
   numbers_fpga.SetZero();
   size_t res_len = sizeof(char) * para->bitlength / 8;
   std::shared_ptr<char[]> res_char_sptr(new char[res_len]);
-  char* res_char = res_char_sptr.get();
+  char *res_char = res_char_sptr.get();
   for (i = para->s_index; i < para->e_index; i++) {
     numbers_fpga.FromMagBytes(
         {para->numbers_encode + (uint64_t)i * para->bitlength / 8,
@@ -1162,13 +1163,13 @@ void cpu_decode_int(void* th_para) {
         Endian::little);
     para->ints[i] = 0;
     positive = 1;
-    if (numbers_fpga >= keys->n_cal) {  // Attempted to decode corrupted number
+    if (numbers_fpga >= keys->n_cal) { // Attempted to decode corrupted number
       para->error_status = 21;
       return;
     }
 
     if (numbers_fpga > keys->maxint_cal &&
-        numbers_fpga < keys->tmp) {  // Overflow detected in decode number
+        numbers_fpga < keys->tmp) { // Overflow detected in decode number
       para->error_status = 22;
       return;
     }
@@ -1178,9 +1179,9 @@ void cpu_decode_int(void* th_para) {
       numbers_fpga = numbers_fpga - keys->n_cal;
     }
 
-    CMPIntWrapper::MPIntToBytes(
-        numbers_fpga, res_char,
-        para->bitlength / 8);  // res_char set to 0 in wrapper
+    CMPIntWrapper::MPIntToBytes(numbers_fpga, res_char,
+                                para->bitlength /
+                                    8); // res_char set to 0 in wrapper
     for (j = 0; j < 1024 / 8; j++) {
       decimal = (uint32_t)(unsigned char)res_char[j];
       exp = decimal;
@@ -1195,15 +1196,15 @@ void cpu_decode_int(void* th_para) {
   }
 }
 
-void decode_int(char* numbers_encode, void* numbers_base_void,
-                void* numbers_exp_void, char* n, char* max_int,
-                size_t encode_bitlength, void* res_void, size_t vector_size) {
-  uint32_t* numbers_base = (uint32_t*)numbers_base_void;
-  uint32_t* numbers_exp = (uint32_t*)numbers_exp_void;
-  int64_t* res = (int64_t*)res_void;
+void decode_int(char *numbers_encode, void *numbers_base_void,
+                void *numbers_exp_void, char *n, char *max_int,
+                size_t encode_bitlength, void *res_void, size_t vector_size) {
+  uint32_t *numbers_base = (uint32_t *)numbers_base_void;
+  uint32_t *numbers_exp = (uint32_t *)numbers_exp_void;
+  int64_t *res = (int64_t *)res_void;
 
   std::shared_ptr<mpint_numbers> keys_sptr = std::make_shared<mpint_numbers>();
-  mpint_numbers* keys = keys_sptr.get();
+  mpint_numbers *keys = keys_sptr.get();
   keys->n_cal.SetZero();
   keys->maxint_cal.SetZero();
   keys->tmp.SetZero();
@@ -1242,8 +1243,8 @@ void decode_int(char* numbers_encode, void* numbers_base_void,
   }
 }
 
-void mpint_random(char* res, size_t plain_bitlength, size_t vec_size,
-                  char* max_num) {
+void mpint_random(char *res, size_t plain_bitlength, size_t vec_size,
+                  char *max_num) {
   size_t output_byte_len = plain_bitlength / 8;
   MPInt n;
   n.FromMagBytes({max_num, plain_bitlength / 8}, Endian::little);
@@ -1251,168 +1252,166 @@ void mpint_random(char* res, size_t plain_bitlength, size_t vec_size,
     MPInt cur_rd;
     MPInt::RandomLtN(n, &cur_rd);
     cur_rd.ToBytes(
-        reinterpret_cast<unsigned char*>(res + i * plain_bitlength / 8),
+        reinterpret_cast<unsigned char *>(res + i * plain_bitlength / 8),
         output_byte_len, Endian::little);
   }
 }
 
-void raise_error(const char* error_info) {
+void raise_error(const char *error_info) {
   fprintf(stderr, "%s\n", error_info);
   YACL_THROW(fmt::format("FPGA error [{}]", error_info));
 }
 
 void check_error_status(int rc) {
   switch (rc) {
-    case FPGA_BUSY_FLAG:
-      raise_error("FPGA is in Busy state, and calculation is in progress");
-      break;
-    case ERROR_FPGA_INTERNAL:
-      raise_error("FPGA internal error occured. Device reset is required.");
-      break;
-    case ERROR_FPGA_TIMEOUT:
-      raise_error("Time out error detected by FPGA. Device reset is required.");
-      break;
-    case ERROR_FPGA_LICENSE:
-      raise_error("LicenseCheck error detected by FPGA.");
-      break;
-    case ERROR_FPGA_SPACESIZE_CFG:
-      raise_error("FPGA task space size setting error.");
-      break;
-    case 12:
-      printf("Memory allocation failed!!!\n");
-      raise_error("Memory allocation failed.");
-      break;
-    case 20:
-      raise_error("Encoding number is larger than max_int.");
-      break;
-    case 21:
-      raise_error("Try to decode corrupted number.");
-      break;
-    case 22:
-      raise_error("Decode number is overflow.");
-      break;
-    case ERROR_BUFFER_LIST:
-      raise_error("Input buffer_id_list is illegal.");
-      break;
-    case ERROR_CLEAN_BUF:
-      raise_error(
-          "Buffer clean error. The corresponding task_id is under operation or "
-          "there's no buffer data on the task_id.");
-      break;
-    case ERROR_BUF_EXCEEDED:
-      raise_error("There is no enough task id left to calculate buffer tasks.");
-      break;
-    case ERROR_DATA_MEMTYPE:
-      raise_error("Memtypes of input data do not match the operate_mode.");
-      break;
-    case ERROR_RES_MEMTYPE:
-      raise_error(
-          "Memtype of result data is not supported. It equals to those of "
-          "input data or is being used by other processes.");
-      break;
-    case ERROR_SRCDAT_BUFINFO:
-      raise_error(
-          "Information buffered in FPGA contradicts config of input data");
-      break;
-    case ERROR_SRCDAT_BUFSTATE:
-      raise_error("There is no data stored on buffering task id.");
-      break;
-    case ERROR_BUFF_FLAG:
-      raise_error("The configuration of buffer flag is wrong.");
-      break;
-    case ERROR_OPEN_DRIVER:
-      raise_error("Error detected when opening driver files.");
-      break;
-    case ERROR_CLOSE_DRIVER:
-      raise_error("Error detected when closing driver files.");
-      break;
-    case ERROR_EVEN:
-      raise_error("N is even.");
-      break;
-    case ERROR_SEND_CMD:
-      raise_error("Error detected when sending commands.");
-      break;
-    case ERROR_SEND_PARA:
-      raise_error("Error detected when sending parameters.");
-      break;
-    case ERROR_SEND_DATA:
-      raise_error("Error detected when sending datas.");
-      break;
-    case ERROR_CMD_NUMBER:
-      raise_error("Number of commands is incorrect.");
-      break;
-    case ERROR_PARA_SIZE:
-      raise_error("Size of parameters is incorrect.");
-      break;
-    case ERROR_RECV_DATA:
-      raise_error("Error detected when receiving datas");
-      break;
-    case ERROR_DATASIZE:
-      raise_error(
-          "Input data size exceeds the maximum storage space or equals 0.");
-      break;
-    case ERROR_REG_OPERATION:
-      raise_error(
-          "Unexpected interaction process detected when setting FPGA "
-          "registers' value.");
-      break;
-    case ERROR_OPERATEMODE:
-      raise_error("Unsupported operation mode.");
-      break;
-    case ERROR_LENGTH:
-      raise_error(
-          "Invalid bitlength of key. We currently support 128, 256, 512, 768, "
-          "1024, 2048, 3072, 4096.");
-      break;
-    case ERROR_BATCHSIZE:
-      raise_error("Batch size of data is smaller than 0.");
-      break;
-    case ERROR_TASK_ID:
-      raise_error("Unsupported task id. It should lie within [0, 15].");
-      break;
-    case ERROR_TIMEOUT_CAL:
-      raise_error(
-          "Time out error detected during calculation. Device reset is "
-          "required.");
-      break;
-    case ERROR_TIMEOUT_MAX:
-      raise_error(
-          "Calculation time exceeds maximum waiting time. Device reset is "
-          "required.");
-      break;
-    case ERROR_GETBACKDATA:
-      raise_error(
-          "Result data is somehow not retrieved, keeping this task id busy. "
-          "Register initiation is required.");
-      break;
-    case ERROR_FPGA_SRC_FLAG:
-      raise_error(
-          "Unexpected interaction process detected when launching the task.");
-      break;
-    case ERROR_FPGA_BACK_FLAG:
-      raise_error(
-          "Unexpected interaction process detected when launching the task. "
-          "There are other result data stored in this task id.");
-      break;
-    case ERROR_PISUM_MODE:
-      raise_error(
-          "In Pisum mode, the Pisum_block_num or the Pisum_cfg is a wrong "
-          "configure");
-      break;
-    case ERROR_PISUM_CFG:
-      raise_error(
-          "In Pisum mode, when Pisum_block_num > 1 and the Pisum_cfg = 1, the "
-          "batch_size is not the Integer multiple of pisum_block_num");
-      break;
-    case ERROR_NODEVICE_SPACESIZE_MATCHED:
-      raise_error("No device with the same space size was found.");
-      break;
-    case ERROR_TASK_ASSIGN_AND_DEVICE_BUSY:
-      raise_error("No available device with the same space size at this time.");
-      break;
-    default:
-      raise_error("Unknown errors occured!!!");
+  case FPGA_BUSY_FLAG:
+    raise_error("FPGA is in Busy state, and calculation is in progress");
+    break;
+  case ERROR_FPGA_INTERNAL:
+    raise_error("FPGA internal error occured. Device reset is required.");
+    break;
+  case ERROR_FPGA_TIMEOUT:
+    raise_error("Time out error detected by FPGA. Device reset is required.");
+    break;
+  case ERROR_FPGA_LICENSE:
+    raise_error("LicenseCheck error detected by FPGA.");
+    break;
+  case ERROR_FPGA_SPACESIZE_CFG:
+    raise_error("FPGA task space size setting error.");
+    break;
+  case 12:
+    printf("Memory allocation failed!!!\n");
+    raise_error("Memory allocation failed.");
+    break;
+  case 20:
+    raise_error("Encoding number is larger than max_int.");
+    break;
+  case 21:
+    raise_error("Try to decode corrupted number.");
+    break;
+  case 22:
+    raise_error("Decode number is overflow.");
+    break;
+  case ERROR_BUFFER_LIST:
+    raise_error("Input buffer_id_list is illegal.");
+    break;
+  case ERROR_CLEAN_BUF:
+    raise_error(
+        "Buffer clean error. The corresponding task_id is under operation or "
+        "there's no buffer data on the task_id.");
+    break;
+  case ERROR_BUF_EXCEEDED:
+    raise_error("There is no enough task id left to calculate buffer tasks.");
+    break;
+  case ERROR_DATA_MEMTYPE:
+    raise_error("Memtypes of input data do not match the operate_mode.");
+    break;
+  case ERROR_RES_MEMTYPE:
+    raise_error(
+        "Memtype of result data is not supported. It equals to those of "
+        "input data or is being used by other processes.");
+    break;
+  case ERROR_SRCDAT_BUFINFO:
+    raise_error(
+        "Information buffered in FPGA contradicts config of input data");
+    break;
+  case ERROR_SRCDAT_BUFSTATE:
+    raise_error("There is no data stored on buffering task id.");
+    break;
+  case ERROR_BUFF_FLAG:
+    raise_error("The configuration of buffer flag is wrong.");
+    break;
+  case ERROR_OPEN_DRIVER:
+    raise_error("Error detected when opening driver files.");
+    break;
+  case ERROR_CLOSE_DRIVER:
+    raise_error("Error detected when closing driver files.");
+    break;
+  case ERROR_EVEN:
+    raise_error("N is even.");
+    break;
+  case ERROR_SEND_CMD:
+    raise_error("Error detected when sending commands.");
+    break;
+  case ERROR_SEND_PARA:
+    raise_error("Error detected when sending parameters.");
+    break;
+  case ERROR_SEND_DATA:
+    raise_error("Error detected when sending datas.");
+    break;
+  case ERROR_CMD_NUMBER:
+    raise_error("Number of commands is incorrect.");
+    break;
+  case ERROR_PARA_SIZE:
+    raise_error("Size of parameters is incorrect.");
+    break;
+  case ERROR_RECV_DATA:
+    raise_error("Error detected when receiving datas");
+    break;
+  case ERROR_DATASIZE:
+    raise_error(
+        "Input data size exceeds the maximum storage space or equals 0.");
+    break;
+  case ERROR_REG_OPERATION:
+    raise_error("Unexpected interaction process detected when setting FPGA "
+                "registers' value.");
+    break;
+  case ERROR_OPERATEMODE:
+    raise_error("Unsupported operation mode.");
+    break;
+  case ERROR_LENGTH:
+    raise_error(
+        "Invalid bitlength of key. We currently support 128, 256, 512, 768, "
+        "1024, 2048, 3072, 4096.");
+    break;
+  case ERROR_BATCHSIZE:
+    raise_error("Batch size of data is smaller than 0.");
+    break;
+  case ERROR_TASK_ID:
+    raise_error("Unsupported task id. It should lie within [0, 15].");
+    break;
+  case ERROR_TIMEOUT_CAL:
+    raise_error("Time out error detected during calculation. Device reset is "
+                "required.");
+    break;
+  case ERROR_TIMEOUT_MAX:
+    raise_error(
+        "Calculation time exceeds maximum waiting time. Device reset is "
+        "required.");
+    break;
+  case ERROR_GETBACKDATA:
+    raise_error(
+        "Result data is somehow not retrieved, keeping this task id busy. "
+        "Register initiation is required.");
+    break;
+  case ERROR_FPGA_SRC_FLAG:
+    raise_error(
+        "Unexpected interaction process detected when launching the task.");
+    break;
+  case ERROR_FPGA_BACK_FLAG:
+    raise_error(
+        "Unexpected interaction process detected when launching the task. "
+        "There are other result data stored in this task id.");
+    break;
+  case ERROR_PISUM_MODE:
+    raise_error(
+        "In Pisum mode, the Pisum_block_num or the Pisum_cfg is a wrong "
+        "configure");
+    break;
+  case ERROR_PISUM_CFG:
+    raise_error(
+        "In Pisum mode, when Pisum_block_num > 1 and the Pisum_cfg = 1, the "
+        "batch_size is not the Integer multiple of pisum_block_num");
+    break;
+  case ERROR_NODEVICE_SPACESIZE_MATCHED:
+    raise_error("No device with the same space size was found.");
+    break;
+  case ERROR_TASK_ASSIGN_AND_DEVICE_BUSY:
+    raise_error("No available device with the same space size at this time.");
+    break;
+  default:
+    raise_error("Unknown errors occured!!!");
   }
 }
 
-}  // namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine
+} // namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine

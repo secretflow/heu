@@ -75,7 +75,7 @@ MPInt SecretKey::Decrypt(const MPInt& ct) const {
   MPInt2 ind{ls.P % lut_->pq_pow[1].P, ls.Q % lut_->pq_pow[1].Q};
   MPInt2 l, tmp;
   for (auto j = 2u; j <= s_; ++j) {
-    // compute l = L(c^d mod n^{j+1}) mod n^j = ls mod n^j
+    // compute l = L(c^d mod n^{j+1}) = ls mod n^j
     l = {ls.P % lut_->pq_pow[j].P, ls.Q % lut_->pq_pow[j].Q};
     // compute ind mod n^j
     tmp = ind;
