@@ -68,7 +68,7 @@ workflows:
             third_party/.* build-and-run true
             .bazelrc build-and-run true
             requirements.txt build-and-run true
-            .circleci/continue-config.yml true
+            .circleci/continue-config.yml build-and-run true
       - lint
   publish-workflow:
     when:
