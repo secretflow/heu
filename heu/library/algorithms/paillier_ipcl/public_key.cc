@@ -8,8 +8,8 @@
 namespace heu::lib::algorithms::paillier_ipcl {
 
 bool PublicKey::operator==(const PublicKey &other) const {
-  return ipcl_pubkey_.getN() == other.ipcl_pubkey_.getN() &&
-         ipcl_pubkey_.getG() == other.ipcl_pubkey_.getG() &&
+  return *ipcl_pubkey_.getN() == *other.ipcl_pubkey_.getN() &&
+         *ipcl_pubkey_.getG() == *other.ipcl_pubkey_.getG() &&
          ipcl_pubkey_.getHS() == other.ipcl_pubkey_.getHS();
 }
 
@@ -38,14 +38,13 @@ yacl::Buffer PublicKey::Serialize() const {
   return buf;
 }
 
-// todo: UT NOT PASSED
-// see heu/library/phe/phe_test.cc:40
 void PublicKey::Deserialize(yacl::ByteContainerView in) {
   std::istringstream is((std::string)in);
   {
     cereal::PortableBinaryInputArchive archive(is);
     archive(ipcl_pubkey_);
   }
+  pt_bound_.bn_ = *ipcl_pubkey_.getN() / 2;
 }
 
 }  // namespace heu::lib::algorithms::paillier_ipcl
