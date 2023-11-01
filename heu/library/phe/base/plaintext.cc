@@ -50,13 +50,13 @@ void Plaintext::ToBytes(unsigned char* buf, size_t buf_len,
 }
 
 #define OPERATOR_RET_IMPL(op, opb)                                       \
-  Plaintext Plaintext::operator op(const Plaintext & operand2) const {   \
+  Plaintext Plaintext::operator op(const Plaintext& operand2) const {    \
     return Visit([&](const auto& pt) -> Plaintext {                      \
       FOR_EACH_TYPE(pt) return Plaintext(pt op operand2.AsTypeLike(pt)); \
     });                                                                  \
   }                                                                      \
                                                                          \
-  Plaintext Plaintext::operator opb(const Plaintext & operand2) {        \
+  Plaintext Plaintext::operator opb(const Plaintext& operand2) {         \
     Visit([&](auto& pt) {                                                \
       FOR_EACH_TYPE(pt) pt opb operand2.AsTypeLike(pt);                  \
     });                                                                  \
@@ -104,9 +104,9 @@ Plaintext Plaintext::operator>>=(size_t operand2) {
   return *this;
 }
 
-#define OPERATOR_BOOL_IMPL(op)                                 \
-  bool Plaintext::operator op(const Plaintext & other) const { \
-    return var_ op other.var_;                                 \
+#define OPERATOR_BOOL_IMPL(op)                                \
+  bool Plaintext::operator op(const Plaintext& other) const { \
+    return var_ op other.var_;                                \
   }
 
 OPERATOR_BOOL_IMPL(>)
