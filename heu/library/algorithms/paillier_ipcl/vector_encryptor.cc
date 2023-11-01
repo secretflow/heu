@@ -44,4 +44,4 @@ std::pair<std::vector<Ciphertext>, std::vector<std::string>>
 Encryptor::EncryptWithAudit(ConstSpan<Plaintext>) const {
   YACL_THROW("Not Implemented.");
 }
-} // namespace heu::lib::algorithms::paillier_ipcl
+}  // namespace heu::lib::algorithms::paillier_ipcl

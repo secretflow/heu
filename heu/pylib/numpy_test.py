@@ -98,7 +98,7 @@ class BasicCase(unittest.TestCase):
             harr = self.kit.array(input, edr)
             self.assert_array_equal(harr, input, edr)
 
-        edr = phe.FloatEncoder(self.kit.get_schema(), scale=10**8)
+        edr = phe.FloatEncoder(self.kit.get_schema(), scale=10 ** 8)
         for idx in range(50):
             input = np.random.rand(100, 100)
             harr = self.kit.array(input, edr)
@@ -122,9 +122,9 @@ class BasicCase(unittest.TestCase):
         # batch float
         for idx in range(50):
             input = np.random.rand(5000, 2)
-            harr = self.kit.array(input, phe.BatchFloatEncoderParams(scale=2**62))
+            harr = self.kit.array(input, phe.BatchFloatEncoderParams(scale=2 ** 62))
             self.assert_array_equal(
-                harr, input, self.kit.batch_float_encoder(scale=2**62)
+                harr, input, self.kit.batch_float_encoder(scale=2 ** 62)
             )
 
     def test_encrypt_with_audit(self):

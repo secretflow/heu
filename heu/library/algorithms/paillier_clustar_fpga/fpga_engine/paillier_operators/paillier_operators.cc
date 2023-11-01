@@ -39,7 +39,7 @@
 namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine {
 
 #define MAX_SUM_GROUPS 8192
-long MAX_MEMSPACE = 8589672448; // unit in bits
+long MAX_MEMSPACE = 8589672448;  // unit in bits
 unsigned CPU_CORE_NUM = 3;
 
 void init_params() {
@@ -190,7 +190,7 @@ void fpn_matrix_elementwise_multiply_pen_matrix(
 
   fpga_config *cfg;
   cfg = (fpga_config *)malloc(sizeof(fpga_config));
-  cfg->operate_mode = 7; // call encrypted mul2 function of FPGA to calulate
+  cfg->operate_mode = 7;  // call encrypted mul2 function of FPGA to calulate
   cfg->para_data_size = para_length / 8;
   cfg->data3_size = 0;
   cfg->para_bitlen = get_data_width(para_length);
@@ -346,7 +346,7 @@ void pen_sum_with_same_exp(char *pen_cipher, void *pen_base_void,
   }
 
   fpga_config *cfg = (fpga_config *)malloc(sizeof(fpga_config));
-  cfg->operate_mode = 16; // call pi_sum function of FPGA to calulate
+  cfg->operate_mode = 16;  // call pi_sum function of FPGA to calulate
   cfg->para_data_size = para_length / 8 + 4;
   cfg->data2_size = 0;
   cfg->data3_size = 0;
@@ -377,7 +377,7 @@ void pen_sum_with_same_exp(char *pen_cipher, void *pen_base_void,
   char *result = res_cipher;
   size_t batch_size_max = floor(MAX_MEMSPACE / (double)para_length);
   size_t max_row_per_batch, cur_row, batch_num_per_row, batch_size_extra;
-  uint32_t sum_length; // length of each summation, maximum length 2^32
+  uint32_t sum_length;  // length of each summation, maximum length 2^32
   size_t cur_pen_dim1 = pen_dim1;
   char *tmp_result = NULL;
   size_t i = 0;
@@ -389,7 +389,7 @@ void pen_sum_with_same_exp(char *pen_cipher, void *pen_base_void,
     char *para_extra;
     rc = posix_memalign((void **)&para_extra, 4096,
                         (sizeof(char) * (cfg->para_data_size + 4)) +
-                            4096); // 4 bytes are reserved for sum
+                            4096);  // 4 bytes are reserved for sum
     if (rc != 0) {
       check_error_status(rc);
       free(cfg);
@@ -534,7 +534,7 @@ void encrypt_without_obf(char *fpn_encode, void *fpn_base_void,
   fpga_config *cfg;
   cfg = (fpga_config *)malloc(sizeof(fpga_config));
   cfg->operate_mode =
-      15; // call encrypt without obfucation function of FPGA to calculate
+      15;  // call encrypt without obfucation function of FPGA to calculate
   cfg->para_data_size = (para_length + data2_length) / 8;
   cfg->data2_size = 0;
   cfg->data3_size = 0;
@@ -633,7 +633,7 @@ void obf_modular_exponentiation(char *randoms, size_t random_bitlength, char *n,
 
   fpga_config *cfg;
   cfg = (fpga_config *)malloc(sizeof(fpga_config));
-  cfg->operate_mode = 1; // call modexp function of FPGA to calulate
+  cfg->operate_mode = 1;  // call modexp function of FPGA to calulate
   cfg->para_data_size = (para_length + data2_length) / 8;
   cfg->data2_size = 0;
   cfg->data3_size = 0;
@@ -723,7 +723,7 @@ void obf_modular_multiplication(char *pen_cipher, void *pen_base_void,
 
   fpga_config *cfg;
   cfg = (fpga_config *)malloc(sizeof(fpga_config));
-  cfg->operate_mode = 2; // call mulmod function of FPGA to calulate
+  cfg->operate_mode = 2;  // call mulmod function of FPGA to calulate
   cfg->para_data_size = para_length / 8;
   cfg->data3_size = 0;
   cfg->para_bitlen = get_data_width(para_length);
@@ -797,7 +797,7 @@ void decrypt(char *pen_cipher, void *pen_base_void, void *pen_exp_void,
   uint32_t *res_exp = (uint32_t *)res_exp_void;
 
   size_t para_length =
-      cipher_bitlength / 4; // special treatment in FPGA, bitlength of q
+      cipher_bitlength / 4;  // special treatment in FPGA, bitlength of q
   size_t data1_length = cipher_bitlength;
   size_t data2_length = 0;
   size_t data3_length = 0;
@@ -812,7 +812,7 @@ void decrypt(char *pen_cipher, void *pen_base_void, void *pen_exp_void,
 
   fpga_config *cfg;
   cfg = (fpga_config *)malloc(sizeof(fpga_config));
-  cfg->operate_mode = 10; // call decrypt function of FPGA to calulate
+  cfg->operate_mode = 10;  // call decrypt function of FPGA to calulate
   cfg->para_data_size = (para_length * 11) / 8;
   cfg->data2_size = 0;
   cfg->data3_size = 0;
@@ -839,9 +839,9 @@ void decrypt(char *pen_cipher, void *pen_base_void, void *pen_exp_void,
 
   malloc_size =
       batch_size_res > batch_size_max ? batch_size_max : batch_size_res;
-  rc = posix_memalign((void **)&result, 4096,
-                      (sizeof(char) * malloc_size * cipher_bitlength / 8) +
-                          4096);
+  rc = posix_memalign(
+      (void **)&result, 4096,
+      (sizeof(char) * malloc_size * cipher_bitlength / 8) + 4096);
   if (rc != 0) {
     check_error_status(rc);
     free(cfg);
@@ -1080,8 +1080,8 @@ void cpu_encode_int(void *th_para) {
 }
 
 void encode_int(void *ints_void, char *res_encode, void *res_base_void,
-                void *res_exp_void, int32_t precision, char *n, char */*max_int*/,
-                size_t encode_bitlength, size_t vector_size,
+                void *res_exp_void, int32_t precision, char *n,
+                char * /*max_int*/, size_t encode_bitlength, size_t vector_size,
                 size_t /*device_num*/) {
   // change the pointer types
   int64_t *ints = (int64_t *)ints_void;
@@ -1163,13 +1163,13 @@ void cpu_decode_int(void *th_para) {
         Endian::little);
     para->ints[i] = 0;
     positive = 1;
-    if (numbers_fpga >= keys->n_cal) { // Attempted to decode corrupted number
+    if (numbers_fpga >= keys->n_cal) {  // Attempted to decode corrupted number
       para->error_status = 21;
       return;
     }
 
     if (numbers_fpga > keys->maxint_cal &&
-        numbers_fpga < keys->tmp) { // Overflow detected in decode number
+        numbers_fpga < keys->tmp) {  // Overflow detected in decode number
       para->error_status = 22;
       return;
     }
@@ -1179,9 +1179,9 @@ void cpu_decode_int(void *th_para) {
       numbers_fpga = numbers_fpga - keys->n_cal;
     }
 
-    CMPIntWrapper::MPIntToBytes(numbers_fpga, res_char,
-                                para->bitlength /
-                                    8); // res_char set to 0 in wrapper
+    CMPIntWrapper::MPIntToBytes(
+        numbers_fpga, res_char,
+        para->bitlength / 8);  // res_char set to 0 in wrapper
     for (j = 0; j < 1024 / 8; j++) {
       decimal = (uint32_t)(unsigned char)res_char[j];
       exp = decimal;
@@ -1264,154 +1264,156 @@ void raise_error(const char *error_info) {
 
 void check_error_status(int rc) {
   switch (rc) {
-  case FPGA_BUSY_FLAG:
-    raise_error("FPGA is in Busy state, and calculation is in progress");
-    break;
-  case ERROR_FPGA_INTERNAL:
-    raise_error("FPGA internal error occured. Device reset is required.");
-    break;
-  case ERROR_FPGA_TIMEOUT:
-    raise_error("Time out error detected by FPGA. Device reset is required.");
-    break;
-  case ERROR_FPGA_LICENSE:
-    raise_error("LicenseCheck error detected by FPGA.");
-    break;
-  case ERROR_FPGA_SPACESIZE_CFG:
-    raise_error("FPGA task space size setting error.");
-    break;
-  case 12:
-    printf("Memory allocation failed!!!\n");
-    raise_error("Memory allocation failed.");
-    break;
-  case 20:
-    raise_error("Encoding number is larger than max_int.");
-    break;
-  case 21:
-    raise_error("Try to decode corrupted number.");
-    break;
-  case 22:
-    raise_error("Decode number is overflow.");
-    break;
-  case ERROR_BUFFER_LIST:
-    raise_error("Input buffer_id_list is illegal.");
-    break;
-  case ERROR_CLEAN_BUF:
-    raise_error(
-        "Buffer clean error. The corresponding task_id is under operation or "
-        "there's no buffer data on the task_id.");
-    break;
-  case ERROR_BUF_EXCEEDED:
-    raise_error("There is no enough task id left to calculate buffer tasks.");
-    break;
-  case ERROR_DATA_MEMTYPE:
-    raise_error("Memtypes of input data do not match the operate_mode.");
-    break;
-  case ERROR_RES_MEMTYPE:
-    raise_error(
-        "Memtype of result data is not supported. It equals to those of "
-        "input data or is being used by other processes.");
-    break;
-  case ERROR_SRCDAT_BUFINFO:
-    raise_error(
-        "Information buffered in FPGA contradicts config of input data");
-    break;
-  case ERROR_SRCDAT_BUFSTATE:
-    raise_error("There is no data stored on buffering task id.");
-    break;
-  case ERROR_BUFF_FLAG:
-    raise_error("The configuration of buffer flag is wrong.");
-    break;
-  case ERROR_OPEN_DRIVER:
-    raise_error("Error detected when opening driver files.");
-    break;
-  case ERROR_CLOSE_DRIVER:
-    raise_error("Error detected when closing driver files.");
-    break;
-  case ERROR_EVEN:
-    raise_error("N is even.");
-    break;
-  case ERROR_SEND_CMD:
-    raise_error("Error detected when sending commands.");
-    break;
-  case ERROR_SEND_PARA:
-    raise_error("Error detected when sending parameters.");
-    break;
-  case ERROR_SEND_DATA:
-    raise_error("Error detected when sending datas.");
-    break;
-  case ERROR_CMD_NUMBER:
-    raise_error("Number of commands is incorrect.");
-    break;
-  case ERROR_PARA_SIZE:
-    raise_error("Size of parameters is incorrect.");
-    break;
-  case ERROR_RECV_DATA:
-    raise_error("Error detected when receiving datas");
-    break;
-  case ERROR_DATASIZE:
-    raise_error(
-        "Input data size exceeds the maximum storage space or equals 0.");
-    break;
-  case ERROR_REG_OPERATION:
-    raise_error("Unexpected interaction process detected when setting FPGA "
-                "registers' value.");
-    break;
-  case ERROR_OPERATEMODE:
-    raise_error("Unsupported operation mode.");
-    break;
-  case ERROR_LENGTH:
-    raise_error(
-        "Invalid bitlength of key. We currently support 128, 256, 512, 768, "
-        "1024, 2048, 3072, 4096.");
-    break;
-  case ERROR_BATCHSIZE:
-    raise_error("Batch size of data is smaller than 0.");
-    break;
-  case ERROR_TASK_ID:
-    raise_error("Unsupported task id. It should lie within [0, 15].");
-    break;
-  case ERROR_TIMEOUT_CAL:
-    raise_error("Time out error detected during calculation. Device reset is "
-                "required.");
-    break;
-  case ERROR_TIMEOUT_MAX:
-    raise_error(
-        "Calculation time exceeds maximum waiting time. Device reset is "
-        "required.");
-    break;
-  case ERROR_GETBACKDATA:
-    raise_error(
-        "Result data is somehow not retrieved, keeping this task id busy. "
-        "Register initiation is required.");
-    break;
-  case ERROR_FPGA_SRC_FLAG:
-    raise_error(
-        "Unexpected interaction process detected when launching the task.");
-    break;
-  case ERROR_FPGA_BACK_FLAG:
-    raise_error(
-        "Unexpected interaction process detected when launching the task. "
-        "There are other result data stored in this task id.");
-    break;
-  case ERROR_PISUM_MODE:
-    raise_error(
-        "In Pisum mode, the Pisum_block_num or the Pisum_cfg is a wrong "
-        "configure");
-    break;
-  case ERROR_PISUM_CFG:
-    raise_error(
-        "In Pisum mode, when Pisum_block_num > 1 and the Pisum_cfg = 1, the "
-        "batch_size is not the Integer multiple of pisum_block_num");
-    break;
-  case ERROR_NODEVICE_SPACESIZE_MATCHED:
-    raise_error("No device with the same space size was found.");
-    break;
-  case ERROR_TASK_ASSIGN_AND_DEVICE_BUSY:
-    raise_error("No available device with the same space size at this time.");
-    break;
-  default:
-    raise_error("Unknown errors occured!!!");
+    case FPGA_BUSY_FLAG:
+      raise_error("FPGA is in Busy state, and calculation is in progress");
+      break;
+    case ERROR_FPGA_INTERNAL:
+      raise_error("FPGA internal error occured. Device reset is required.");
+      break;
+    case ERROR_FPGA_TIMEOUT:
+      raise_error("Time out error detected by FPGA. Device reset is required.");
+      break;
+    case ERROR_FPGA_LICENSE:
+      raise_error("LicenseCheck error detected by FPGA.");
+      break;
+    case ERROR_FPGA_SPACESIZE_CFG:
+      raise_error("FPGA task space size setting error.");
+      break;
+    case 12:
+      printf("Memory allocation failed!!!\n");
+      raise_error("Memory allocation failed.");
+      break;
+    case 20:
+      raise_error("Encoding number is larger than max_int.");
+      break;
+    case 21:
+      raise_error("Try to decode corrupted number.");
+      break;
+    case 22:
+      raise_error("Decode number is overflow.");
+      break;
+    case ERROR_BUFFER_LIST:
+      raise_error("Input buffer_id_list is illegal.");
+      break;
+    case ERROR_CLEAN_BUF:
+      raise_error(
+          "Buffer clean error. The corresponding task_id is under operation or "
+          "there's no buffer data on the task_id.");
+      break;
+    case ERROR_BUF_EXCEEDED:
+      raise_error("There is no enough task id left to calculate buffer tasks.");
+      break;
+    case ERROR_DATA_MEMTYPE:
+      raise_error("Memtypes of input data do not match the operate_mode.");
+      break;
+    case ERROR_RES_MEMTYPE:
+      raise_error(
+          "Memtype of result data is not supported. It equals to those of "
+          "input data or is being used by other processes.");
+      break;
+    case ERROR_SRCDAT_BUFINFO:
+      raise_error(
+          "Information buffered in FPGA contradicts config of input data");
+      break;
+    case ERROR_SRCDAT_BUFSTATE:
+      raise_error("There is no data stored on buffering task id.");
+      break;
+    case ERROR_BUFF_FLAG:
+      raise_error("The configuration of buffer flag is wrong.");
+      break;
+    case ERROR_OPEN_DRIVER:
+      raise_error("Error detected when opening driver files.");
+      break;
+    case ERROR_CLOSE_DRIVER:
+      raise_error("Error detected when closing driver files.");
+      break;
+    case ERROR_EVEN:
+      raise_error("N is even.");
+      break;
+    case ERROR_SEND_CMD:
+      raise_error("Error detected when sending commands.");
+      break;
+    case ERROR_SEND_PARA:
+      raise_error("Error detected when sending parameters.");
+      break;
+    case ERROR_SEND_DATA:
+      raise_error("Error detected when sending datas.");
+      break;
+    case ERROR_CMD_NUMBER:
+      raise_error("Number of commands is incorrect.");
+      break;
+    case ERROR_PARA_SIZE:
+      raise_error("Size of parameters is incorrect.");
+      break;
+    case ERROR_RECV_DATA:
+      raise_error("Error detected when receiving datas");
+      break;
+    case ERROR_DATASIZE:
+      raise_error(
+          "Input data size exceeds the maximum storage space or equals 0.");
+      break;
+    case ERROR_REG_OPERATION:
+      raise_error(
+          "Unexpected interaction process detected when setting FPGA "
+          "registers' value.");
+      break;
+    case ERROR_OPERATEMODE:
+      raise_error("Unsupported operation mode.");
+      break;
+    case ERROR_LENGTH:
+      raise_error(
+          "Invalid bitlength of key. We currently support 128, 256, 512, 768, "
+          "1024, 2048, 3072, 4096.");
+      break;
+    case ERROR_BATCHSIZE:
+      raise_error("Batch size of data is smaller than 0.");
+      break;
+    case ERROR_TASK_ID:
+      raise_error("Unsupported task id. It should lie within [0, 15].");
+      break;
+    case ERROR_TIMEOUT_CAL:
+      raise_error(
+          "Time out error detected during calculation. Device reset is "
+          "required.");
+      break;
+    case ERROR_TIMEOUT_MAX:
+      raise_error(
+          "Calculation time exceeds maximum waiting time. Device reset is "
+          "required.");
+      break;
+    case ERROR_GETBACKDATA:
+      raise_error(
+          "Result data is somehow not retrieved, keeping this task id busy. "
+          "Register initiation is required.");
+      break;
+    case ERROR_FPGA_SRC_FLAG:
+      raise_error(
+          "Unexpected interaction process detected when launching the task.");
+      break;
+    case ERROR_FPGA_BACK_FLAG:
+      raise_error(
+          "Unexpected interaction process detected when launching the task. "
+          "There are other result data stored in this task id.");
+      break;
+    case ERROR_PISUM_MODE:
+      raise_error(
+          "In Pisum mode, the Pisum_block_num or the Pisum_cfg is a wrong "
+          "configure");
+      break;
+    case ERROR_PISUM_CFG:
+      raise_error(
+          "In Pisum mode, when Pisum_block_num > 1 and the Pisum_cfg = 1, the "
+          "batch_size is not the Integer multiple of pisum_block_num");
+      break;
+    case ERROR_NODEVICE_SPACESIZE_MATCHED:
+      raise_error("No device with the same space size was found.");
+      break;
+    case ERROR_TASK_ASSIGN_AND_DEVICE_BUSY:
+      raise_error("No available device with the same space size at this time.");
+      break;
+    default:
+      raise_error("Unknown errors occured!!!");
   }
 }
 
-} // namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine
+}  // namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine
