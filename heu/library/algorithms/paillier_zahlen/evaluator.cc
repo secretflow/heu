@@ -72,15 +72,11 @@ void Evaluator::SubInplace(Ciphertext* a, const Ciphertext& b) const {
 }
 
 Ciphertext Evaluator::Sub(const Ciphertext& a, const MPInt& p) const {
-  MPInt b;
-  p.Negate(&b);
-  return Add(a, b);
+  return Add(a, -p);
 }
 
 void Evaluator::SubInplace(Ciphertext* a, const MPInt& p) const {
-  MPInt b;
-  p.Negate(&b);
-  AddInplace(a, b);
+  AddInplace(a, -p);
 }
 
 Ciphertext Evaluator::Sub(const MPInt& p, const Ciphertext& a) const {

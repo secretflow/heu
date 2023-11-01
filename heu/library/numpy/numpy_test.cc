@@ -190,16 +190,48 @@ TEST_F(NumpyTest, SumWorks) {
 }
 
 TEST_F(NumpyTest, SelectSumWorks) {
+  // plaintext case
   auto m = GenMatrix(he_kit_.GetSchemaType(), 30, 30);
   std::vector<int64_t> a{0}, b{0, 1};
+
+  EXPECT_EQ(he_kit_.GetEvaluator()
+                ->SelectSum(m, std::vector<int64_t>(), std::vector<int64_t>())
+                .GetValue<int64_t>(),
+            0);
 
   auto sum = he_kit_.GetEvaluator()->SelectSum(m, a, a);
   EXPECT_EQ(sum.GetValue<int64_t>(), 0);
 
+  // ciphertext case
   auto m2 = he_kit_.GetEncryptor()->Encrypt(m);
   auto sum2 = he_kit_.GetEvaluator()->SelectSum(m2, b, b);
   EXPECT_EQ(he_kit_.GetDecryptor()->Decrypt(sum2).GetValue<int64_t>(),
             0 + 1 + 30 + 31);
+
+  // ciphertext case from scql
+  PMatrix plain_in(5, 1);
+  plain_in(0, 0) = 0_mp;
+  plain_in(1, 0) = 0_mp;
+  plain_in(2, 0) = 1000000_mp;
+  plain_in(3, 0) = 1000000_mp;
+  plain_in(4, 0) = 0_mp;
+
+  CMatrix encrypted_in = he_kit_.GetEncryptor()->Encrypt(plain_in);
+  auto buf = encrypted_in.Serialize();
+  auto encrypted_in2 = CMatrix ::LoadFrom(buf);
+  ASSERT_EQ(encrypted_in.rows(), encrypted_in2.rows());
+  ASSERT_EQ(encrypted_in.cols(), encrypted_in2.cols());
+  ASSERT_EQ(encrypted_in.ndim(), encrypted_in2.ndim());
+
+  auto encrypted_sum = he_kit_.GetEvaluator()->SelectSum(
+      encrypted_in2, std::vector<int64_t>{0, 1}, std::vector<int64_t>{0});
+  EXPECT_EQ(he_kit_.GetDecryptor()->Decrypt(encrypted_sum).GetValue<int64_t>(),
+            0);
+
+  encrypted_sum = he_kit_.GetEvaluator()->SelectSum(
+      encrypted_in2, std::vector<int64_t>{0, 1, 2}, std::vector<int64_t>{0});
+  EXPECT_EQ(he_kit_.GetDecryptor()->Decrypt(encrypted_sum).GetValue<int64_t>(),
+            1000000);
 }
 
 TEST_F(NumpyTest, BinSumWorks) {

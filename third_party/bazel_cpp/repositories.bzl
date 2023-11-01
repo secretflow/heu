@@ -1,11 +1,13 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
+
 def heu_cpp_deps():
     _com_github_eigenteam_eigen()
     _com_github_microsoft_seal()
     _com_github_intel_ipcl()
     _com_github_uscilab_cereal()
+    _com_github_nvlabs_cgbn()
 
 def _com_github_eigenteam_eigen():
     maybe(
@@ -62,5 +64,21 @@ def _com_github_uscilab_cereal():
         strip_prefix = "cereal-ebef1e929807629befafbb2918ea1a08c7194554",
         urls = [
             "https://github.com/USCiLab/cereal/archive/ebef1e929807629befafbb2918ea1a08c7194554.tar.gz",
+        ],
+    )
+
+def _com_github_nvlabs_cgbn():
+    maybe(
+        http_archive,
+        name = "com_github_nvlabs_cgbn",
+        sha256 = "1e8e4cdd0d36b1fb54c2f6adca2eb4b5846a6578dbb6e68b37858c42af0ce4f0",
+        build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:cgbn.BUILD",
+        strip_prefix = "CGBN-e8b9d265c7b84077d02340b0986f3c91b2eb02fb",
+        patch_args = ["-p1"],
+        patches = [
+            "@com_alipay_sf_heu//third_party/bazel_cpp:patches/cgbn.patch",
+        ],
+        urls = [
+            "https://github.com/NVlabs/CGBN/archive/e8b9d265c7b84077d02340b0986f3c91b2eb02fb.tar.gz",
         ],
     )
