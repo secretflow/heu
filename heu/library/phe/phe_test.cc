@@ -110,6 +110,10 @@ TEST_P(PheTest, BatchEncoding) {
     GTEST_SKIP() << "Plaintext range is not enough, Skip DGK";
   }
 
+  // if (GetParam() == SchemaType::Leichi) {
+  //   GTEST_SKIP() << "Batch not supported, Skip Leichi";
+  // }
+
   auto encryptor = he_kit_.GetEncryptor();
   auto evaluator = he_kit_.GetEvaluator();
   auto decryptor = he_kit_.GetDecryptor();
@@ -117,7 +121,7 @@ TEST_P(PheTest, BatchEncoding) {
 
   auto m0 = batch_encoder.Encode<int64_t>(-123, 123);
   Ciphertext ct0 = encryptor->Encrypt(m0);
-
+  
   Ciphertext res = evaluator->Add(ct0, batch_encoder.Encode<int64_t>(23, 23));
   Plaintext plain = decryptor->Decrypt(res);
   EXPECT_EQ((batch_encoder.Decode<int64_t, 0>(plain)), -123 + 23);
@@ -164,6 +168,9 @@ TEST_P(PheTest, BatchAdd) {
     GTEST_SKIP() << "Plaintext range is not enough, Skip DGK";
   }
 
+  // if (GetParam() == SchemaType::Leichi) {
+  //   GTEST_SKIP() << "Batch not supported, Skip Leichi";
+  // }
   auto encryptor = he_kit_.GetEncryptor();
   auto evaluator = he_kit_.GetEvaluator();
   auto decryptor = he_kit_.GetDecryptor();

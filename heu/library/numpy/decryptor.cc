@@ -26,7 +26,7 @@ auto DoCallDecrypt(const CLAZZ& sub_decryptor, const CMatrix& in,
                    size_t range_bits, PMatrix* out)
     -> std::enable_if_t<
         std::experimental::is_detected_v<kHasVectorizedDecrypt, CLAZZ, CT>> {
-  yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
+  yacl::parallel_for(0, in.size(), in.size(), [&](int64_t beg, int64_t end) {
     std::vector<const CT*> cts;
     cts.reserve(end - beg);
     for (int64_t i = beg; i < end; ++i) {

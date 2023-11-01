@@ -25,7 +25,7 @@ template <typename CLAZZ, typename PT>
 auto DoCallEncrypt(const CLAZZ& sub_encryptor, const PMatrix& in, CMatrix* out)
     -> std::enable_if_t<
         std::experimental::is_detected_v<kHasVectorizedEncrypt, CLAZZ, PT>> {
-  yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
+  yacl::parallel_for(0, in.size(), in.size(), [&](int64_t beg, int64_t end) {
     std::vector<const PT*> pts;
     pts.reserve(end - beg);
     for (int64_t i = beg; i < end; ++i) {

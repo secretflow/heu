@@ -25,6 +25,7 @@ yacl_cc_library(
         "//heu/library/algorithms/paillier_float",
         "//heu/library/algorithms/paillier_gpu",
         "//heu/library/algorithms/paillier_ipcl",
+        "//heu/library/algorithms/leichi_paillier:leichi_paillier_defs",
         "//heu/library/algorithms/paillier_zahlen",
     ],
 )

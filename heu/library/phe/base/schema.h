@@ -30,6 +30,7 @@
 // [SPI: Please register your algorithm here] || progress: (1 of 5)
 // Do not forget to add your algo header file here
 // #include "heu/library/algorithms/your_algo/algo.h"
+#include "heu/library/algorithms/leichi_paillier/leichi.h"
 
 namespace heu::lib::phe {
 
@@ -50,6 +51,7 @@ enum class SchemaType {
   ENUM_ELEMENT(true, FPaillier)
   ENUM_ELEMENT(ENABLE_CLUSTAR_FPGA, ClustarFPGA)
   ENUM_ELEMENT(true, ElGamal)
+  ENUM_ELEMENT(ENABLE_LEICHI, Leichi)
   ENUM_ELEMENT(true, DGK)
   ENUM_ELEMENT(true, DJ)
   // YOUR_ALGO
@@ -92,6 +94,8 @@ std::string format_as(SchemaType i);
   INVOKE(ENABLE_IPCL, func_or_macro, ::heu::lib::algorithms::paillier_ipcl, ##__VA_ARGS__) \
   INVOKE(ENABLE_GPAILLIER, func_or_macro, ::heu::lib::algorithms::paillier_g, ##__VA_ARGS__) \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_z, ##__VA_ARGS__)           \
+  INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_f, ##__VA_ARGS__) \
+  INVOKE(ENABLE_LEICHI, func_or_macro, ::heu::lib::algorithms::leichi_paillier, ##__VA_ARGS__)       \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_f, ##__VA_ARGS__)           \
   INVOKE(ENABLE_CLUSTAR_FPGA, func_or_macro, ::heu::lib::algorithms::paillier_clustar_fpga, ##__VA_ARGS__) \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::elgamal, ##__VA_ARGS__) \
@@ -107,6 +111,7 @@ std::string format_as(SchemaType i);
   func_or_macro(::heu::lib::algorithms, MPInt, ##__VA_ARGS__)                    \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::mock, Plaintext, ##__VA_ARGS__)                 \
   INVOKE(ENABLE_IPCL, func_or_macro, ::heu::lib::algorithms::paillier_ipcl, Plaintext, ##__VA_ARGS__) \
+  INVOKE(ENABLE_LEICHI, func_or_macro, ::heu::lib::algorithms::leichi_paillier, Plaintext, ##__VA_ARGS__)      \
   INVOKE(ENABLE_CLUSTAR_FPGA, func_or_macro, ::heu::lib::algorithms::paillier_clustar_fpga, Plaintext, ##__VA_ARGS__) \
   // INVOKE(true, func_or_macro, ::heu::lib::algorithms::your_algo, Plaintext, ##__VA_ARGS__)
 // clang-format on

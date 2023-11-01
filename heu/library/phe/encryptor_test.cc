@@ -56,6 +56,9 @@ TEST_P(EncryptorTest, EncryptZero) {
 }
 
 TEST_P(EncryptorTest, MinMaxEnc) {
+  // if (GetParam() == SchemaType::Leichi) {
+  //   GTEST_SKIP() << "NegateInplace is error, Skip Leichi";
+  // }
   auto encryptor = he_kit_.GetEncryptor();
   auto decryptor = he_kit_.GetDecryptor();
 
