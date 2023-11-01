@@ -23,6 +23,7 @@ yacl_cc_library(
         "//heu/library/algorithms/ou",
         "//heu/library/algorithms/paillier_clustar_fpga",
         "//heu/library/algorithms/paillier_float",
+        "//heu/library/algorithms/paillier_gpu",
         "//heu/library/algorithms/paillier_ipcl",
         "//heu/library/algorithms/paillier_zahlen",
     ],

@@ -26,7 +26,7 @@
 namespace heu::lib::algorithms::mock {
 
 class Decryptor {
-public:
+ public:
   // [SPI: Critical]
   explicit Decryptor(const PublicKey &, const SecretKey &sk) : sk_(sk) {}
 
@@ -50,8 +50,8 @@ public:
   void Decrypt(ConstSpan<Ciphertext> in_cts, Span<Plaintext> out_pts) const;
 #endif
 
-private:
+ private:
   SecretKey sk_;
 };
 
-} // namespace heu::lib::algorithms::mock
+}  // namespace heu::lib::algorithms::mock

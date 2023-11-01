@@ -28,7 +28,7 @@ namespace heu::lib::bench {
 constexpr int kRandomScale = 8011;
 
 class NpBenchmarks {
-public:
+ public:
   numpy::PMatrix GenMatrix(const numpy::Shape &s) {
     auto edr = he_kit_->GetEncoder<phe::PlainEncoder>(kRandomScale);
     numpy::PMatrix res(s);
@@ -46,11 +46,11 @@ public:
     pt_matrixs_.push_back(GenMatrix({101}));
     pt_matrixs_.push_back(GenMatrix({2048}));
     pt_matrixs_.push_back(GenMatrix({512, 512}));
-    ct_matrixs_1_.push_back(numpy::CMatrix(1)); // placeholder
+    ct_matrixs_1_.push_back(numpy::CMatrix(1));  // placeholder
     ct_matrixs_1_.push_back(numpy::CMatrix(1));
     ct_matrixs_1_.push_back(numpy::CMatrix(1));
     ct_matrixs_1_.push_back(numpy::CMatrix(1));
-    ct_matrixs_2_.push_back(numpy::CMatrix(1)); // placeholder
+    ct_matrixs_2_.push_back(numpy::CMatrix(1));  // placeholder
     ct_matrixs_2_.push_back(numpy::CMatrix(1));
     ct_matrixs_2_.push_back(numpy::CMatrix(1));
     ct_matrixs_2_.push_back(numpy::CMatrix(1));
@@ -59,7 +59,7 @@ public:
     for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
       benchmark::RegisterBenchmark(
           fmt::format("{:^9}|Encrypt(shape={})", he_kit_->GetSchemaType(),
-                      pt_matrixs_[i].shape())
+                      pt_matrixs_[i].shape().ToString())
               .c_str(),
           [this, i](benchmark::State &st) { Encrypt(st, i); })
           ->Unit(benchmark::kMillisecond);
@@ -67,7 +67,7 @@ public:
     for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
       benchmark::RegisterBenchmark(
           fmt::format("{:^9}|AddCipher(shape={})", he_kit_->GetSchemaType(),
-                      pt_matrixs_[i].shape())
+                      pt_matrixs_[i].shape().ToString())
               .c_str(),
           [this, i](benchmark::State &st) { AddCipher(st, i); })
           ->Unit(benchmark::kMillisecond);
@@ -75,7 +75,7 @@ public:
     for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
       benchmark::RegisterBenchmark(
           fmt::format("{:^9}|SubCipher(shape={})", he_kit_->GetSchemaType(),
-                      pt_matrixs_[i].shape())
+                      pt_matrixs_[i].shape().ToString())
               .c_str(),
           [this, i](benchmark::State &st) { SubCipher(st, i); })
           ->Unit(benchmark::kMillisecond);
@@ -83,7 +83,7 @@ public:
     for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
       benchmark::RegisterBenchmark(
           fmt::format("{:^9}|AddInt(shape={})", he_kit_->GetSchemaType(),
-                      pt_matrixs_[i].shape())
+                      pt_matrixs_[i].shape().ToString())
               .c_str(),
           [this, i](benchmark::State &st) { AddInt(st, i); })
           ->Unit(benchmark::kMillisecond);
@@ -91,7 +91,7 @@ public:
     for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
       benchmark::RegisterBenchmark(
           fmt::format("{:^9}|SubInt(shape={})", he_kit_->GetSchemaType(),
-                      pt_matrixs_[i].shape())
+                      pt_matrixs_[i].shape().ToString())
               .c_str(),
           [this, i](benchmark::State &st) { SubInt(st, i); })
           ->Unit(benchmark::kMillisecond);
@@ -100,8 +100,8 @@ public:
     for (const auto &c : cases) {
       benchmark::RegisterBenchmark(
           fmt::format("{:^9}|Matmul({}@{})", he_kit_->GetSchemaType(),
-                      pt_matrixs_[c.first].shape(),
-                      pt_matrixs_[c.second].shape())
+                      pt_matrixs_[c.first].shape().ToString(),
+                      pt_matrixs_[c.second].shape().ToString())
               .c_str(),
           [this, c](benchmark::State &st) { Matmul(st, c.first, c.second); })
           ->Unit(benchmark::kMillisecond);
@@ -109,7 +109,7 @@ public:
     for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
       benchmark::RegisterBenchmark(
           fmt::format("{:^9}|Mul(shape={})", he_kit_->GetSchemaType(),
-                      pt_matrixs_[i].shape())
+                      pt_matrixs_[i].shape().ToString())
               .c_str(),
           [this, i](benchmark::State &st) { Mul(st, i); })
           ->Unit(benchmark::kMillisecond);
@@ -117,7 +117,7 @@ public:
     for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
       benchmark::RegisterBenchmark(
           fmt::format("{:^9}|Decrypt(shape={})", he_kit_->GetSchemaType(),
-                      pt_matrixs_[i].shape())
+                      pt_matrixs_[i].shape().ToString())
               .c_str(),
           [this, i](benchmark::State &st) { Decrypt(st, i); })
           ->Unit(benchmark::kMillisecond);
@@ -192,7 +192,7 @@ public:
     }
   }
 
-private:
+ private:
   int64_t counter = 0;
   std::once_flag flag_;
   std::unique_ptr<numpy::HeKit> he_kit_;
@@ -201,7 +201,7 @@ private:
   std::vector<numpy::CMatrix> ct_matrixs_2_;
 };
 
-} // namespace heu::lib::bench
+}  // namespace heu::lib::bench
 
 DEFINE_string(schema, ".+", "Run selected schemas, default to all.");
 DEFINE_int32(key_size, 2048, "Key size of phe schema.");

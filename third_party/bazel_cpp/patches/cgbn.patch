@@ -1,0 +1,386 @@
+diff --git a/include/cgbn/arith/arith.h b/include/cgbn/arith/arith.h
+index 7248af9..e2e363b 100644
+--- a/include/cgbn/arith/arith.h
++++ b/include/cgbn/arith/arith.h
+@@ -135,10 +135,10 @@ template<uint32_t limbs, uint32_t max_rotation> __device__ __forceinline__ void
+
+ }  /* CGBN namespace */
+
+-#include "static_divide.cu"
+-#include "asm.cu"
+-#include "chain.cu"
+-#include "math.cu"
+-#include "shifter.cu"
+-#include "mp.cu"
+-#include "dmp.cu"
++#include "static_divide.cuh"
++#include "asm.cuh"
++#include "chain.cuh"
++#include "math.cuh"
++#include "shifter.cuh"
++#include "mp.cuh"
++#include "dmp.cuh"
+diff --git a/include/cgbn/arith/asm.cu b/include/cgbn/arith/asm.cuh
+similarity index 100%
+rename from include/cgbn/arith/asm.cu
+rename to include/cgbn/arith/asm.cuh
+diff --git a/include/cgbn/arith/chain.cu b/include/cgbn/arith/chain.cuh
+similarity index 100%
+rename from include/cgbn/arith/chain.cu
+rename to include/cgbn/arith/chain.cuh
+diff --git a/include/cgbn/arith/dmp.cu b/include/cgbn/arith/dmp.cuh
+similarity index 100%
+rename from include/cgbn/arith/dmp.cu
+rename to include/cgbn/arith/dmp.cuh
+diff --git a/include/cgbn/arith/math.cu b/include/cgbn/arith/math.cuh
+similarity index 100%
+rename from include/cgbn/arith/math.cu
+rename to include/cgbn/arith/math.cuh
+diff --git a/include/cgbn/arith/mp.cu b/include/cgbn/arith/mp.cuh
+similarity index 100%
+rename from include/cgbn/arith/mp.cu
+rename to include/cgbn/arith/mp.cuh
+diff --git a/include/cgbn/arith/shifter.cu b/include/cgbn/arith/shifter.cuh
+similarity index 100%
+rename from include/cgbn/arith/shifter.cu
+rename to include/cgbn/arith/shifter.cuh
+diff --git a/include/cgbn/arith/static_divide.cu b/include/cgbn/arith/static_divide.cuh
+similarity index 100%
+rename from include/cgbn/arith/static_divide.cu
+rename to include/cgbn/arith/static_divide.cuh
+diff --git a/include/cgbn/cgbn.cu b/include/cgbn/cgbn.cuh
+similarity index 100%
+rename from include/cgbn/cgbn.cu
+rename to include/cgbn/cgbn.cuh
+diff --git a/include/cgbn/cgbn.h b/include/cgbn/cgbn.h
+index 5e103f6..72e813b 100644
+--- a/include/cgbn/cgbn.h
++++ b/include/cgbn/cgbn.h
+@@ -22,6 +22,8 @@ IN THE SOFTWARE.
+
+ ***/
+
++#pragma once
++
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <cuda.h>
+@@ -62,24 +64,10 @@ bool        cgbn_error_report_check(cgbn_error_report_t *report);
+ void        cgbn_error_report_reset(cgbn_error_report_t *report);
+ const char *cgbn_error_string(cgbn_error_report_t *report);
+
+-#include "cgbn.cu"
+-
+-#if defined(__CUDA_ARCH__)
+-  #if !defined(XMP_IMAD) && !defined(XMP_XMAD) && !defined(XMP_WMAD)
+-     #if __CUDA_ARCH__<500
+-       #define XMP_IMAD
+-     #elif __CUDA_ARCH__<700
+-       #define XMP_XMAD
+-     #else
+-       #define XMP_WMAD
+-     #endif
+-  #endif
+-  #include "cgbn_cuda.h"
+-#elif defined(__GMP_H__)
+-  #include "cgbn_mpz.h"
+-#else
+-  #include "cgbn_cpu.h"
+-#endif
++#include "cgbn.cuh"
++
++#define XMP_WMAD
++#include "cgbn_cuda.h"
+
+
+ template<class env_t, class source_cgbn_t>
+diff --git a/include/cgbn/cgbn_cuda.h b/include/cgbn/cgbn_cuda.h
+index 7be8e59..aa041ac 100644
+--- a/include/cgbn/cgbn_cuda.h
++++ b/include/cgbn/cgbn_cuda.h
+@@ -247,7 +247,7 @@ class cgbn_env_t {
+   __device__ __forceinline__ void       store(cgbn_local_t *address, const cgbn_t &a) const;
+ };
+
+-#include "impl_cuda.cu"
++#include "impl_cuda.cuh"
+
+ /*
+ experimental:
+diff --git a/include/cgbn/core/core.cu b/include/cgbn/core/core.cuh
+similarity index 95%
+rename from include/cgbn/core/core.cu
+rename to include/cgbn/core/core.cuh
+index b355bd6..d3ff467 100644
+--- a/include/cgbn/core/core.cu
++++ b/include/cgbn/core/core.cuh
+@@ -22,11 +22,11 @@ IN THE SOFTWARE.
+
+ ***/
+
+-#include "dispatch_padding.cu"
+-#include "dispatch_resolver.cu"
+-#include "dispatch_masking.cu"
+-#include "dispatch_shift_rotate.cu"
+-#include "dispatch_dlimbs.cu"
++#include "dispatch_padding.cuh"
++#include "dispatch_resolver.cuh"
++#include "dispatch_masking.cuh"
++#include "dispatch_shift_rotate.cuh"
++#include "dispatch_dlimbs.cuh"
+
+ namespace cgbn {
+
+@@ -296,31 +296,31 @@ class core_t {
+
+ } /* namespace cgbn */
+
+-#include "core_add_sub.cu"
+-#include "core_short_math.cu"
+-#include "core_compare.cu"
+-#include "core_counting.cu"
+-#include "core_insert_extract.cu"
+-#include "core_logical.cu"
+-#include "core_mul.cu"
+-#include "core_divide_single.cu"
+-#include "core_divide_multi.cu"
+-#include "core_sqrt_single.cu"
+-#include "core_sqrt_multi.cu"
+-#include "core_gcd.cu"
+-#include "core_binary_inverse.cu"
+-#include "core_modular_inverse.cu"
+-#include "core_mont.cu"
++#include "core_add_sub.cuh"
++#include "core_short_math.cuh"
++#include "core_compare.cuh"
++#include "core_counting.cuh"
++#include "core_insert_extract.cuh"
++#include "core_logical.cuh"
++#include "core_mul.cuh"
++#include "core_divide_single.cuh"
++#include "core_divide_multi.cuh"
++#include "core_sqrt_single.cuh"
++#include "core_sqrt_multi.cuh"
++#include "core_gcd.cuh"
++#include "core_binary_inverse.cuh"
++#include "core_modular_inverse.cuh"
++#include "core_mont.cuh"
+
+ #if defined(XMP_IMAD)
+-  #include "core_mul_imad.cu"
+-  #include "core_mont_imad.cu"
++  #include "core_mul_imad.cuh"
++  #include "core_mont_imad.cuh"
+ #elif defined(XMP_XMAD)
+-  #include "core_mul_xmad.cu"
+-  #include "core_mont_xmad.cu"
++  #include "core_mul_xmad.cuh"
++  #include "core_mont_xmad.cuh"
+ #elif defined(XMP_WMAD)
+-  #include "core_mul_wmad.cu"
+-  #include "core_mont_wmad.cu"
++  #include "core_mul_wmad.cuh"
++  #include "core_mont_wmad.cuh"
+ #else
+   #warning One of XMP_IMAD, XMP_XMAD, XMP_WMAD must be defined
+ #endif
+diff --git a/include/cgbn/core/core_add_sub.cu b/include/cgbn/core/core_add_sub.cuh
+similarity index 100%
+rename from include/cgbn/core/core_add_sub.cu
+rename to include/cgbn/core/core_add_sub.cuh
+diff --git a/include/cgbn/core/core_binary_inverse.cu b/include/cgbn/core/core_binary_inverse.cuh
+similarity index 100%
+rename from include/cgbn/core/core_binary_inverse.cu
+rename to include/cgbn/core/core_binary_inverse.cuh
+diff --git a/include/cgbn/core/core_compare.cu b/include/cgbn/core/core_compare.cuh
+similarity index 100%
+rename from include/cgbn/core/core_compare.cu
+rename to include/cgbn/core/core_compare.cuh
+diff --git a/include/cgbn/core/core_counting.cu b/include/cgbn/core/core_counting.cuh
+similarity index 98%
+rename from include/cgbn/core/core_counting.cu
+rename to include/cgbn/core/core_counting.cuh
+index c23615f..6ae2b84 100644
+--- a/include/cgbn/core/core_counting.cu
++++ b/include/cgbn/core/core_counting.cuh
+@@ -90,7 +90,7 @@ __device__ __forceinline__ uint32_t core_t<env>::ctzt(const uint32_t a[LIMBS]) {
+   if(TPI<warpSize)
+     bottomctz=bottomctz>>(warp_thread^group_thread);
+   bottomctz=uctz(bottomctz);
+-  return umin(topctz, TPI);
++  return umin(bottomctz, TPI);
+ }
+
+ } /* namespace cgbn */
+\ No newline at end of file
+diff --git a/include/cgbn/core/core_divide_multi.cu b/include/cgbn/core/core_divide_multi.cuh
+similarity index 100%
+rename from include/cgbn/core/core_divide_multi.cu
+rename to include/cgbn/core/core_divide_multi.cuh
+diff --git a/include/cgbn/core/core_divide_single.cu b/include/cgbn/core/core_divide_single.cuh
+similarity index 100%
+rename from include/cgbn/core/core_divide_single.cu
+rename to include/cgbn/core/core_divide_single.cuh
+diff --git a/include/cgbn/core/core_gcd.cu b/include/cgbn/core/core_gcd.cuh
+similarity index 100%
+rename from include/cgbn/core/core_gcd.cu
+rename to include/cgbn/core/core_gcd.cuh
+diff --git a/include/cgbn/core/core_insert_extract.cu b/include/cgbn/core/core_insert_extract.cuh
+similarity index 100%
+rename from include/cgbn/core/core_insert_extract.cu
+rename to include/cgbn/core/core_insert_extract.cuh
+diff --git a/include/cgbn/core/core_logical.cu b/include/cgbn/core/core_logical.cuh
+similarity index 100%
+rename from include/cgbn/core/core_logical.cu
+rename to include/cgbn/core/core_logical.cuh
+diff --git a/include/cgbn/core/core_modular_inverse.cu b/include/cgbn/core/core_modular_inverse.cuh
+similarity index 100%
+rename from include/cgbn/core/core_modular_inverse.cu
+rename to include/cgbn/core/core_modular_inverse.cuh
+diff --git a/include/cgbn/core/core_mont.cu b/include/cgbn/core/core_mont.cuh
+similarity index 100%
+rename from include/cgbn/core/core_mont.cu
+rename to include/cgbn/core/core_mont.cuh
+diff --git a/include/cgbn/core/core_mont_imad.cu b/include/cgbn/core/core_mont_imad.cuh
+similarity index 100%
+rename from include/cgbn/core/core_mont_imad.cu
+rename to include/cgbn/core/core_mont_imad.cuh
+diff --git a/include/cgbn/core/core_mont_wmad.cu b/include/cgbn/core/core_mont_wmad.cuh
+similarity index 100%
+rename from include/cgbn/core/core_mont_wmad.cu
+rename to include/cgbn/core/core_mont_wmad.cuh
+diff --git a/include/cgbn/core/core_mont_xmad.cu b/include/cgbn/core/core_mont_xmad.cuh
+similarity index 100%
+rename from include/cgbn/core/core_mont_xmad.cu
+rename to include/cgbn/core/core_mont_xmad.cuh
+diff --git a/include/cgbn/core/core_mul.cu b/include/cgbn/core/core_mul.cuh
+similarity index 100%
+rename from include/cgbn/core/core_mul.cu
+rename to include/cgbn/core/core_mul.cuh
+diff --git a/include/cgbn/core/core_mul_imad.cu b/include/cgbn/core/core_mul_imad.cuh
+similarity index 100%
+rename from include/cgbn/core/core_mul_imad.cu
+rename to include/cgbn/core/core_mul_imad.cuh
+diff --git a/include/cgbn/core/core_mul_wmad.cu b/include/cgbn/core/core_mul_wmad.cuh
+similarity index 100%
+rename from include/cgbn/core/core_mul_wmad.cu
+rename to include/cgbn/core/core_mul_wmad.cuh
+diff --git a/include/cgbn/core/core_mul_xmad.cu b/include/cgbn/core/core_mul_xmad.cuh
+similarity index 100%
+rename from include/cgbn/core/core_mul_xmad.cu
+rename to include/cgbn/core/core_mul_xmad.cuh
+diff --git a/include/cgbn/core/core_short_math.cu b/include/cgbn/core/core_short_math.cuh
+similarity index 100%
+rename from include/cgbn/core/core_short_math.cu
+rename to include/cgbn/core/core_short_math.cuh
+diff --git a/include/cgbn/core/core_singleton.cu b/include/cgbn/core/core_singleton.cuh
+similarity index 100%
+rename from include/cgbn/core/core_singleton.cu
+rename to include/cgbn/core/core_singleton.cuh
+diff --git a/include/cgbn/core/core_sqrt_multi.cu b/include/cgbn/core/core_sqrt_multi.cuh
+similarity index 100%
+rename from include/cgbn/core/core_sqrt_multi.cu
+rename to include/cgbn/core/core_sqrt_multi.cuh
+diff --git a/include/cgbn/core/core_sqrt_single.cu b/include/cgbn/core/core_sqrt_single.cuh
+similarity index 100%
+rename from include/cgbn/core/core_sqrt_single.cu
+rename to include/cgbn/core/core_sqrt_single.cuh
+diff --git a/include/cgbn/core/dispatch_dlimbs.cu b/include/cgbn/core/dispatch_dlimbs.cuh
+similarity index 100%
+rename from include/cgbn/core/dispatch_dlimbs.cu
+rename to include/cgbn/core/dispatch_dlimbs.cuh
+diff --git a/include/cgbn/core/dispatch_masking.cu b/include/cgbn/core/dispatch_masking.cuh
+similarity index 100%
+rename from include/cgbn/core/dispatch_masking.cu
+rename to include/cgbn/core/dispatch_masking.cuh
+diff --git a/include/cgbn/core/dispatch_padding.cu b/include/cgbn/core/dispatch_padding.cuh
+similarity index 100%
+rename from include/cgbn/core/dispatch_padding.cu
+rename to include/cgbn/core/dispatch_padding.cuh
+diff --git a/include/cgbn/core/dispatch_resolver.cu b/include/cgbn/core/dispatch_resolver.cuh
+similarity index 92%
+rename from include/cgbn/core/dispatch_resolver.cu
+rename to include/cgbn/core/dispatch_resolver.cuh
+index 4218e11..49f4097 100644
+--- a/include/cgbn/core/dispatch_resolver.cu
++++ b/include/cgbn/core/dispatch_resolver.cuh
+@@ -22,6 +22,6 @@ IN THE SOFTWARE.
+
+ ***/
+
+-#include "padded_resolver.cu"
+-#include "warp_resolver.cu"
+-#include "subwarp_resolver.cu"
++#include "padded_resolver.cuh"
++#include "warp_resolver.cuh"
++#include "subwarp_resolver.cuh"
+diff --git a/include/cgbn/core/dispatch_shift_rotate.cu b/include/cgbn/core/dispatch_shift_rotate.cuh
+similarity index 100%
+rename from include/cgbn/core/dispatch_shift_rotate.cu
+rename to include/cgbn/core/dispatch_shift_rotate.cuh
+diff --git a/include/cgbn/core/padded_resolver.cu b/include/cgbn/core/padded_resolver.cuh
+similarity index 98%
+rename from include/cgbn/core/padded_resolver.cu
+rename to include/cgbn/core/padded_resolver.cuh
+index 9b26a29..eb7e8bd 100644
+--- a/include/cgbn/core/padded_resolver.cu
++++ b/include/cgbn/core/padded_resolver.cuh
+@@ -247,7 +247,7 @@ class dispatch_resolver_t {
+   __device__ __forceinline__ static int32_t resolve_sub(const int32_t carry, uint32_t x[LIMBS]) {
+     uint32_t sync=core::sync_mask(), group_thread=threadIdx.x & tpi-1, group_base=group_thread*LIMBS;
+     uint32_t warp_thread=threadIdx.x & warpSize-1, lane=1<<warp_thread;
+-    uint32_t g, p, land;
++    uint32_t g, p, land, lor;
+     int32_t  c;
+     int32_t  result;
+
+@@ -263,7 +263,7 @@ class dispatch_resolver_t {
+       x[index]=addc_cc(x[index], c);
+     c=addc(0, c);
+
+-    lor=mplor<limbs>(x);
++    lor=mplor<LIMBS>(x);
+     g=__ballot_sync(sync, c==0xFFFFFFFF);
+     p=__ballot_sync(sync, lor==0);
+
+@@ -272,7 +272,7 @@ class dispatch_resolver_t {
+     c=(c==0) ? 0 : 0xFFFFFFFF;
+     x[0]=add_cc(x[0], c);
+     #pragma unroll
+-    for(int32_t index=1;index<limbs;index++)
++    for(int32_t index=1;index<LIMBS;index++)
+       x[index]=addc_cc(x[index], c);
+
+     result=__shfl_sync(sync, x[PAD_LIMB], PAD_THREAD, tpi);
+diff --git a/include/cgbn/core/subwarp_resolver.cu b/include/cgbn/core/subwarp_resolver.cuh
+similarity index 100%
+rename from include/cgbn/core/subwarp_resolver.cu
+rename to include/cgbn/core/subwarp_resolver.cuh
+diff --git a/include/cgbn/core/unpadded.cu b/include/cgbn/core/unpadded.cuh
+similarity index 100%
+rename from include/cgbn/core/unpadded.cu
+rename to include/cgbn/core/unpadded.cuh
+diff --git a/include/cgbn/core/warp_resolver.cu b/include/cgbn/core/warp_resolver.cuh
+similarity index 100%
+rename from include/cgbn/core/warp_resolver.cu
+rename to include/cgbn/core/warp_resolver.cuh
+diff --git a/include/cgbn/impl_cuda.cu b/include/cgbn/impl_cuda.cuh
+similarity index 99%
+rename from include/cgbn/impl_cuda.cu
+rename to include/cgbn/impl_cuda.cuh
+index cd9ebca..1aa7701 100644
+--- a/include/cgbn/impl_cuda.cu
++++ b/include/cgbn/impl_cuda.cuh
+@@ -23,9 +23,9 @@ IN THE SOFTWARE.
+ ***/
+
+ #include "arith/arith.h"
+-#include "core/unpadded.cu"
+-#include "core/core.cu"
+-#include "core/core_singleton.cu"
++#include "core/unpadded.cuh"
++#include "core/core.cuh"
++#include "core/core_singleton.cuh"
+
+ #if(__CUDACC_VER_MAJOR__<9 || (__CUDACC_VER_MAJOR__==9 && __CUDACC_VER_MINOR__<2))
+   #if __CUDA_ARCH__>=700

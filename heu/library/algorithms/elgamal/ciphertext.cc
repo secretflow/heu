@@ -91,7 +91,7 @@ void Ciphertext::Deserialize(yacl::ByteContainerView in) {
     auto curve_name = object.via.array.ptr[idx++].as<yacl::crypto::CurveName>();
     auto lib_name = object.via.array.ptr[idx++].as<std::string>();
     ec = ::yacl::crypto::EcGroupFactory::Instance().Create(
-        curve_name, yacl::Lib = lib_name);
+        curve_name, yacl::ArgLib = lib_name);
     EnableEcGroup(ec);
   } else {
     auto hash = object.via.array.ptr[idx++].as<size_t>();

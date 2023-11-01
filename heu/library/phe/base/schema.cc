@@ -46,6 +46,8 @@ static const std::map<SchemaType, std::vector<std::string>>
                  "paillier_float"),
         MAP_ITEM(ENABLE_IPCL, IPCL, "ipcl", "ipcl-paillier", "ipcl_paillier",
                  "paillier_ipcl", "paillier-ipcl"),
+        MAP_ITEM(ENABLE_GPAILLIER, GPaillier, "g-paillier", "gpaillier",
+                 "paillier_g", "paillier_gpu"),
         MAP_ITEM(ENABLE_CLUSTAR_FPGA, ClustarFPGA, "clustarfpga",
                  "clustarfpga-paillier", "clustarfpga_paillier",
                  "paillier_clustarfpga", "paillier-clustarfpga"),

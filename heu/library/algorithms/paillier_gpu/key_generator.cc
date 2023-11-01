@@ -1,4 +1,4 @@
-// Copyright 2022 Ant Group Co., Ltd.
+// Copyright 2023 Ant Group Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/library/algorithms/paillier_zahlen/key_generator.h"
+#include "heu/library/algorithms/paillier_gpu/key_generator.h"
 
 #include "yacl/base/exception.h"
 
-#include "heu/library/algorithms/util/mp_int.h"
+#include "heu/library/algorithms/paillier_gpu/plaintext.h"
 
-namespace heu::lib::algorithms::paillier_z {
+namespace heu::lib::algorithms::paillier_g {
 
 namespace {
-
 constexpr size_t kPQDifferenceBitLenSub = 2;  // >=1022-bit P-Q
 }
 
 void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
-  YACL_ENFORCE(key_size % 2 == 0, "Key size must be even");
+  YACL_ENFORCE(key_size == 2048,
+               "GPU Paillier only supports 2048 key_size now");
 
-  MPInt p, q, n, c;
+  Plaintext p, q, n, c;
   // To avoid square-root attacks, make sure the bit length of p-q is very
   // large.
   do {
@@ -37,26 +37,27 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
     do {
       MPInt::RandPrimeOver(half, &q, PrimeType::BBS);
       MPInt::Gcd(p - MPInt::_1_, q - MPInt::_1_, &c);
-    } while (c != MPInt(2) ||
+    } while (c != Plaintext(2) ||
              (p - q).BitCount() < key_size / 2 - kPQDifferenceBitLenSub);
-    n = p * q;
+    n = (Plaintext)(p * q);
   } while (n.BitCount() < key_size);
 
   MPInt x, h;
   do {
     MPInt::RandomLtN(n, &x);
     MPInt::Gcd(x, n, &c);
-  } while (c != MPInt::_1_);
-  h = -x * x % n;
+  } while (c != Plaintext(1));
+  h = x * x * -MPInt::_1_ % n;
 
   // fill secret key
-  sk->p_ = p;
-  sk->q_ = q;
-  sk->lambda_ = p.DecrOne() * q.DecrOne() / MPInt::_2_;
+  sk->p_ = (Plaintext)p;
+  sk->q_ = (Plaintext)q;
+  sk->lambda_ = (Plaintext)(p.DecrOne() * q.DecrOne() / MPInt::_2_);
   MPInt::InvertMod(sk->lambda_, n, &sk->mu_);
   sk->Init();
   // fill public key
-  pk->h_s_ = sk->PowModNSquareCrt(h, n);
+  pk->n_plus_ = (Plaintext)(n + Plaintext(1));  // g
+  pk->h_s_ = (Plaintext)(sk->PowModNSquareCrt(h, n));
   pk->n_ = std::move(n);
   pk->Init();
 }
@@ -65,4 +66,4 @@ void KeyGenerator::Generate(SecretKey* sk, PublicKey* pk) {
   Generate(2048, sk, pk);
 }
 
-}  // namespace heu::lib::algorithms::paillier_z
+}  // namespace heu::lib::algorithms::paillier_g

@@ -40,7 +40,6 @@ class Evaluator : public phe::Evaluator {
   PMatrix Sub(const PMatrix& x, const PMatrix& y) const;
 
   // dense cwise mul
-  CMatrix Mul(const CMatrix& x, const CMatrix& y) const;
   CMatrix Mul(const CMatrix& x, const PMatrix& y) const;
   CMatrix Mul(const PMatrix& x, const CMatrix& y) const;
   PMatrix Mul(const PMatrix& x, const PMatrix& y) const;
@@ -62,10 +61,9 @@ class Evaluator : public phe::Evaluator {
                  "you cannot select sum an empty tensor, shape={}x{}", x.rows(),
                  x.cols());
 
-    T zero = GetZero(x);
     const auto& sub = x.GetItem(row_indices, col_indices);
     if (sub.size() == 0) {
-      return zero;
+      return GetZero(x);
     }
 
     return Sum(sub);
