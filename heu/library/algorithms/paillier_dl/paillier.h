@@ -1,4 +1,4 @@
-// Copyright 2022 Ant Group Co., Ltd.
+// Copyright 2023 Denglin Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 // DJ paillier scheme, reference: https://www.brics.dk/DS/03/9/BRICS-DS-03-9.pdf
 
-#include "heu/library/algorithms/paillier_zahlen/ciphertext.h"
-#include "heu/library/algorithms/paillier_zahlen/decryptor.h"
-#include "heu/library/algorithms/paillier_zahlen/encryptor.h"
-#include "heu/library/algorithms/paillier_zahlen/evaluator.h"
-#include "heu/library/algorithms/paillier_zahlen/key_generator.h"
-#include "heu/library/algorithms/paillier_zahlen/public_key.h"
-#include "heu/library/algorithms/paillier_zahlen/secret_key.h"
+#include "heu/library/algorithms/paillier_dl/ciphertext.h"
+#include "heu/library/algorithms/paillier_dl/decryptor.h"
+#include "heu/library/algorithms/paillier_dl/encryptor.h"
+#include "heu/library/algorithms/paillier_dl/evaluator.h"
+#include "heu/library/algorithms/paillier_dl/key_generator.h"
+#include "heu/library/algorithms/paillier_dl/public_key.h"
+#include "heu/library/algorithms/paillier_dl/secret_key.h"

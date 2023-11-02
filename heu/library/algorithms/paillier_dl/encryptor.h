@@ -1,4 +1,4 @@
-// Copyright 2022 Ant Group Co., Ltd.
+// Copyright 2023 Denglin Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,23 +17,20 @@
 #include <mutex>
 #include <utility>
 
-#include "heu/library/algorithms/paillier_zahlen/ciphertext.h"
-#include "heu/library/algorithms/paillier_zahlen/public_key.h"
-#include "heu/library/algorithms/paillier_zahlen/secret_key.h"
+#include "heu/library/algorithms/paillier_dl/ciphertext.h"
+#include "heu/library/algorithms/paillier_dl/public_key.h"
+#include "heu/library/algorithms/paillier_dl/secret_key.h"
 
-namespace heu::lib::algorithms::paillier_z {
+namespace heu::lib::algorithms::paillier_dl {
 
 class Encryptor {
  public:
   explicit Encryptor(PublicKey pk);
   Encryptor(const Encryptor& from);
 
-  Ciphertext EncryptZero() const;  // Get Enc(0)
-  Ciphertext Encrypt(const MPInt& m) const;
-  std::vector<Ciphertext> Encrypt(absl::Span<const Plaintext> pts) const;
-  std::pair<Ciphertext, std::string> EncryptWithAudit(const MPInt& m) const;
+  std::vector<Ciphertext> Encrypt(const std::vector<Plaintext> pts) const;
   std::pair<std::vector<Ciphertext>, std::vector<std::string>> EncryptWithAudit(
-      absl::Span<const Plaintext> pts) const;
+      const std::vector<Plaintext> pts) const;
 
   const PublicKey& public_key() const { return pk_; }
 
@@ -42,13 +39,10 @@ class Encryptor {
 
  private:
   template <bool audit = false>
-  Ciphertext EncryptImplScalar(const MPInt& m,
-                         std::string* audit_str = nullptr) const;
-  template <bool audit = false>
-  std::vector<Ciphertext> EncryptImplVector(absl::Span<const Plaintext> pts,
+  std::vector<Ciphertext> EncryptImplVector(const std::vector<Plaintext> pts,
                                             std::vector<std::string> *audit_str = nullptr) const;
  private:
   const PublicKey pk_;
 };
 
-}  // namespace heu::lib::algorithms::paillier_z
+}  // namespace heu::lib::algorithms::paillier_dl

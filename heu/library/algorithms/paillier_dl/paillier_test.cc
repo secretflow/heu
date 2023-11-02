@@ -1,4 +1,4 @@
-// Copyright 2022 Ant Group Co., Ltd.
+// Copyright 2023 Denglin Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/library/algorithms/paillier_zahlen/paillier.h"
+#include "heu/library/algorithms/paillier_dl/paillier.h"
 
 #include <string>
 
 #include "gtest/gtest.h"
 
-namespace heu::lib::algorithms::paillier_z::test {
+namespace heu::lib::algorithms::paillier_dl::test {
 
 class ZPaillierTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    KeyGenerator::Generate(2048, &sk_, &pk_);
+    KeyGenerator::Generate(256, &sk_, &pk_);
     evaluator_ = std::make_shared<Evaluator>(pk_);
     decryptor_ = std::make_shared<Decryptor>(pk_, sk_);
     encryptor_ = std::make_shared<Encryptor>(pk_);
@@ -37,237 +37,149 @@ class ZPaillierTest : public ::testing::Test {
   std::shared_ptr<Decryptor> decryptor_;
 };
 
-TEST_F(ZPaillierTest, ScalarEncryptDecrypt) {
-  // EXPECT_GT(encryptor_->GetRn(), MPInt(1));
-
-  MPInt m0(-12345);
-  Ciphertext ct0 = encryptor_->Encrypt(m0);
-
-  MPInt plain;
-  decryptor_->Decrypt(ct0, &plain);
-  EXPECT_EQ(plain, MPInt(-12345));
-}
-
 TEST_F(ZPaillierTest, VectorEncryptDecrypt) {
   std::vector<MPInt> pts ={Plaintext(-12345), Plaintext(12345)};
-  absl::Span<const Plaintext> pts_span = absl::Span<const Plaintext>(pts);
-  std::vector<Ciphertext> cts = encryptor_->Encrypt(pts_span);
+  std::vector<MPInt> gpts ={Plaintext(-12345), Plaintext(12345)};
+  std::vector<Ciphertext> cts = encryptor_->Encrypt(pts);
 
-  absl::Span<const Ciphertext> cts_span = absl::Span<const Ciphertext>(cts);
   std::vector<Plaintext> depts;
-  for (int i=0; i<pts.size(); i++) {
+  for (int i=0; i<cts.size(); i++) {
     Plaintext pt;
     depts.push_back(pt);
   }
-  absl::Span<Plaintext> depts_span = absl::Span<Plaintext>(depts);
-  decryptor_->Decrypt(cts_span, &depts_span);
+  decryptor_->Decrypt(cts, depts);
 
-  depts_span[0] = Plaintext(11);
-  for (int i=0; i<pts_span.size(); i++) {
-      EXPECT_EQ(pts_span[i], depts_span[i]);
+  for (int i=0; i<gpts.size(); i++) {
+      EXPECT_EQ(gpts[i], depts[i]);
   }
 }
 
-#if 0
-TEST_F(ZPaillierTest, CiphertextEvaluate) {
-  EXPECT_GT(encryptor_->GetRn(), MPInt(1));
+TEST_F(ZPaillierTest, VectorvaluateCiphertextAddCiphertext) {
+  std::vector<MPInt> pts ={Plaintext(-12345), Plaintext(23456)};
+  std::vector<MPInt> gpts ={Plaintext(-12345*2), Plaintext(23456*2)};
+  std::vector<Ciphertext> cts = encryptor_->Encrypt(pts);
 
-  MPInt m0(-12345);
-  Ciphertext ct0 = encryptor_->Encrypt(m0);
+  std::vector<Ciphertext> res0;
+  res0 = evaluator_->Add(cts, cts);
 
-  Ciphertext res;
-  MPInt plain;
-
-  res = evaluator_->Add(ct0, ct0);
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-12345 * 2));
-  res = evaluator_->Mul(ct0, MPInt(2));
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-12345 * 2));
-
-  evaluator_->Randomize(&res);
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-12345 * 2));
-
-  MPInt m1(123);
-  Ciphertext ct1 = encryptor_->Encrypt(m1);
-
-  res = evaluator_->Add(ct1, ct1);
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123 * 2));
-  res = evaluator_->Mul(ct1, MPInt(2));
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123 * 2));
-
-  res = evaluator_->Add(ct0, ct1);
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-12345 + 123));
-
-  // mul
-  ct1 = encryptor_->Encrypt(m1);
-  res = evaluator_->Mul(ct1, MPInt(1));
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123));
-
-  ct1 = encryptor_->Encrypt(m1);
-  res = evaluator_->Mul(ct1, MPInt(0));
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_TRUE(plain.IsZero());
-  evaluator_->Randomize(&res);
-  EXPECT_FALSE(res.c_.IsZero());
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_TRUE(plain.IsZero());
-
-  ct1 = encryptor_->Encrypt(m1);
-  res = evaluator_->Mul(ct1, MPInt(-1));
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123));
-
-  ct1 = encryptor_->Encrypt(m1);
-  res = evaluator_->Mul(ct1, MPInt(-2));
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123 * 2));
-}
-
-TEST_F(ZPaillierTest, MinMaxDecrypt) {
-  MPInt plain = pk_.n_;
-  EXPECT_THROW(encryptor_->Encrypt(plain), std::exception);  // too many bits
-
-  plain = pk_.PlaintextBound();
-  EXPECT_THROW(encryptor_->Encrypt(plain), std::exception);  // too many bits
-
-  MPInt plain2;
-  plain.DecrOne();  // max
-  Ciphertext ct0 = encryptor_->Encrypt(plain);
-  decryptor_->Decrypt(ct0, &plain2);
-  EXPECT_EQ(plain, plain2);
-
-  plain.NegateInplace();  // -max
-  ct0 = encryptor_->Encrypt(plain);
-  decryptor_->Decrypt(ct0, &plain2);
-  EXPECT_EQ(plain, plain2);
-
-  plain.DecrOne();
-  EXPECT_THROW(encryptor_->Encrypt(plain),
-               std::exception);  // too many bits
-}
-
-TEST_F(ZPaillierTest, PlaintextEvaluate1) {
-  // base (m0) 为正数
-  MPInt m0(123);
-  Ciphertext ct0 = encryptor_->Encrypt(m0);
-
-  Ciphertext res;
-  MPInt plain;
-  res = evaluator_->Add(ct0, MPInt(23));
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123 + 23));
-
-  res = evaluator_->Add(ct0, MPInt(6543212));
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123 + 6543212));
-
-  res = evaluator_->Add(ct0, MPInt(-123));
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(0));
-
-  res = evaluator_->Add(ct0, MPInt(-456));
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123 - 456));
-}
-
-TEST_F(ZPaillierTest, PlaintextEvaluate2) {
-  // test case: base (m0) is negative
-  MPInt m0(-123);
-  Ciphertext ct0 = encryptor_->Encrypt(m0);
-
-  MPInt plain;
-  Ciphertext res = evaluator_->Add(ct0, MPInt(23));
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123 + 23));
-
-  res = evaluator_->Add(ct0, MPInt(std::numeric_limits<int64_t>::max()));
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123 + std::numeric_limits<int64_t>::max()));
-
-  res = evaluator_->Add(ct0, MPInt(-123));
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123 * 2));
-
-  res = evaluator_->Add(ct0, MPInt(-456));
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123 - 456));
-
-  // test big number
-  ct0 = encryptor_->Encrypt(MPInt(std::numeric_limits<int64_t>::lowest()));
-  res = evaluator_->Add(ct0, MPInt(std::numeric_limits<int64_t>::max()));
-  decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-1));
-
-  res = evaluator_->Add(ct0, MPInt(-1));
-  decryptor_->Decrypt(res, &plain);
-  // note: MPInt itself does not overflow, but AsInt64() overflows
-  EXPECT_EQ(plain.Get<int64_t>(), std::numeric_limits<int64_t>::max());
-}
-
-class BigNumberTest : public ::testing::TestWithParam<int64_t> {
- protected:
-  static void SetUpTestSuite() { KeyGenerator::Generate(2048, &sk_, &pk_); }
-
-  static SecretKey sk_;
-  static PublicKey pk_;
-};
-
-SecretKey BigNumberTest::sk_;
-PublicKey BigNumberTest::pk_;
-
-// int64 range: [-9223372036854775808, 9223372036854775807]
-INSTANTIATE_TEST_SUITE_P(
-    LargeRange, BigNumberTest,
-    ::testing::Values(std::numeric_limits<int64_t>::lowest(), -1234, -2, -1, 0,
-                      1, 2, 1234, std::numeric_limits<int64_t>::max()));
-
-TEST_P(BigNumberTest, EncDec) {
-  Encryptor encryptor(pk_);
-  Decryptor decryptor(pk_, sk_);
-
-  MPInt pt1(GetParam());
-  Ciphertext ct = encryptor.Encrypt(pt1);
-
-  MPInt pt2;
-  decryptor.Decrypt(ct, &pt2);
-  EXPECT_EQ(pt1, pt2);
-}
-
-TEST_P(BigNumberTest, SubTest) {
-  Encryptor encryptor(pk_);
-  Evaluator evaluator(pk_);
-  Decryptor decryptor(pk_, sk_);
-
-  int64_t x = GetParam();
-  int64_t share_a = std::numeric_limits<int64_t>::max();
-
-  MPInt x_mp(x);
-  MPInt r_mp(share_a);
-
-  Ciphertext x_encrypted = encryptor.Encrypt(x_mp);
-
-  {
-    auto xa = encryptor.EncryptWithAudit(x_mp);
-    MPInt raw;
-    decryptor.Decrypt(xa.first, &raw);
-    EXPECT_EQ(x_mp, raw);
+  std::vector<Plaintext> depts0;
+  for (int i=0; i<res0.size(); i++) {
+    Plaintext pt;
+    depts0.push_back(pt);
   }
+  decryptor_->Decrypt(res0, depts0);
 
-  evaluator.SubInplace(&x_encrypted, r_mp);
-  MPInt raw;
-  decryptor.Decrypt(x_encrypted, &raw);
-  int64_t share_b = raw.Get<int64_t>();
-
-  EXPECT_EQ(share_a + share_b, x);
+  for (int i=0; i<gpts.size(); i++) {
+      EXPECT_EQ(gpts[i], depts0[i]);
+  }
 }
-#endif
-}  // namespace heu::lib::algorithms::paillier_z::test
+
+TEST_F(ZPaillierTest, VectorEvaluateCiphertextSubCiphertext) {
+  std::vector<MPInt> pts0 ={Plaintext(12345), Plaintext(23456)};
+  std::vector<MPInt> pts1 ={Plaintext(23456), Plaintext(12345)};
+  std::vector<MPInt> gpts ={Plaintext(12345-23456), Plaintext(23456-12345)};
+  std::vector<Ciphertext> cts0 = encryptor_->Encrypt(pts0);
+  std::vector<Ciphertext> cts1 = encryptor_->Encrypt(pts1);
+
+  std::vector<Ciphertext> res0;
+  res0 = evaluator_->Sub(cts0, cts1);
+
+  std::vector<Plaintext> depts0;
+  for (int i=0; i<res0.size(); i++) {
+    Plaintext pt;
+    depts0.push_back(pt);
+  }
+  decryptor_->Decrypt(res0, depts0);
+
+  for (int i=0; i<gpts.size(); i++) {
+      EXPECT_EQ(gpts[i], depts0[i]);
+  }
+}
+
+TEST_F(ZPaillierTest, VectorEvaluateCiphertextAddPlaintext) {
+  std::vector<MPInt> pts ={Plaintext(12345), Plaintext(-23456)};
+  std::vector<MPInt> gpts ={Plaintext(12345*2), Plaintext(-23456*2)};
+
+  std::vector<Ciphertext> cts = encryptor_->Encrypt(pts);
+
+  std::vector<Ciphertext> res0;
+  res0 = evaluator_->Add(cts, pts);
+
+  std::vector<Plaintext> depts0;
+  for (int i=0; i<res0.size(); i++) {
+    Plaintext pt;
+    depts0.push_back(pt);
+  }
+  decryptor_->Decrypt(res0, depts0);
+
+  for (int i=0; i<gpts.size(); i++) {
+      EXPECT_EQ(gpts[i], depts0[i]);
+  }
+}
+
+TEST_F(ZPaillierTest, VectorEvaluateCiphertextSubPlaintext) {
+  std::vector<MPInt> pts0 ={Plaintext(12345), Plaintext(23456)};
+  std::vector<MPInt> pts1 ={Plaintext(23456), Plaintext(12345)};
+  std::vector<MPInt> gpts ={Plaintext(12345-23456), Plaintext(23456-12345)};
+  std::vector<Ciphertext> cts0 = encryptor_->Encrypt(pts0);
+
+  std::vector<Ciphertext> res0;
+  res0 = evaluator_->Sub(cts0, pts1);
+
+  std::vector<Plaintext> depts0;
+  for (int i=0; i<res0.size(); i++) {
+    Plaintext pt;
+    depts0.push_back(pt);
+  }
+  decryptor_->Decrypt(res0, depts0);
+
+  for (int i=0; i<gpts.size(); i++) {
+      EXPECT_EQ(gpts[i], depts0[i]);
+  }
+}
+
+TEST_F(ZPaillierTest, VectorEvaluateCiphertextMulPlaintext) {
+  std::vector<MPInt> pts ={Plaintext(12345), Plaintext(23456)};
+  std::vector<MPInt> gpts ={Plaintext(12345*12345), Plaintext(23456*23456)};
+
+  std::vector<Ciphertext> cts = encryptor_->Encrypt(pts);
+
+  std::vector<Ciphertext> res0;
+  res0 = evaluator_->Mul(cts, pts);
+
+  std::vector<Plaintext> depts0;
+  for (int i=0; i<res0.size(); i++) {
+    Plaintext pt;
+    depts0.push_back(pt);
+  }
+  decryptor_->Decrypt(res0, depts0);
+
+  for (int i=0; i<gpts.size(); i++) {
+      EXPECT_EQ(gpts[i], depts0[i]);
+  }
+}
+
+TEST_F(ZPaillierTest, VectorEvaluateCiphertextNeg) { 
+  std::vector<MPInt> pts ={Plaintext(12345), Plaintext(23456)};
+  std::vector<MPInt> gpts ={Plaintext(-12345), Plaintext(-23456)};
+
+  std::vector<Ciphertext> cts = encryptor_->Encrypt(pts);
+
+  std::vector<Ciphertext> res0;
+  res0 = evaluator_->Negate(cts);
+
+  std::vector<Plaintext> depts0;
+  for (int i=0; i<res0.size(); i++) {
+    Plaintext pt;
+    depts0.push_back(pt);
+  }
+  decryptor_->Decrypt(res0, depts0);
+
+  for (int i=0; i<gpts.size(); i++) {
+      EXPECT_EQ(gpts[i], depts0[i]);
+  }
+}
+}  // namespace heu::lib::algorithms::paillier_dl::test
 
 
 int main(int argc, char** argv) {

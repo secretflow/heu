@@ -1,4 +1,4 @@
-// Copyright 2022 Ant Group Co., Ltd.
+// Copyright 2023 Denglin Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,48 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/library/algorithms/paillier_zahlen/secret_key.h"
+#include "heu/library/algorithms/paillier_dl/secret_key.h"
+#include "heu/library/algorithms/util/mp_int.h"
 
-namespace heu::lib::algorithms::paillier_z {
+namespace heu::lib::algorithms::paillier_dl {
 
-void invert(mpz_t rop, mpz_t a, mpz_t b) {
-  mpz_invert(rop, a, b);
-}
-
-void h_func_gmp(mpz_t rop, mpz_t g, mpz_t x, mpz_t xsquare) {
-  mpz_t tmp;
-  mpz_init(tmp);
-  mpz_sub_ui(tmp, x, 1);
-  mpz_powm(rop, g, tmp, xsquare); 
-  mpz_sub_ui(rop, rop, 1);
-  mpz_div(rop, rop, x);
-  mpz_invert(rop, rop, x);
-  mpz_clear(tmp); 
-}
-
-void SecretKey::Init(mpz_t g, mpz_t raw_p, mpz_t raw_q) {
-  mpz_init(p_);
-  mpz_init(q_);
-  mpz_init(psquare_);
-  mpz_init(qsquare_);
-  mpz_init(q_inverse_);
-  mpz_init(hp_);
-  mpz_init(hq_);
-  
-  if(mpz_cmp(raw_q, raw_p) < 0) {
-    mpz_set(p_, raw_q);
-    mpz_set(q_, raw_p);
+void SecretKey::Init(MPInt &g, MPInt &raw_p, MPInt &raw_q) {
+  g_ = g;
+  if(raw_q < raw_p) {
+    p_ = std::move(raw_q);
+    q_ = std::move(raw_p);
   } else {
-    mpz_set(p_, raw_p);
-    mpz_set(q_, raw_q);
+    p_ = std::move(raw_p);
+    q_ = std::move(raw_q);
   }
-  mpz_mul(psquare_, p_, p_);
-  mpz_mul(qsquare_, q_, q_);
-  invert(q_inverse_, q_, p_);
-  h_func_gmp(hp_, g, p_, psquare_); 
-  h_func_gmp(hq_, g, q_, qsquare_); 
+
   CGBNWrapper::DevMalloc(this);
   CGBNWrapper::StoreToDev(this);
+
+  CGBNWrapper::InitSK(this);
+  CGBNWrapper::StoreToHost(this);
 }
 
 std::string SecretKey::ToString() const {
@@ -63,4 +41,4 @@ std::string SecretKey::ToString() const {
   //                    q_.BitCount());
 }
 
-}  // namespace heu::lib::algorithms::paillier_z
+}  // namespace heu::lib::algorithms::paillier_dl

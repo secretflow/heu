@@ -1,4 +1,4 @@
-// Copyright 2022 Ant Group Co., Ltd.
+// Copyright 2023 Denglin Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,36 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/library/algorithms/paillier_zahlen/decryptor.h"
+#include "heu/library/algorithms/paillier_dl/decryptor.h"
 #include "heu/library/algorithms/util/he_assert.h"
 #include "cgbn_wrapper/cgbn_wrapper.h"
 
-namespace heu::lib::algorithms::paillier_z {
+namespace heu::lib::algorithms::paillier_dl {
 
 #define VALIDATE(ct)                                          \
   HE_ASSERT(!(ct).c_.IsNegative() && (ct).c_ < pk_.n_square_, \
             "Decryptor: Invalid ciphertext")
 
-void Decryptor::Decrypt(const Ciphertext& ct, MPInt* out) const {
-  // VALIDATE(ct);
-  CGBNWrapper::Decrypt(ct, sk_, pk_, out);
-}
-
-void Decryptor::Decrypt(absl::Span<const Ciphertext>& in_cts, absl::Span<Plaintext> *out_pts) const {
+void Decryptor::Decrypt(const std::vector<Ciphertext>& in_cts, std::vector<Plaintext>& out_pts) const {
   CGBNWrapper::Decrypt(in_cts, sk_, pk_, out_pts);
+  for (int i=0; i<out_pts.size(); i++) {
+    if (out_pts[i] >= pk_.half_n_) {
+      out_pts[i] -= pk_.n_;
+    }
+  }
 }
 
-MPInt Decryptor::Decrypt(const Ciphertext& ct) const {
-  MPInt mp;
-  Decrypt(ct, &mp);
-  return mp;
-}
-
-std::vector<Plaintext> Decryptor::Decrypt(absl::Span<const Ciphertext>& cts) const {
+std::vector<Plaintext> Decryptor::Decrypt(const std::vector<Ciphertext>& cts) const {
   std::vector<Plaintext> tmp;
-  absl::Span<Plaintext> tmp_span = absl::Span<Plaintext>(tmp);
-  Decrypt(cts, &tmp_span);
+  Decrypt(cts, tmp);
   return tmp;
 }
 
-}  // namespace heu::lib::algorithms::paillier_z
+}  // namespace heu::lib::algorithms::paillier_dl

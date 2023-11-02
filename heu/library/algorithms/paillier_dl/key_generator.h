@@ -1,4 +1,4 @@
-// Copyright 2022 Ant Group Co., Ltd.
+// Copyright 2023 Denglin Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include "heu/library/algorithms/paillier_zahlen//public_key.h"
-#include "heu/library/algorithms/paillier_zahlen//secret_key.h"
+#include "heu/library/algorithms/paillier_dl//public_key.h"
+#include "heu/library/algorithms/paillier_dl//secret_key.h"
 
-namespace heu::lib::algorithms::paillier_z {
+namespace heu::lib::algorithms::paillier_dl {
 
 class KeyGenerator {
  public:
@@ -25,4 +25,4 @@ class KeyGenerator {
   static void Generate(size_t key_size, SecretKey* sk, PublicKey* pk);
 };
 
-}  // namespace heu::lib::algorithms::paillier_z
+}  // namespace heu::lib::algorithms::paillier_dl

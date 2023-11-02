@@ -1,4 +1,4 @@
-// Copyright 2022 Ant Group Co., Ltd.
+// Copyright 2023 Denglin Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 #include "heu/library/algorithms/util/he_object.h"
 #include "heu/library/algorithms/util/mp_int.h"
 
-namespace heu::lib::algorithms::paillier_z {
+namespace heu::lib::algorithms::paillier_dl {
 
 using Plaintext = MPInt;
 
@@ -39,4 +39,4 @@ class Ciphertext : public HeObject<Ciphertext> {
   MPInt c_;
 };
 
-}  // namespace heu::lib::algorithms::paillier_z
+}  // namespace heu::lib::algorithms::paillier_dl

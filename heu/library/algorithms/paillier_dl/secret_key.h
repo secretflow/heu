@@ -1,4 +1,4 @@
-// Copyright 2022 Ant Group Co., Ltd.
+// Copyright 2023 Denglin Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,27 +16,28 @@
 
 #include "heu/library/algorithms/util/he_object.h"
 #include "heu/library/algorithms/util/mp_int.h"
-#include "heu/library/algorithms/paillier_zahlen/cgbn_wrapper/cgbn_wrapper_defs.h"
-#include "heu/library/algorithms/paillier_zahlen/cgbn_wrapper/cgbn_wrapper.h"
-#include <gmp.h>
+#include "heu/library/algorithms/paillier_dl/cgbn_wrapper/cgbn_wrapper_defs.h"
+#include "heu/library/algorithms/paillier_dl/cgbn_wrapper/cgbn_wrapper.h"
 
 #define NOT_SUPPORT do {                                                    \
   printf("%s:%d %s not support.\n", __FILE__, __LINE__, __FUNCTION__);      \
   abort();                                                                  \
 } while (0)
 
-namespace heu::lib::algorithms::paillier_z {
+namespace heu::lib::algorithms::paillier_dl {
 
 class SecretKey : public HeObject<SecretKey> {
  public:
-  mpz_t p_;
-  mpz_t q_;
-  mpz_t psquare_;
-  mpz_t qsquare_;
-  mpz_t q_inverse_;
-  mpz_t hp_;
-  mpz_t hq_;
+  MPInt g_;
+  MPInt p_;
+  MPInt q_;
+  MPInt psquare_;
+  MPInt qsquare_;
+  MPInt q_inverse_;
+  MPInt hp_;
+  MPInt hq_;
 
+  dev_mem_t<BITS> *dev_g_;
   dev_mem_t<BITS> *dev_p_;
   dev_mem_t<BITS> *dev_q_;
   dev_mem_t<BITS> *dev_psquare_;
@@ -44,8 +45,9 @@ class SecretKey : public HeObject<SecretKey> {
   dev_mem_t<BITS> *dev_q_inverse_;
   dev_mem_t<BITS> *dev_hp_;
   dev_mem_t<BITS> *dev_hq_;
+  SecretKey *dev_sk_;
 
-  void Init(mpz_t g, mpz_t raw_p, mpz_t raw_q);
+  void Init(MPInt &g, MPInt &raw_p, MPInt &raw_q);
 
   bool operator==(const SecretKey &other) const {
     NOT_SUPPORT;
@@ -61,7 +63,7 @@ class SecretKey : public HeObject<SecretKey> {
   [[nodiscard]] std::string ToString() const override;
 };
 
-}  // namespace heu::lib::algorithms::paillier_z
+}  // namespace heu::lib::algorithms::paillier_dl
 
 // clang-format off
 namespace msgpack {
@@ -69,10 +71,10 @@ MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
 namespace adaptor {
 
 // template<>
-// struct pack<heu::lib::algorithms::paillier_z::SecretKey> {
+// struct pack<heu::lib::algorithms::paillier_dl::SecretKey> {
 //   template<typename Stream>
 //   packer<Stream> &operator()(msgpack::packer<Stream> &o,
-//       const heu::lib::algorithms::paillier_z::SecretKey &sk) const {
+//       const heu::lib::algorithms::paillier_dl::SecretKey &sk) const {
 //     // packing member variables as an array.
 //     o.pack_array(4);
 //     o.pack(sk.lambda_);
@@ -84,9 +86,9 @@ namespace adaptor {
 // };
 
 // template<>
-// struct convert<heu::lib::algorithms::paillier_z::SecretKey> {
+// struct convert<heu::lib::algorithms::paillier_dl::SecretKey> {
 //   msgpack::object const &operator()(const msgpack::object &object,
-//       heu::lib::algorithms::paillier_z::SecretKey &sk) const {
+//       heu::lib::algorithms::paillier_dl::SecretKey &sk) const {
 //     if (object.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
 //     if (object.via.array.size != 4) { throw msgpack::type_error(); }
 

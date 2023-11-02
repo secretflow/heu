@@ -1,4 +1,4 @@
-// Copyright 2022 Ant Group Co., Ltd.
+// Copyright 2023 Denglin Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/library/algorithms/paillier_zahlen/public_key.h"
+#include "heu/library/algorithms/paillier_dl/public_key.h"
+#include "heu/library/algorithms/util/mp_int.h"
 
-namespace heu::lib::algorithms::paillier_z {
+namespace heu::lib::algorithms::paillier_dl {
 
 namespace {
 size_t kExpUnitBits = 10;
@@ -26,18 +27,16 @@ void SetCacheTableDensity(size_t density) {
   // kExpUnitBits = density;
 }
 
-void PublicKey::Init(mpz_t &n, mpz_t g) {
-  mpz_init(nsquare_);
-  mpz_init(max_int_);
-  mpz_add_ui(g, n, 1); 
-  mpz_mul(nsquare_, n, n);
-  mpz_div_ui(max_int_, n, 3);
-  mpz_sub_ui(max_int_, max_int_, 1);
-  *n_ = *n;
-  *g_ = *g;
 
+void PublicKey::Init(MPInt &n, MPInt &g) {
+  n_ = n;
   CGBNWrapper::DevMalloc(this);
   CGBNWrapper::StoreToDev(this);
+
+  CGBNWrapper::InitPK(this);
+  CGBNWrapper::StoreToHost(this);
+  g = g_;
+  half_n_ = n_ / MPInt(2);
 }
 
 std::string PublicKey::ToString() const {
@@ -48,4 +47,4 @@ std::string PublicKey::ToString() const {
   //     PlaintextBound().ToHexString(), PlaintextBound().BitCount());
 }
 
-}  // namespace heu::lib::algorithms::paillier_z
+}  // namespace heu::lib::algorithms::paillier_dl

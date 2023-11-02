@@ -1,4 +1,4 @@
-// Copyright 2022 Ant Group Co., Ltd.
+// Copyright 2023 Denglin Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,16 +16,15 @@
 
 #include "heu/library/algorithms/util/he_object.h"
 #include "heu/library/algorithms/util/mp_int.h"
-#include "heu/library/algorithms/paillier_zahlen/cgbn_wrapper/cgbn_wrapper_defs.h"
-#include "heu/library/algorithms/paillier_zahlen/cgbn_wrapper/cgbn_wrapper.h"
-#include <gmp.h>
+#include "heu/library/algorithms/paillier_dl/cgbn_wrapper/cgbn_wrapper_defs.h"
+#include "heu/library/algorithms/paillier_dl/cgbn_wrapper/cgbn_wrapper.h"
 
 #define NOT_SUPPORT do {                                                    \
   printf("%s:%d %s not support.\n", __FILE__, __LINE__, __FUNCTION__);      \
   abort();                                                                  \
 } while (0)
 
-namespace heu::lib::algorithms::paillier_z {
+namespace heu::lib::algorithms::paillier_dl {
 
 // The density parameter of each participant can be different, so density is
 // a local configuration and will not be automatically passed to other parties
@@ -34,18 +33,19 @@ void SetCacheTableDensity(size_t density);
 
 class PublicKey : public HeObject<PublicKey> {
  public:
-  mpz_t g_;
-  mpz_t n_;
-  mpz_t nsquare_;
-  mpz_t max_int_;
-
+  MPInt g_;
+  MPInt n_;
+  MPInt nsquare_;
+  MPInt max_int_;
+  MPInt half_n_;
   dev_mem_t<BITS> *dev_g_;
   dev_mem_t<BITS> *dev_n_;
   dev_mem_t<BITS> *dev_nsquare_;
   dev_mem_t<BITS> *dev_max_int_;
+  PublicKey *dev_pk_;
 
   // Init pk based on n_
-  void Init(mpz_t &n, mpz_t g);
+  void Init(MPInt &n, MPInt &g);
   [[nodiscard]] std::string ToString() const override;
 
   bool operator==(const PublicKey &other) const {
@@ -72,7 +72,7 @@ class PublicKey : public HeObject<PublicKey> {
   }
 };
 
-}  // namespace heu::lib::algorithms::paillier_z
+}  // namespace heu::lib::algorithms::paillier_dl
 
 // clang-format off
 namespace msgpack {
@@ -80,10 +80,10 @@ MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
 namespace adaptor {
 
 // template<>
-// struct pack<heu::lib::algorithms::paillier_z::PublicKey> {
+// struct pack<heu::lib::algorithms::paillier_dl::PublicKey> {
 //   template<typename Stream>
 //   packer<Stream> &operator()(msgpack::packer<Stream> &o,
-//       const heu::lib::algorithms::paillier_z::PublicKey &pk) const {
+//       const heu::lib::algorithms::paillier_dl::PublicKey &pk) const {
 //     // packing member variables as an array.
 //     o.pack_array(2);
 //     o.pack(pk.n_);
@@ -93,9 +93,9 @@ namespace adaptor {
 // };
 
 // template<>
-// struct convert<heu::lib::algorithms::paillier_z::PublicKey> {
+// struct convert<heu::lib::algorithms::paillier_dl::PublicKey> {
 //   msgpack::object const &operator()(const msgpack::object &object,
-//       heu::lib::algorithms::paillier_z::PublicKey &pk) const {
+//       heu::lib::algorithms::paillier_dl::PublicKey &pk) const {
 //     if (object.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
 //     if (object.via.array.size != 2) { throw msgpack::type_error(); }
 

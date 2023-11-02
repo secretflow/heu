@@ -1,4 +1,4 @@
-// Copyright 2022 Ant Group Co., Ltd.
+// Copyright 2023 Denglin Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,11 +14,11 @@
 
 #pragma once
 
-#include "heu/library/algorithms/paillier_zahlen/ciphertext.h"
-#include "heu/library/algorithms/paillier_zahlen/encryptor.h"
-#include "heu/library/algorithms/paillier_zahlen/public_key.h"
+#include "heu/library/algorithms/paillier_dl/ciphertext.h"
+#include "heu/library/algorithms/paillier_dl/encryptor.h"
+#include "heu/library/algorithms/paillier_dl/public_key.h"
 
-namespace heu::lib::algorithms::paillier_z {
+namespace heu::lib::algorithms::paillier_dl {
 
 class Evaluator {
  public:
@@ -30,27 +30,49 @@ class Evaluator {
   // out = a + b
   // Warning: if a, b are in batch encoding form, then p must also be in batch
   // encoding form
-  Ciphertext Add(const Ciphertext& a, const Ciphertext& b) const;
-  Ciphertext Add(const Ciphertext& a, const Plaintext& b) const;
-  Plaintext Add(const Plaintext& a, const Plaintext& b) const { return a + b; };
-  Ciphertext Add(const Plaintext& a, const Ciphertext& b) const {
-    return Add(b, a);
+  std::vector<Ciphertext> Add(const std::vector<Ciphertext>& as, const std::vector<Ciphertext>& bs) const;
+  std::vector<Ciphertext> Add(const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const;
+  std::vector<Plaintext> Add(const std::vector<Plaintext>& as, const std::vector<Plaintext>& bs) const { 
+    std::vector<Plaintext> outs;
+    for (int i=0; i<as.size(); i++) {
+      outs.emplace_back(as[i] + bs[i]);
+    }
+    return outs;
+  }
+  std::vector<Ciphertext> Add(const std::vector<Plaintext>& as, const std::vector<Ciphertext>& bs) const {
+    return Add(bs, as);
   }
 
-  void AddInplace(Ciphertext* a, const Ciphertext& b) const;
-  void AddInplace(Ciphertext* a, const Plaintext& p) const;
-  void AddInplace(Plaintext* a, const Plaintext& b) const { *a += b; }
+  void AddInplace(std::vector<Ciphertext>& as, const std::vector<Ciphertext>& bs) const;
+  void AddInplace(std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const;
+  void AddInplace(std::vector<Plaintext>& as, const std::vector<Plaintext>& bs) const {
+    for (int i=0; i<as.size(); i++) {
+      as[i] += bs[i];
+    }
+  }
 
   // out = a - b
   // Warning: Subtraction is not supported if a, b are in batch encoding
-  Ciphertext Sub(const Ciphertext& a, const Ciphertext& b) const;
-  Ciphertext Sub(const Ciphertext& a, const Plaintext& b) const;
-  Ciphertext Sub(const Plaintext& a, const Ciphertext& b) const;
-  Plaintext Sub(const Plaintext& a, const Plaintext& b) const { return a - b; };
+  std::vector<Ciphertext> Sub(const std::vector<Ciphertext>& as, const std::vector<Ciphertext>& bs) const;
+  std::vector<Ciphertext> Sub(const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const;
+  std::vector<Plaintext> Sub(const std::vector<Plaintext>& as, const std::vector<Plaintext>& bs) const { 
+    std::vector<Plaintext> outs;
+    for (int i=0; i<as.size(); i++) {
+      outs.emplace_back(as[i] - bs[i]);
+    }
+    return outs;
+  };
+  std::vector<Ciphertext> Sub(const std::vector<Plaintext>& as, const std::vector<Ciphertext>& bs) const { 
+    return Sub(bs, as);
+  }
 
-  void SubInplace(Ciphertext* a, const Ciphertext& b) const;
-  void SubInplace(Ciphertext* a, const Plaintext& p) const;
-  void SubInplace(Plaintext* a, const Plaintext& b) const { *a -= b; }
+  void SubInplace(std::vector<Ciphertext>& as, const std::vector<Ciphertext>& bs) const;
+  void SubInplace(std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const;
+  void SubInplace(std::vector<Plaintext>& as, const std::vector<Plaintext>& bs) const { 
+    for (int i=0; i<as.size(); i++) {
+      as[i] -= bs[i];
+    }
+  }
 
   // out = a * p
   // Warning 1:
@@ -60,22 +82,41 @@ class Evaluator {
   // subsequent operations), Randomize can be omitted.
   // Warning 2:
   // Multiplication is not supported if a is in batch encoding form
-  Ciphertext Mul(const Ciphertext& a, const MPInt& p) const;
-  Plaintext Mul(const Plaintext& a, const Plaintext& b) const { return a * b; };
-  Ciphertext Mul(const Plaintext& a, const Ciphertext& b) const {
-    return Mul(b, a);
+  std::vector<Ciphertext> Mul(const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const;
+  std::vector<Plaintext> Mul(const std::vector<Plaintext>& as, const std::vector<Plaintext>& bs) const {
+    std::vector<Plaintext> outs;
+    for (int i=0; i<as.size(); i++) {
+      outs.emplace_back(as[i] * bs[i]);
+    }
+    return outs;
+  };
+  std::vector<Ciphertext> Mul(const std::vector<Plaintext>& as, const std::vector<Ciphertext>& bs) const {
+    return Mul(bs, as);
   }
 
-  void MulInplace(Ciphertext* a, const MPInt& p) const;
+  void MulInplace(std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const;
   void MulInplace(Plaintext* a, const Plaintext& b) const { *a *= b; };
 
   // out = -a
-  Ciphertext Negate(const Ciphertext& a) const;
-  void NegateInplace(Ciphertext* a) const;
+  std::vector<Ciphertext> Negate(const std::vector<Ciphertext>& as) const;
+  void NegateInplace(std::vector<Ciphertext>& as) const;
+
+ private:
+  std::vector<Plaintext> HandleNeg(const std::vector<Plaintext>& as) const {
+    std::vector<Plaintext> handled_as;
+    for (int i=0; i<as.size(); i++) {
+      MPInt tmp_a(as[i]);
+      if (tmp_a.IsNegative()) {
+        tmp_a += pk_.n_;
+      }
+      handled_as.push_back(tmp_a);
+    }
+    return handled_as;
+  }
 
  private:
   PublicKey pk_;
   Encryptor encryptor_;
 };
 
-}  // namespace heu::lib::algorithms::paillier_z
+}  // namespace heu::lib::algorithms::paillier_dl

@@ -1,4 +1,4 @@
-// Copyright 2022 Ant Group Co., Ltd.
+// Copyright 2023 Denglin Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,25 +16,23 @@
 
 #include <utility>
 
-#include "heu/library/algorithms/paillier_zahlen/ciphertext.h"
-#include "heu/library/algorithms/paillier_zahlen/public_key.h"
-#include "heu/library/algorithms/paillier_zahlen/secret_key.h"
+#include "heu/library/algorithms/paillier_dl/ciphertext.h"
+#include "heu/library/algorithms/paillier_dl/public_key.h"
+#include "heu/library/algorithms/paillier_dl/secret_key.h"
 
-namespace heu::lib::algorithms::paillier_z {
+namespace heu::lib::algorithms::paillier_dl {
 
 class Decryptor {
  public:
   explicit Decryptor(PublicKey pk, SecretKey sk)
       : pk_(std::move(pk)), sk_(std::move(sk)) {}
 
-  void Decrypt(const Ciphertext& ct, MPInt* out) const;
-  void Decrypt(absl::Span<const Ciphertext>& in_cts, absl::Span<Plaintext>* out_pts) const;
-  MPInt Decrypt(const Ciphertext& ct) const;
-  std::vector<Plaintext> Decrypt(absl::Span<const Ciphertext>& cts) const;
+  void Decrypt(const std::vector<Ciphertext>& in_cts, std::vector<Plaintext>& out_pts) const;
+  std::vector<Plaintext> Decrypt(const std::vector<Ciphertext>& cts) const;
 
  private:
   PublicKey pk_;
   SecretKey sk_;
 };
 
-}  // namespace heu::lib::algorithms::paillier_z
+}  // namespace heu::lib::algorithms::paillier_dl
