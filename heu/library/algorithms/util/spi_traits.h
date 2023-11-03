@@ -15,7 +15,7 @@
 #pragma once
 
 #include "absl/types/span.h"
-#include "yacl/crypto/base/mpint/type_traits.h"
+#include "yacl/utils/spi/type_traits.h"
 
 namespace heu::lib::algorithms {
 
@@ -25,6 +25,6 @@ using Span = absl::Span<T* const>;
 template <typename T>
 using ConstSpan = absl::Span<const T* const>;
 
-using yacl::crypto::Endian;
+using yacl::Endian;
 
 }  // namespace heu::lib::algorithms

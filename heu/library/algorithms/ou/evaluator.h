@@ -17,6 +17,7 @@
 #include "heu/library/algorithms/ou/ciphertext.h"
 #include "heu/library/algorithms/ou/encryptor.h"
 #include "heu/library/algorithms/ou/public_key.h"
+#include "heu/library/algorithms/util/spi_traits.h"
 
 namespace heu::lib::algorithms::ou {
 
@@ -32,13 +33,16 @@ class Evaluator {
   // encoding form
   Ciphertext Add(const Ciphertext& a, const Ciphertext& b) const;
   Ciphertext Add(const Ciphertext& a, const Plaintext& b) const;
+
   Plaintext Add(const Plaintext& a, const Plaintext& b) const { return a + b; };
+
   Ciphertext Add(const Plaintext& a, const Ciphertext& b) const {
     return Add(b, a);
   }
 
   void AddInplace(Ciphertext* a, const Ciphertext& b) const;
   void AddInplace(Ciphertext* a, const Plaintext& p) const;
+
   void AddInplace(Plaintext* a, const Plaintext& b) const { *a += b; }
 
   // out = a - b
@@ -46,10 +50,12 @@ class Evaluator {
   Ciphertext Sub(const Ciphertext& a, const Ciphertext& b) const;
   Ciphertext Sub(const Ciphertext& a, const Plaintext& b) const;
   Ciphertext Sub(const Plaintext& a, const Ciphertext& b) const;
+
   Plaintext Sub(const Plaintext& a, const Plaintext& b) const { return a - b; };
 
   void SubInplace(Ciphertext* a, const Ciphertext& b) const;
   void SubInplace(Ciphertext* a, const Plaintext& p) const;
+
   void SubInplace(Plaintext* a, const Plaintext& b) const { *a -= b; }
 
   // out = a * p
@@ -61,12 +67,15 @@ class Evaluator {
   // Warning 2:
   // Multiplication is not supported if a is in batch encoding form
   Ciphertext Mul(const Ciphertext& a, const MPInt& p) const;
+
   Plaintext Mul(const Plaintext& a, const Plaintext& b) const { return a * b; };
+
   Ciphertext Mul(const Plaintext& a, const Ciphertext& b) const {
     return Mul(b, a);
   }
 
   void MulInplace(Ciphertext* a, const MPInt& p) const;
+
   void MulInplace(Plaintext* a, const Plaintext& b) const { *a *= b; };
 
   // out = -a

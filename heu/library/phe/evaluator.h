@@ -39,9 +39,12 @@ class Evaluator {
   Ciphertext Add(const Ciphertext& a, const Ciphertext& b) const;
   Ciphertext Add(const Ciphertext& a, const Plaintext& p) const;
   Ciphertext Add(const Plaintext& p, const Ciphertext& a) const;
+
   Plaintext Add(const Plaintext& a, const Plaintext& b) const { return a + b; };
+
   void AddInplace(Ciphertext* a, const Ciphertext& b) const;
   void AddInplace(Ciphertext* a, const Plaintext& p) const;
+
   void AddInplace(Plaintext* a, const Plaintext& b) const { *a += b; };
 
   // out = a - b
@@ -50,9 +53,12 @@ class Evaluator {
   Ciphertext Sub(const Ciphertext& a, const Ciphertext& b) const;
   Ciphertext Sub(const Ciphertext& a, const Plaintext& p) const;
   Ciphertext Sub(const Plaintext& p, const Ciphertext& a) const;
+
   Plaintext Sub(const Plaintext& a, const Plaintext& b) const { return a - b; };
+
   void SubInplace(Ciphertext* a, const Ciphertext& b) const;
   void SubInplace(Ciphertext* a, const Plaintext& p) const;
+
   void SubInplace(Plaintext* a, const Plaintext& b) const { *a -= b; };
 
   // out = a * p
@@ -65,14 +71,20 @@ class Evaluator {
   // Multiplication is not supported if a is in batch encoding form
   Ciphertext Mul(const Ciphertext& a, const Plaintext& p) const;
   Ciphertext Mul(const Plaintext& p, const Ciphertext& a) const;
+
   Plaintext Mul(const Plaintext& a, const Plaintext& b) const { return a * b; };
+
   void MulInplace(Ciphertext* a, const Plaintext& p) const;
+
   void MulInplace(Plaintext* a, const Plaintext& b) const { *a *= b; };
 
   // out = -a
   Ciphertext Negate(const Ciphertext& a) const;
+
   Plaintext Negate(const Plaintext& a) const { return -a; };
+
   void NegateInplace(Ciphertext* a) const;
+
   void NegateInplace(Plaintext* a) const { a->NegateInplace(); };
 
   SchemaType GetSchemaType() const;

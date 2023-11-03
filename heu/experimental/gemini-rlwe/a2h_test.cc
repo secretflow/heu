@@ -58,6 +58,7 @@ bool transform_to_ntt_inplace(RLWEPt& pt, const seal::SEALContext& context) {
 class A2HTest : public ::testing::TestWithParam<size_t> {
  public:
   static constexpr size_t poly_deg = 4096;
+
   void SetUp() override {
     rdv_.seed(std::time(0));
     auto scheme_type = seal::scheme_type::ckks;

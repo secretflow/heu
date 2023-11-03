@@ -29,14 +29,14 @@ constexpr int kRandomScale = 8011;
 
 class NpBenchmarks {
  public:
-  numpy::PMatrix GenMatrix(const numpy::Shape& s) {
+  numpy::PMatrix GenMatrix(const numpy::Shape &s) {
     auto edr = he_kit_->GetEncoder<phe::PlainEncoder>(kRandomScale);
     numpy::PMatrix res(s);
-    res.ForEach(
-        [this, &edr](int64_t /*row*/, int64_t col, phe::Plaintext* element) {
-          // 'counter' do not need to be locked
-          *element = edr.Encode(++counter);
-        });
+    res.ForEach([this, &edr](int64_t /*row*/, int64_t /*col*/,
+                             phe::Plaintext *element) {
+      // 'counter' do not need to be locked
+      *element = edr.Encode(++counter);
+    });
     return res;
   }
 
@@ -59,119 +59,134 @@ class NpBenchmarks {
     for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
       benchmark::RegisterBenchmark(
           fmt::format("{:^9}|Encrypt(shape={})", he_kit_->GetSchemaType(),
-                      pt_matrixs_[i].shape())
+                      pt_matrixs_[i].shape().ToString())
               .c_str(),
-          [this, i](benchmark::State& st) { Encrypt(st, i); })
+          [this, i](benchmark::State &st) { Encrypt(st, i); })
           ->Unit(benchmark::kMillisecond);
     }
     for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
       benchmark::RegisterBenchmark(
           fmt::format("{:^9}|AddCipher(shape={})", he_kit_->GetSchemaType(),
-                      pt_matrixs_[i].shape())
+                      pt_matrixs_[i].shape().ToString())
               .c_str(),
-          [this, i](benchmark::State& st) { AddCipher(st, i); })
+          [this, i](benchmark::State &st) { AddCipher(st, i); })
           ->Unit(benchmark::kMillisecond);
     }
     for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
       benchmark::RegisterBenchmark(
           fmt::format("{:^9}|SubCipher(shape={})", he_kit_->GetSchemaType(),
-                      pt_matrixs_[i].shape())
+                      pt_matrixs_[i].shape().ToString())
               .c_str(),
-          [this, i](benchmark::State& st) { SubCipher(st, i); })
+          [this, i](benchmark::State &st) { SubCipher(st, i); })
           ->Unit(benchmark::kMillisecond);
     }
     for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
       benchmark::RegisterBenchmark(
           fmt::format("{:^9}|AddInt(shape={})", he_kit_->GetSchemaType(),
-                      pt_matrixs_[i].shape())
+                      pt_matrixs_[i].shape().ToString())
               .c_str(),
-          [this, i](benchmark::State& st) { AddInt(st, i); })
+          [this, i](benchmark::State &st) { AddInt(st, i); })
           ->Unit(benchmark::kMillisecond);
     }
     for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
       benchmark::RegisterBenchmark(
           fmt::format("{:^9}|SubInt(shape={})", he_kit_->GetSchemaType(),
-                      pt_matrixs_[i].shape())
+                      pt_matrixs_[i].shape().ToString())
               .c_str(),
-          [this, i](benchmark::State& st) { SubInt(st, i); })
+          [this, i](benchmark::State &st) { SubInt(st, i); })
           ->Unit(benchmark::kMillisecond);
     }
     std::vector<std::pair<int, int>> cases = {{0, 1}, {2, 0}, {3, 3}};
-    for (const auto& c : cases) {
+    for (const auto &c : cases) {
       benchmark::RegisterBenchmark(
           fmt::format("{:^9}|Matmul({}@{})", he_kit_->GetSchemaType(),
-                      pt_matrixs_[c.first].shape(),
-                      pt_matrixs_[c.second].shape())
+                      pt_matrixs_[c.first].shape().ToString(),
+                      pt_matrixs_[c.second].shape().ToString())
               .c_str(),
-          [this, c](benchmark::State& st) { Matmul(st, c.first, c.second); })
+          [this, c](benchmark::State &st) { Matmul(st, c.first, c.second); })
+          ->Unit(benchmark::kMillisecond);
+    }
+    for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
+      benchmark::RegisterBenchmark(
+          fmt::format("{:^9}|Mul(shape={})", he_kit_->GetSchemaType(),
+                      pt_matrixs_[i].shape().ToString())
+              .c_str(),
+          [this, i](benchmark::State &st) { Mul(st, i); })
           ->Unit(benchmark::kMillisecond);
     }
     for (size_t i = 0; i < pt_matrixs_.size(); ++i) {
       benchmark::RegisterBenchmark(
           fmt::format("{:^9}|Decrypt(shape={})", he_kit_->GetSchemaType(),
-                      pt_matrixs_[i].shape())
+                      pt_matrixs_[i].shape().ToString())
               .c_str(),
-          [this, i](benchmark::State& st) { Decrypt(st, i); })
+          [this, i](benchmark::State &st) { Decrypt(st, i); })
           ->Unit(benchmark::kMillisecond);
     }
   }
 
-  void Encrypt(benchmark::State& state, size_t idx) {
+  void Encrypt(benchmark::State &state, size_t idx) {
     std::call_once(flag_, []() { fmt::print("{:-^80}\n", ""); });
-
     // encrypt
-    const auto& encryptor = he_kit_->GetEncryptor();
+    const auto &encryptor = he_kit_->GetEncryptor();
     for (auto _ : state) {
       ct_matrixs_1_[idx] = encryptor->Encrypt(pt_matrixs_[idx]);
     }
   }
 
-  void AddCipher(benchmark::State& state, size_t idx) {
+  void AddCipher(benchmark::State &state, size_t idx) {
     // add (ciphertext + ciphertext)
-    const auto& evaluator = he_kit_->GetEvaluator();
+    const auto &evaluator = he_kit_->GetEvaluator();
     for (auto _ : state) {
       ct_matrixs_2_[idx] =
           evaluator->Add(ct_matrixs_1_[idx], ct_matrixs_1_[idx]);
     }
   }
 
-  void SubCipher(benchmark::State& state, size_t idx) {
+  void SubCipher(benchmark::State &state, size_t idx) {
     // sub (ciphertext - ciphertext)
-    const auto& evaluator = he_kit_->GetEvaluator();
+    const auto &evaluator = he_kit_->GetEvaluator();
     for (auto _ : state) {
       ct_matrixs_2_[idx] =
           evaluator->Sub(ct_matrixs_2_[idx], ct_matrixs_1_[idx]);
     }
   }
 
-  void AddInt(benchmark::State& state, size_t idx) {
+  void AddInt(benchmark::State &state, size_t idx) {
     // add (ciphertext + plaintext)
-    const auto& evaluator = he_kit_->GetEvaluator();
+    const auto &evaluator = he_kit_->GetEvaluator();
     for (auto _ : state) {
       ct_matrixs_2_[idx] = evaluator->Add(ct_matrixs_1_[idx], pt_matrixs_[idx]);
     }
   }
 
-  void SubInt(benchmark::State& state, size_t idx) {
+  void SubInt(benchmark::State &state, size_t idx) {
     // add (ciphertext - plaintext)
-    const auto& evaluator = he_kit_->GetEvaluator();
+    const auto &evaluator = he_kit_->GetEvaluator();
     for (auto _ : state) {
       ct_matrixs_2_[idx] = evaluator->Sub(ct_matrixs_1_[idx], pt_matrixs_[idx]);
     }
   }
 
-  void Matmul(benchmark::State& state, size_t i1, size_t i2) {
+  void Matmul(benchmark::State &state, size_t i1, size_t i2) {
     // mul (ciphertext * plaintext)
-    const auto& evaluator = he_kit_->GetEvaluator();
+    const auto &evaluator = he_kit_->GetEvaluator();
     for (auto _ : state) {
       benchmark::DoNotOptimize(
           evaluator->MatMul(ct_matrixs_1_[i1], pt_matrixs_[i2]));
     }
   }
 
-  void Decrypt(benchmark::State& state, size_t idx) {
+  void Mul(benchmark::State &state, size_t i) {
+    const auto &evaluator = he_kit_->GetEvaluator();
+    for (auto _ : state) {
+      benchmark::DoNotOptimize(
+          evaluator->Mul(ct_matrixs_1_[i], pt_matrixs_[i]));
+    }
+  }
+
+  void Decrypt(benchmark::State &state, size_t idx) {
     // decrypt
-    const auto& decryptor = he_kit_->GetDecryptor();
+    const auto &decryptor = he_kit_->GetDecryptor();
     for (auto _ : state) {
       pt_matrixs_[idx] = decryptor->Decrypt(ct_matrixs_1_[idx]);
     }
@@ -191,7 +206,7 @@ class NpBenchmarks {
 DEFINE_string(schema, ".+", "Run selected schemas, default to all.");
 DEFINE_int32(key_size, 2048, "Key size of phe schema.");
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   google::ParseCommandLineFlags(&argc, &argv, true);
   benchmark::Initialize(&argc, argv);
   benchmark::AddCustomContext("Key size", fmt::format("{}", FLAGS_key_size));

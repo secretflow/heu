@@ -1,8 +1,10 @@
-sphinx==5.3.0
+sphinx
 sphinx-intl
 sphinx-copybutton
 sphinx-togglebutton
 sphinx-inline-tabs
+sphinxcontrib-htmlhelp
+sphinxcontrib-applehelp
 # matplotlib
 # myst-parser
 sf-heu

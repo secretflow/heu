@@ -13,6 +13,9 @@
 // limitations under the License.
 #include "heu/library/numpy/evaluator.h"
 
+#include <type_traits>
+#include <typeinfo>
+
 #include "fmt/ranges.h"
 #include "yacl/utils/parallel.h"
 
@@ -96,6 +99,9 @@ using kHasVectorizedSub = decltype(std::declval<const CLAZZ&>().Sub(
 template <typename CLAZZ, typename SUB_TX, typename SUB_TY>
 using kHasVectorizedMul = decltype(std::declval<const CLAZZ&>().Mul(
     absl::Span<const SUB_TX* const>(), absl::Span<const SUB_TY* const>()));
+template <typename CLAZZ, typename T>
+using kHasReduceSum = decltype(std::declval<const CLAZZ&>().ReduceSum(
+    absl::Span<const T* const>()));
 
 #define DO_CALL_OP(ns, OP, TX, TY)                                           \
   [&](const ns::Evaluator& sub_encryptor) {                                  \
@@ -165,7 +171,7 @@ using kHasVectorizedMul = decltype(std::declval<const CLAZZ&>().Mul(
     Dimension sy(y);                                                         \
     YACL_ENFORCE(sx.IsCompatibleShape(sy),                                   \
                  "{} not supported for dim(x)={}, dim(y)={}", __func__,      \
-                 (x).shape(), (y).shape());                                  \
+                 (x).shape().ToString(), (y).shape().ToString());            \
                                                                              \
     auto sz = sx.ComputeCastShape(sy);                                       \
                                                                              \
@@ -200,7 +206,6 @@ CMatrix Evaluator::Mul(const PMatrix& x, const CMatrix& y) const {
 };
 
 /*********   MatMul  ***********/
-
 template <typename SUB_T1, typename SUB_T2, typename CLAZZ, typename M1,
           typename M2, typename RET>
 auto DoCallMatMul(const CLAZZ& sub_evaluator, const M1& mx, const M2& my,
@@ -241,13 +246,25 @@ auto DoCallMatMul(const CLAZZ& sub_evaluator, const M1& mx, const M2& my,
         }
 
         auto res = sub_evaluator.Mul(in_x[row], in_y[col]);
-        auto sum = &res[0];
 
-        for (size_t j = 1; j < res.size(); ++j) {
-          // todo: use binary reduce
-          sub_evaluator.AddInplace({sum}, {&res[j]});
+        if constexpr (std::experimental::is_detected_v<
+                          kHasReduceSum, CLAZZ,
+                          typename decltype(res)::value_type>) {
+          std::vector<decltype(&res[0])> sum_vec;
+          sum_vec.reserve(res.size());
+          for (size_t j = 0; j < res.size(); ++j) {
+            sum_vec.push_back(&res[j]);
+          }
+
+          *element = sub_evaluator.ReduceSum(sum_vec);
+        } else {
+          auto sum = &res[0];
+          for (size_t j = 1; j < res.size(); ++j) {
+            // todo: use binary reduce
+            sub_evaluator.AddInplace({sum}, {&res[j]});
+          }
+          *element = std::move(*sum);
         }
-        *element = std::move(*sum);
       });
 }
 
@@ -313,7 +330,7 @@ auto DoCallMatMul(const CLAZZ& sub_evaluator, const M1& mx, const M2& my,
     auto y_shape = y.shape();                                                  \
     YACL_ENFORCE(x_shape[-1] == y_shape[0],                                    \
                  "dimension mismatch for matmul, x-shape={}, y-shape={}",      \
-                 x_shape, y_shape);                                            \
+                 x_shape.ToString(), y_shape.ToString());                      \
                                                                                \
     YACL_ENFORCE(x.size() > 0 || y.size() > 0,                                 \
                  "HEU does not support empty tensor currently");               \

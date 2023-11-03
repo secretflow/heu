@@ -22,7 +22,7 @@ namespace heu::lib::algorithms::elgamal::test {
 class LookupTableTest : public testing::Test {
  protected:
   std::shared_ptr<yacl::crypto::EcGroup> ec_ =
-      yacl::crypto::EcGroupFactory::Create("sm2", "openssl");
+      yacl::crypto::EcGroupFactory::Instance().Create("ed25519");
 };
 
 TEST_F(LookupTableTest, SimpleWorks) {

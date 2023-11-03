@@ -46,8 +46,16 @@ static const std::map<SchemaType, std::vector<std::string>>
                  "paillier_float"),
         MAP_ITEM(ENABLE_IPCL, IPCL, "ipcl", "ipcl-paillier", "ipcl_paillier",
                  "paillier_ipcl", "paillier-ipcl"),
+        MAP_ITEM(ENABLE_GPAILLIER, GPaillier, "g-paillier", "gpaillier",
+                 "paillier_g", "paillier_gpu"),
+        MAP_ITEM(ENABLE_CLUSTAR_FPGA, ClustarFPGA, "clustarfpga",
+                 "clustarfpga-paillier", "clustarfpga_paillier",
+                 "paillier_clustarfpga", "paillier-clustarfpga"),
         MAP_ITEM(true, ElGamal, "elgamal", "ec_elgamal", "exponential_elgamal",
                  "exp_elgamal", "lifted_elgamal"),
+        MAP_ITEM(true, DGK, "dgk", "damgard-geisler-kroigaard",
+                 "damgard_geisler_kroigaard"),
+        MAP_ITEM(true, DJ, "dj", "damgard-jurik", "damgard_jurik"),
         // MAP_ITEM(ENABLE, YOUR_ALGO, "one_or_more_name_alias"),
 };
 
@@ -99,5 +107,7 @@ std::vector<std::string> GetSchemaAliases(SchemaType schema_type) {
 std::ostream& operator<<(std::ostream& os, SchemaType st) {
   return os << SchemaToString(st);
 }
+
+std::string format_as(SchemaType i) { return SchemaToString(i); }
 
 }  // namespace heu::lib::phe

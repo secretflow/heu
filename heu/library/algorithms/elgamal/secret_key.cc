@@ -34,24 +34,23 @@ void SecretKey::Deserialize(yacl::ByteContainerView in) {
       msgpack::unpack(reinterpret_cast<const char *>(in.data()), in.size());
   msgpack::object object = msg.get();
 
-  if (object.type != msgpack::type::ARRAY) {
-    throw msgpack::type_error();
-  }
-  if (object.via.array.size != 3) {
-    throw msgpack::type_error();
-  }
+  YACL_ENFORCE(
+      object.type == msgpack::type::ARRAY && object.via.array.size == 3,
+      "Cannot parse buffer, format error");
 
   auto curve_name = object.via.array.ptr[0].as<yacl::crypto::CurveName>();
   auto lib_name = object.via.array.ptr[1].as<std::string>();
   x_ = object.via.array.ptr[2].as<MPInt>();
 
-  curve_ = ::yacl::crypto::EcGroupFactory::Create(curve_name, lib_name);
+  curve_ = ::yacl::crypto::EcGroupFactory::Instance().Create(
+      curve_name, yacl::ArgLib = lib_name);
   table_ = std::make_shared<LookupTable>();
   table_->Init(curve_);
 }
 
 bool SecretKey::operator==(const SecretKey &other) const {
-  return curve_->GetCurveName() == other.curve_->GetCurveName() &&
+  return IsValid() && other.IsValid() &&
+         curve_->GetCurveName() == other.curve_->GetCurveName() &&
          curve_->GetLibraryName() == other.curve_->GetLibraryName() &&
          x_ == other.x_;
 }

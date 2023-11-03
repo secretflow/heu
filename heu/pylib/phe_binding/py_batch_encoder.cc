@@ -22,6 +22,7 @@ std::string PyBatchIntegerEncoderParams::ToString() const {
   return fmt::format("BatchIntegerEncoderParams(scale={}, padding_bits={})",
                      scale, padding_bits);
 }
+
 std::string PyBatchFloatEncoderParams::ToString() const {
   return fmt::format("BatchFloatEncoderParams(scale={}, padding_bits={})",
                      scale, padding_bits);

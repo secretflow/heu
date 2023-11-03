@@ -1,0 +1,12 @@
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library")
+
+yacl_cc_library(
+    name = "fpga_config",
+    srcs = [
+        "config.cc",
+    ],
+    hdrs = [
+        "config.h",
+    ],
+    visibility = ["//visibility:public"],
+)

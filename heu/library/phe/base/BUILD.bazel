@@ -5,6 +5,7 @@ package(default_visibility = ["//visibility:public"])
 yacl_cc_library(
     name = "base",
     deps = [
+        ":key_def",
         ":schema",
         ":serializable_types",
     ],
@@ -15,12 +16,16 @@ yacl_cc_library(
     srcs = ["schema.cc"],
     hdrs = ["schema.h"],
     deps = [
+        "//heu/library/algorithms/dgk",
+        "//heu/library/algorithms/dj",
+        "//heu/library/algorithms/elgamal",
         "//heu/library/algorithms/mock",
         "//heu/library/algorithms/ou",
+        "//heu/library/algorithms/paillier_clustar_fpga",
         "//heu/library/algorithms/paillier_float",
-        "//heu/library/algorithms/paillier_zahlen",
+        "//heu/library/algorithms/paillier_gpu",
         "//heu/library/algorithms/paillier_ipcl",
-        "//heu/library/algorithms/elgamal",
+        "//heu/library/algorithms/paillier_zahlen",
     ],
 )
 
@@ -46,6 +51,14 @@ yacl_cc_library(
     hdrs = [
         "predefined_functions.h",
         "variant_helper.h",
+    ],
+)
+
+yacl_cc_library(
+    name = "key_def",
+    hdrs = ["key_def.h"],
+    deps = [
+        ":serializable_types",
     ],
 )
 

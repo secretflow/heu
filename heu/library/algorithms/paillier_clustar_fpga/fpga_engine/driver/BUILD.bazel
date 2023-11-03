@@ -1,0 +1,30 @@
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library")
+
+yacl_cc_library(
+    name = "fpga_driver",
+    srcs = [
+        "dma.cc",
+        "driver.cc",
+        "mpint_wrapper.cc",
+        "multi_driver.cc",
+        "reg.cc",
+        "task.cc",
+    ],
+    hdrs = [
+        "dma.h",
+        "driver.h",
+        "mpint_wrapper.h",
+        "reg.h",
+        "task.h",
+    ],
+    linkopts = [
+        "-lpthread",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//heu/library/algorithms/paillier_clustar_fpga/fpga_engine/config:fpga_config",
+        "//heu/library/algorithms/util",
+        "//heu/library/algorithms/util:mp_int",
+        "@yacl//yacl/base:byte_container_view",
+    ],
+)

@@ -102,6 +102,7 @@ class LWECt {
   */
   size_t save_size(seal::compr_mode_type compr_mode =
                        seal::Serialization::compr_mode_default) const;
+
   /**
   Saves the LWECt to a given memory location. The output is in binary
   format and not human-readable.
@@ -114,12 +115,14 @@ class LWECt {
                               save_size(seal::compr_mode_type::none), buffer,
                               size, compr_mode, false);
   }
+
   /**
   Loads an LWECt from an input stream overwriting the current LWECt.
   The loaded ciphertext is verified to be valid for the given SEALContext.
   */
   void load(const seal::SEALContext &context, const seal::seal_byte *buffer,
             size_t size);
+
   /**
   Loads an LWECt from a given memory location overwriting the current
   plaintext. No checking of the validity of the ciphertext data against

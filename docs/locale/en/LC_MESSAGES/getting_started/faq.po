@@ -27,7 +27,7 @@ msgstr "Category: Install and deployment"
 
 #: ../../getting_started/faq.rst:10
 msgid "HEU 支持 Mac 吗？"
-msgstr "Does HEU support installation on Mac?"
+msgstr "Does HEU support installation on Mac ?"
 
 #: ../../getting_started/faq.rst:11
 msgid "支持，HEU 同时支持基于 Intel 和 Apple Silicon CPU 的 macOS。"
@@ -57,7 +57,7 @@ msgstr ""
 
 #: ../../getting_started/faq.rst:24
 msgid "HEU 是否支持其它的 Python 版本？"
-msgstr ""
+msgstr "Docs HEU support other versions of Python"
 
 #: ../../getting_started/faq.rst:25
 msgid ""
@@ -65,30 +65,30 @@ msgid ""
 ":doc:`从源码编译<./installation>`，同时还需要修改 `此文件 "
 "<https://github.com/secretflow/heu/blob/main/heu/pylib/BUILD.bazel>`_ 中关于"
 " Python 版本的声明。"
-msgstr ""
+msgstr "The package in the PyPI repository only supports the Python 3.8 environment. If you want to support more Python versions, you can try :doc:compiling from source<./installation>. Additionally, you need to modify the declaration regarding the Python version in this file<https://github.com/secretflow/heu/blob/main/heu/pylib/BUILD.bazel>."
 
 #: ../../getting_started/faq.rst:27
 msgid ""
 "受限于 Pybind 的特性，HEU 运行所用的 Python 版本必须与编译所用的 Python 版本一致，例如编译用的是 Python "
 "3.10 版本，运行也必须在 Python 3.10 下。"
-msgstr ""
+msgstr "Due to the constraints of Pybind's characteristics, the Python version used for running HEU must match the Python version used for compilation. For instance, if Python 3.10 is used for compilation, it also must be used for execution."
 
 #: ../../getting_started/faq.rst:31
 msgid "功能相关"
-msgstr ""
+msgstr "Functionally relevant"
 
 #: ../../getting_started/faq.rst:34
 msgid "HEU 当前提供哪些功能，FHE 支持吗？"
-msgstr ""
+msgstr "What features does HEU currently provide, and does it support FHE?"
 
 #: ../../getting_started/faq.rst:35
 msgid ""
 "HEU 是一个业界领先的 PHE Library，支持加解密、明密文加减法、密文-明文乘法等计算，并提供 C++、Python 两种 "
 "API，您可以把 HEU 当做一个纯的 Library 来使用，也可以通过 `Secretflow "
 "<https://github.com/secretflow/secretflow>`_ 编程框架将 HEU 当做一个密态计算设备使用。"
-msgstr ""
+msgstr "HEU is a leading PHE Library in the industry, supporting encryption and decryption, plaintext-ciphertext addition and subtraction, and ciphertext-plaintext multiplication calculations. It provides APIs in both C++ and Python. You can use HEU as a pure library, or you can use it as a secure computing device through the Secretflow <https://github.com/secretflow/secretflow>_ programming framework."
 
 #: ../../getting_started/faq.rst:37
 msgid "FHE 功能的支持在路上，届时将额外支持密文乘法、密文比较等操作，敬请关注。"
-msgstr ""
+msgstr "Support for FHE functionality is on the way, which will additionally support operations such as ciphertext multiplication and ciphertext comparison. Please stay tuned."
 

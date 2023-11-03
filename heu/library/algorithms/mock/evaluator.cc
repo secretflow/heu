@@ -19,25 +19,26 @@
 namespace heu::lib::algorithms::mock {
 
 #ifdef IMPL_SCALAR_SPI
-void Evaluator::Randomize(Ciphertext* ct) const { (void)ct; }
+void Evaluator::Randomize(Ciphertext *ct) const { (void)ct; }
 
-void CheckRange(const PublicKey& pk, const Ciphertext&, const Plaintext& p) {
+void CheckRange(const PublicKey &pk, const Ciphertext &, const Plaintext &p) {
   YACL_ENFORCE(p.bn_.CompareAbs(pk.PlaintextBound().bn_) < 0,
                "plaintext number out of range, message={}, max (abs)={}",
                p.ToHexString(), pk.PlaintextBound());
 }
 
-void CheckRange(const PublicKey& pk, const Plaintext& p, const Ciphertext&) {
+void CheckRange(const PublicKey &pk, const Plaintext &p, const Ciphertext &) {
   YACL_ENFORCE(p.bn_.CompareAbs(pk.PlaintextBound().bn_) < 0,
                "plaintext number out of range, message={}, max (abs)={}",
                p.ToHexString(), pk.PlaintextBound());
 }
 
-void CheckRange(const PublicKey& pk, const Ciphertext&, const Ciphertext&) {}
-void CheckRange(const PublicKey& pk, const Plaintext&, const Plaintext&) {}
+void CheckRange(const PublicKey &, const Ciphertext &, const Ciphertext &) {}
+
+void CheckRange(const PublicKey &, const Plaintext &, const Plaintext &) {}
 
 #define SCALAR_FUNCTION_IMPL(NAME, RET, T1, OP, T2)     \
-  RET Evaluator::NAME(const T1& a, const T2& b) const { \
+  RET Evaluator::NAME(const T1 &a, const T2 &b) const { \
     CheckRange(pk_, a, b);                              \
     return RET(a.bn_ OP b.bn_);                         \
   }
@@ -45,7 +46,7 @@ void CheckRange(const PublicKey& pk, const Plaintext&, const Plaintext&) {}
 // Keep same with Paillier
 // No need to check size of plaintext because ciphertext overflow is allowed
 #define SCALAR_FUNCTION_IMPL_MUL(RET, T1, OP, T2)      \
-  RET Evaluator::Mul(const T1& a, const T2& b) const { \
+  RET Evaluator::Mul(const T1 &a, const T2 &b) const { \
     return RET(a.bn_ OP b.bn_);                        \
   }
 
@@ -64,13 +65,13 @@ SCALAR_FUNCTION_IMPL_MUL(Ciphertext, Plaintext, *, Ciphertext);
 SCALAR_FUNCTION_IMPL_MUL(Plaintext, Plaintext, *, Plaintext);
 
 #define SCALAR_INPLACE_FUNCTION_IMPL(NAME, T1, OP, T2) \
-  void Evaluator::NAME(T1* a, const T2& b) const {     \
+  void Evaluator::NAME(T1 *a, const T2 &b) const {     \
     CheckRange(pk_, *a, b);                            \
     a->bn_ OP b.bn_;                                   \
   }
 
 #define SCALAR_INPLACE_FUNCTION_IMPL_MUL(T1, OP, T2) \
-  void Evaluator::MulInplace(T1* a, const T2& b) const { a->bn_ OP b.bn_; }
+  void Evaluator::MulInplace(T1 *a, const T2 &b) const { a->bn_ OP b.bn_; }
 
 SCALAR_INPLACE_FUNCTION_IMPL(AddInplace, Ciphertext, +=, Ciphertext);
 SCALAR_INPLACE_FUNCTION_IMPL(AddInplace, Ciphertext, +=, Plaintext);
@@ -83,18 +84,18 @@ SCALAR_INPLACE_FUNCTION_IMPL(SubInplace, Plaintext, -=, Plaintext);
 SCALAR_INPLACE_FUNCTION_IMPL_MUL(Ciphertext, *=, Plaintext);
 SCALAR_INPLACE_FUNCTION_IMPL_MUL(Plaintext, *=, Plaintext)
 
-Ciphertext Evaluator::Negate(const Ciphertext& a) const {
+Ciphertext Evaluator::Negate(const Ciphertext &a) const {
   Ciphertext out;
   a.bn_.Negate(&out.bn_);
   return out;
 }
 
-void Evaluator::NegateInplace(Ciphertext* a) const { *a = Negate(*a); }
+void Evaluator::NegateInplace(Ciphertext *a) const { *a = Negate(*a); }
 
 #endif
 
 #ifdef IMPL_VECTORIZED_SPI
-void Evaluator::Randomize(Span<Ciphertext> ct) const { /* nothing to do */
+void Evaluator::Randomize(Span<Ciphertext>) const { /* nothing to do */
 }
 
 #define SIMD_FUNCTION_IMPL(NAME, RET, T1, OP, T2)                             \
@@ -157,7 +158,7 @@ std::vector<Ciphertext> Evaluator::Negate(ConstSpan<Ciphertext> a) const {
 }
 
 void Evaluator::NegateInplace(Span<Ciphertext> a) const {
-  for (const auto& item : a) {
+  for (const auto &item : a) {
     item->bn_.NegateInplace();
   }
 };

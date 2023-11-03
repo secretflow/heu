@@ -16,10 +16,10 @@
 
 #include <utility>
 
+#include "heu/library/phe/base/key_def.h"
 #include "heu/library/phe/decryptor.h"
 #include "heu/library/phe/encryptor.h"
 #include "heu/library/phe/evaluator.h"
-#include "heu/library/phe/key_def.h"
 
 namespace heu::lib::phe {
 

@@ -91,4 +91,5 @@ struct convert<heu::lib::algorithms::paillier_z::SecretKey> {
 }  // namespace adaptor
 }  // namespace msgpack
 }  // namespace msgpack
+
 // clang-format on

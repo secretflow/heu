@@ -11,7 +11,7 @@ HEU 提供了多种 PHE 算法，本文档描述每种算法的特性，有助�
       from heu import phe
       kit = phe.setup(phe.SchemaType.ZPaillier, 2048)
 
-   本文档指示如何选择 phe.SchemaType 参数。
+本文档指示如何选择 phe.SchemaType 参数。
 
 
 算法总览
@@ -21,7 +21,7 @@ HEU 提供了多种 PHE 算法，本文档描述每种算法的特性，有助�
    :header-rows: 1
 
    * - SchemaType
-     - 算法族
+     - 算法簇
      - 简要描述
      - 综合推荐度
    * - ZPaillier
@@ -40,6 +40,10 @@ HEU 提供了多种 PHE 算法，本文档描述每种算法的特性，有助�
      - Okamoto-Uchiyama
      - 功能与 Paillier 一致，且性能更高，密文膨胀度更低，但安全性略低，请见下文详细描述
      - ★★★★★
+   * - EC ElGamal
+     - ElGamal
+     - 基于椭圆曲线的 ElGamal 算法，性能和密文膨胀率比 Paillier、OU 都好，缺点是解密比较慢，且值域空间很小，一旦超过大小解密将失败
+     - ★★★★
    * - Mock
      - None
      - 不加密，仅可用于测试或 Debug 目的，严禁在线上使用
@@ -47,12 +51,11 @@ HEU 提供了多种 PHE 算法，本文档描述每种算法的特性，有助�
 
 说明：综合推荐度根据算法性能、安全性、适用面、稳定程度等等因素综合给出，并随着算法迭代升级动态变化。
 
-算法理论介绍
---------------------
-
-本节介绍同态加密算法本身，与实现无关。
 
 Paillier
+--------------------
+
+算法理论介绍
 ^^^^^^^^^^^^^^^^^^^^
 
 Paillier 算法由 Pascal Paillier 在 1999 年提出，参见：`算法详情 <https://en.wikipedia.org/wiki/Paillier_cryptosystem>`__
@@ -67,14 +70,129 @@ Paillier 算法由 Pascal Paillier 在 1999 年提出，参见：`算法详情 <
      - | 判定性复合剩余假设
        | decisional composite residuosity assumption (DCRA)
    * - 安全强度（Security Strength）
-     - | 2048 位密钥长度等效 112 bits 安全强度
-       | 3072 位密钥长度等效 128 bits 安全强度
+     - | 2048 位密钥长度等于或略低于 112 bits 安全强度
+       | 3072 位密钥长度等于或略低于 128 bits 安全强度
 
 .. admonition:: Decisional composite residuosity assumption
 
    DCRA states that given a composite N and an integer z, it is hard to decide whether z is an :math:`N`-residue modulo :math:`N^2` (whether there exists a y such that :math:`z \equiv y^N \bmod N^2`)
 
+**关于安全强度**
+
+目前未有直接的文献表明 DCRA 密钥长度与安全比特位数之间的关联，一般认为的难度 DCRA <= FACTORING（因数分解）<= DLP in :math:`\mathbb{Z}^*_N` [#]_，在 DLP（离散对数难题）中，2048 group size 对应 112 bits，3072 group size 对应 128 bits [#]_，因此 Paillier 的安全强度等效或略低于这个数值。
+
+.. [#] European Network of Excellence in Cryptology II. https://www.ecrypt.eu.org/ecrypt2/documents/D.MAYA.6.pdf
+.. [#] https://www.keylength.com/en/4/
+
+
+算法实现: ZPaillier
+^^^^^^^^^^^^^^^^^^^^
+
+ZPaillier 中的 Z 与数学中表示整数的 :math:`\mathbb{Z}` 含义相同，即实现了一套支持整数运算的 Paillier 算法。
+
+.. list-table:: ZPaillier 特性速查
+
+   * - SchemaType 参数名称
+     - phe.SchemaType.ZPaillier
+   * - 实现算法
+     - Paillier
+   * - 稳定性
+     - 稳定
+   * - 支持的平台
+     - Linux，macOS（Intel & Arm）
+   * - 是否依赖特定硬件
+     - 不依赖
+   * - 是否支持硬件加速
+     - 不支持
+   * - 相对性能
+     - 高
+
+.. tip:: HEU 对 ZPaillier 做了大量优化，ZPaillier 是一套性能较高的 Paillier 算法实现，且不依赖特定硬件，全平台使用，当您不知道如何选择算法时，可以默认使用 ZPaillier
+
+实现基于的 Paper：
+
+- Jurik, M. (2003). Extensions to the paillier cryptosystem with applications to cryptological protocols. Brics, August. http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.4.2396&amp;rep=rep1&amp;type=pdf
+
+算法实现: FPaillier
+^^^^^^^^^^^^^^^^^^^^
+
+FPaillier 中的 F 表示浮点数 :math:`\mathbb{F}`，Paillier 算法本身只支持整数，FPaillier 对Paillier 做了扩展，使其可以支持浮点数。
+
+.. list-table:: FPaillier 特性速查
+
+   * - SchemaType 参数名称
+     - phe.SchemaType.FPaillier
+   * - 实现算法
+     - Paillier
+   * - 稳定性
+     - 稳定
+   * - 支持的平台
+     - Linux，macOS（Intel & Arm）
+   * - 是否依赖特定硬件
+     - 不依赖
+   * - 是否支持硬件加速
+     - 不支持
+   * - 相对性能
+     - 低
+
+.. note:: FPaillier 的算法原理与 `Python-Paillier <https://github.com/data61/python-paillier>`_ 库类似
+
+FPaillier 支持浮点数的原理是将输入数据表示成 int_rep 形式：``scalar = int_rep * (BASE ** exponent)``
+
+.. code-block:: Python
+   :caption: int_rep 和 exponent 计算示意
+   :linenos:
+
+   # math.frexp() returns the mantissa and exponent of x, as pair (m, e). m is a float and e is an int, such that x = m * 2.**e.
+   bin_flt_exponent = math.frexp(scalar)[1]
+   # The least significant bit has value 2 ** bin_lsb_exponent
+   bin_lsb_exponent = bin_flt_exponent - cls.FLOAT_MANTISSA_BITS # FLOAT_MANTISSA_BITS = 53
+
+   exponent = bin_lsb_exponent # math.floor(bin_lsb_exponent / cls.LOG2_BASE)
+   int_rep = round(fractions.Fraction(scalar) * fractions.Fraction(cls.BASE) ** -exponent)
+
+**加密**
+
+Scalar 加密时只加密 int_rep 的值，exponent 明文存储，请注意安全风险。
+
+**同态运算**
+
+先对齐 exponent，将 exponent 较大的数的 exponent 降低到较小的 exponent（new_exp），即 ``int_rep =  int_rep * (base**(exponent-new_exp))``，再执行同态运算。
+
+.. tip:: FPaillier 的浮点数运算接口并没有在 Python 层暴露，在 Python 端 FPaillier 提供的接口与 ZPaillier 一致。若要使用 FPaillier 浮点功能，必须通过 C++ 接口调用，详细参考 `FPaillier 单测 <https://github.com/secretflow/heu/blob/main/heu/library/algorithms/paillier_float/paillier_test.cc>`_
+
+
+算法实现: IPCL
+^^^^^^^^^^^^^^^^^^^^
+
+IPCL 全称 Intel Paillier Cryptosystem Library，是 Intel 贡献的一种 Paillier 算法实现，其特点是支持 AVX512-IFMA 指令集和 Intel QAT 硬件加速器加速。
+
+.. list-table:: IPCL 特性速查
+
+   * - SchemaType 参数名称
+     - phe.SchemaType.IPCL
+   * - 实现算法
+     - Paillier
+   * - 稳定性
+     - **实验性质，仅供测试和评估目的，还在持续完善中**
+   * - 支持的平台
+     - Linux，macOS（Intel）
+   * - 是否依赖特定硬件
+     - 不依赖
+   * - 是否支持硬件加速
+     - 支持 AVX512-IFMA 指令集和/或 Intel QAT 加速器
+   * - 相对性能
+     - 高
+
+实现基于的代码库：
+
+- `pailliercryptolib <https://github.com/intel/pailliercryptolib>`_
+
+
 Okamoto-Uchiyama
+-----------------------------
+
+算法理论介绍
 ^^^^^^^^^^^^^^^^^^^^
 
 Okamoto-Uchiyama 算法由 Tatsuaki Okamoto 和 Shigenori Uchiyama 在 1998 年提出，参见：`算法详情 <https://en.wikipedia.org/wiki/Okamoto%E2%80%93Uchiyama_cryptosystem>`__
@@ -122,7 +240,7 @@ OU 的缺点：
 #. 虽然理论上两者都不满足 IND-CCA 安全定义，但在实际 IND-CCA 场景下 OU 存在已知攻击，而 Paillier 暂未发现有效攻击。
 
 
-已知攻击
+风险提示
 """""""""""""""""""""
 
 虽然 OU 与 Paillier 在学术上的安全级别相同，两者都满足 IND-CPA 安全，且都达不到 IND-CCA 安全，但实际情况是 OU 已经被发现有高效的攻击手段，而 Paillier 尚未发现有效攻击。
@@ -141,7 +259,10 @@ OU 在实现时一般做了限制，不允许直接加密大于 p 的明文，�
 #. 对该密文 c 执行 t 次密文加法（或一次明密文乘法）满足 :math:`m * t > p`，然后解密得到 :math:`m'`
 #. 攻击者获取 :math:`m'`，利用同余关系即可获取私钥 :math:`p`
 
-OU 还可以使用吗
+.. warning:: 在使用 OU 算法时，请务必判断上层应用环境中该攻击是否成立，如果成立，请立刻使用下文的防御方法来检测和阻断攻击，确保上层应用可以规避这种攻击。
+
+
+攻击防御
 ''''''''''''''''''''''''
 
 上述攻击成立的关键有两点，一是攻击者需要能构造出一个大于 p 的密文，二是攻击者需要能获取解密的结果，两者缺一不可，这是一个典型的选择密文攻击（CCA）场景，实际使用 OU 时，应当 **避免在 CCA 成立的场景下使用 OU**。
@@ -151,114 +272,15 @@ OU 还可以使用吗
 在一些复杂的隐私计算场景中，下一轮的交互取决于上一轮交互的结果，CCA 场景成立也许是不可避免的，但并非说明 OU 就一定无法使用，如果 Alice 有有效的手段阻断攻击，OU 仍旧可以选用。让我们再来回顾一下攻击的过程：Bob 构造的密文 c 对应明文 m，Alice 解密后得到 :math:`m'=m \bmod p`，实际的问题是，:math:`m'` 有可能非常大，远超一般业务中使用的 int64 所能表达的范围，因为 Bob 想要构造一个 **略大于** p 的密文是非常困难的，p 一般非常大，key size 为 2048 时 p 大约为 682bits，Bob 盲猜一个数 m 满足 :math:`m' < 2^{64}`，其概率小于 :math:`2^{-(682-64)}`，即盲猜的 m 的高 618bits 与 p exactly same，这个概率是可以忽略不计的，因此可以认为 :math:`m'` 仍旧是一个大数，当 Alice 解密发现明文不在合理值域范围时，可以拒绝 Bob 的结果，从而阻止 Bob 的攻击。
 
 
-算法实现介绍
---------------------
-
-SchemaType.ZPaillier
+算法实现: OU
 ^^^^^^^^^^^^^^^^^^^^
 
-ZPaillier 中的 Z 与数学中表示整数的 :math:`\mathbb{Z}` 含义相同，即实现了一套支持整数运算的 Paillier 算法。
-
-.. list-table:: ZPaillier 特性速查
-
-   * - 实现算法
-     - Paillier
-   * - 稳定性
-     - 稳定
-   * - 支持的平台
-     - Linux，macOS（Intel & Arm）
-   * - 是否依赖特定硬件
-     - 不依赖
-   * - 是否支持硬件加速
-     - 不支持
-   * - 相对性能
-     - 高
-
-.. tip:: HEU 对 ZPaillier 做了大量优化，ZPaillier 是一套性能较高的 Paillier 算法实现，且不依赖特定硬件，全平台使用，当您不知道如何选择算法时，可以默认使用 ZPaillier
-
-实现基于的 Paper：
-
-- Jurik, M. (2003). Extensions to the paillier cryptosystem with applications to cryptological protocols. Brics, August. http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.4.2396&amp;rep=rep1&amp;type=pdf
-
-SchemaType.FPaillier
-^^^^^^^^^^^^^^^^^^^^
-
-FPaillier 中的 F 表示浮点数 :math:`\mathbb{F}`，Paillier 算法本身只支持整数，FPaillier 对Paillier 做了扩展，使其可以支持浮点数。
-
-.. list-table:: FPaillier 特性速查
-
-   * - 实现算法
-     - Paillier
-   * - 稳定性
-     - 稳定
-   * - 支持的平台
-     - Linux，macOS（Intel & Arm）
-   * - 是否依赖特定硬件
-     - 不依赖
-   * - 是否支持硬件加速
-     - 不支持
-   * - 相对性能
-     - 低
-
-.. note:: FPaillier 的算法原理与 `Python-Paillier <https://github.com/data61/python-paillier>`_ 库类似
-
-FPaillier 支持浮点数的原理是将输入数据表示成 int_rep 形式：``scalar = int_rep * (BASE ** exponent)``
-
-.. code-block:: Python
-   :caption: int_rep 和 exponent 计算示意
-   :linenos:
-
-   # math.frexp() returns the mantissa and exponent of x, as pair (m, e). m is a float and e is an int, such that x = m * 2.**e.
-   bin_flt_exponent = math.frexp(scalar)[1]
-   # The least significant bit has value 2 ** bin_lsb_exponent
-   bin_lsb_exponent = bin_flt_exponent - cls.FLOAT_MANTISSA_BITS # FLOAT_MANTISSA_BITS = 53
-
-   exponent = bin_lsb_exponent # math.floor(bin_lsb_exponent / cls.LOG2_BASE)
-   int_rep = round(fractions.Fraction(scalar) * fractions.Fraction(cls.BASE) ** -exponent)
-
-**加密**
-
-Scalar 加密时只加密 int_rep 的值，exponent 明文存储，请注意安全风险。
-
-**同态运算**
-
-先对齐 exponent，将 exponent 较大的数的 exponent 降低到较小的 exponent（new_exp），即 ``int_rep =  int_rep * (base**(exponent-new_exp))``，再执行同态运算。
-
-.. tip:: FPaillier 的浮点数运算接口并没有在 Python 层暴露，在 Python 端 FPaillier 提供的接口与 ZPaillier 一致。若要使用 FPaillier 浮点功能，必须通过 C++ 接口调用，详细参考 `FPaillier 单测 <https://github.com/secretflow/heu/blob/main/heu/library/algorithms/paillier_float/paillier_test.cc>`_
-
-
-SchemaType.IPCL
-^^^^^^^^^^^^^^^^^^^^
-
-IPCL 全称 Intel Paillier Cryptosystem Library，是 Intel 贡献的一种 Paillier 算法实现，其特点是支持 AVX512-IFMA 指令集和 Intel QAT 硬件加速器加速。
-
-.. list-table:: IPCL 特性速查
-
-   * - 实现算法
-     - Paillier
-   * - 稳定性
-     - **实验性质，仅供测试和评估目的，还在持续完善中**
-   * - 支持的平台
-     - Linux，macOS（Intel）
-   * - 是否依赖特定硬件
-     - 不依赖
-   * - 是否支持硬件加速
-     - 支持 AVX512-IFMA 指令集和/或 Intel QAT 加速器
-   * - 相对性能
-     - 高
-
-实现基于的代码库：
-
-- `pailliercryptolib <https://github.com/intel/pailliercryptolib>`_
-
-
-SchemaType.OU
-^^^^^^^^^^^^^^^^^^^^
-
-OU 实现了 Okamoto-Uchiyama 算法，其功能与 ZPaillier 一致，且性能更高，很多时候可以成为 ZPaillier 的替代品，但 OU 存在一个已知攻击，详见 `Okamoto-Uchiyama`_ 算法理论介绍章节，使用时需评估该攻击造成的影响。
+OU 实现了 Okamoto-Uchiyama 算法，其功能与 ZPaillier 一致，且性能更高，很多时候可以成为 ZPaillier 的替代品，但 OU 存在一个已知攻击，详见上文关于安全性的论述，使用时需评估该攻击造成的影响。
 
 .. list-table:: OU 特性速查
 
+   * - SchemaType 参数名称
+     - phe.SchemaType.OU
    * - 实现算法
      - Okamoto-Uchiyama
    * - 稳定性
@@ -276,6 +298,88 @@ OU 实现了 Okamoto-Uchiyama 算法，其功能与 ZPaillier 一致，且性能
 实现基于的 Paper：
 
 - Coron, J. S., Naccache, D., & Paillier, P. (1999). Accelerating Okamoto-Uchiyama public-key cryptosystem. Electronics Letters, 35(4), 291–292. https://doi.org/10.1049/el:19990229
+
+
+ElGamal
+--------------------
+
+算法理论介绍
+^^^^^^^^^^^^^^^^^^^^
+
+ElGamal 是一个基于 Diffie–Hellman 密钥交换的非对称加密算法，由 Taher Elgamal 在 1985 年提出 [#]_。原始的 ElGamal 具有乘法同态性质，其同态性来自于密文块 :math:`mh^r`。
+
+在之后的 Generalized ElGamal 算法中，整个密码体制被定义在循环群 G 上，其加密的安全性也取决于 G 上离散对数问题的困难性，为此，用于构建 Generalized ElGamal 的循环群 G 必须满足以下两项要求：
+
+#. 高效性：G 上的计算必须非常快速
+#. 安全性：求解 G 上的离散对数问题(DLP)非常困难
+
+以下是一些满足上述要求的具体的 G 的例子：
+
+#. The multiplicative group :math:`\mathbb{Z}^*_p` of the integers modulo a prime :math:`p`.
+#. The multiplicative group :math:`\mathbb{F}^*_{2^m}` of the finite field :math:`\mathbb{F}_{2^m}` of characteristic two.
+#. The group of points on an elliptic curve over a finite field.
+#. The multiplicative group :math:`\mathbb{F}^*_q` of the finite field :math:`\mathbb{F}_q`, where :math:`q=p^m` and p is a prime.
+#. The group of units :math:`\mathbb{Z}^*_n`, where n is a composite integer.
+#. The jacobian of a hyperelliptic curve defined over a finite field
+#. The class group of an imaginary quadratic number field.
+
+为了获得加法同态特性，以及兼顾计算上的高效性，我们选择了 3 将椭圆曲线上的点群（EC Group）作为 ElGamal 底层的 G，因此 HEU 中的 ElGamal 也称为 EC ElGamal。
+
+.. list-table:: ElGamal 算法信息
+
+   * - 算法类型
+     - 同态特性取决于底层循环群 G 的定义，根据 G 的不同 Elgamal 可能为加法同态、乘法同态或没有同态特性。
+   * - 安全性
+     - 如果定义在 G 上的 Decisional Diffie–Hellman assumption (DDH) 是困难的，则算法是语义安全（Semantic Security）的，不可区分性满足 IND-CPA
+   * - 困难假设
+     - CDH & DDH
+   * - 安全强度（Security Strength）
+     - 取决于 G
+
+若循环群选定为椭圆曲线点群（EC Group），则算法信息如下：
+
+.. list-table:: EC ElGamal 算法信息
+
+   * - 算法类型
+     - 取决于明文到 EC Group 的映射方式，如果映射妥当，则 EC ElGamal 满足加法同态特性
+   * - 安全性
+     - IND-CPA 安全，语义安全（Semantic Security）
+   * - 困难假设
+     - 定义在椭圆曲线上的 CDH & DDH
+   * - 安全强度（Security Strength）
+     - 取决于具体选择的曲线，`此处 <http://safecurves.cr.yp.to/rho.html>`__ 列出了一部分曲线的安全强度
+
+.. [#] ElGamal, T. (1985). A Public Key Cryptosystem and a Signature Scheme Based on Discrete Logarithms. Lecture Notes in Computer Science (Including Subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics), 196 LNCS(4), 10–18. https://doi.org/10.1007/3-540-39568-7_2
+
+
+算法实现: EC ElGamal
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+HEU 实现了 EC ElGamal 算法，这是一种定义在椭圆曲线点群（EC Group）上的 ElGamal 算法，相比其他循环群 G，EC Group 的计算效率更高，使得 EC ElGamal 最终性能表现非常优秀。
+
+另一方面，为了维持加法同态特性，EC ElGamal 将明文映射到 EC Group 的方式为：:math:`m'=mG`，其中 :math:`m` 是明文，:math:`m'` 是映射后的明文，即椭圆曲线上的一个点，G 是 EC Group 的生成元。这是一个典型的单向函数（one-way function），EC ElGamal 解密之后得到 :math:`m'` 想要反向计算出真正的明文 :math:`m` 是非常困难的，没有直接求解算法，以至于 EC ElGamal 解密非常慢，这是 EC ElGamal 的缺点。
+
+
+.. list-table:: EC ElGamal 特性速查
+
+   * - SchemaType 参数名称
+     - phe.SchemaType.ElGamal
+   * - 实现算法
+     - ElGamal
+   * - 同态特性
+     - 加法同态加密
+   * - 稳定性
+     - 仅供非生产环境使用
+   * - 支持的平台
+     - Linux，macOS
+   * - 是否依赖特定硬件
+     - 不依赖
+   * - 是否支持硬件加速
+     - 取决于曲线种类的选择。（注：目前所有曲线都不支持硬件加速）
+   * - 相对性能
+     - 高
+
+EC ElGamal 底层椭圆曲线计算基于 `Yacl ECC SPI <https://github.com/secretflow/yacl/tree/main/yacl/crypto/base/ecc>`__。
 
 
 算法性能
@@ -316,4 +420,4 @@ HEU 提供了一个 Benchmark 用以测试每个算法的性能，若要运行 B
 再次提醒，即使算法的 Key size 相同，他们的安全强度未必一致，OU 的安全性可能弱于 Paillier，详见 `Okamoto-Uchiyama`_ 算法理论介绍章节。
 
 
-.. note:: 本页面的英文文档缺失，您愿意翻译吗？感谢您对隐语社区做出的贡献！
+.. note:: 本页面的英文文档较为陈旧，您愿意翻译吗？感谢您对隐语社区做出的贡献！

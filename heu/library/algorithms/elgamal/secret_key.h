@@ -29,7 +29,7 @@ using yacl::crypto::EcPoint;
 
 class SecretKey {
  public:
-  SecretKey() {}
+  SecretKey() = default;
 
   SecretKey(const MPInt &x, const std::shared_ptr<EcGroup> &curve)
       : x_(x), curve_(curve) {
@@ -52,6 +52,8 @@ class SecretKey {
   }
 
  private:
+  bool IsValid() const { return curve_ && table_; }
+
   MPInt x_;
   std::shared_ptr<yacl::crypto::EcGroup> curve_;
   std::shared_ptr<LookupTable> table_;

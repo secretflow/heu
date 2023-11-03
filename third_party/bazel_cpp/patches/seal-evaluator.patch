@@ -34,7 +34,7 @@ index 9f5c3f5..24904e8 100644
 @@ -945,22 +937,17 @@ namespace seal
          Ciphertext encrypted_copy(pool);
          encrypted_copy = encrypted;
- 
+
 -        switch (next_parms.scheme())
 +        if (!encrypted.is_ntt_form())
          {
@@ -56,7 +56,7 @@ index 9f5c3f5..24904e8 100644
 -        default:
 -            throw invalid_argument("unsupported scheme");
          }
- 
+
          // Copy result to destination
 @@ -1533,10 +1520,6 @@ namespace seal
          {
@@ -70,7 +70,7 @@ index 9f5c3f5..24904e8 100644
          {
              throw invalid_argument("pool is uninitialized");
 @@ -1544,11 +1527,27 @@ namespace seal
- 
+
          if (encrypted.is_ntt_form())
          {
 -            multiply_plain_ntt(encrypted, plain);
@@ -102,7 +102,7 @@ index 9f5c3f5..24904e8 100644
 @@ -1559,6 +1558,86 @@ namespace seal
  #endif
      }
- 
+
 +    void Evaluator::multiply_ntt_plain_normal(
 +        Ciphertext &encrypted_ntt, const Plaintext &plain, MemoryPoolHandle pool) const
 +    {
@@ -194,7 +194,7 @@ index 9f5c3f5..24904e8 100644
 +        if (!encrypted.is_ntt_form())
          {
              // !!! DO NOT CHANGE EXECUTION ORDER!!!
- 
+
 @@ -1983,7 +2062,7 @@ namespace seal
              // Next transform encrypted.data(1)
              galois_tool->apply_galois(encrypted_iter[1], coeff_modulus_size, galois_elt, coeff_modulus, temp);
@@ -203,7 +203,7 @@ index 9f5c3f5..24904e8 100644
 +        else
          {
              // !!! DO NOT CHANGE EXECUTION ORDER!!!
- 
+
 @@ -1997,10 +2076,6 @@ namespace seal
              // Next transform encrypted.data(1)
              galois_tool->apply_galois_ntt(encrypted_iter[1], coeff_modulus_size, galois_elt, temp);
@@ -212,7 +212,7 @@ index 9f5c3f5..24904e8 100644
 -        {
 -            throw logic_error("scheme not implemented");
 -        }
- 
+
          // Wipe encrypted.data(1)
          set_zero_poly(coeff_count, coeff_modulus_size, encrypted.data(1));
 @@ -2086,7 +2161,6 @@ namespace seal
@@ -220,7 +220,7 @@ index 9f5c3f5..24904e8 100644
          auto &key_context_data = *context_.key_context_data();
          auto &key_parms = key_context_data.parms();
 -        auto scheme = parms.scheme();
- 
+
          // Verify parameters.
          if (!is_metadata_valid_for(encrypted, context_) || !is_buffer_valid(encrypted))
 @@ -2116,14 +2190,6 @@ namespace seal
@@ -235,7 +235,7 @@ index 9f5c3f5..24904e8 100644
 -        {
 -            throw invalid_argument("CKKS encrypted must be in NTT form");
 -        }
- 
+
          // Extract encryption parameters.
          size_t coeff_count = parms.poly_modulus_degree();
 @@ -2133,6 +2199,7 @@ namespace seal
@@ -243,12 +243,12 @@ index 9f5c3f5..24904e8 100644
          auto key_ntt_tables = iter(key_context_data.small_ntt_tables());
          auto modswitch_factors = key_context_data.rns_tool()->inv_q_last_mod_q();
 +        bool is_ntt_form = encrypted.is_ntt_form();
- 
+
          // Size check
          if (!product_fits_in(coeff_count, rns_modulus_size, size_t(2)))
 @@ -2158,7 +2225,7 @@ namespace seal
          set_uint(target_iter, decomp_modulus_size * coeff_count, t_target);
- 
+
          // In CKKS t_target is in NTT form; switch back to normal form
 -        if (scheme == scheme_type::ckks)
 +        if (is_ntt_form)
@@ -257,7 +257,7 @@ index 9f5c3f5..24904e8 100644
          }
 @@ -2185,7 +2252,7 @@ namespace seal
                  ConstCoeffIter t_operand;
- 
+
                  // RNS-NTT form exists in input
 -                if ((scheme == scheme_type::ckks) && (I == J))
 +                if (is_ntt_form && (I == J))
@@ -266,7 +266,7 @@ index 9f5c3f5..24904e8 100644
                  }
 @@ -2296,7 +2363,7 @@ namespace seal
                  SEAL_ITERATE(t_ntt, coeff_count, [fix](auto &K) { K += fix; });
- 
+
                  uint64_t qi_lazy = qi << 1; // some multiples of qi
 -                if (scheme == scheme_type::ckks)
 +                if (is_ntt_form)
