@@ -115,7 +115,7 @@ using kHasReduceSum = decltype(std::declval<const CLAZZ&>().ReduceSum(
                   std::array<int64_t, 2> x_stride,                           \
                   const DenseMatrix<phe::TY>& y,                             \
                   std::array<int64_t, 2> y_stride, RET* out)                 \
-      ->std::enable_if_t<std::experimental::is_detected_v<                   \
+      -> std::enable_if_t<std::experimental::is_detected_v<                  \
           kHasVectorized##OP, CLAZZ, SUB_TX, SUB_TY>> {                      \
     const auto* x_base = x.data();                                           \
     const auto* y_base = y.data();                                           \
@@ -146,7 +146,7 @@ using kHasReduceSum = decltype(std::declval<const CLAZZ&>().ReduceSum(
                   std::array<int64_t, 2> x_stride,                           \
                   const DenseMatrix<phe::TY>& y,                             \
                   std::array<int64_t, 2> y_stride, RET* out)                 \
-      ->std::enable_if_t<!std::experimental::is_detected_v<                  \
+      -> std::enable_if_t<!std::experimental::is_detected_v<                 \
           kHasVectorized##OP, CLAZZ, SUB_TX, SUB_TY>> {                      \
     const auto* x_base = x.data();                                           \
     const auto* y_base = y.data();                                           \

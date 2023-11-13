@@ -109,7 +109,6 @@ TEST_P(PheTest, BatchEncoding) {
   if (GetParam() == SchemaType::DGK) {
     GTEST_SKIP() << "Plaintext range is not enough, Skip DGK";
   }
-
   auto encryptor = he_kit_.GetEncryptor();
   auto evaluator = he_kit_.GetEvaluator();
   auto decryptor = he_kit_.GetDecryptor();

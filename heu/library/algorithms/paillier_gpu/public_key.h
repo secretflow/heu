@@ -27,11 +27,11 @@ void SetCacheTableDensity(size_t density);
 
 class PublicKey : public HeObject<PublicKey> {
  public:
-  Plaintext n_;         // public modulus n = p * q
-  Plaintext n_square_;  // n_ * n_
-  Plaintext n_half_;    // n_ / 2
-  Plaintext h_s_;       // h^n mod n^2
-  Plaintext n_plus_;    // add for GPU
+  MPInt n_;         // public modulus n = p * q
+  MPInt n_square_;  // n_ * n_
+  MPInt n_half_;    // n_ / 2
+  MPInt h_s_;       // h^n mod n^2
+  MPInt n_plus_;    // add for GPU
 
   size_t key_size_;
 
@@ -50,7 +50,7 @@ class PublicKey : public HeObject<PublicKey> {
     return !this->operator==(other);
   }
 
-  // Valid plaintext range: (n_half_, -n_half)
+  // Valid plaintext range: [n_half_, -n_half]
   [[nodiscard]] inline const Plaintext &PlaintextBound() const & {
     return n_half_;
   }

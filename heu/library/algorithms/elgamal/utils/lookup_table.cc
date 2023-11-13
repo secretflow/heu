@@ -25,7 +25,7 @@ constexpr static int64_t kTableMaxValue = 1LL << kLookupTableBits;
 constexpr static int64_t kSearchMaxValue = 1LL << kExtraSearchBits;
 
 const MPInt &LookupTable::MaxSupportedValue() {
-  const static MPInt max(kTableMaxValue * kSearchMaxValue);
+  const static MPInt max(kTableMaxValue * kSearchMaxValue - 1);
   return max;
 }
 

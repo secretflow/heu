@@ -56,7 +56,6 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
   MPInt::InvertMod(sk->lambda_, n, &sk->mu_);
   sk->Init();
   // fill public key
-  pk->n_plus_ = (Plaintext)(n + Plaintext(1));  // g
   pk->h_s_ = (Plaintext)(sk->PowModNSquareCrt(h, n));
   pk->n_ = std::move(n);
   pk->Init();

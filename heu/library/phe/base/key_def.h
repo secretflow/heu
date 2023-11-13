@@ -26,7 +26,7 @@ class PublicKey : public SerializableVariant<HE_NAMESPACE_LIST(PublicKey)> {
   using SerializableVariant<HE_NAMESPACE_LIST(PublicKey)>::SerializableVariant;
   using SerializableVariant<HE_NAMESPACE_LIST(PublicKey)>::operator=;
 
-  // Valid plaintext range: (PlaintextBound(), -PlaintextBound())
+  // Valid plaintext range: [PlaintextBound(), -PlaintextBound()]
   [[nodiscard]] Plaintext PlaintextBound() const & {
     return this->Visit([](const auto &clazz) -> Plaintext {
       FOR_EACH_TYPE(clazz) return Plaintext(clazz.PlaintextBound());

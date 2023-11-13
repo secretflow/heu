@@ -101,7 +101,7 @@ TEST_F(ZPaillierTest, MinMaxDecrypt) {
   MPInt plain = pk_.n_;
   EXPECT_THROW(encryptor_->Encrypt(plain), std::exception);  // too many bits
 
-  plain = pk_.PlaintextBound();
+  plain = pk_.PlaintextBound() + 1_mp;
   EXPECT_THROW(encryptor_->Encrypt(plain), std::exception);  // too many bits
 
   MPInt plain2;
@@ -115,9 +115,8 @@ TEST_F(ZPaillierTest, MinMaxDecrypt) {
   decryptor_->Decrypt(ct0, &plain2);
   EXPECT_EQ(plain, plain2);
 
-  plain.DecrOne();
-  EXPECT_THROW(encryptor_->Encrypt(plain),
-               std::exception);  // too many bits
+  plain.DecrOne();  // too many bits
+  EXPECT_THROW(encryptor_->Encrypt(plain), std::exception);
 }
 
 TEST_F(ZPaillierTest, PlaintextEvaluate1) {

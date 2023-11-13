@@ -48,7 +48,7 @@ class PublicKey : public HeObject<PublicKey> {
     return !this->operator==(other);
   }
 
-  // Valid plaintext range: (n_half_, -n_half)
+  // Valid plaintext range: [n_half_, -n_half]
   [[nodiscard]] inline const MPInt &PlaintextBound() const & { return n_half_; }
 };
 

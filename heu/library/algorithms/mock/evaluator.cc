@@ -22,13 +22,13 @@ namespace heu::lib::algorithms::mock {
 void Evaluator::Randomize(Ciphertext *ct) const { (void)ct; }
 
 void CheckRange(const PublicKey &pk, const Ciphertext &, const Plaintext &p) {
-  YACL_ENFORCE(p.bn_.CompareAbs(pk.PlaintextBound().bn_) < 0,
+  YACL_ENFORCE(p.bn_.CompareAbs(pk.PlaintextBound().bn_) <= 0,
                "plaintext number out of range, message={}, max (abs)={}",
                p.ToHexString(), pk.PlaintextBound());
 }
 
 void CheckRange(const PublicKey &pk, const Plaintext &p, const Ciphertext &) {
-  YACL_ENFORCE(p.bn_.CompareAbs(pk.PlaintextBound().bn_) < 0,
+  YACL_ENFORCE(p.bn_.CompareAbs(pk.PlaintextBound().bn_) <= 0,
                "plaintext number out of range, message={}, max (abs)={}",
                p.ToHexString(), pk.PlaintextBound());
 }
