@@ -43,6 +43,7 @@ build:macos --host_copt=-Wa,--noexecstack
 # Bazel will automatic pick platform config since we have enable_platform_specific_config set
 build:macos --features=-supports_dynamic_linker
 build:macos --cxxopt -Wno-error=unused-const-variable
+build:macos --cxxopt -Wno-error=sign-compare  # for eigen 3.4
 build:macos --macos_minimum_os=11.0
 
 # static link libstdc++ & libgcc
