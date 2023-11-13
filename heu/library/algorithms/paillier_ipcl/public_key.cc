@@ -5,16 +5,23 @@
 
 #include "cereal/archives/portable_binary.hpp"
 
+namespace {
+  bool IsEqual(const std::shared_ptr<BigNumber> &a,
+             const std::shared_ptr<BigNumber> &b) {
+  return a && b && *a == *b;
+}
+} // namespace
+
 namespace heu::lib::algorithms::paillier_ipcl {
 
 bool PublicKey::operator==(const PublicKey &other) const {
-  return *ipcl_pubkey_.getN() == *other.ipcl_pubkey_.getN() &&
-         *ipcl_pubkey_.getG() == *other.ipcl_pubkey_.getG() &&
+  return IsEqual(ipcl_pubkey_.getN(), other.ipcl_pubkey_.getN()) &&
+         IsEqual(ipcl_pubkey_.getG(), other.ipcl_pubkey_.getG()) &&
          ipcl_pubkey_.getHS() == other.ipcl_pubkey_.getHS();
 }
 
 bool PublicKey::operator!=(const PublicKey &other) const {
-  return !this->operator==(other);
+  return !(*this == other);
 }
 
 std::string PublicKey::ToString() const {

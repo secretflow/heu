@@ -17,12 +17,9 @@ class SecretKey {
 
   std::string ToString() const;
 
-  yacl::Buffer Serialize() const { YACL_THROW("Not implemented."); }
+  yacl::Buffer Serialize() const;
 
-  void Deserialize(yacl::ByteContainerView in) {
-    YACL_THROW("Not implemented.");
-  }
-
+  void Deserialize(yacl::ByteContainerView in);
   ipcl::PrivateKey ipcl_prikey_;
 };
 
