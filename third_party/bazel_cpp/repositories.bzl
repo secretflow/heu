@@ -12,7 +12,7 @@ def _com_github_eigenteam_eigen():
     maybe(
         http_archive,
         name = "com_github_eigenteam_eigen",
-        sha256 = "c1b115c153c27c02112a0ecbf1661494295d9dcff6427632113f2e4af9f3174d",
+        sha256 = "606c404bdcbdb3782b4df3e9e32d76e1d940aa6704af5be0e75f6249bc9a6730",
         build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:eigen.BUILD",
         strip_prefix = "eigen-3.4",
         urls = [
