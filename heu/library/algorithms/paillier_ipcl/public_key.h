@@ -22,7 +22,7 @@ class PublicKey {
 
   std::string ToString() const;
 
-  // Valid plaintext range: (max_int_, -max_int_)
+  // Valid plaintext range: [max_int_, -max_int_]
   inline const Plaintext &PlaintextBound() const & { return pt_bound_; }
 
   yacl::Buffer Serialize() const;

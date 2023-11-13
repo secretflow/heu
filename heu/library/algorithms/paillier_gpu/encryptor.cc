@@ -22,13 +22,13 @@ int GetRdrand8Bytes(unsigned char* rand, int multiple) {
       "mov %1, %%edx          \n\t"
 
       "1:             		\n\t"
-      "rdrand %%rax      		\n\t"
+      "rdrand %%rax      	\n\t"
       "jnc 1b         		\n\t"  // retry
 
       "movq %%rax, (%%rcx)	\n\t"
-      "addq $8, %%rcx			\n\t"
-      "sub $1, %%edx			\n\t"
-      "jne 1b					\n\t"  // next 8 bytes
+      "addq $8, %%rcx		\n\t"
+      "sub $1, %%edx		\n\t"
+      "jne 1b			\n\t"  // next 8 bytes
       :
       : "r"(rand), "r"(multiple)
       : "memory", "cc", "%rax", "%rcx", "%edx");
@@ -135,8 +135,12 @@ std::vector<Ciphertext> Encryptor::EncryptImpl(
   auto res = std::make_unique<h_paillier_ciphertext_t[]>(count);
   auto gpts = std::make_unique<h_paillier_plaintext_t[]>(count);
 
+  Plaintext temp;
   for (unsigned int i = 0; i < count; i++) {
-    Plaintext temp;
+    YACL_ENFORCE(pts[i]->CompareAbs(pk_.PlaintextBound()) <= 0,
+                 "message number out of range, message={}, max (abs)={}",
+                 *pts[i], pk_.PlaintextBound());
+
     if (pts[i]->IsNegative()) {
       temp = (Plaintext)(*pts[i] + pk_.n_);
       temp.ToBytes(gpts[i].m, 512, algorithms::Endian::little);

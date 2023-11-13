@@ -21,6 +21,7 @@ cmake(
         "OPENSSL_INCLUDE_DIR": "$EXT_BUILD_DEPS/openssl/include",
         "OPENSSL_LIBRARIES": "$EXT_BUILD_DEPS/openssl/lib",
         "OPENSSL_ROOT_DIR": "$EXT_BUILD_DEPS/openssl",
+        "CMAKE_BUILD_TYPE": "Release",
     },
     lib_source = "@com_github_intel_ipcl//:all",
     linkopts = ["-ldl"],

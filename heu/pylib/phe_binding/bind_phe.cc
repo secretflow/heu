@@ -118,7 +118,7 @@ void PyBindPhe(pybind11::module& m) {
       .def("__str__", [](const phe::PublicKey& pk) { return pk.ToString(); })
       .def(PyUtils::PickleSupport<phe::PublicKey>())
       .def("plaintext_bound", &phe::PublicKey::PlaintextBound,
-           "Get max_int, so valid plaintext range is (max_int, -max_int)");
+           "Get max_int, so valid plaintext range is [max_int_, -max_int_]");
   py::class_<phe::SecretKey, std::shared_ptr<phe::SecretKey>>(m, "SecretKey")
       .def("__str__", [](const phe::SecretKey& sk) { return sk.ToString(); })
       .def(PyUtils::PickleSupport<phe::SecretKey>());

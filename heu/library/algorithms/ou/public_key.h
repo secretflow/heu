@@ -117,7 +117,7 @@ class PublicKey : public HeObject<PublicKey> {
     return !this->operator==(other);
   }
 
-  // Valid plaintext range: (max_plaintext_, -max_plaintext_)
+  // Valid plaintext range: [max_plaintext_, -max_plaintext_]
   [[nodiscard]] const MPInt &PlaintextBound() const & { return max_plaintext_; }
 };
 

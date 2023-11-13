@@ -61,7 +61,7 @@ TEST_F(ElGamalTest, EncDecWorks) {
   });
 
   // too big to decrypt
-  EXPECT_ANY_THROW(encryptor.Encrypt(pk_.PlaintextBound()));
+  EXPECT_ANY_THROW(encryptor.Encrypt(pk_.PlaintextBound() + 1_mp));
 }
 
 TEST_F(ElGamalTest, CiphertextEvaluate) {

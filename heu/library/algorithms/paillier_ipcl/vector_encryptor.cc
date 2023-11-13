@@ -26,7 +26,7 @@ std::vector<Ciphertext> Encryptor::EncryptZero(int64_t size) const {
 std::vector<Ciphertext> Encryptor::Encrypt(ConstSpan<Plaintext> pts) const {
   std::vector<BigNumber> bn_vec;
   for (auto item : pts) {
-    YACL_ENFORCE(Plaintext::Absolute(*item) < pt_bound_,
+    YACL_ENFORCE(Plaintext::Absolute(*item) <= pt_bound_,
                  "Plaintext out of range");
     bn_vec.push_back(item->bn_);
   }

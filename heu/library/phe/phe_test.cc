@@ -38,12 +38,12 @@ class PheTest : public ::testing::TestWithParam<SchemaType> {
 INSTANTIATE_TEST_SUITE_P(Schema, PheTest, ::testing::ValuesIn(GetAllSchema()));
 
 TEST_P(PheTest, KeySerialize) {
-  if constexpr (ENABLE_IPCL) {
-    if (he_kit_.GetSchemaType() == SchemaType::IPCL) {
-      // todo: IPCL should support pk/sk serialize
-      GTEST_SKIP() << "Wait for IPCL to impl";
-    }
+#if ENABLE_IPCL == true  // Apple clang on M1 doesn't support `if constexpr`
+  if (he_kit_.GetSchemaType() == SchemaType::IPCL) {
+    // todo: IPCL should support pk/sk serialize
+    GTEST_SKIP() << "Wait for IPCL to impl";
   }
+#endif
 
   // test pk
   auto buffer_pk = he_kit_.GetPublicKey()->Serialize();
@@ -109,7 +109,6 @@ TEST_P(PheTest, BatchEncoding) {
   if (GetParam() == SchemaType::DGK) {
     GTEST_SKIP() << "Plaintext range is not enough, Skip DGK";
   }
-
   auto encryptor = he_kit_.GetEncryptor();
   auto evaluator = he_kit_.GetEvaluator();
   auto decryptor = he_kit_.GetDecryptor();

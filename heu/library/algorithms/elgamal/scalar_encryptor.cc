@@ -30,7 +30,7 @@ Ciphertext Encryptor::EncryptZero() const {
 }
 
 Ciphertext Encryptor::Encrypt(const Plaintext& m) const {
-  YACL_ENFORCE(m.CompareAbs(pk_.PlaintextBound()) < 0,
+  YACL_ENFORCE(m.CompareAbs(pk_.PlaintextBound()) <= 0,
                "message number out of range, message={}, max (abs)={}", m,
                pk_.PlaintextBound());
 
@@ -42,7 +42,7 @@ Ciphertext Encryptor::Encrypt(const Plaintext& m) const {
 
 std::pair<Ciphertext, std::string> Encryptor::EncryptWithAudit(
     const Plaintext& m) const {
-  YACL_ENFORCE(m.CompareAbs(pk_.PlaintextBound()) < 0,
+  YACL_ENFORCE(m.CompareAbs(pk_.PlaintextBound()) <= 0,
                "message number out of range, message={}, max (abs)={}", m,
                pk_.PlaintextBound());
 

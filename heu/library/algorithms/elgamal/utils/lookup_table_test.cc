@@ -44,7 +44,7 @@ TEST_F(LookupTableTest, MinMaxSearch) {
   LookupTable table;
   table.Init(ec_);
 
-  auto max_v = table.MaxSupportedValue() - 1_mp;
+  auto max_v = table.MaxSupportedValue();
   auto point = ec_->MulBase(max_v);
   EXPECT_EQ(table.Search(point), max_v.Get<int64_t>());
 

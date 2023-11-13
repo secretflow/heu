@@ -37,7 +37,7 @@ class PublicKey : public HeObject<PublicKey> {
  public:
   PublicKey() = default;
 
-  // Valid plaintext range: (max_int_, -max_int_)
+  // Valid plaintext range: [max_int_, -max_int_]
   [[nodiscard]] const MPInt& PlaintextBound() const& { return max_int_; }
 
   [[nodiscard]] std::string ToString() const override;
@@ -75,7 +75,7 @@ class PublicKey : public HeObject<PublicKey> {
   // Maximum int that may safely be stored. This can be increased, if you are
   // happy to redefine "safely" and lower the chance of detecting an integer
   // overflow.
-  // Bound: (max_int_, -max_int_)
+  // Bound: [max_int_, -max_int_]
   MPInt max_int_;  // n_ / 3
 };
 

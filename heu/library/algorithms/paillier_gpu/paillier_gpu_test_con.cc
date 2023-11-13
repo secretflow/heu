@@ -50,6 +50,29 @@ class GPUTest : public ::testing::Test {
   static const int128_t iMax = std::numeric_limits<int64_t>::max();
 };
 
+TEST_F(GPUTest, EncDecBigintTest) {
+  auto enc_dec_func = [&](const MPInt& plain) {
+    fmt::print("in = {}\n", plain);
+    std::vector<const MPInt*> in = {&plain};
+    auto cts = encryptor_->Encrypt(in);
+    auto plain_dec = decryptor_->Decrypt({&cts[0]});
+    fmt::print("out= {}\n", plain_dec[0]);
+    EXPECT_EQ(plain, plain_dec[0]);
+  };
+
+  enc_dec_func(0_mp);
+  enc_dec_func(1_mp);
+  enc_dec_func(100_mp);
+  enc_dec_func(MPInt(iLow));
+
+  fmt::print("{}\n", pk_.ToString());
+
+  auto plain = pk_.PlaintextBound();
+  enc_dec_func(plain.DecrOne());
+  plain.NegateInplace();
+  enc_dec_func(plain);
+}
+
 TEST_F(GPUTest, EncDecLongTest) {
   int num = 1e5;  // 10w. found num <= 208516 can PASS(test on
                   // 172.20.10.7(nvidia A100), 28/12/22)

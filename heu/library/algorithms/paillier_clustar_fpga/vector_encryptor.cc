@@ -62,7 +62,7 @@ std::vector<Ciphertext> Encryptor::EncryptImpl(
   int idx = 0;
   for (auto item : pts) {
     YACL_ENFORCE(
-        item->CompareAbs(pub_key_.PlaintextBound()) < 0,
+        item->CompareAbs(pub_key_.PlaintextBound()) <= 0,
         "{} th msg number out of range, msg in hex={}, max in dec(abs)={}", idx,
         item->ToHexString(), pub_key_.PlaintextBound());
     idx++;
