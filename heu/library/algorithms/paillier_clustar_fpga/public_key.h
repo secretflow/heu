@@ -46,7 +46,7 @@ class PublicKey : public HeObject<PublicKey> {
 
   std::string ToString() const override;
 
-  // Valid plaintext range: (-max_int_, max_int_)
+  // Valid plaintext range: [max_int_, -max_int_]
   const Plaintext& PlaintextBound() const&;
 
   // Serialize and Deserialize

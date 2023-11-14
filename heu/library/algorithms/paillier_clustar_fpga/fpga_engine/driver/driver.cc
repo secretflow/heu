@@ -17,6 +17,7 @@
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/file.h>
@@ -1380,7 +1381,8 @@ int fpga_fedai_operator_accl(fpga_config *cfg, char *para, char *data1,
 #endif
 #ifdef DEBUG
   fprintf(stdout,
-          "*****fpga_id %d CPU Transfer task cmd  to FPGA (Addr: 0x%08lx, Data "
+          "*****fpga_id %d CPU Transfer task cmd  to FPGA (Addr: 0x%08" PRIx64
+          ", Data "
           "size: %d bytes).\n",
           fpga_id, cmd_data_base, cmd_data_size);
 #endif
@@ -1411,7 +1413,8 @@ int fpga_fedai_operator_accl(fpga_config *cfg, char *para, char *data1,
   // write para data to FPGA
 #ifdef DEBUG
   fprintf(stdout,
-          "***** CPU Transfer task para to FPGA (Addr: 0x%08lx, Data size: %zu "
+          "***** CPU Transfer task para to FPGA (Addr: 0x%08" PRIx64
+          ", Data size: %zu "
           "bytes).\n",
           para_data_base, cfg->para_data_size);
 #endif
@@ -1437,7 +1440,8 @@ int fpga_fedai_operator_accl(fpga_config *cfg, char *para, char *data1,
   if (cfg->data1_memtype == 0) {
 #ifdef DEBUG
     fprintf(stdout,
-            "***** CPU Transfer task data to FPGA (Addr: 0x%08lx, Data size: "
+            "***** CPU Transfer task data to FPGA (Addr: 0x%08" PRIx64
+            ", Data size: "
             "%zu bytes).\n",
             data1_base, cfg->data1_size);
 #endif
@@ -1468,7 +1472,8 @@ int fpga_fedai_operator_accl(fpga_config *cfg, char *para, char *data1,
   if (cfg->data2_memtype == 0) {
 #ifdef DEBUG
     fprintf(stdout,
-            "***** CPU Transfer task data to FPGA (Addr: 0x%08lx, Data size: "
+            "***** CPU Transfer task data to FPGA (Addr: 0x%08" PRIx64
+            ", Data size: "
             "%zu bytes).\n",
             data2_base, cfg->data2_size);
 #endif
@@ -1499,7 +1504,8 @@ int fpga_fedai_operator_accl(fpga_config *cfg, char *para, char *data1,
   if (cfg->data3_memtype == 0) {
 #ifdef DEBUG
     fprintf(stdout,
-            "***** CPU Transfer task data to FPGA (Addr: 0x%08lx, Data size: "
+            "***** CPU Transfer task data to FPGA (Addr: 0x%08" PRIx64
+            ", Data size: "
             "%zu bytes).\n",
             data3_base, cfg->data3_size);
 #endif
@@ -1737,10 +1743,12 @@ int fpga_fedai_operator_accl(fpga_config *cfg, char *para, char *data1,
     recv_data_size = reg32_read(task->backdata_len_addr) - BACKDATA_INFO_SIZE;
     recv_data_base = ((uint64_t)recv_data_base_H << 32) | recv_data_base_L;
 #ifdef DEBUG
-    fprintf(stdout,
-            "\n*****fpga_id = %d CPU Get task data from FPGA (Addr: 0x%08lx, "
-            "Data size: %d bytes).\n",
-            fpga_id, recv_data_base, recv_data_size);
+    fprintf(
+        stdout,
+        "\n*****fpga_id = %d CPU Get task data from FPGA (Addr: 0x%08" PRIx64
+        ", "
+        "Data size: %d bytes).\n",
+        fpga_id, recv_data_base, recv_data_size);
 #endif
     flock(c2hfd[0], LOCK_EX);
     rc = transfer_from_fpga(DEV_C2H[fpga_id][0], c2h_fd, result, recv_data_size,

@@ -133,7 +133,7 @@ TEST_F(OUTest, MinMaxDecrypt) {
   MPInt plain = sk_.p_ / MPInt::_2_;
   EXPECT_THROW(encryptor.Encrypt(plain), std::exception);  // too many bits
 
-  plain = pk_.PlaintextBound();
+  plain = pk_.PlaintextBound() + 1_mp;
   EXPECT_THROW(encryptor.Encrypt(plain), std::exception);  // too many bits
 
   MPInt plain2;
@@ -147,9 +147,8 @@ TEST_F(OUTest, MinMaxDecrypt) {
   decryptor.Decrypt(ct0, &plain2);
   EXPECT_EQ(plain, plain2);
 
-  plain.DecrOne();
-  EXPECT_THROW(encryptor.Encrypt(plain),
-               std::exception);  // too many bits
+  plain.DecrOne();  // too many bits
+  EXPECT_THROW(encryptor.Encrypt(plain), std::exception);
 }
 
 TEST_F(OUTest, PlaintextEvaluate1) {

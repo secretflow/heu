@@ -69,4 +69,6 @@ class Shape : public algorithms::HeObject<Shape> {
   std::vector<int64_t> shape_;
 };
 
+inline auto format_as(const Shape& p) { return fmt::streamed(p); }
+
 }  // namespace heu::lib::numpy

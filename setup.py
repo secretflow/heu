@@ -34,6 +34,7 @@ SUPPORTED_PYTHONS = [(3, 8), (3, 9), (3, 10), (3, 11)]
 BAZEL_MAX_JOBS = os.getenv("BAZEL_MAX_JOBS")
 ROOT_DIR = os.path.dirname(__file__)
 SKIP_BAZEL_CLEAN = os.getenv("SKIP_BAZEL_CLEAN")
+ENABLE_GPU = os.getenv("ENABLE_GPU")
 
 pyd_suffix = ".so"
 
@@ -96,6 +97,7 @@ files_to_remove = []
 # Calls Bazel in PATH
 def bazel_invoke(invoker, cmdline, *args, **kwargs):
     try:
+        print(f'Invoke command: bazel {" ".join(cmdline)}')
         result = invoker(['bazel'] + cmdline, *args, **kwargs)
         return result
     except IOError:
@@ -125,6 +127,9 @@ def build():
     bazel_targets = ["//heu/pylib:heu_modules"]
 
     bazel_flags.extend(["-c", "opt"])
+
+    if ENABLE_GPU is not None:
+        bazel_flags.extend(["--config", "gpu"])
 
     return bazel_invoke(
         subprocess.check_call,

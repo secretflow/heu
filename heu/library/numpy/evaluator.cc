@@ -115,7 +115,7 @@ using kHasReduceSum = decltype(std::declval<const CLAZZ&>().ReduceSum(
                   std::array<int64_t, 2> x_stride,                           \
                   const DenseMatrix<phe::TY>& y,                             \
                   std::array<int64_t, 2> y_stride, RET* out)                 \
-      ->std::enable_if_t<std::experimental::is_detected_v<                   \
+      -> std::enable_if_t<std::experimental::is_detected_v<                  \
           kHasVectorized##OP, CLAZZ, SUB_TX, SUB_TY>> {                      \
     const auto* x_base = x.data();                                           \
     const auto* y_base = y.data();                                           \
@@ -146,7 +146,7 @@ using kHasReduceSum = decltype(std::declval<const CLAZZ&>().ReduceSum(
                   std::array<int64_t, 2> x_stride,                           \
                   const DenseMatrix<phe::TY>& y,                             \
                   std::array<int64_t, 2> y_stride, RET* out)                 \
-      ->std::enable_if_t<!std::experimental::is_detected_v<                  \
+      -> std::enable_if_t<!std::experimental::is_detected_v<                 \
           kHasVectorized##OP, CLAZZ, SUB_TX, SUB_TY>> {                      \
     const auto* x_base = x.data();                                           \
     const auto* y_base = y.data();                                           \
@@ -171,7 +171,7 @@ using kHasReduceSum = decltype(std::declval<const CLAZZ&>().ReduceSum(
     Dimension sy(y);                                                         \
     YACL_ENFORCE(sx.IsCompatibleShape(sy),                                   \
                  "{} not supported for dim(x)={}, dim(y)={}", __func__,      \
-                 (x).shape(), (y).shape());                                  \
+                 (x).shape().ToString(), (y).shape().ToString());            \
                                                                              \
     auto sz = sx.ComputeCastShape(sy);                                       \
                                                                              \
@@ -330,7 +330,7 @@ auto DoCallMatMul(const CLAZZ& sub_evaluator, const M1& mx, const M2& my,
     auto y_shape = y.shape();                                                  \
     YACL_ENFORCE(x_shape[-1] == y_shape[0],                                    \
                  "dimension mismatch for matmul, x-shape={}, y-shape={}",      \
-                 x_shape, y_shape);                                            \
+                 x_shape.ToString(), y_shape.ToString());                      \
                                                                                \
     YACL_ENFORCE(x.size() > 0 || y.size() > 0,                                 \
                  "HEU does not support empty tensor currently");               \

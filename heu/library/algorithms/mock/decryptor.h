@@ -28,7 +28,7 @@ namespace heu::lib::algorithms::mock {
 class Decryptor {
  public:
   // [SPI: Critical]
-  explicit Decryptor(const PublicKey& _, const SecretKey& sk) : sk_(sk) {}
+  explicit Decryptor(const PublicKey &, const SecretKey &sk) : sk_(sk) {}
 
 // To algorithm developers:
 // The Decryptor class supports two different interfaces:
@@ -38,9 +38,9 @@ class Decryptor {
 // Please see switch_spi.h for details.
 #ifdef IMPL_SCALAR_SPI
   // [SPI: Critical]
-  void Decrypt(const Ciphertext& ct, Plaintext* out) const;
+  void Decrypt(const Ciphertext &ct, Plaintext *out) const;
   // [SPI: Critical]
-  [[nodiscard]] Plaintext Decrypt(const Ciphertext& ct) const;
+  [[nodiscard]] Plaintext Decrypt(const Ciphertext &ct) const;
 #endif
 
 #ifdef IMPL_VECTORIZED_SPI

@@ -46,6 +46,8 @@ static const std::map<SchemaType, std::vector<std::string>>
                  "paillier_float"),
         MAP_ITEM(ENABLE_IPCL, IPCL, "ipcl", "ipcl-paillier", "ipcl_paillier",
                  "paillier_ipcl", "paillier-ipcl"),
+        MAP_ITEM(ENABLE_GPAILLIER, GPaillier, "g-paillier", "gpaillier",
+                 "paillier_g", "paillier_gpu"),
         MAP_ITEM(ENABLE_CLUSTAR_FPGA, ClustarFPGA, "clustarfpga",
                  "clustarfpga-paillier", "clustarfpga_paillier",
                  "paillier_clustarfpga", "paillier-clustarfpga"),
@@ -53,6 +55,7 @@ static const std::map<SchemaType, std::vector<std::string>>
                  "exp_elgamal", "lifted_elgamal"),
         MAP_ITEM(true, DGK, "dgk", "damgard-geisler-kroigaard",
                  "damgard_geisler_kroigaard"),
+        MAP_ITEM(true, DJ, "dj", "damgard-jurik", "damgard_jurik"),
         // MAP_ITEM(ENABLE, YOUR_ALGO, "one_or_more_name_alias"),
 };
 

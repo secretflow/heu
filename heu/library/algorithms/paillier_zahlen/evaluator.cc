@@ -45,7 +45,7 @@ void Evaluator::AddInplace(Ciphertext* a, const Ciphertext& b) const {
 
 Ciphertext Evaluator::Add(const Ciphertext& a, const MPInt& p) const {
   VALIDATE(a);
-  YACL_ENFORCE(p.CompareAbs(pk_.PlaintextBound()) < 0,
+  YACL_ENFORCE(p.CompareAbs(pk_.PlaintextBound()) <= 0,
                "plaintext out of range, message={}, max (abs)={}",
                p.ToHexString(), pk_.PlaintextBound());
 
@@ -72,15 +72,11 @@ void Evaluator::SubInplace(Ciphertext* a, const Ciphertext& b) const {
 }
 
 Ciphertext Evaluator::Sub(const Ciphertext& a, const MPInt& p) const {
-  MPInt b;
-  p.Negate(&b);
-  return Add(a, b);
+  return Add(a, -p);
 }
 
 void Evaluator::SubInplace(Ciphertext* a, const MPInt& p) const {
-  MPInt b;
-  p.Negate(&b);
-  AddInplace(a, b);
+  AddInplace(a, -p);
 }
 
 Ciphertext Evaluator::Sub(const MPInt& p, const Ciphertext& a) const {

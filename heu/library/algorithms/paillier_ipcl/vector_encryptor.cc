@@ -10,7 +10,7 @@
 
 namespace heu::lib::algorithms::paillier_ipcl {
 
-Encryptor::Encryptor(const PublicKey& pk) {
+Encryptor::Encryptor(const PublicKey &pk) {
   pk_ = pk.ipcl_pubkey_;
   pt_bound_ = pk.pt_bound_;
 }
@@ -26,7 +26,7 @@ std::vector<Ciphertext> Encryptor::EncryptZero(int64_t size) const {
 std::vector<Ciphertext> Encryptor::Encrypt(ConstSpan<Plaintext> pts) const {
   std::vector<BigNumber> bn_vec;
   for (auto item : pts) {
-    YACL_ENFORCE(Plaintext::Absolute(*item) < pt_bound_,
+    YACL_ENFORCE(Plaintext::Absolute(*item) <= pt_bound_,
                  "Plaintext out of range");
     bn_vec.push_back(item->bn_);
   }
@@ -41,7 +41,7 @@ std::vector<Ciphertext> Encryptor::Encrypt(ConstSpan<Plaintext> pts) const {
 }
 
 std::pair<std::vector<Ciphertext>, std::vector<std::string>>
-Encryptor::EncryptWithAudit(ConstSpan<Plaintext> pts) const {
+Encryptor::EncryptWithAudit(ConstSpan<Plaintext>) const {
   YACL_THROW("Not Implemented.");
 }
 }  // namespace heu::lib::algorithms::paillier_ipcl
