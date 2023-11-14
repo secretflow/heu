@@ -38,13 +38,6 @@ class PheTest : public ::testing::TestWithParam<SchemaType> {
 INSTANTIATE_TEST_SUITE_P(Schema, PheTest, ::testing::ValuesIn(GetAllSchema()));
 
 TEST_P(PheTest, KeySerialize) {
-#if ENABLE_IPCL == true  // Apple clang on M1 doesn't support `if constexpr`
-  if (he_kit_.GetSchemaType() == SchemaType::IPCL) {
-    // todo: IPCL should support pk/sk serialize
-    GTEST_SKIP() << "Wait for IPCL to impl";
-  }
-#endif
-
   // test pk
   auto buffer_pk = he_kit_.GetPublicKey()->Serialize();
   EXPECT_NE(*he_kit_.GetPublicKey(), PublicKey());

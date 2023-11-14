@@ -1,23 +1,32 @@
-From 0be997ae7f046aba742a85df9d13b8b129406bd7 Mon Sep 17 00:00:00 2001
+From 7f338ed9308ee0364dd371ad022506f42ff8c89d Mon Sep 17 00:00:00 2001
 From: "Huang, Xiaojun" <xiaojun.huang@intel.com>
-Date: Tue, 28 Feb 2023 04:18:18 -0500
+Date: Mon, 13 Nov 2023 21:08:25 +0800
 Subject: [PATCH] ipcl patch
 
 Signed-off-by: Huang, Xiaojun <xiaojun.huang@intel.com>
 ---
- CMakeLists.txt                | 21 ++++++++++++++++----
- ipcl/CMakeLists.txt           | 26 ++++++++++++-------------
- ipcl/include/ipcl/pub_key.hpp | 18 +++++++++++++-----
- ipcl/utils/common.cpp         | 36 +++++++++++++++++------------------
- 4 files changed, 61 insertions(+), 40 deletions(-)
+ CMakeLists.txt      | 21 +++++++++++++++++----
+ ipcl/CMakeLists.txt | 32 ++++++++++++++++----------------
+ 2 files changed, 33 insertions(+), 20 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 737d4be..a9875a3 100644
+index db92edf..88e3fe3 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -14,8 +14,21 @@ include(GNUInstallDirs)
- set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ipcl)
-
+@@ -194,8 +194,8 @@ set(IPCL_FORWARD_CMAKE_ARGS
+ set(IPCL_ROOT_DIR ${CMAKE_CURRENT_LIST_DIR})
+ set(IPCL_SRC_DIR ${IPCL_ROOT_DIR}/ipcl)
+ set(IPCL_INC_DIR ${IPCL_SRC_DIR}/include)
+-set(IPCL_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/ipcl)
+-set(IPCL_INSTALL_LIBDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/ipcl)
++set(IPCL_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR})
++set(IPCL_INSTALL_LIBDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+ set(IPCL_CMAKE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/ipcl")
+ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+   set(IPCL_DEBUG ON)
+@@ -211,8 +211,21 @@ find_package(Threads REQUIRED)
+ find_package(OpenSSL REQUIRED)
+ 
  # External dependencies
 -include(cmake/ippcrypto.cmake)
 -include(cmake/cereal.cmake)
@@ -36,27 +45,16 @@ index 737d4be..a9875a3 100644
 +          IMPORTED_LOCATION ${IPPCRYPTO_LIB_DIR}/libcrypto_mb.a
 +          INCLUDE_DIRECTORIES ${IPPCRYPTO_INC_DIR}
 +)
-
- include(ipcl-util)
-
-@@ -198,8 +211,8 @@ set(IPCL_FORWARD_CMAKE_ARGS
- set(IPCL_ROOT_DIR ${CMAKE_CURRENT_LIST_DIR})
- set(IPCL_SRC_DIR ${IPCL_ROOT_DIR}/ipcl)
- set(IPCL_INC_DIR ${IPCL_SRC_DIR}/include)
--set(IPCL_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/ipcl)
--set(IPCL_INSTALL_LIBDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/ipcl)
-+set(IPCL_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR})
-+set(IPCL_INSTALL_LIBDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
- set(IPCL_CMAKE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/ipcl")
- if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-   set(IPCL_DEBUG ON)
+ 
+ if(IPCL_DETECT_CPU_RUNTIME)
+   include(cmake/cpufeatures.cmake)
 diff --git a/ipcl/CMakeLists.txt b/ipcl/CMakeLists.txt
-index a601caf..31d1aa4 100644
+index a338de1..c933631 100644
 --- a/ipcl/CMakeLists.txt
 +++ b/ipcl/CMakeLists.txt
-@@ -43,18 +43,18 @@ install(DIRECTORY ${IPCL_INC_DIR}/
+@@ -43,35 +43,35 @@ install(DIRECTORY ${IPCL_INC_DIR}/
  )
-
+ 
  # CEREAL (third party dep): include and install definition
 -add_dependencies(ipcl ext_cereal)
 +# add_dependencies(ipcl ext_cereal)
@@ -64,7 +62,7 @@ index a601caf..31d1aa4 100644
      PUBLIC $<BUILD_INTERFACE:${CEREAL_INC_DIR}>
  	PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/ipcl>
  )
-
+ 
 -install(DIRECTORY ${CEREAL_INC_DIR}/
 -    DESTINATION ${IPCL_INSTALL_INCLUDEDIR}
 -    FILES_MATCHING
@@ -77,13 +75,20 @@ index a601caf..31d1aa4 100644
 +#     PATTERN "*.hpp"
 +#     PATTERN "*.h"
 +# )
-
+ 
  # IPP-Crypto (third party dep): include and install definition
+-if(NOT ippcp_FOUND)
+-  add_dependencies(ipcl ext_ipp-crypto)
+-endif()
++# if(NOT ippcp_FOUND)
++#   add_dependencies(ipcl ext_ipp-crypto)
++# endif()
+ 
  target_include_directories(ipcl
-@@ -62,12 +62,12 @@ target_include_directories(ipcl
+     PUBLIC $<BUILD_INTERFACE:${IPPCRYPTO_INC_DIR}>
      PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/ipcl/ippcrypto>
  )
-
+ 
 -install(DIRECTORY ${IPPCRYPTO_INC_DIR}/
 -    DESTINATION ${IPCL_INSTALL_INCLUDEDIR}/ippcrypto
 -    FILES_MATCHING
@@ -96,90 +101,9 @@ index a601caf..31d1aa4 100644
 +#     PATTERN "*.hpp"
 +#     PATTERN "*.h"
 +# )
-
+ 
  # include and install definition of cpu_features
  if(IPCL_DETECT_CPU_RUNTIME)
-diff --git a/ipcl/include/ipcl/pub_key.hpp b/ipcl/include/ipcl/pub_key.hpp
-index f399c40..da4428c 100644
---- a/ipcl/include/ipcl/pub_key.hpp
-+++ b/ipcl/include/ipcl/pub_key.hpp
-@@ -148,14 +148,22 @@ class PublicKey {
-     ar(::cereal::make_nvp("enable_DJN", enable_DJN));
-     ar(::cereal::make_nvp("randbits", randbits));
-
--    std::vector<Ipp32u> n_v, hs_v;
--    ar(::cereal::make_nvp("n", n_v));
--    ar(::cereal::make_nvp("hs", hs_v));
-+    // std::vector<Ipp32u> n_v, hs_v;
-+    // ar(::cereal::make_nvp("n", n_v));
-+    // ar(::cereal::make_nvp("hs", hs_v));
-+
-+    int bn_len = bits / 32;
-+    Ipp32u n_data[bn_len];
-+    Ipp32u hs_data[bn_len * 2];
-+    BigNumber n(n_data, bn_len);
-+    BigNumber hs(hs_data, bn_len * 2);
-+    ar(::cereal::make_nvp("n", n));
-+    ar(::cereal::make_nvp("hs", hs));
-
-     if (enable_DJN)
--      create(n_v.data(), bits, hs_v.data(), randbits);
-+      create(n, bits, hs, randbits);
-     else
--      create(n_v.data(), bits);
-+      create(n, bits);
-   }
-
-   bool m_isInitialized = false;
-diff --git a/ipcl/utils/common.cpp b/ipcl/utils/common.cpp
-index 4a0830f..f63b59f 100644
---- a/ipcl/utils/common.cpp
-+++ b/ipcl/utils/common.cpp
-@@ -27,26 +27,26 @@ IppStatus ippGenRandom(Ipp32u* rand, int bits, void* ctx) {
- }
-
- IppStatus ippGenRandomBN(IppsBigNumState* rand, int bits, void* ctx) {
--  if (kRNGenType == RNGenType::RDSEED) {
--    return ippsTRNGenRDSEED_BN(rand, bits, ctx);
--  } else if (kRNGenType == RNGenType::RDRAND) {
-+  // if (kRNGenType == RNGenType::RDSEED) {
-+  //   return ippsTRNGenRDSEED_BN(rand, bits, ctx);
-+  // } else if (kRNGenType == RNGenType::RDRAND) {
-     return ippsPRNGenRDRAND_BN(rand, bits, ctx);
--  } else if (kRNGenType == RNGenType::PSEUDO) {
--    int seed_size = 160;
--    int size;
--    ippsPRNGGetSize(&size);
--    auto prng = std::vector<Ipp8u>(size);
--    ippsPRNGInit(seed_size, reinterpret_cast<IppsPRNGState*>(prng.data()));
-+  // } else if (kRNGenType == RNGenType::PSEUDO) {
-+  //   int seed_size = 160;
-+  //   int size;
-+  //   ippsPRNGGetSize(&size);
-+  //   auto prng = std::vector<Ipp8u>(size);
-+  //   ippsPRNGInit(seed_size, reinterpret_cast<IppsPRNGState*>(prng.data()));
-
--    auto seed = std::vector<Ipp32u>(seed_size);
--    rand32u(seed);
--    BigNumber seed_bn(seed.data(), seed_size, IppsBigNumPOS);
--    ippsPRNGSetSeed(BN(seed_bn), reinterpret_cast<IppsPRNGState*>(prng.data()));
--    return ippsPRNGen_BN(rand, bits,
--                         reinterpret_cast<IppsPRNGState*>(prng.data()));
--  } else {
--    ERROR_CHECK(false, "ippGenRandomBN: RNGenType does not exist.");
--  }
-+  //   auto seed = std::vector<Ipp32u>(seed_size);
-+  //   rand32u(seed);
-+  //   BigNumber seed_bn(seed.data(), seed_size, IppsBigNumPOS);
-+  //   ippsPRNGSetSeed(BN(seed_bn), reinterpret_cast<IppsPRNGState*>(prng.data()));
-+  //   return ippsPRNGen_BN(rand, bits,
-+  //                        reinterpret_cast<IppsPRNGState*>(prng.data()));
-+  // } else {
-+  //   ERROR_CHECK(false, "ippGenRandomBN: RNGenType does not exist.");
-+  // }
- }
-
- BigNumber getRandomBN(int bits) {
---
-2.31.1
+-- 
+2.39.3
 
