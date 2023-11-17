@@ -76,6 +76,13 @@ workflows:
     jobs:
       - continuation/continue:
           configuration_path: .circleci/release-config.yml
+          # This is mandatory to trigger a pipeline when pushing a tag
           filters:
             tags:
-                only: /.*/
+              only: /.*(?<!dev\d{8})$/
+      - continuation/continue:
+          configuration_path: .circleci/dev-release-config.yml
+          # This is mandatory to trigger a pipeline when pushing a tag
+          filters:
+            tags:
+              only: /.*(?<=dev\d{8})$/
