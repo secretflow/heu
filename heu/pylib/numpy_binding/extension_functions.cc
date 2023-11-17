@@ -58,10 +58,15 @@ T ExtensionFunctions<T>::SelectSum(const hnp::Evaluator& evaluator,
   return evaluator.SelectSum(p_matrix, s_row.indices, Eigen::all);
 }
 
+namespace {
+
+// we move this function here to avoid gcc warning:
+//    '<lambda(int64_t, int64_t)>' declared with greater visibility than the
+//    type of its field '<lambda(int64_t, int64_t)>::<key capture>'
 template <typename T>
-hnp::DenseMatrix<T> ExtensionFunctions<T>::BatchSelectSum(
-    const hnp::Evaluator& evaluator, const hnp::DenseMatrix<T>& p_matrix,
-    const std::vector<py::object>& key) {
+hnp::DenseMatrix<T> DoBatchSelectSum(const hnp::Evaluator& evaluator,
+                                     const hnp::DenseMatrix<T>& p_matrix,
+                                     const std::vector<py::object>& key) {
   auto res = hnp::DenseMatrix<T>(key.size());
   yacl::parallel_for(0, key.size(), 1, [&](int64_t beg, int64_t end) {
     for (int64_t x = beg; x < end; ++x) {
@@ -70,6 +75,15 @@ hnp::DenseMatrix<T> ExtensionFunctions<T>::BatchSelectSum(
     }
   });
   return res;
+}
+
+}  // namespace
+
+template <typename T>
+hnp::DenseMatrix<T> ExtensionFunctions<T>::BatchSelectSum(
+    const hnp::Evaluator& evaluator, const hnp::DenseMatrix<T>& p_matrix,
+    const std::vector<py::object>& key) {
+  return DoBatchSelectSum(evaluator, p_matrix, key);
 }
 
 template <typename T>
@@ -242,4 +256,5 @@ RowMatrixXd PureNumpyExtensionFunctions::TreePredictWithIndices(
   });
   return res;
 }
+
 }  // namespace heu::pylib
