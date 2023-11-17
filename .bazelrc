@@ -44,7 +44,6 @@ build:macos --host_copt=-Wa,--noexecstack
 build:macos --features=-supports_dynamic_linker
 build:macos --cxxopt -Wno-error=unused-const-variable
 build:macos --cxxopt -Wno-error=sign-compare  # for eigen 3.4
-build:macos --cxxopt -Wno-sign-compare  # for eigen 3.4
 build:macos --macos_minimum_os=11.0
 
 # static link libstdc++ & libgcc

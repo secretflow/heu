@@ -11,11 +11,11 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import pickle
 import sys
 import unittest
 
 import numpy as np
-import pickle
 
 from heu import numpy as hnp
 from heu import phe
@@ -319,6 +319,23 @@ class BasicCase(unittest.TestCase):
             self.decryptor.decrypt(res),
             np.array([[16, 19], [36, 43]]) @ np.array([1, 2]),
         )
+
+    def test_serialize_ic(self):
+        arr = self.kit.array([[16, 19], [36, 43]])
+        buf1 = arr.serialize(hnp.MatrixSerializeFormat.Interconnection)
+        buf2 = arr.serialize()
+        print(buf1)
+        print(buf2)
+        self.assertNotEquals(buf1, buf2)
+        arr2 = arr.load_from(buf1, hnp.MatrixSerializeFormat.Interconnection)
+        self.assert_array_equal(arr2, arr.to_numpy())
+        arr2 = arr.load_from(buf2)
+        self.assert_array_equal(arr2, arr.to_numpy())
+
+        arr = self.kit.array([100])
+        buf = arr.serialize(hnp.MatrixSerializeFormat.Interconnection)
+        arr2 = arr.load_from(buf, hnp.MatrixSerializeFormat.Interconnection)
+        self.assert_array_equal(arr2, arr.to_numpy())
 
     def test_slice_get(self):
         nparr = np.arange(49).reshape((7, 7))

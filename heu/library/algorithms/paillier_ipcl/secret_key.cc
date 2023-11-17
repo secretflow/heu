@@ -4,11 +4,11 @@
 #include "heu/library/algorithms/paillier_ipcl/secret_key.h"
 
 namespace {
-  bool IsEqual(const std::shared_ptr<BigNumber> &a,
+bool IsEqual(const std::shared_ptr<BigNumber> &a,
              const std::shared_ptr<BigNumber> &b) {
   return a && b && *a == *b;
 }
-} // namespace
+}  // namespace
 
 namespace heu::lib::algorithms::paillier_ipcl {
 bool SecretKey::operator==(const SecretKey &other) const {

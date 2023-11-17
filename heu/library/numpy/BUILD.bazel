@@ -14,14 +14,21 @@ yacl_cc_library(
     ],
 )
 
+cc_proto_library(
+    name = "ic_de_proto",
+    deps = ["@org_interconnection//interconnection/runtime:data_exchange"],
+)
+
 yacl_cc_library(
     name = "matrix",
+    srcs = ["matrix.cc"],
     hdrs = [
         "eigen_traits.h",
         "matrix.h",
         "shape.h",
     ],
     deps = [
+        ":ic_de_proto",
         "//heu/library/phe",
         "@com_github_eigenteam_eigen//:eigen3",
         "@yacl//yacl/utils:parallel",
@@ -78,12 +85,6 @@ yacl_cc_library(
         ":matrix",
         "//heu/library/phe",
     ],
-)
-
-yacl_cc_test(
-    name = "numpy_test",
-    srcs = ["numpy_test.cc"],
-    deps = [":numpy"],
 )
 
 yacl_cc_test(

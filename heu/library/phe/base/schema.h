@@ -24,6 +24,7 @@
 #include "heu/library/algorithms/paillier_clustar_fpga/clustar_fpga.h"
 #include "heu/library/algorithms/paillier_float/paillier.h"
 #include "heu/library/algorithms/paillier_gpu/paillier.h"
+#include "heu/library/algorithms/paillier_ic/paillier.h"
 #include "heu/library/algorithms/paillier_ipcl/ipcl.h"
 #include "heu/library/algorithms/paillier_zahlen/paillier.h"
 
@@ -48,6 +49,7 @@ enum class SchemaType {
   ENUM_ELEMENT(ENABLE_GPAILLIER, GPaillier)
   ENUM_ELEMENT(true, ZPaillier)  // Preferred
   ENUM_ELEMENT(true, FPaillier)
+  ENUM_ELEMENT(true, IcPaillier) // Paillier03 for interconnection
   ENUM_ELEMENT(ENABLE_CLUSTAR_FPGA, ClustarFPGA)
   ENUM_ELEMENT(true, ElGamal)
   ENUM_ELEMENT(true, DGK)
@@ -93,6 +95,7 @@ std::string format_as(SchemaType i);
   INVOKE(ENABLE_GPAILLIER, func_or_macro, ::heu::lib::algorithms::paillier_g, ##__VA_ARGS__) \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_z, ##__VA_ARGS__)           \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_f, ##__VA_ARGS__)           \
+  INVOKE(true, func_or_macro, ::heu::lib::algorithms::paillier_ic, ##__VA_ARGS__)          \
   INVOKE(ENABLE_CLUSTAR_FPGA, func_or_macro, ::heu::lib::algorithms::paillier_clustar_fpga, ##__VA_ARGS__) \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::elgamal, ##__VA_ARGS__) \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::dgk, ##__VA_ARGS__) \
