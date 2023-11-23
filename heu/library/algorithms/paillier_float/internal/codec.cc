@@ -19,7 +19,7 @@ namespace heu::lib::algorithms::paillier_f::internal {
 const MPInt Codec::kBaseCache = MPInt(Codec::kBase);
 
 EncodedNumber Codec::Encode(const MPInt& scalar, int exponent) const {
-  YACL_ENFORCE(scalar.CompareAbs(pk_.PlaintextBound()) < 0,
+  YACL_ENFORCE(scalar.CompareAbs(pk_.PlaintextBound()) <= 0,
                "integer scalar should in +/- {}, but get {}",
                pk_.PlaintextBound().ToHexString(), scalar.ToHexString());
 

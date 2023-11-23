@@ -99,7 +99,7 @@ TEST_F(DJTest, MinMaxDecrypt) {
   Plaintext plain = pk_.PlainModule();
   EXPECT_THROW(encryptor_->Encrypt(plain), std::exception);  // too many bits
 
-  plain = pk_.PlaintextBound();
+  plain = pk_.PlaintextBound() + 1_mp;
   EXPECT_THROW(encryptor_->Encrypt(plain), std::exception);  // too many bits
 
   Plaintext plain2;

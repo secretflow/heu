@@ -1,6 +1,7 @@
 # HEU
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/secretflow/heu/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/secretflow/heu/tree/main)
+![PyPI version](https://img.shields.io/pypi/v/sf-heu)
 
 Homomorphic Encryption processing Unit (HEU) is a subproject of Secretflow that
 implements high-performance homomorphic encryption algorithms.

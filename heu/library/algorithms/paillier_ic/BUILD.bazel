@@ -1,0 +1,119 @@
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+test_suite(
+    name = "paillier_ic_tests",
+)
+
+yacl_cc_library(
+    name = "paillier_ic",
+    hdrs = ["paillier.h"],
+    deps = [
+        ":decryptor",
+        ":encryptor",
+        ":evaluator",
+        ":key_generator",
+    ],
+)
+
+yacl_cc_library(
+    name = "secret_key",
+    hdrs = ["secret_key.h"],
+    deps = [
+        "//heu/library/algorithms/paillier_zahlen:secret_key",
+        "//heu/library/algorithms/util",
+    ],
+)
+
+yacl_cc_library(
+    name = "public_key",
+    srcs = ["public_key.cc"],
+    hdrs = ["public_key.h"],
+    deps = [
+        ":pb_utils",
+        "//heu/library/algorithms/util",
+    ],
+)
+
+yacl_cc_library(
+    name = "ciphertext",
+    srcs = ["ciphertext.cc"],
+    hdrs = ["ciphertext.h"],
+    deps = [
+        ":pb_utils",
+        "//heu/library/algorithms/util",
+    ],
+)
+
+yacl_cc_library(
+    name = "key_generator",
+    srcs = ["key_generator.cc"],
+    hdrs = ["key_generator.h"],
+    deps = [
+        ":public_key",
+        ":secret_key",
+        "//heu/library/algorithms/paillier_zahlen:key_generator",
+    ],
+)
+
+yacl_cc_library(
+    name = "encryptor",
+    srcs = ["encryptor.cc"],
+    hdrs = ["encryptor.h"],
+    deps = [
+        ":ciphertext",
+        ":public_key",
+        ":secret_key",
+        "//heu/library/algorithms/util",
+    ],
+)
+
+yacl_cc_library(
+    name = "decryptor",
+    srcs = ["decryptor.cc"],
+    hdrs = ["decryptor.h"],
+    deps = [
+        ":ciphertext",
+        ":public_key",
+        ":secret_key",
+        "//heu/library/algorithms/util",
+    ],
+)
+
+yacl_cc_library(
+    name = "evaluator",
+    srcs = ["evaluator.cc"],
+    hdrs = ["evaluator.h"],
+    deps = [
+        ":ciphertext",
+        ":encryptor",
+        ":public_key",
+        "//heu/library/algorithms/util",
+    ],
+)
+
+cc_proto_library(
+    name = "ic_phe_proto",
+    deps = [
+        "@org_interconnection//interconnection/runtime:phe",
+    ],
+)
+
+yacl_cc_library(
+    name = "pb_utils",
+    srcs = ["pb_utils.cc"],
+    hdrs = ["pb_utils.h"],
+    deps = [
+        ":ic_phe_proto",
+        "//heu/library/algorithms/util",
+    ],
+)
+
+yacl_cc_test(
+    name = "paillier_test",
+    srcs = ["paillier_test.cc"],
+    deps = [
+        ":paillier_ic",
+    ],
+)

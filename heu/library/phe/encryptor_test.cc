@@ -31,6 +31,7 @@ INSTANTIATE_TEST_SUITE_P(Schema, EncryptorTest,
 TEST_P(EncryptorTest, EncryptZero) {
   auto ct0 = he_kit_.GetEncryptor()->EncryptZero();
   Plaintext plain;
+
   he_kit_.GetDecryptor()->Decrypt(ct0, &plain);
   ASSERT_EQ(plain.GetValue<int32_t>(), 0);
 
@@ -45,36 +46,44 @@ TEST_P(EncryptorTest, EncryptZero) {
   auto p = he_kit_.GetEvaluator()->Sub(edr_.Encode(123), ct0);
   ASSERT_EQ(he_kit_.GetDecryptor()->Decrypt(p), edr_.Encode(123));
 
+  // 0 * 0
   he_kit_.GetEvaluator()->MulInplace(&ct0, edr_.Encode(0));
   ASSERT_EQ(he_kit_.GetDecryptor()->Decrypt(ct0).GetValue<int32_t>(), 0);
 
   he_kit_.GetEvaluator()->MulInplace(&ct0, edr_.Encode(123456));
   ASSERT_EQ(he_kit_.GetDecryptor()->Decrypt(ct0).GetValue<int32_t>(), 0);
 
+  he_kit_.GetEvaluator()->MulInplace(&ct0, edr_.Encode(-123456));
+  ASSERT_EQ(he_kit_.GetDecryptor()->Decrypt(ct0).GetValue<int32_t>(), 0);
+
   he_kit_.GetEvaluator()->NegateInplace(&ct0);
   ASSERT_EQ(he_kit_.GetDecryptor()->Decrypt(ct0).GetValue<int32_t>(), 0);
+}
+
+TEST_P(EncryptorTest, NormalEnc) {
+  auto encryptor = he_kit_.GetEncryptor();
+  auto decryptor = he_kit_.GetDecryptor();
 }
 
 TEST_P(EncryptorTest, MinMaxEnc) {
   auto encryptor = he_kit_.GetEncryptor();
   auto decryptor = he_kit_.GetDecryptor();
 
-  auto plain = he_kit_.GetPublicKey()->PlaintextBound();
+  auto plain = he_kit_.GetPublicKey()->PlaintextBound() + edr_.Encode(1);
   EXPECT_THROW(encryptor->Encrypt(plain), std::exception);  // too big
 
   plain.NegateInplace();
   EXPECT_THROW(encryptor->Encrypt(plain), std::exception);  // too small
 
-  plain = he_kit_.GetPublicKey()->PlaintextBound();
-  plain -= edr_.Encode(1);  // max
+  plain = he_kit_.GetPublicKey()->PlaintextBound();  // max
   Ciphertext ct0 = encryptor->Encrypt(plain);
-  Plaintext plain2 = decryptor->Decrypt(ct0);
-  EXPECT_EQ(plain, plain2);
+  Plaintext plain_dec = decryptor->Decrypt(ct0);
+  EXPECT_EQ(plain, plain_dec);
 
   plain.NegateInplace();  // -max
   ct0 = encryptor->Encrypt(plain);
-  decryptor->Decrypt(ct0, &plain2);
-  EXPECT_EQ(plain, plain2);
+  decryptor->Decrypt(ct0, &plain_dec);
+  EXPECT_EQ(plain, plain_dec) << he_kit_.GetPublicKey()->ToString();
 
   plain -= edr_.Encode(1);
   EXPECT_THROW(encryptor->Encrypt(plain), std::exception);  // too small

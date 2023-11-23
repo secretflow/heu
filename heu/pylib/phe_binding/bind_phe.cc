@@ -118,7 +118,22 @@ void PyBindPhe(pybind11::module& m) {
       .def("__str__", [](const phe::PublicKey& pk) { return pk.ToString(); })
       .def(PyUtils::PickleSupport<phe::PublicKey>())
       .def("plaintext_bound", &phe::PublicKey::PlaintextBound,
-           "Get max_int, so valid plaintext range is (max_int, -max_int)");
+           "Get max_int, so valid plaintext range is [max_int_, -max_int_]")
+      .def(
+          "serialize",
+          [](const phe::PublicKey& pk) {
+            auto buffer = pk.Serialize();
+            return pybind11::bytes(buffer.template data<char>(), buffer.size());
+          },
+          "serialize public key to bytes")
+      .def_static(
+          "load_from",
+          [](const pybind11::bytes& buffer) {
+            phe::PublicKey pk;
+            pk.Deserialize(static_cast<std::string_view>(buffer));
+            return pk;
+          },
+          py::arg("bytes_buffer"), "deserialize matrix from bytes");
   py::class_<phe::SecretKey, std::shared_ptr<phe::SecretKey>>(m, "SecretKey")
       .def("__str__", [](const phe::SecretKey& sk) { return sk.ToString(); })
       .def(PyUtils::PickleSupport<phe::SecretKey>());

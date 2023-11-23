@@ -50,9 +50,9 @@ std::vector<Plaintext> Decryptor::Decrypt(ConstSpan<Ciphertext> cts) const {
     ptx_res[i].FromMagBytes(yacl::ByteContainerView((uint8_t*)(gpts[i].m), 512),
                             algorithms::Endian::little);
 
-    // if the value is negative (the judgment condition is greater than n/2-1),
+    // if the value is negative (the judgment condition is greater than n/2),
     // then -n
-    if (ptx_res[i] > pk_.n_ / MPInt(2) - MPInt(1)) {
+    if (ptx_res[i] > pk_.n_half_) {
       ptx_res[i] -= pk_.n_;
     }
   }
@@ -63,13 +63,9 @@ std::vector<Plaintext> Decryptor::Decrypt(ConstSpan<Ciphertext> cts) const {
 void Decryptor::Decrypt(ConstSpan<Ciphertext> in_cts,
                         Span<Plaintext> out_pts) const {
   std::vector<Plaintext> res = Decrypt(in_cts);
-  unsigned int count = in_cts.size();
-
-  Plaintext* ptArray[count];
-  for (unsigned int i = 0; i < count; i++) {
-    ptArray[i] = &res[i];
+  for (unsigned int i = 0; i < res.size(); i++) {
+    *out_pts[i] = res[i];
   }
-  out_pts = absl::MakeSpan(ptArray, count);
 }
 
 }  // namespace heu::lib::algorithms::paillier_g

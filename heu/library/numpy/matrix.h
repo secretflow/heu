@@ -26,6 +26,11 @@
 
 namespace heu::lib::numpy {
 
+enum class MatrixSerializeFormat {
+  Best,
+  Interconnection,
+};
+
 // Check if T has a member function .Serialize()
 template <typename T>
 using kHasSerializeWithMetaMethod =
@@ -43,7 +48,8 @@ class DenseMatrix {
     if (ndim == 1) {
       YACL_ENFORCE(cols == 1, "vector's cols must be 1");
     } else if (ndim == 0) {
-      YACL_ENFORCE(rows == 1 && cols == 1, "scalar's shape must be 1x1");
+      YACL_ENFORCE(rows == 1 && cols == 1,
+                   "scalar's shape must be 1x1, actual: {}x{}", rows, cols);
     }
   }
 
@@ -212,7 +218,12 @@ class DenseMatrix {
 
   const auto& EigenMatrix() const { return m_; }
 
-  [[nodiscard]] yacl::Buffer Serialize() const {
+  [[nodiscard]] yacl::Buffer Serialize(
+      MatrixSerializeFormat format = MatrixSerializeFormat::Best) const {
+    if (format == MatrixSerializeFormat::Interconnection) {
+      return Serialize4Ic();
+    }
+
     msgpack::sbuffer buffer;
     msgpack::packer<msgpack::sbuffer> o(buffer);
 
@@ -232,7 +243,7 @@ class DenseMatrix {
       std::vector<yacl::Buffer> tmp;
       tmp.resize(this->size());
       // parallel serialize
-      tmp[0] = buf[0].Serialize(true);
+      tmp[0] = buf[0].Serialize(/* with_meta = */ true);
       yacl::parallel_for(1, this->size(), 1, [&](int64_t beg, int64_t end) {
         for (int64_t i = beg; i < end; ++i) {
           tmp[i] = buf[i].Serialize();
@@ -252,7 +263,13 @@ class DenseMatrix {
     return {buffer.release(), sz, [](void* ptr) { free(ptr); }};
   }
 
-  static DenseMatrix<T> LoadFrom(yacl::ByteContainerView in) {
+  static DenseMatrix<T> LoadFrom(
+      yacl::ByteContainerView in,
+      MatrixSerializeFormat format = MatrixSerializeFormat::Best) {
+    if (format == MatrixSerializeFormat::Interconnection) {
+      return LoadFromIc(in);
+    }
+
     auto msg =
         msgpack::unpack(reinterpret_cast<const char*>(in.data()), in.size());
     msgpack::object o = msg.get();
@@ -294,6 +311,11 @@ class DenseMatrix {
   }
 
  private:
+  // Serialize to interconnection format
+  // 序列化成符合互联互通标准的格式
+  yacl::Buffer Serialize4Ic() const;
+  static DenseMatrix<T> LoadFromIc(yacl::ByteContainerView in);
+
   DenseMatrix(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> m, int64_t ndim)
       : m_(std::move(m)), ndim_(ndim) {
     YACL_ENFORCE(ndim <= 2, "HEU tensor dimension cannot exceed 2");

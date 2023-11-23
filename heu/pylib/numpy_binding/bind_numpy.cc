@@ -40,6 +40,24 @@ template <typename T>
 void BindMatrixCommon(py::class_<hnp::DenseMatrix<T>>& clazz) {
   clazz.def("__str__", &hnp::DenseMatrix<T>::ToString)
       .def(PyUtils::PickleSupport<hnp::DenseMatrix<T>>())
+      .def(
+          "serialize",
+          [](const hnp::DenseMatrix<T>& m, hnp::MatrixSerializeFormat format) {
+            auto buffer = m.Serialize(format);
+            return pybind11::bytes(buffer.template data<char>(), buffer.size());
+          },
+          py::arg("format") = hnp::MatrixSerializeFormat::Best,
+          "serialize matrix to bytes")
+      .def_static(
+          "load_from",
+          [](const pybind11::bytes& buffer, hnp::MatrixSerializeFormat format) {
+            // T has a static LoadFrom() function
+            return hnp::DenseMatrix<T>::LoadFrom(
+                static_cast<std::string_view>(buffer), format);
+          },
+          py::arg("bytes_buffer"),
+          py::arg("format") = hnp::MatrixSerializeFormat::Best,
+          "deserialize matrix from bytes")
       .def("transpose", &hnp::DenseMatrix<T>::Transpose, "Transpose the array")
       .def_property_readonly("rows", &hnp::DenseMatrix<T>::rows,
                              "Get the number of rows")
@@ -166,6 +184,11 @@ void PyBindNumpy(pybind11::module& m) {
         return hnp::Shape(seq);
       });
   py::implicitly_convertible<std::vector<int64_t>, hnp::Shape>();
+
+  py::enum_<hnp::MatrixSerializeFormat>(m, "MatrixSerializeFormat")
+      .value("Best", hnp::MatrixSerializeFormat::Best)
+      .value("Interconnection", hnp::MatrixSerializeFormat::Interconnection)
+      .export_values();
 
   // bind pmatrix
   auto pmatrix = py::class_<hnp::PMatrix>(m, "PlaintextArray");

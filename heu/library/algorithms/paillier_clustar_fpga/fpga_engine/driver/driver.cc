@@ -17,6 +17,7 @@
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/file.h>
@@ -1381,8 +1382,7 @@ int fpga_fedai_operator_accl(fpga_config *cfg, char *para, char *data1,
 #ifdef DEBUG
   fprintf(stdout,
           "*****fpga_id %d CPU Transfer task cmd  to FPGA (Addr: 0x%08" PRIx64
-          ", Data "
-          "size: %d bytes).\n",
+          ", Data size: %d bytes).\n",
           fpga_id, cmd_data_base, cmd_data_size);
 #endif
 #ifdef MULTI_CARD_DEBUG
@@ -1413,8 +1413,7 @@ int fpga_fedai_operator_accl(fpga_config *cfg, char *para, char *data1,
 #ifdef DEBUG
   fprintf(stdout,
           "***** CPU Transfer task para to FPGA (Addr: 0x%08" PRIx64
-          ", Data size: %zu "
-          "bytes).\n",
+          ", Data size: %zu bytes).\n",
           para_data_base, cfg->para_data_size);
 #endif
   rc = 0;
@@ -1440,8 +1439,7 @@ int fpga_fedai_operator_accl(fpga_config *cfg, char *para, char *data1,
 #ifdef DEBUG
     fprintf(stdout,
             "***** CPU Transfer task data to FPGA (Addr: 0x%08" PRIx64
-            ", Data size: "
-            "%zu bytes).\n",
+            ", Data size: %zu bytes).\n",
             data1_base, cfg->data1_size);
 #endif
     rc = 0;
@@ -1472,8 +1470,7 @@ int fpga_fedai_operator_accl(fpga_config *cfg, char *para, char *data1,
 #ifdef DEBUG
     fprintf(stdout,
             "***** CPU Transfer task data to FPGA (Addr: 0x%08" PRIx64
-            ", Data size: "
-            "%zu bytes).\n",
+            ", Data size: %zu bytes).\n",
             data2_base, cfg->data2_size);
 #endif
     rc = 0;
@@ -1504,8 +1501,7 @@ int fpga_fedai_operator_accl(fpga_config *cfg, char *para, char *data1,
 #ifdef DEBUG
     fprintf(stdout,
             "***** CPU Transfer task data to FPGA (Addr: 0x%08" PRIx64
-            ", Data size: "
-            "%zu bytes).\n",
+            ", Data size: %zu bytes).\n",
             data3_base, cfg->data3_size);
 #endif
     rc = 0;

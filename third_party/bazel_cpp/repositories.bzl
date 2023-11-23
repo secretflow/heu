@@ -12,7 +12,7 @@ def _com_github_eigenteam_eigen():
     maybe(
         http_archive,
         name = "com_github_eigenteam_eigen",
-        sha256 = "c1b115c153c27c02112a0ecbf1661494295d9dcff6427632113f2e4af9f3174d",
+        sha256 = "606c404bdcbdb3782b4df3e9e32d76e1d940aa6704af5be0e75f6249bc9a6730",
         build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:eigen.BUILD",
         strip_prefix = "eigen-3.4",
         urls = [
@@ -43,14 +43,14 @@ def _com_github_intel_ipcl():
         http_archive,
         name = "com_github_intel_ipcl",
         patch_args = ["-p1"],
-        sha256 = "13bbfaec1d54a582555c54bb9e7e344f9d122f756481666b9e992b143d567227",
+        sha256 = "1a6ecb6cb830e45e501eace9b499ce776ab97aa6fddaeeb5b22dc3c340446467",
         patches = [
             "@com_alipay_sf_heu//third_party/bazel_cpp:patches/ipcl.patch",
         ],
-        strip_prefix = "pailliercryptolib-0ad1297c2932cceddb3c5953ed7865c22d7df780",
+        strip_prefix = "pailliercryptolib-fdc21350302117103452968ababc2f9676f0d383",
         build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:ipcl.BUILD",
         urls = [
-            "https://github.com/intel/pailliercryptolib/archive/0ad1297c2932cceddb3c5953ed7865c22d7df780.tar.gz",
+            "https://github.com/intel/pailliercryptolib/archive/fdc21350302117103452968ababc2f9676f0d383.tar.gz",
         ],
     )
 

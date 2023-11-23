@@ -9,9 +9,10 @@
 ## [Unreleased]
 
 - [Feature] Add DGK cryptosystem
-- [Feature] Add Damgard-Juric cryptosystem
+- [Feature] Add Damgard-Jurik cryptosystem
 - [Feature] Add a new paillier implementation based on ClustarFPGA hardware from Clustar Technology
 - [Feature] Add an experimental implementation of GPU-based paillier cryptosystem
+- [Feature] Add ic-paillier that meets CAICT interconnection standards
 - [Optimize] Optimize vectorized spi in mat mul
 - [Add] Add test case Mul in NpBenchmarks
 

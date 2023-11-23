@@ -1,0 +1,25 @@
+load("@yacl//bazel:yacl.bzl", "yacl_cc_binary", "yacl_cc_library", "yacl_cc_test")
+
+yacl_cc_library(
+    name = "test_tools",
+    hdrs = ["test_tools.h"],
+    deps = ["//heu/library/numpy"],
+)
+
+yacl_cc_test(
+    name = "numpy_test",
+    srcs = ["numpy_test.cc"],
+    deps = [":test_tools"],
+)
+
+yacl_cc_test(
+    name = "matmul_test",
+    srcs = ["matmul_test.cc"],
+    deps = [":test_tools"],
+)
+
+yacl_cc_test(
+    name = "ic_test",
+    srcs = ["ic_test.cc"],
+    deps = [":test_tools"],
+)

@@ -38,7 +38,7 @@ class PublicKey : public HeObject<PublicKey> {
     return fmt::format("Mock phe public key with {} bit length", key_size_);
   }
 
-  // Valid plaintext range: (max_int_, -max_int_)
+  // Valid plaintext range: [max_int_, -max_int_]
   // [SPI: Critical]
   [[nodiscard]] const Plaintext &PlaintextBound() const & { return max_int_; }
 
