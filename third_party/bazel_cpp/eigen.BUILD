@@ -43,6 +43,13 @@ EIGEN_MPL2_HEADER_FILES = glob(
 cc_library(
     name = "eigen3",
     hdrs = EIGEN_MPL2_HEADER_FILES,
+    # If your program crashes, you can try to add this flag globally
+    copts = select({
+        "@platforms//cpu:x86_64": [
+            "-mavx",
+        ],
+        "//conditions:default": [],
+    }),
     defines = [
         # This define (mostly) guarantees we don't link any problematic
         # code. We use it, but we do not rely on it, as evidenced above.

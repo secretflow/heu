@@ -28,7 +28,8 @@ void HeKitPublicBase::Setup(std::shared_ptr<PublicKey> pk) {
       ++hit;
     }
   }
-  YACL_ENFORCE("Cannot detect the schema type of public key {}, hit={}",
+  YACL_ENFORCE(hit == 1,
+               "Cannot detect the schema type of public key {}, hit={}",
                public_key_->ToString(), hit);
 }
 
@@ -36,6 +37,10 @@ void HeKitSecretBase::Setup(std::shared_ptr<PublicKey> pk,
                             std::shared_ptr<SecretKey> sk) {
   HeKitPublicBase::Setup(std::move(pk));
   secret_key_ = std::move(sk);
+  YACL_ENFORCE(secret_key_->IsCompatible(schema_type_),
+               "The public key and secret key do not belong to the same "
+               "algorithm, pk={}",
+               schema_type_);
 }
 
 #define GEN_KEY_AND_INIT(ns)                                                  \
@@ -83,6 +88,30 @@ HeKit::HeKit(SchemaType schema_type) {
     encryptor_ =                                                       \
         std::make_shared<Encryptor>(schema_type_, ns::Encryptor(pk1)); \
   }
+
+#define HE_SPECIAL_SETUP_BY_SK(ns)                                           \
+  [&](const ns::SecretKey& sk1) {                                            \
+    decryptor_ = std::make_shared<Decryptor>(                                \
+        schema_type_, ns::Decryptor(public_key_->As<ns::PublicKey>(), sk1)); \
+  }
+
+HeKit::HeKit(std::shared_ptr<PublicKey> pk, std::shared_ptr<SecretKey> sk) {
+  Setup(std::move(pk), std::move(sk));
+  public_key_->Visit(HE_DISPATCH(HE_SPECIAL_SETUP_BY_PK));
+  secret_key_->Visit(HE_DISPATCH(HE_SPECIAL_SETUP_BY_SK));
+}
+
+HeKit::HeKit(yacl::ByteContainerView pk_buffer,
+             yacl::ByteContainerView sk_buffer) {
+  auto pk = std::make_shared<PublicKey>();
+  pk->Deserialize(pk_buffer);
+  auto sk = std::make_shared<SecretKey>();
+  sk->Deserialize(sk_buffer);
+
+  Setup(std::move(pk), std::move(sk));
+  public_key_->Visit(HE_DISPATCH(HE_SPECIAL_SETUP_BY_PK));
+  secret_key_->Visit(HE_DISPATCH(HE_SPECIAL_SETUP_BY_SK));
+}
 
 DestinationHeKit::DestinationHeKit(std::shared_ptr<PublicKey> pk) {
   Setup(std::move(pk));

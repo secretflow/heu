@@ -175,8 +175,8 @@ TEST_F(NumpyTest, BinSumWorks) {
                          {0, 0, 2, 2, 3, 3, 0, 3, 2, 2}});
   auto bucket_num = 5;
   auto sum = he_kit_.GetEvaluator()->FeatureWiseBucketSum(
-      m.GetItem(subgroup_indices, Eigen::all),
-      order_map(subgroup_indices, Eigen::all), bucket_num)(2, 0);
+      m.GetItem(subgroup_indices, Eigen::placeholders::all),
+      order_map(subgroup_indices, Eigen::placeholders::all), bucket_num)(2, 0);
   EXPECT_EQ(sum.GetValue<int64_t>(), 4);
 }
 

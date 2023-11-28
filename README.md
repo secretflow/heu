@@ -3,64 +3,83 @@
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/secretflow/heu/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/secretflow/heu/tree/main)
 ![PyPI version](https://img.shields.io/pypi/v/sf-heu)
 
-Homomorphic Encryption processing Unit (HEU) is a subproject of Secretflow that
-implements high-performance homomorphic encryption algorithms.
+[中文](README_cn.md)
 
-The purpose of HEU is to lower the threshold for the use of homomorphic
-encryption, so that users can use homomorphic encryption algorithms to build
-privacy-preserving applications without professional cryptography knowledge.
+HEU (Homomorphic Encryption processing Unit) is a user-friendly and high-performance homomorphic
+encryption library that supports multiple types and scalable hardware acceleration.
 
-## Documentation
+## document
 
 https://www.secretflow.org.cn/docs/heu/
 
-## Background
-
-This project consists of two parts:
-
-HE Library (currently implemented): This project can be used as a
-high-performance and complete homomorphic encryption library, which integrates
-almost all homomorphic encryption algorithms in the industry. At the same time,
-HEU encapsulates each algorithm and provides a uniform interface. You can switch
-between different HE algorithms at any time without modifying business code.
-
-HE device (in work): As a component of Secretflow, HEU abstracts the homomorphic
-encryption algorithms into a programmable device, making it easy for users to
-flexibly build applications using the homomorphic encryption technology without
-professional knowledge. HEU (device) aims to build a complete computing solution
-through HE, that is, based on HE, any type of computing can be completed.
-Compared with PPU, HEU's computation is purely local without any network
-communication, so HEU and PPU are complementary
-
-Depending on the computing power, HEU has 4 working modes:
-
-| working mode          | Supported calculation types               | Number of calculations | HE algorithms  | Calculating speed  | Ciphertext size     |
-|-----------------------|-------------------------------------------|------------------------|----------------|--------------------|---------------------|
-| PHEU                  | addition                                  | Unlimited              | Paillier, OU   | Fast               | Small               |
-| LHEU                  | addition, multiplication                  | Limited                | BGV, CKKS      | Fast (packed mode) | Least (packed mode) |
-| FHEU (low precision)  | addition, mux, LUT                        | Unlimited              | TFHE (Torus)   | Fastest            | Large               |
-| FHEU (high precision) | addition, multiplication, comparison, mux | Unlimited              | TFHE (Bitwise) | Very slow          | Largest             |
-
 ## Repo status
 
-PHE has been basically developed, LHE and FHE are under development
+Homomorphic encryption algorithms are mainly divided into two categories: partially homomorphic
+encryption (PHE) and fully homomorphic encryption (FHE). Currently, HEU supports most PHE
+algorithms, while FHE is still under development and will take some time.
 
-## Build & UnitTest
+Supported algorithms:
 
-Build all
+- Additive homomorphic encryption
+    - Paillier (recommended)
+    - Okamoto–Uchiyama (recommended)
+    - EC ElGamal
+    - Damgard-Jurik
+    - Damgard-Geisler-Krøigaard (DGK)
+- Fully homomorphic encryption
+    - Under development and is the current focus of work.
+
+Each algorithm includes a variety of different implementations, and some implementations support
+hardware accelerators. For more details, please refer to
+the [Document](https://www.secretflow.org.cn/docs/heu/latest/zh-Hans/getting_started/algo_choice )
+
+## Compile and install
+
+### Environmental requirements
+
+- CPU
+    - x86_64: minimum required AVX instruction set
+    - AArch64: ARMv8
+- OS
+    - Ubuntu 18.04+
+    - Centos 7
+    - macOS 11.1+ (macOS Big Sur+)
+- Python
+    - Python 3.8+
+
+### Install via Pip
+
+```shell
+pip install sf-heu
+```
+
+### Install from source
+
+The following command will automatically compile and install HEU into the default Python
+environment:
+
+```shell
+git clone git@github.com:secretflow/heu.git
+cd heu
+sh build_wheel_entrypoint.sh
+
+```
+
+### Run unit tests (optional)
+
+
+
 
 
 ```shell
-# build all
+# just compile, do not run any UT (optional)
 bazel build heu/...
 
-# test all (optional)
+# compile and run all UTs
 bazel test heu/...
 ```
 
-Build python lib
+## Contribution Guidelines
 
-```shell
-# build and install python library
-sh build_wheel_entrypoint.sh
-```
+SecretFlow is an open and inclusive community, and we welcome any kind of contribution. If you want
+to improve HEU, please refer to [Contribution Guide](CONTRIBUTING.md)

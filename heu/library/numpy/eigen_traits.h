@@ -34,6 +34,8 @@ struct NumTraits<Plaintext> : GenericNumTraits<Plaintext> {
 
   //  static inline Real epsilon() { return Real(0); }
   //  static inline Real dummy_precision() { return Real(0); }
+  static inline int digits() { return 0; }
+
   static inline int digits10() { return 0; }
 
   enum {
@@ -53,10 +55,12 @@ struct NumTraits<Ciphertext> : GenericNumTraits<Ciphertext> {
   typedef Ciphertext NonInteger;
   typedef Ciphertext Nested;
 
-  static inline int digits10() { return 0; }
+  static inline int digits() { return 32; }
+
+  static inline int digits10() { return 32; }
 
   enum {
-    IsInteger = 0,
+    IsInteger = 1,  // 0 means floating point
     IsSigned = 0,
     IsComplex = 0,
     RequireInitialization = 1,

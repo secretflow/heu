@@ -55,7 +55,7 @@ T ExtensionFunctions<T>::SelectSum(const hnp::Evaluator& evaluator,
   // key dimension is less than tensor dimension
   bool sq_row;
   auto s_row = slice_tool::Parse(key, p_matrix.rows(), &sq_row);
-  return evaluator.SelectSum(p_matrix, s_row.indices, Eigen::all);
+  return evaluator.SelectSum(p_matrix, s_row.indices, Eigen::placeholders::all);
 }
 
 namespace {
@@ -99,9 +99,10 @@ lib::numpy::DenseMatrix<T> ExtensionFunctions<T>::FeatureWiseBucketSum(
       subgroup_indices.push_back(j);
     }
   }
-  e.FeatureWiseBucketSumInplace(x.GetItem(subgroup_indices, Eigen::all),
-                                order_map(subgroup_indices, Eigen::all),
-                                bucket_num, res, cumsum);
+  e.FeatureWiseBucketSumInplace(
+      x.GetItem(subgroup_indices, Eigen::placeholders::all),
+      order_map(subgroup_indices, Eigen::placeholders::all), bucket_num, res,
+      cumsum);
   return res;
 }
 
@@ -133,9 +134,9 @@ ExtensionFunctions<T>::BatchFeatureWiseBucketSum(
        ++subgroup_index) {
     if (subgroup_indices[subgroup_index].size() > 0) {
       e.FeatureWiseBucketSumInplace(
-          x.GetItem(subgroup_indices[subgroup_index], Eigen::all),
-          order_map(subgroup_indices[subgroup_index], Eigen::all), bucket_num,
-          res[subgroup_index], cumsum);
+          x.GetItem(subgroup_indices[subgroup_index], Eigen::placeholders::all),
+          order_map(subgroup_indices[subgroup_index], Eigen::placeholders::all),
+          bucket_num, res[subgroup_index], cumsum);
     } else {
       auto buf = res[subgroup_index].data();
       yacl::parallel_for(0, total_bucket_num * x.cols(), 1,

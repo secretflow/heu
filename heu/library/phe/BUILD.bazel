@@ -41,10 +41,6 @@ yacl_cc_library(
     ],
 )
 
-test_suite(
-    name = "phe_tests",
-)
-
 yacl_cc_test(
     name = "encryptor_test",
     srcs = ["encryptor_test.cc"],
@@ -60,11 +56,5 @@ yacl_cc_test(
 yacl_cc_test(
     name = "evaluator_test",
     srcs = ["evaluator_test.cc"],
-    deps = [":phe"],
-)
-
-yacl_cc_test(
-    name = "phe_test",
-    srcs = ["phe_test.cc"],
     deps = [":phe"],
 )

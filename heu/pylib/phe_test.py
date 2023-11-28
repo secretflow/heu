@@ -12,8 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import unittest
 import random
+import unittest
+
 from heu import phe
 
 
@@ -263,8 +264,10 @@ class ServerClientCase(unittest.TestCase):
         ct3_buffer = pickle.dumps(ct3)
 
         # client: decrypt
+        sk_buffer = pickle.dumps(client_he.secret_key())
+        client_he2 = phe.setup(pickle.loads(pk_buffer), pickle.loads(sk_buffer))
         ct_x = pickle.loads(ct3_buffer)
-        self.assertEqual(client_he.decryptor().decrypt_raw(ct_x), 123 - 456)
+        self.assertEqual(client_he2.decryptor().decrypt_raw(ct_x), 123 - 456)
 
 
 if __name__ == "__main__":

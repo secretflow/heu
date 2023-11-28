@@ -61,6 +61,8 @@ class HeKit : public HeKitSecretBase {
  public:
   HeKit(SchemaType schema_type, size_t key_size);
   explicit HeKit(SchemaType schema_type);
+  HeKit(std::shared_ptr<PublicKey> pk, std::shared_ptr<SecretKey> sk);
+  HeKit(yacl::ByteContainerView pk_buffer, yacl::ByteContainerView sk_buffer);
 
   [[nodiscard]] const std::shared_ptr<Encryptor>& GetEncryptor() const {
     return encryptor_;

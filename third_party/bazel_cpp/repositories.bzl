@@ -9,14 +9,16 @@ def heu_cpp_deps():
     _com_github_nvlabs_cgbn()
 
 def _com_github_eigenteam_eigen():
+    EIGEN_COMMIT = "66e8f38891841bf88ee976a316c0c78a52f0cee5"
+    EIGEN_SHA256 = "01fcd68409c038bbcfd16394274c2bf71e2bb6dda89a2319e23fc59a2da17210"
     maybe(
         http_archive,
         name = "com_github_eigenteam_eigen",
-        sha256 = "606c404bdcbdb3782b4df3e9e32d76e1d940aa6704af5be0e75f6249bc9a6730",
+        sha256 = EIGEN_SHA256,
         build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:eigen.BUILD",
-        strip_prefix = "eigen-3.4",
+        strip_prefix = "eigen-{commit}".format(commit = EIGEN_COMMIT),
         urls = [
-            "https://gitlab.com/libeigen/eigen/-/archive/3.4/eigen-3.4.tar.gz",
+            "https://gitlab.com/libeigen/eigen/-/archive/{commit}/eigen-{commit}.tar.gz".format(commit = EIGEN_COMMIT),
         ],
     )
 

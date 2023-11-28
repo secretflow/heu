@@ -24,8 +24,7 @@ namespace heu::lib::algorithms::ou {
 
 class Decryptor {
  public:
-  explicit Decryptor(PublicKey pk, SecretKey sk)
-      : pk_(std::move(pk)), sk_(std::move(sk)) {}
+  explicit Decryptor(PublicKey pk, SecretKey sk);
 
   void Decrypt(const Ciphertext& ct, MPInt* out) const;
   [[nodiscard]] MPInt Decrypt(const Ciphertext& ct) const;
