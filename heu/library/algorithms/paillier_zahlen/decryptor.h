@@ -24,8 +24,7 @@ namespace heu::lib::algorithms::paillier_z {
 
 class Decryptor {
  public:
-  explicit Decryptor(PublicKey pk, SecretKey sk)
-      : pk_(std::move(pk)), sk_(std::move(sk)) {}
+  explicit Decryptor(PublicKey pk, SecretKey sk);
 
   void Decrypt(const Ciphertext& ct, MPInt* out) const;
   MPInt Decrypt(const Ciphertext& ct) const;

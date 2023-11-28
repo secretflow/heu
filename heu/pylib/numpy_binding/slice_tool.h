@@ -39,7 +39,7 @@ PySlice<std::vector<int64_t>> Parse(const pybind11::object& src,
                                     bool* should_squeeze = nullptr);
 
 // express python slice [:] in PySlice struct.
-auto All(ssize_t dim_len) -> PySlice<decltype(Eigen::all)>;
+auto All(ssize_t dim_len) -> PySlice<decltype(Eigen::placeholders::all)>;
 
 }  // namespace slice_tool
 

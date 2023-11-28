@@ -235,6 +235,14 @@ void PyBindPhe(pybind11::module& m) {
       py::arg("schema_string") = "z-paillier", py::return_value_policy::move,
       "Setup phe environment by schema string");
 
+  m.def(
+      "setup",
+      [](std::shared_ptr<phe::PublicKey> pk, std::shared_ptr<phe::SecretKey> sk)
+          -> phe::HeKit { return phe::HeKit(std::move(pk), std::move(sk)); },
+      py::arg("public_key"), py::arg("secret_key"),
+      py::return_value_policy::move,
+      "Setup phe environment by pre-generated pk and sk");
+
   // api for evaluator party
   py::class_<phe::DestinationHeKit, phe::HeKitPublicBase>(m, "DestinationHeKit")
       .def("encryptor", &phe::DestinationHeKit::GetEncryptor, "Get encryptor")
@@ -243,8 +251,7 @@ void PyBindPhe(pybind11::module& m) {
   m.def(
       "setup",
       [](std::shared_ptr<phe::PublicKey> pk) {
-        phe::DestinationHeKit ahe(std::move(pk));
-        return ahe;
+        return phe::DestinationHeKit(std::move(pk));
       },
       py::arg("public_key"), py::return_value_policy::move,
       "Setup phe environment by an already generated public key");

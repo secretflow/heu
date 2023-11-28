@@ -22,6 +22,13 @@ namespace heu::lib::algorithms::ou {
   HE_ASSERT(!(ct).c_.IsNegative() && (ct).c_ < pk_.n_, \
             "Decryptor: Invalid ciphertext")
 
+Decryptor::Decryptor(PublicKey pk, SecretKey sk)
+    : pk_(std::move(pk)), sk_(std::move(sk)) {
+  YACL_ENFORCE(sk_.p2_ * sk_.q_ == pk_.n_,
+               "pk and sk are not paired, {}^2 * {} != {}", sk_.p_, sk_.q_,
+               pk_.n_);
+}
+
 void Decryptor::Decrypt(const Ciphertext& ct, MPInt* out) const {
   VALIDATE(ct);
 

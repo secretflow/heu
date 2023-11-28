@@ -85,7 +85,8 @@ py::object PySlicer<T>::GetItem(const hnp::DenseMatrix<T>& p_matrix,
   // key dimension is less than tensor dimension
   bool sq_row;
   auto s_row = slice_tool::Parse(key, p_matrix.rows(), &sq_row);
-  return CastMatrix(p_matrix.GetItem(s_row.indices, Eigen::all, sq_row));
+  return CastMatrix(
+      p_matrix.GetItem(s_row.indices, Eigen::placeholders::all, sq_row));
 }
 
 template <typename T>

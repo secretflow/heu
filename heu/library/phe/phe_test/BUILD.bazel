@@ -1,0 +1,19 @@
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+test_suite(
+    name = "phe_tests",
+)
+
+yacl_cc_test(
+    name = "batch_eval_test",
+    srcs = ["batch_eval_test.cc"],
+    deps = ["//heu/library/phe"],
+)
+
+yacl_cc_test(
+    name = "ser_test",
+    srcs = ["ser_test.cc"],
+    deps = ["//heu/library/phe"],
+)

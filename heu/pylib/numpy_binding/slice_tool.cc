@@ -85,8 +85,8 @@ PySlice<std::vector<int64_t>> Parse(const pybind11::object& src,
   return res;
 }
 
-auto All(ssize_t dim_len) -> PySlice<decltype(Eigen::all)> {
-  return {dim_len, Eigen::all};
+auto All(ssize_t dim_len) -> PySlice<decltype(Eigen::placeholders::all)> {
+  return {dim_len, Eigen::placeholders::all};
 };
 
 }  // namespace slice_tool
