@@ -27,8 +27,11 @@ class Decryptor {
   explicit Decryptor(PublicKey pk, SecretKey sk)
       : pk_(std::move(pk)), sk_(std::move(sk)) {}
 
-  void Decrypt(const std::vector<Ciphertext>& in_cts, std::vector<Plaintext>& out_pts) const;
-  std::vector<Plaintext> Decrypt(const std::vector<Ciphertext>& cts) const;
+  void Decrypt(ConstSpan<Ciphertext> in_cts, Span<Plaintext> out_pts) const;
+  std::vector<Plaintext> Decrypt(ConstSpan<Ciphertext> in_cts) const;
+  
+ private:
+  std::vector<Plaintext> DecryptImplVector(const std::vector<Ciphertext>& in_cts) const;
 
  private:
   PublicKey pk_;

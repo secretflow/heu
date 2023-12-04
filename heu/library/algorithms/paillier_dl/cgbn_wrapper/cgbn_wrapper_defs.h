@@ -15,7 +15,7 @@
 
 #pragma once
 
-#define TPI 32
+#define TPI 16 
 #define BITS 4096
 
 template<uint32_t bits>

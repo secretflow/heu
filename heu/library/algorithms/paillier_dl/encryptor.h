@@ -28,9 +28,9 @@ class Encryptor {
   explicit Encryptor(PublicKey pk);
   Encryptor(const Encryptor& from);
 
-  std::vector<Ciphertext> Encrypt(const std::vector<Plaintext> pts) const;
+  std::vector<Ciphertext> Encrypt(ConstSpan<Plaintext> pts) const;
   std::pair<std::vector<Ciphertext>, std::vector<std::string>> EncryptWithAudit(
-      const std::vector<Plaintext> pts) const;
+      ConstSpan<Plaintext> pts) const;
 
   const PublicKey& public_key() const { return pk_; }
 
@@ -39,7 +39,7 @@ class Encryptor {
 
  private:
   template <bool audit = false>
-  std::vector<Ciphertext> EncryptImplVector(const std::vector<Plaintext> pts,
+  std::vector<Ciphertext> EncryptImplVector(ConstSpan<Plaintext> pts,
                                             std::vector<std::string> *audit_str = nullptr) const;
  private:
   const PublicKey pk_;

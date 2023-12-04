@@ -17,7 +17,7 @@
 
 namespace heu::lib::algorithms::paillier_dl {
 
-void SecretKey::Init(MPInt &g, MPInt &raw_p, MPInt &raw_q) {
+void SecretKey::Init(MPInt g, MPInt raw_p, MPInt raw_q) {
   g_ = g;
   if(raw_q < raw_p) {
     p_ = std::move(raw_q);

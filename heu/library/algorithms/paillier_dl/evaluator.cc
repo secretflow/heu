@@ -15,96 +15,179 @@
 #include "heu/library/algorithms/paillier_dl/evaluator.h"
 #include "heu/library/algorithms/util/he_assert.h"
 #include "heu/library/algorithms/paillier_dl/cgbn_wrapper/cgbn_wrapper.h"
+#include "heu/library/algorithms/paillier_dl/utils.h"
 
 namespace heu::lib::algorithms::paillier_dl {
 
-std::vector<Ciphertext> Evaluator::Add(const std::vector<Ciphertext>& as, const std::vector<Ciphertext>& bs) const {
-  std::vector<Ciphertext> outs(as.size());
+std::vector<Ciphertext> Evaluator::Add(ConstSpan<Ciphertext> as, ConstSpan<Ciphertext> bs) const {
+  std::vector<Ciphertext> as_vec;
+  std::vector<Ciphertext> bs_vec;
+  for (int i=0; i<as.size(); ++i) {
+    as_vec.push_back(*as[i]);
+    bs_vec.push_back(*bs[i]);
+  }
+  std::vector<Ciphertext> outs_vec(as_vec.size());
 
-  CGBNWrapper::Add(pk_, as, bs, outs);
+  CGBNWrapper::Add(pk_, as_vec, bs_vec, outs_vec);
 
-  return outs;
+  return outs_vec;
 }
 
-void Evaluator::AddInplace(std::vector<Ciphertext>& as, const std::vector<Ciphertext>& bs) const {
-  CGBNWrapper::Add(pk_, as, bs, as);
+void Evaluator::AddInplace(Span<Ciphertext> as, ConstSpan<Ciphertext> bs) const {
+  std::vector<Ciphertext> as_vec;
+  std::vector<Ciphertext> bs_vec;
+  for (int i=0; i<as.size(); ++i) {
+    as_vec.push_back(*as[i]);
+    bs_vec.push_back(*bs[i]);
+  }
+  std::vector<Ciphertext> outs_vec(as_vec.size());
+
+  CGBNWrapper::Add(pk_, as_vec, bs_vec, as_vec);
+  for (int i=0; i<as.size(); ++i) {
+    *as[i] = as_vec[i];
+  }
 }
 
+std::vector<Ciphertext> Evaluator::Add(ConstSpan<Ciphertext> as, ConstSpan<Plaintext> bs) const {
+  std::vector<Ciphertext> as_vec;
+  std::vector<Plaintext> bs_vec;
+  for (int i=0; i<as.size(); ++i) {
+    as_vec.push_back(*as[i]);
+    bs_vec.push_back(*bs[i]);
+  }
+  std::vector<Plaintext> handled_bs_vec = HandleNeg(bs_vec);
+  std::vector<Ciphertext> outs_vec(as_vec.size());
 
-std::vector<Ciphertext> Evaluator::Add(const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const {
-  std::vector<Plaintext> handled_bs = HandleNeg(bs);
-  std::vector<Ciphertext> outs(as.size());
+  CGBNWrapper::Add(pk_, as_vec, handled_bs_vec, outs_vec); 
 
-  CGBNWrapper::Add(pk_, as, handled_bs, outs); 
-
-  return outs;
+  return outs_vec;
 }
 
-void Evaluator::AddInplace(std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const {
-  std::vector<Plaintext> handled_bs = HandleNeg(bs);
+void Evaluator::AddInplace(Span<Ciphertext> as, ConstSpan<Plaintext> bs) const {
+  std::vector<Ciphertext> as_vec;
+  std::vector<Plaintext> bs_vec;
+  for (int i=0; i<as.size(); ++i) {
+    as_vec.push_back(*as[i]);
+    bs_vec.push_back(*bs[i]);
+  }
+  std::vector<Plaintext> handled_bs_vec = HandleNeg(bs_vec);
+  std::vector<Ciphertext> outs_vec(as_vec.size());
 
-  CGBNWrapper::Add(pk_, as, handled_bs, as); 
+  CGBNWrapper::Add(pk_, as_vec, handled_bs_vec, as_vec); 
+  for (int i=0; i<as.size(); ++i) {
+    *as[i] = as_vec[i];
+  }
 }
 
-std::vector<Ciphertext> Evaluator::Sub(const std::vector<Ciphertext>& as, const std::vector<Ciphertext>& bs) const {
-  return Add(as, Negate(bs));
+std::vector<Ciphertext> Evaluator::Sub(ConstSpan<Ciphertext> as, ConstSpan<Ciphertext> bs) const {
+  auto neg_bs_vec = Negate(bs);
+  std::vector<Ciphertext *> neg_bs_pt;
+  ValueVecToPtsVec(neg_bs_vec, neg_bs_pt);
+  auto neg_bs_span = absl::MakeConstSpan(neg_bs_pt.data(), neg_bs_vec.size());
+
+  return Add(as, neg_bs_span);
 }
 
-void Evaluator::SubInplace(std::vector<Ciphertext>& as, const std::vector<Ciphertext>& bs) const {
-  AddInplace(as, Negate(bs));
+void Evaluator::SubInplace(Span<Ciphertext> as, ConstSpan<Ciphertext> bs) const {
+  auto neg_bs_vec = Negate(bs);
+  std::vector<Ciphertext *> neg_bs_pt;
+  ValueVecToPtsVec(neg_bs_vec, neg_bs_pt);
+  auto neg_bs_span = absl::MakeConstSpan(neg_bs_pt.data(), neg_bs_vec.size());
+
+  AddInplace(as, neg_bs_span);
 }
 
-std::vector<Ciphertext> Evaluator::Sub(const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const {
-  std::vector<Plaintext> neg_bs;
+std::vector<Ciphertext> Evaluator::Sub(ConstSpan<Ciphertext> as, ConstSpan<Plaintext> bs) const {
+  std::vector<Plaintext> neg_bs_vec;
   for (int i=0; i<bs.size(); i++) {
     Plaintext neg_b;
-    bs[i].Negate(&neg_b);
+    bs[i]->Negate(&neg_b);
     if (neg_b.IsNegative()) {
       neg_b += pk_.n_;
     }
-    neg_bs.emplace_back(neg_b);
+    neg_bs_vec.emplace_back(neg_b);
   }
+  std::vector<Plaintext *> neg_bs_pt;
+  ValueVecToPtsVec(neg_bs_vec, neg_bs_pt);
+  auto neg_bs_span = absl::MakeConstSpan(neg_bs_pt.data(), neg_bs_vec.size());
 
-  return Add(as, neg_bs);
+  return Add(as, neg_bs_span);
 }
 
-void Evaluator::SubInplace(std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const {
-  std::vector<Plaintext> neg_bs;
+void Evaluator::SubInplace(Span<Ciphertext> as, ConstSpan<Plaintext> bs) const {
+  std::vector<Plaintext> neg_bs_vec;
   for (int i=0; i<bs.size(); i++) {
     Plaintext neg_b;
-    bs[i].Negate(&neg_b);
+    bs[i]->Negate(&neg_b);
     if (neg_b.IsNegative()) {
       neg_b += pk_.n_;
     }
-    neg_bs.emplace_back(neg_b);
+    neg_bs_vec.emplace_back(neg_b);
   }
+  std::vector<Plaintext *> neg_bs_pt;
+  ValueVecToPtsVec(neg_bs_vec, neg_bs_pt);
+  auto neg_bs_span = absl::MakeConstSpan(neg_bs_pt.data(), neg_bs_vec.size());
 
-  AddInplace(as, neg_bs);
+  AddInplace(as, neg_bs_span);
 }
 
-std::vector<Ciphertext> Evaluator::Mul(const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const {
-  std::vector<Plaintext> handled_bs = HandleNeg(bs);
-  std::vector<Ciphertext> outs(as.size());
+std::vector<Ciphertext> Evaluator::Mul(ConstSpan<Ciphertext> as, ConstSpan<Plaintext> bs) const {
+  std::vector<Ciphertext> as_vec;
+  std::vector<Plaintext> bs_vec;
+  for (int i=0; i<as.size(); ++i) {
+    as_vec.push_back(*as[i]);
+    bs_vec.push_back(*bs[i]);
+  }
 
-  CGBNWrapper::Mul(pk_, as, handled_bs, outs); 
+  std::vector<Plaintext> handled_bs_vec = HandleNeg(bs_vec);
+  std::vector<Ciphertext> outs_vec(as_vec.size());
+
+  CGBNWrapper::Mul(pk_, as_vec, handled_bs_vec, outs_vec); 
   
-  return outs;
+  return outs_vec;
 }
 
-void Evaluator::MulInplace(std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const {
-  CGBNWrapper::Mul(pk_, as, bs, as); 
-}
-
-std::vector<Ciphertext> Evaluator::Negate(const std::vector<Ciphertext>& as) const {
-  std::vector<Plaintext> bs;
-  for (int i=0; i<as.size(); i++) {
-    bs.emplace_back(MPInt(-1));
+void Evaluator::MulInplace(Span<Ciphertext> as, ConstSpan<Plaintext> bs) const {
+  std::vector<Ciphertext> as_vec;
+  std::vector<Plaintext> bs_vec;
+  for (int i=0; i<as.size(); ++i) {
+    as_vec.push_back(*as[i]);
+    bs_vec.push_back(*bs[i]);
   }
-  return Mul(as, bs);
+  std::vector<Plaintext> handled_bs_vec = HandleNeg(bs_vec);
+  std::vector<Ciphertext> outs_vec(as_vec.size());
+
+  CGBNWrapper::Mul(pk_, as_vec, handled_bs_vec, as_vec);
+  for (int i=0; i<as.size(); ++i) {
+    *as[i] = as_vec[i];
+  }
 }
 
-void Evaluator::NegateInplace(std::vector<Ciphertext>& as) const {
-  CGBNWrapper::Negate(pk_, as, as); 
+std::vector<Ciphertext> Evaluator::Negate(ConstSpan<Ciphertext> as) const {
+  std::vector<Plaintext> bs_vec;
+  for (int i=0; i<as.size(); i++) {
+    bs_vec.emplace_back(MPInt(-1));
+  }
+  std::vector<Plaintext *> bs_pt;
+  ValueVecToPtsVec(bs_vec, bs_pt);
+  auto bs_span = absl::MakeConstSpan(bs_pt.data(), bs_vec.size());
+
+  return Mul(as, bs_span);
+}
+
+void Evaluator::NegateInplace(Span<Ciphertext> as) const {
+  std::vector<Plaintext> bs_vec;
+  for (int i=0; i<as.size(); i++) {
+    bs_vec.emplace_back(MPInt(-1));
+  }
+  std::vector<Plaintext *> bs_pt;
+  ValueVecToPtsVec(bs_vec, bs_pt);
+  auto bs_span = absl::MakeConstSpan(bs_pt.data(), bs_vec.size());
+
+  auto res_vec = Mul(as, bs_span);
+  for (int i=0; i<as.size(); ++i) {
+    *as[i] = res_vec[i];
+  }
 }
 
 }  // namespace heu::lib::algorithms::paillier_dl

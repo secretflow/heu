@@ -27,79 +27,69 @@ class Evaluator {
   // The performance of Randomize() is exactly the same as that of Encrypt().
   void Randomize(Ciphertext* ct) const;
 
-  // out = a + b
-  // Warning: if a, b are in batch encoding form, then p must also be in batch
-  // encoding form
-  std::vector<Ciphertext> Add(const std::vector<Ciphertext>& as, const std::vector<Ciphertext>& bs) const;
-  std::vector<Ciphertext> Add(const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const;
-  std::vector<Plaintext> Add(const std::vector<Plaintext>& as, const std::vector<Plaintext>& bs) const { 
-    std::vector<Plaintext> outs;
-    for (int i=0; i<as.size(); i++) {
-      outs.emplace_back(as[i] + bs[i]);
-    }
-    return outs;
-  }
-  std::vector<Ciphertext> Add(const std::vector<Plaintext>& as, const std::vector<Ciphertext>& bs) const {
+  std::vector<Ciphertext> Add(ConstSpan<Ciphertext> as, ConstSpan<Ciphertext> bs) const;
+  std::vector<Ciphertext> Add(ConstSpan<Ciphertext> as, ConstSpan<Plaintext> bs) const;
+  std::vector<Ciphertext> Add(ConstSpan<Plaintext> as, ConstSpan<Ciphertext> bs) const {
     return Add(bs, as);
   }
-
-  void AddInplace(std::vector<Ciphertext>& as, const std::vector<Ciphertext>& bs) const;
-  void AddInplace(std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const;
-  void AddInplace(std::vector<Plaintext>& as, const std::vector<Plaintext>& bs) const {
+  std::vector<Plaintext> Add(ConstSpan<Plaintext> as, ConstSpan<Plaintext> bs) const {
+    std::vector<Plaintext> outs;
     for (int i=0; i<as.size(); i++) {
-      as[i] += bs[i];
+      outs.emplace_back(*as[i] + *bs[i]);
+    }
+    return outs;
+  }
+
+  void AddInplace(Span<Ciphertext> as, ConstSpan<Ciphertext> bs) const;
+  void AddInplace(Span<Ciphertext> as, ConstSpan<Plaintext> bs) const;
+  void AddInplace(Span<Plaintext> as, ConstSpan<Plaintext> bs) const {
+    for (int i=0; i<as.size(); i++) {
+      (*as[i]) += (*bs[i]);
     }
   }
 
-  // out = a - b
-  // Warning: Subtraction is not supported if a, b are in batch encoding
-  std::vector<Ciphertext> Sub(const std::vector<Ciphertext>& as, const std::vector<Ciphertext>& bs) const;
-  std::vector<Ciphertext> Sub(const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const;
-  std::vector<Plaintext> Sub(const std::vector<Plaintext>& as, const std::vector<Plaintext>& bs) const { 
-    std::vector<Plaintext> outs;
-    for (int i=0; i<as.size(); i++) {
-      outs.emplace_back(as[i] - bs[i]);
-    }
-    return outs;
-  };
-  std::vector<Ciphertext> Sub(const std::vector<Plaintext>& as, const std::vector<Ciphertext>& bs) const { 
+  std::vector<Ciphertext> Sub(ConstSpan<Ciphertext> as, ConstSpan<Ciphertext> bs) const;
+  std::vector<Ciphertext> Sub(ConstSpan<Ciphertext> as, ConstSpan<Plaintext> bs) const;
+  std::vector<Ciphertext> Sub(ConstSpan<Plaintext> as, ConstSpan<Ciphertext> bs) const {
     return Sub(bs, as);
   }
-
-  void SubInplace(std::vector<Ciphertext>& as, const std::vector<Ciphertext>& bs) const;
-  void SubInplace(std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const;
-  void SubInplace(std::vector<Plaintext>& as, const std::vector<Plaintext>& bs) const { 
-    for (int i=0; i<as.size(); i++) {
-      as[i] -= bs[i];
-    }
-  }
-
-  // out = a * p
-  // Warning 1:
-  // When p = 0, the result is insecure and cannot be sent directly to the peer
-  // and must call Randomize(&out) first to obfuscate out.
-  // If a * 0 is not the last operation, (out will continue to participate in
-  // subsequent operations), Randomize can be omitted.
-  // Warning 2:
-  // Multiplication is not supported if a is in batch encoding form
-  std::vector<Ciphertext> Mul(const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const;
-  std::vector<Plaintext> Mul(const std::vector<Plaintext>& as, const std::vector<Plaintext>& bs) const {
+  std::vector<Plaintext> Sub(ConstSpan<Plaintext> as, ConstSpan<Plaintext> bs) const {
     std::vector<Plaintext> outs;
     for (int i=0; i<as.size(); i++) {
-      outs.emplace_back(as[i] * bs[i]);
+      outs.emplace_back(*as[i] - *bs[i]);
     }
     return outs;
-  };
-  std::vector<Ciphertext> Mul(const std::vector<Plaintext>& as, const std::vector<Ciphertext>& bs) const {
-    return Mul(bs, as);
   }
 
-  void MulInplace(std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs) const;
-  void MulInplace(Plaintext* a, const Plaintext& b) const { *a *= b; };
+  void SubInplace(Span<Ciphertext> as, ConstSpan<Ciphertext> bs) const;
+  void SubInplace(Span<Ciphertext> as, ConstSpan<Plaintext> bs) const;
+  void SubInplace(Span<Plaintext> as, ConstSpan<Plaintext> bs) const {
+    for (int i=0; i<as.size(); i++) {
+      (*as[i]) -= (*bs[i]);
+    }
+  }
 
-  // out = -a
-  std::vector<Ciphertext> Negate(const std::vector<Ciphertext>& as) const;
-  void NegateInplace(std::vector<Ciphertext>& as) const;
+  std::vector<Ciphertext> Mul(ConstSpan<Ciphertext> as, ConstSpan<Plaintext> bs) const;
+  std::vector<Ciphertext> Mul(ConstSpan<Plaintext> as, ConstSpan<Ciphertext> bs) const {
+    return Mul(bs, as);
+  }
+  std::vector<Plaintext> Mul(ConstSpan<Plaintext> as, ConstSpan<Plaintext> bs) const {
+    std::vector<Plaintext> outs;
+    for (int i=0; i<as.size(); i++) {
+      outs.emplace_back((*as[i]) * (*bs[i]));
+    }
+    return outs;
+  }
+
+  void MulInplace(Span<Ciphertext> as, ConstSpan<Plaintext> bs) const;
+  void MulInplace(Span<Plaintext> as, ConstSpan<Plaintext> bs) const {
+    for (int i=0; i<as.size(); i++) {
+      (*as[i]) *= (*bs[i]);
+    }
+  };
+
+  std::vector<Ciphertext> Negate(ConstSpan<Ciphertext> a) const;
+  void NegateInplace(Span<Ciphertext> a) const;
 
  private:
   std::vector<Plaintext> HandleNeg(const std::vector<Plaintext>& as) const {

@@ -14,7 +14,8 @@
 
 #include "heu/library/algorithms/paillier_dl/decryptor.h"
 #include "heu/library/algorithms/util/he_assert.h"
-#include "cgbn_wrapper/cgbn_wrapper.h"
+#include "heu/library/algorithms/paillier_dl/cgbn_wrapper/cgbn_wrapper.h"
+#include "heu/library/algorithms/paillier_dl/utils.h"
 
 namespace heu::lib::algorithms::paillier_dl {
 
@@ -22,19 +23,35 @@ namespace heu::lib::algorithms::paillier_dl {
   HE_ASSERT(!(ct).c_.IsNegative() && (ct).c_ < pk_.n_square_, \
             "Decryptor: Invalid ciphertext")
 
-void Decryptor::Decrypt(const std::vector<Ciphertext>& in_cts, std::vector<Plaintext>& out_pts) const {
+std::vector<Plaintext> Decryptor::DecryptImplVector(const std::vector<Ciphertext>& in_cts) const {
+  std::vector<Plaintext> out_pts(in_cts.size()); 
   CGBNWrapper::Decrypt(in_cts, sk_, pk_, out_pts);
-  for (int i=0; i<out_pts.size(); i++) {
+  for (int i=0; i<out_pts.size(); ++i) {
     if (out_pts[i] >= pk_.half_n_) {
       out_pts[i] -= pk_.n_;
     }
   }
+  return out_pts;
 }
 
-std::vector<Plaintext> Decryptor::Decrypt(const std::vector<Ciphertext>& cts) const {
-  std::vector<Plaintext> tmp;
-  Decrypt(cts, tmp);
-  return tmp;
+void Decryptor::Decrypt(ConstSpan<Ciphertext> in_cts, Span<Plaintext> out_pts) const {
+  std::vector<Ciphertext> in_cts_vec;
+  for (int i=0; i<in_cts.size(); ++i) {
+    in_cts_vec.push_back(*in_cts[i]);
+  }
+  auto out_pts_vec = DecryptImplVector(in_cts_vec);
+  std::vector<Plaintext *> out_pts_pt;
+  ValueVecToPtsVec(out_pts_vec, out_pts_pt);
+  out_pts = absl::MakeSpan(out_pts_pt.data(), out_pts_vec.size());
+}
+
+std::vector<Plaintext> Decryptor::Decrypt(ConstSpan<Ciphertext> in_cts) const {
+  std::vector<Ciphertext> in_cts_vec;
+  for (int i=0; i<in_cts.size(); ++i) {
+    in_cts_vec.push_back(*in_cts[i]);
+  }
+  auto out_pts_vec = DecryptImplVector(in_cts_vec);
+  return out_pts_vec;
 }
 
 }  // namespace heu::lib::algorithms::paillier_dl

@@ -47,7 +47,7 @@ class SecretKey : public HeObject<SecretKey> {
   dev_mem_t<BITS> *dev_hq_;
   SecretKey *dev_sk_;
 
-  void Init(MPInt &g, MPInt &raw_p, MPInt &raw_q);
+  void Init(MPInt g, MPInt raw_p, MPInt raw_q);
 
   bool operator==(const SecretKey &other) const {
     NOT_SUPPORT;

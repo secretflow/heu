@@ -13,10 +13,9 @@
 // limitations under the License.
 
 #include "heu/library/algorithms/paillier_dl/encryptor.h"
-
+#include "heu/library/algorithms/paillier_dl/cgbn_wrapper/cgbn_wrapper.h"
 #include "fmt/compile.h"
 #include "fmt/format.h"
-#include "cgbn_wrapper/cgbn_wrapper.h"
 
 namespace heu::lib::algorithms::paillier_dl {
 
@@ -24,7 +23,7 @@ Encryptor::Encryptor(PublicKey pk) : pk_(std::move(pk)) {}
 Encryptor::Encryptor(const Encryptor &from) : Encryptor(from.pk_) {}
 
 template <bool audit>
-std::vector<Ciphertext> Encryptor::EncryptImplVector(const std::vector<Plaintext> pts,
+std::vector<Ciphertext> Encryptor::EncryptImplVector(ConstSpan<Plaintext> pts,
                                                      std::vector<std::string> *audit_str) const {
   // printf("[warning] comment the EncryptImpl check.\n");
   // YACL_ENFORCE(m.CompareAbs(pk_.PlaintextBound()) < 0,
@@ -35,8 +34,8 @@ std::vector<Ciphertext> Encryptor::EncryptImplVector(const std::vector<Plaintext
   std::vector<Plaintext> handled_pts;
   for (int i=0; i<pts.size(); i++) {
     // handle negative
-    MPInt tmp_pt(pts[i]);
-    if (pts[i].IsNegative()) {
+    MPInt tmp_pt(*pts[i]);
+    if (pts[i]->IsNegative()) {
       tmp_pt += pk_.n_;
     }
     handled_pts.push_back(tmp_pt);
@@ -57,12 +56,12 @@ std::vector<Ciphertext> Encryptor::EncryptImplVector(const std::vector<Plaintext
   return cts;
 }
 
-std::vector<Ciphertext> Encryptor::Encrypt(const std::vector<Plaintext> pts) const { 
+std::vector<Ciphertext> Encryptor::Encrypt(ConstSpan<Plaintext> pts) const { 
   return EncryptImplVector(pts); 
 }
 
 std::pair<std::vector<Ciphertext>, std::vector<std::string>> Encryptor::EncryptWithAudit(
-      const std::vector<Plaintext> pts) const {
+      ConstSpan<Plaintext> pts) const {
   std::vector<std::string> audit_str;
   auto c = EncryptImplVector<true>(pts, &audit_str);
   return std::make_pair(c, audit_str);
