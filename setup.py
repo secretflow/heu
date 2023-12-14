@@ -216,6 +216,9 @@ if sys.platform == "darwin":
         plat_name = "macosx_10_16_x86_64"
     else:
         plat_name = "macosx_11_0_arm64"
+elif platform.machine() == "aarch64":
+    # Linux aarch64
+    plat_name = "manylinux_2_28_aarch64"
 
 setuptools.setup(
     name=setup_spec.name,
