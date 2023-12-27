@@ -33,6 +33,7 @@ build --host_cxxopt=-std=c++17
 build --linkopt -fvisibility=hidden
 build --linkopt -fvisibility-inlines-hidden
 build --linkopt -lm
+build --linkopt -ldl
 
 
 # Binary safety flags
