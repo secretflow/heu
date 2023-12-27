@@ -14,6 +14,8 @@
 
 #include "heu/library/numpy/matrix.h"
 
+#include <string>
+
 #include "interconnection/runtime/data_exchange.pb.h"
 
 namespace heu::lib::numpy {
@@ -38,6 +40,11 @@ template <typename T>
 yacl::Buffer DenseMatrix<T>::Serialize4Ic() const {
   pb_ns::DataExchangeProtocol dep;
   dep.set_scalar_type(pb_ns::SCALAR_TYPE_OBJECT);
+  // 此处没有满足互联互通要求，要求为 paillier_ciphertext，但是此处无法 get 底层
+  // schema 故 name 设为 ciphertext。
+  // The group standard of interconnection is not
+  // met here. The standard is 'paillier_ciphertext'. However, the underlying
+  // schema is hard to obtain here, so just set the name to 'ciphertext'.
   dep.set_scalar_type_name(Typename<T>::Name);
 
   auto v_ndarray = dep.mutable_v_ndarray();
@@ -74,11 +81,9 @@ DenseMatrix<T> DenseMatrix<T>::LoadFromIc(yacl::ByteContainerView in) {
   YACL_ENFORCE(dxp.ParseFromArray(in.data(), in.size()),
                "deserialize ndarray fail");
 
+  // dxp.scalar_type_name() is useless, do not check
   YACL_ENFORCE(dxp.scalar_type() == pb_ns::SCALAR_TYPE_OBJECT,
                "Buffer format illegal, scalar_type={}", dxp.scalar_type());
-  YACL_ENFORCE(dxp.scalar_type_name() == Typename<T>::Name,
-               "Buffer format illegal, scalar_type_name={}",
-               (dxp.scalar_type_name()));
 
   YACL_ENFORCE(dxp.container_case() ==
                    pb_ns::DataExchangeProtocol::ContainerCase::kVNdarray,

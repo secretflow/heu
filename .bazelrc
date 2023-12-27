@@ -13,6 +13,8 @@
 # limitations under the License.
 
 common --experimental_repo_remote_exec
+common --experimental_cc_shared_library
+
 build --verbose_failures
 
 build --incompatible_new_actions_api=false
