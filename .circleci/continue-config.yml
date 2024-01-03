@@ -129,12 +129,6 @@ workflows:
   ut:
     when: << pipeline.parameters.build-and-run >>
     jobs:
-      - linux_ut_x64:
-          context:
-            - gcs
-      - linux_ut_aarch64:
-          context:
-            - gcs
-      - macOS_ut:
-          context:
-            - gcs
+      - linux_ut_x64
+      - linux_ut_aarch64
+      - macOS_ut
