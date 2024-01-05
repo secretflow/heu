@@ -54,7 +54,7 @@ class PublicKey : public HeObject<PublicKey> {
 
  private:
   MPInt n_, hs_, pmod_, cmod_, bound_;
-  uint32_t s_;
+  uint32_t s_ = 0;  // Updated by Ant Group
 
   struct LUT {
     std::unique_ptr<MontgomerySpace> m_space;  // m-space for mod n^(s+1)

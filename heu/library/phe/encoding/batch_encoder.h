@@ -134,9 +134,9 @@ class BatchEncoder : public algorithms::HeObject<BatchEncoder> {
     return pt;
   }
 
-  SchemaType schema_;
-  int64_t scale_;
-  size_t padding_bits_;
+  SchemaType schema_{};
+  int64_t scale_ = 0;
+  size_t padding_bits_ = 0;
 };
 
 }  // namespace heu::lib::phe

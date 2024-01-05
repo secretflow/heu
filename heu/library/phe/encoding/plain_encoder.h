@@ -81,8 +81,8 @@ class PlainEncoder : public algorithms::HeObject<PlainEncoder> {
  private:
   explicit PlainEncoder(yacl::ByteContainerView in) { Deserialize(in); }
 
-  SchemaType schema_;
-  int64_t scale_;
+  SchemaType schema_{};
+  int64_t scale_ = 0;
 };
 
 }  // namespace heu::lib::phe
