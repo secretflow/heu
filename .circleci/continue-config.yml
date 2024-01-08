@@ -96,7 +96,7 @@ jobs:
       - checkout
       - run:
           name: "Install homebrew dependencies"
-          command: brew install bazelisk cmake ninja libomp wget
+          command: brew install bazelisk cmake ninja libomp wget md5sha1sum
       - run:
           name: "Install Miniconda"
           command: |
