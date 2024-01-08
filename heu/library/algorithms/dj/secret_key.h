@@ -41,9 +41,9 @@ class SecretKey : public HeObject<SecretKey> {
   MPInt2 n_;           // (p, q)
   MPInt lambda_, mu_;  // λ, μ
   MPInt pmod_;         // n^s
-  uint32_t s_;
-  MPInt pp_;       // p^s * (p^(-s) mod q^s), used for CRT
-  MPInt2 inv_pq_;  // ( q^(-1) mod p^s, p^(-1) mod q^s )
+  uint32_t s_ = 0;     // Updated by Ant Group
+  MPInt pp_;           // p^s * (p^(-s) mod q^s), used for CRT
+  MPInt2 inv_pq_;      // ( q^(-1) mod p^s, p^(-1) mod q^s )
 
   struct LUT {
     std::vector<MPInt2> pq_pow;                // {p,q}^j

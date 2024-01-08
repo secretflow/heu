@@ -173,7 +173,7 @@ uint32_t get_error_num(uint32_t error_id) {
  */
 int open_dev(int *userfd, int *h2cfd, int *c2hfd, uint8_t dev_num) {
   char *xdma_num = NULL;
-  int num = 255;
+  uint8_t num = 255;  // Updated by Ant Group
   const char *xdma_dev = "XDMA_DEV";
 
   xdma_num = getenv(xdma_dev);
@@ -183,7 +183,7 @@ int open_dev(int *userfd, int *h2cfd, int *c2hfd, uint8_t dev_num) {
   int h2c_fd;
   int c2h_fd;
 
-  int fpga_id = (num <= dev_num ? num : dev_num);
+  uint8_t fpga_id = (num <= dev_num ? num : dev_num);  // Updated by Ant Group
   fpga_id = fpga_id < MAX_NUM_OF_DEV ? fpga_id : 0;
   user_fd = open(DEV_USER[fpga_id], O_RDWR | O_SYNC);
   if (user_fd == -1) {

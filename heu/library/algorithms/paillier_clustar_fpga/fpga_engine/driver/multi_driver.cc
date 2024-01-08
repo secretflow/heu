@@ -75,6 +75,9 @@ int fpga_fedai_operator_accl_split_task(fpga_config *cfg, char *para,
          sizeof(fpga_config));  // copy original cfg into cfg_last
 
   card_num = fpga_dev_number_get();  // number of available cards
+  if (card_num == 0) {
+    return -1;  // Updated by Ant Group
+  }
 
   data1_length =
       getdatalength(cfg->data1_bitlen);  // get the real bitlength of data1
@@ -136,8 +139,9 @@ int fpga_fedai_operator_accl_split_task(fpga_config *cfg, char *para,
       for (i = 0; i < card_num; i++) {
         fut_vec[i].get();
         if (th_para[i].error != 0) {
+          int error = th_para[i].error;
           free(th_para);
-          return th_para[i].error;
+          return error;
         }
       }
 
@@ -228,10 +232,11 @@ int fpga_fedai_operator_accl_split_task(fpga_config *cfg, char *para,
         for (i = 0; i < card_num; i++) {
           fut_vec[i].get();
           if (th_para[i].error != 0) {
+            int error = th_para[i].error;
             free(cfg_last);
             free(cfg_first);
             free(th_para);
-            return th_para[i].error;
+            return error;
           }
         }
 
@@ -275,6 +280,9 @@ int fpga_fedai_operator_accl_split_task(fpga_config *cfg, char *para,
       memcpy(&row_num, para, 32 / 8);
       total_row = cfg->batch_size /
                   row_num;  // Calculate total number of rows in this matmul.
+      if (total_row == 0) {
+        return -1;  // Updated by Ant Group
+      }
       // card_num = 8; //debugcxd
       if (total_row >= card_num) {
         row_per_card =
@@ -336,8 +344,9 @@ int fpga_fedai_operator_accl_split_task(fpga_config *cfg, char *para,
         for (i = 0; i < card_num; i++) {
           fut_vec[i].get();
           if (th_para[i].error != 0) {
+            int error = th_para[i].error;
             free(th_para);
-            return th_para[i].error;
+            return error;
           }
         }
 
@@ -422,11 +431,12 @@ int fpga_fedai_operator_accl_split_task(fpga_config *cfg, char *para,
         for (i = 0; i < used_card_num; i++) {
           fut_vec[i].get();
           if (th_para[i].error != 0) {
+            int error = th_para[i].error;
             free(para_last);
             free(para_first);
             free(result_tmp);
             free(th_para);
-            return th_para[i].error;
+            return error;
           }
         }
 
@@ -539,10 +549,11 @@ int fpga_fedai_operator_accl_split_task(fpga_config *cfg, char *para,
       for (i = 0; i < card_num; i++) {
         fut_vec[i].get();
         if (th_para[i].error != 0) {
+          int error = th_para[i].error;
           free(cfg_last);
           free(cfg_first);
           free(th_para);
-          return th_para[i].error;
+          return error;
         }
       }
 
