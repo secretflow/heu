@@ -13,4 +13,4 @@
 # limitations under the License.
 
 
-__version__ = "0.5.0.dev20231227"
+__version__ = "0.5.0b0"
