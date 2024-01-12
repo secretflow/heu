@@ -20,6 +20,7 @@ extern "C" {
 #define DCBITS 512
 
 typedef struct {
+  // maybe 256 bytes are enough
   unsigned char n[DCBITS];          // n=p*q  ,pub key
   unsigned char n_squared[DCBITS];  // n^2
   unsigned char n_plusone[DCBITS];  // g=n+1,pub key

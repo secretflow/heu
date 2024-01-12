@@ -1,0 +1,56 @@
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
+
+yacl_cc_library(
+    name = "he",
+    srcs = ["kit.cc"],
+    hdrs = ["kit.h"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":decryptor",
+        ":encoder",
+        ":encryptor",
+        ":evaluator",
+    ],
+)
+
+yacl_cc_library(
+    name = "base",
+    hdrs = ["base.h"],
+    deps = [
+        "@yacl//yacl/utils/spi",
+    ],
+)
+
+yacl_cc_library(
+    name = "encryptor",
+    hdrs = ["encryptor.h"],
+    deps = [
+        ":base",
+    ],
+)
+
+yacl_cc_library(
+    name = "decryptor",
+    hdrs = ["decryptor.h"],
+    deps = [
+        ":base",
+    ],
+)
+
+yacl_cc_library(
+    name = "evaluator",
+    hdrs = [
+        "binary_evaluator.h",
+        "gate_evaluator.h",
+        "word_evaluator.h",
+    ],
+    deps = [
+        ":base",
+    ],
+)
+
+yacl_cc_library(
+    name = "encoder",
+    srcs = ["encoder.h"],
+    deps = [":base"],
+)
