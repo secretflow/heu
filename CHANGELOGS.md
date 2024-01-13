@@ -6,6 +6,9 @@
 > - Add `[Bugfix]` prefix for bug fixes
 > - Add `[API]` prefix for API changes
 
+## [Unreleased]
+
+
 ## [0.5.0]
 
 - [Feature] Add DGK cryptosystem
