@@ -60,6 +60,7 @@ class ElementWisePolyOperator {
   virtual void SubModInplace(Polys *polys_1, const Polys &polys_2,
                              const Moduli &coeff_modulus) const = 0;
 
+  // Sub with broadcast
   virtual Polys SubMod(const Polys &polys_in,
                        const std::vector<uint64_t> &scalar_in,
                        const Moduli &coeff_modulus) const = 0;
@@ -67,11 +68,13 @@ class ElementWisePolyOperator {
                              const std::vector<uint64_t> &scalar_in,
                              const Moduli &coeff_modulus) const = 0;
 
+  // Element-wise mul
   virtual Polys MulMod(const Polys &in1, const Polys &in2,
                        const Moduli &coeff_modulus) const = 0;
   virtual void MulModInplace(Polys *polys_1, const Polys &polys_2,
                              const Moduli &coeff_modulus) const = 0;
 
+  // Element-wise mul with broadcast
   virtual Polys MulMod(const Polys &polys_in,
                        const std::vector<uint64_t> &scalar_in,
                        const Moduli &coeff_modulus) const = 0;
@@ -79,10 +82,13 @@ class ElementWisePolyOperator {
                              const std::vector<uint64_t> &scalar_in,
                              const Moduli &coeff_modulus) const = 0;
 
-  // move coeff[0] to coeff[offset],
-  // if offset > 0 do negacyclic shift, otherwise do cyclic shift
-  virtual Polys Shift(const Polys &in, int64_t offset) const = 0;
-  virtual void ShiftInplace(Polys *polys, int64_t offset) const = 0;
+  // permute coefficients
+  // coeff[offset * i] = sign * coeff[i].
+  // if offset * i >= N, then sign is -1, otherwise 1
+  virtual Polys Automorphism(const Polys &in, size_t offset,
+                             const Moduli &coeff_modulus) const = 0;
+  virtual void AutomorphismInplace(Polys *polys, size_t offset,
+                                   const Moduli &coeff_modulus) const = 0;
 };
 
 }  // namespace heu::lib::spi
