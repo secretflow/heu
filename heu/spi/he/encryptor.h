@@ -26,6 +26,8 @@ namespace heu::lib::spi {
 
 class Encryptor {
  public:
+  virtual ~Encryptor() = default;
+
   // message is encoded plaintext or plaintext array
   // For all HE schema, plaintext is a custom type defined by underlying lib
   // For 1bit-boolean-FHE, plaintext can be bool or custom type
