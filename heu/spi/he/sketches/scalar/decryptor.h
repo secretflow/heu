@@ -1,4 +1,4 @@
-// Copyright 2023 Ant Group Co., Ltd.
+// Copyright 2024 Ant Group Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,22 +14,20 @@
 
 #pragma once
 
-#include "heu/library/spi/poly/poly_def.h"
+#include "heu/spi/he/decryptor.h"
+#include "heu/spi/he/sketches/scalar/helpful_macros.h"
 
 namespace heu::lib::spi {
 
-// Performs nega-cyclic forward and inverse number-theoretic transform (NTT)
-// nega-cyclic means polynomial is mod by (X^N + 1)
-class NttOperator {
+template <typename PlaintextT, typename CiphertextT>
+class DecryptorScalarSketch : public Decryptor {
  public:
-  virtual ~NttOperator() = default;
+  virtual void Decrypt(const CiphertextT& ct, PlaintextT* out) const = 0;
+  virtual PlaintextT Decrypt(const CiphertextT& ct) const = 0;
 
-  //=== (Batched) NTT Operations ===//
-  virtual Polys Forward(const Polys &Polys_in) const = 0;
-  virtual void ForwardInplace(Polys *Polys) const = 0;
-
-  virtual Polys Inverse(const Polys &Polys_in) const = 0;
-  virtual void InverseInplace(Polys *Polys) const = 0;
+ private:
+  DefineUnaryFuncCStyle(Decrypt, CiphertextT, PlaintextT);
+  DefineUnaryFuncCT(Decrypt);
 };
 
 }  // namespace heu::lib::spi

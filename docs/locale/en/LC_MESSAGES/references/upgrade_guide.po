@@ -33,26 +33,31 @@ msgstr "API changes"
 msgid ""
 "HEU 0.4 版本将 ``phe.BatchEncoder`` 拆分成了2个：``phe.BatchIntegerEncoder`` 和 "
 "``phe.BatchFloatEncoder``。"
-msgstr ""
+msgstr "In HEU version 0.4, ``phe.BatchEncoder`` has been split into two separate encoders: "
+"``phe.BatchIntegerEncoder`` and ``phe.BatchFloatEncoder``."
 
 #: ../../references/upgrade_guide.rst:23
 msgid ""
 "HEU 0.3 中的 ``phe.BatchEncoder`` 并不支持编码浮点数，为了让 BatchEncoder 支持浮点数编码，HEU "
 "0.4 新增了 ``phe.BatchFloatEncoder``，同时为了命名上的清晰性，我们将老旧的 ``phe.BatchEncoder``"
 " 改名成了 ``phe.BatchIntegerEncoder``"
-msgstr ""
+msgstr "The ``phe.BatchEncoder`` in HEU 0.3 did not support encoding floating-point numbers. "
+"To enable BatchEncoder to support encoding of floating-point numbers, HEU 0.4 introduced ``phe.BatchFloatEncoder``. "
+"For clarity in naming, the old ``phe.BatchEncoder`` has been renamed to ``phe.BatchIntegerEncoder``."
 
 #: ../../references/upgrade_guide.rst:26 ../../references/upgrade_guide.rst:109
 msgid "用户代码怎么改"
-msgstr ""
+msgstr "How to Modify User Code"
 
 #: ../../references/upgrade_guide.rst:28
 msgid "您可以将老代码中的 BatchEncoder 查找替换为 BatchIntegerEncoder 即可，两者功能等价。"
-msgstr ""
+msgstr "You can simply search and replace `BatchEncoder` with `BatchIntegerEncoder` in your old code, "
+"as the two are functionally equivalent."
 
 #: ../../references/upgrade_guide.rst:32
-msgid "HEU 0.2.x → 0.3.x"
-msgstr ""
+msgid "HEU "
+msgstr "HEU "  // This seems to be an incomplete message ID, so the same text is used for translation.
+
 
 #: ../../references/upgrade_guide.rst:35
 msgid "背景解释"
@@ -121,5 +126,7 @@ msgstr "matrix operations"
 msgid ""
 "如果编译报错，请将 schema 参数传入即可，例如这一行编译报错：``phe.BigintEncoder()``，改为 "
 "``phe.BigintEncoder(kit.get_schema())`` 即可，具体参考上一节 **API 变更** 内容。"
-msgstr ""
+msgstr "If you encounter a compilation error, please pass in the schema parameter. "
+"For example, if this line causes a compilation error: ``phe.BigintEncoder()``, "
+"you should change it to ``phe.BigintEncoder(kit.get_schema())``. For more details, refer to the previous section on **API Changes**."
 

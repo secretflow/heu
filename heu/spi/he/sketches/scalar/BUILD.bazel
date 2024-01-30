@@ -1,0 +1,51 @@
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
+
+yacl_cc_library(
+    name = "scalar",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":decryptor",
+        ":encryptor",
+        ":word_evaluator",
+    ],
+)
+
+yacl_cc_library(
+    name = "helpful_macros",
+    hdrs = [
+        "helpful_macros.h",
+    ],
+    deps = [
+        "//heu/spi/he",
+    ],
+)
+
+yacl_cc_library(
+    name = "word_evaluator",
+    hdrs = [
+        "word_evaluator.h",
+    ],
+    deps = [
+        ":helpful_macros",
+    ],
+)
+
+yacl_cc_library(
+    name = "encryptor",
+    hdrs = [
+        "encryptor.h",
+    ],
+    deps = [
+        ":helpful_macros",
+    ],
+)
+
+yacl_cc_library(
+    name = "decryptor",
+    hdrs = [
+        "decryptor.h",
+    ],
+    deps = [
+        ":helpful_macros",
+    ],
+)

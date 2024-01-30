@@ -18,7 +18,7 @@
 
 #include "yacl/math/mpint/mp_int.h"
 
-#include "heu/library/spi/he/base.h"
+#include "heu/spi/he/base.h"
 
 namespace heu::lib::spi {
 

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/library/spi/he/kit.h"
+#include "heu/spi/he/kit.h"
 
 namespace heu::lib::spi {
 

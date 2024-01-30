@@ -14,23 +14,16 @@
 
 #pragma once
 
-#include "yacl/utils/spi/argument/arg_set.h"
-#include "yacl/utils/spi/item.h"
+#include "heu/spi/he/base.h"
 
 namespace heu::lib::spi {
 
-/*
- * Item 本质上在 C++ 之上构建了一套无类型系统，类似于
- * Python，任何类型都可以转换成 Item， 反之 Item 也可以变成任何实际类型。
- *
- * 一些缩写约定：
- *   PT => Plaintext
- *   CT => Ciphertext
- *   PTs => Plaintext Array
- *   CTs => Ciphertext Array
- */
-using Item = yacl::Item;
-
-using SpiArgs = yacl::SpiArgs;
+class Decryptor {
+ public:
+  // CT -> PT
+  // CTs -> PTs
+  virtual void Decrypt(const Item& ct, Item* out) const = 0;
+  virtual Item Decrypt(const Item& ct) const = 0;
+};
 
 }  // namespace heu::lib::spi

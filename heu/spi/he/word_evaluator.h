@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "heu/library/spi/he/base.h"
+#include "heu/spi/he/base.h"
 
 namespace heu::lib::spi {
 
@@ -23,6 +23,17 @@ class WordEvaluator {
   virtual ~WordEvaluator() = default;
 
   //===   Arithmetic Operations   ===//
+
+  /*
+   * Item 本质上在 C++ 之上构建了一套无类型系统，类似于
+   * Python，任何类型都可以转换成 Item， 反之 Item 也可以变成任何实际类型。
+   *
+   * 一些缩写约定：
+   *   PT => Plaintext
+   *   CT => Ciphertext
+   *   PTs => Plaintext Array
+   *   CTs => Ciphertext Array
+   */
 
   // PT = -PT
   // CT = -CT
@@ -82,8 +93,8 @@ class WordEvaluator {
   virtual Item Square(const Item& a) const = 0;
   virtual void SquareInplace(Item* a) const = 0;
 
-  virtual Item Pow(const Item& a, uint64_t exponent) const = 0;
-  virtual void PowInplace(Item* a, uint64_t exponent) const = 0;
+  virtual Item Pow(const Item& a, int64_t exponent) const = 0;
+  virtual void PowInplace(Item* a, int64_t exponent) const = 0;
 
   //===   Ciphertext maintains   ===//
 

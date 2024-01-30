@@ -480,11 +480,14 @@ msgstr "Steps of Conditional compilation:"
 msgid ""
 "在算法的入口头文件中定义 ``ENABLE_YOUR_ALGO`` 宏，例如 `ipcl.h "
 "<https://github.com/secretflow/heu/blob/main/heu/library/algorithms/paillier_ipcl/ipcl.h>`_"
-msgstr ""
+msgstr "Define the ``ENABLE_YOUR_ALGO`` macro in the algorithm's entry header file, "
+"for example in `ipcl.h <https://github.com/secretflow/heu/blob/main/heu/library/algorithms/paillier_ipcl/ipcl.h>`_"
+
 
 #: ../../development/phe_dev.rst:251
 msgid "在 schema.h/cc 注册算法时引用 ``ENABLE_YOUR_ALGO`` 宏，即不要写死 true，这一步也可以参考 IPCL 的做法"
-msgstr "When registering the algorithm in schema.h/cc, reference the ENABLE_YOUR_ALGO macro, that is, do not hard-code true. This step can also refer to IPCL's practice."
+msgstr "When registering the algorithm in schema.h/cc, reference the ENABLE_YOUR_ALGO macro, that is, "
+"do not hard-code true. This step can also refer to IPCL's practice."
 
 #: ../../development/phe_dev.rst:255
 msgid "测试和使用"
@@ -605,17 +608,4 @@ msgstr ""
 " such as WOE, HESS-LR, SecureBoost and so on. We believe these "
 "applications can definitely benefit from your algorithm, thank you for "
 "your contribution."
-
-#~ msgid "代码文件修改完之后，还需要在 ``schema`` 对应的 ``BUILD.bazel`` 中添加您的算法。"
-#~ msgstr ""
-#~ "After modifying the code file, you "
-#~ "also need to add your algorithm in"
-#~ " ``BUILD.bazel`` corresponding to ``schema`` "
-#~ "file."
-
-#~ msgid ""
-#~ "算法注册后，也请同步更新 `CHANGELOGS "
-#~ "<https://github.com/secretflow/heu/blob/main/CHANGELOGS.md>`_ "
-#~ "文件。"
-#~ msgstr ""
 

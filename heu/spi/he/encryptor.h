@@ -16,8 +16,11 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <string>
 
-#include "heu/library/spi/he/base.h"
+#include "yacl/base/buffer.h"
+
+#include "heu/spi/he/base.h"
 
 namespace heu::lib::spi {
 
@@ -31,12 +34,29 @@ class Encryptor {
   virtual Item Encrypt(const Item &plaintext) const = 0;
   virtual void Encrypt(const Item &plaintext, Item *out) const = 0;
 
-  virtual Item EncryptZero(const Item &plaintext) const = 0;
+  // scalar version: return a single element
+  virtual Item EncryptZero() const = 0;
+  // vector version: return a vector of 'count' elements
+  virtual Item EncryptZero(size_t count) const = 0;
 
-  // encrypt and serialize to buffer
-  virtual yacl::Buffer EncryptToBin(const Item &plaintext) const = 0;
-  virtual size_t EncryptToBin(const Item &plaintext, uint8_t *buf,
-                              size_t buf_len) const = 0;
+  // Encrypts plaintext(s) with the secret key and returns the ciphertext(s) as
+  // serialize-only object(s).
+  //
+  // Half of the ciphertext data is pseudo-randomly generated from a seed to
+  // reduce the object size. The resulting serializable ciphertext(s) cannot be
+  // used directly and is meant to be serialized for the size reduction to have
+  // an impact.
+  //
+  // This method is only valid for some algorithms. For other algorithms
+  // SemiEncrypt() is exactly same as Encrypt() and returns the same results.
+  //
+  // Usage examples:
+  //   > hekit->Serialize(encryptor->SemiEncrypt(plaintexts));
+  // Or:
+  //   > auto cts = encryptor->SemiEncrypt(plaintexts);
+  //   > yacl::Buffer buf(hekit->Serialize(cts, nullptr, 0));
+  //   > hekit->Serizlize(cts, buf.data<uint8_t>(), buf.size());
+  virtual Item SemiEncrypt(const Item &plaintext) const = 0;
 
   // Encrypt plaintext and record all pseudorandom data for audit.
   //

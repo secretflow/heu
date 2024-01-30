@@ -20,10 +20,15 @@
 // <<< 其它 Encryptor/Evaluator/Decryptor 接口变化同理，此处不再展开 >>> //
 // ================================================================ //
 
+#include <cstdint>
+
+#include "heu/spi/he/sketches/scalar/helpful_macros.h"
+#include "heu/spi/he/word_evaluator.h"
+
 namespace heu::lib::spi {
 
 template <typename PlaintextT, typename CiphertextT>
-class WordEvaluatorScalarSketch {
+class WordEvaluatorScalarSketch : public WordEvaluator {
  public:
   virtual ~WordEvaluatorScalarSketch() = default;
 
@@ -78,10 +83,10 @@ class WordEvaluatorScalarSketch {
   virtual void SquareInplace(PlaintextT* a) const = 0;
   virtual void SquareInplace(CiphertextT* a) const = 0;
 
-  virtual PlaintextT Pow(const PlaintextT& a, uint64_t exponent) const = 0;
-  virtual CiphertextT Pow(const CiphertextT& a, uint64_t exponent) const = 0;
-  virtual void PowInplace(PlaintextT* a, uint64_t exponent) const = 0;
-  virtual void PowInplace(CiphertextT* a, uint64_t exponent) const = 0;
+  virtual PlaintextT Pow(const PlaintextT& a, int64_t exponent) const = 0;
+  virtual CiphertextT Pow(const CiphertextT& a, int64_t exponent) const = 0;
+  virtual void PowInplace(PlaintextT* a, int64_t exponent) const = 0;
+  virtual void PowInplace(CiphertextT* a, int64_t exponent) const = 0;
 
   //===   Ciphertext maintains   ===//
 
@@ -121,6 +126,73 @@ class WordEvaluatorScalarSketch {
   // All schemas: require abs(steps) < N/2
   virtual CiphertextT Rotate(const CiphertextT& a, int steps) const = 0;
   virtual void RotateInplace(CiphertextT* a, int steps) const = 0;
+
+ private:
+  //===   Arithmetic Operations   ===//
+
+  DefineUnaryFuncBoth(Negate);
+  DefineUnaryInplaceFunc(NegateInplace);
+
+  DefineBinaryFunc(Add);
+  DefineBinaryInplaceFunc(AddInplace);
+
+  DefineBinaryFunc(Sub);
+  DefineBinaryInplaceFunc(SubInplace);
+
+  DefineBinaryFunc(Mul);
+  DefineBinaryInplaceFunc(MulInplace);
+
+  DefineUnaryFuncBoth(Square);
+  DefineUnaryInplaceFunc(SquareInplace);
+
+  Item Pow(const Item& x, int64_t exponent) const override {
+    if (x.IsCiphertext()) {
+      CallUnaryFunc(Pow, CiphertextT, x, exponent);
+    } else {
+      CallUnaryFunc(Pow, PlaintextT, x, exponent);
+    }
+  }
+
+  void PowInplace(Item* x, int64_t exponent) const override {
+    if (x->IsCiphertext()) {
+      CallUnaryInplaceFunc(PowInplace, CiphertextT, x, exponent);
+    } else {
+      CallUnaryInplaceFunc(PowInplace, PlaintextT, x, exponent);
+    }
+  }
+
+  //===   Ciphertext maintains   ===//
+
+  DefineUnaryInplaceFuncOnlyCipher(Randomize);
+
+  DefineUnaryFuncCT(Relinearize);
+  DefineUnaryInplaceFuncOnlyCipher(RelinearizeInplace);
+
+  DefineUnaryFuncCT(ModSwitch);
+  DefineUnaryInplaceFuncOnlyCipher(ModSwitchInplace);
+
+  DefineUnaryFuncCT(Rescale);
+  DefineUnaryInplaceFuncOnlyCipher(RescaleInplace);
+
+  //===   Galois automorphism   ===//
+
+  DefineUnaryFuncCT(SwapRows);
+  DefineUnaryInplaceFuncOnlyCipher(SwapRowsInplace);
+
+  DefineUnaryFuncCT(Conjugate);
+  DefineUnaryInplaceFuncOnlyCipher(ConjugateInplace);
+
+  Item Rotate(const Item& x, int steps) const override {
+    YACL_ENFORCE(x.IsCiphertext(), "input arg must be a cipher, real is {}",
+                 x.ToString());
+    CallUnaryFunc(Rotate, CiphertextT, x, steps);
+  }
+
+  void RotateInplace(Item* x, int steps) const override {
+    YACL_ENFORCE(x->IsCiphertext(), "input arg must be a cipher, real is {}",
+                 x->ToString());
+    CallUnaryInplaceFunc(RotateInplace, CiphertextT, x, steps);
+  }
 };
 
 }  // namespace heu::lib::spi

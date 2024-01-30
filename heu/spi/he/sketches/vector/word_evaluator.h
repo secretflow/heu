@@ -19,6 +19,8 @@
 
 #include "absl/types/span.h"
 
+#include "heu/spi/he/word_evaluator.h"
+
 // ================================================================ //
 // <<<              Sketch 接口与 SPI 接口基本类似                 >>> //
 // <<<            此处仅以 WordEvaluator 为例展示接口              >>> //
@@ -28,7 +30,7 @@
 namespace heu::lib::spi {
 
 template <typename PlaintextT, typename CiphertextT>
-class WordEvaluatorVectorSketch {
+class WordEvaluatorVectorSketch : public WordEvaluator {
  public:
   virtual ~WordEvaluatorVectorSketch() = default;
 
@@ -118,13 +120,12 @@ class WordEvaluatorVectorSketch {
   virtual void SquareInplace(absl::Span<CiphertextT> a) const = 0;
 
   virtual std::vector<PlaintextT> Pow(const absl::Span<const PlaintextT>& a,
-                                      uint64_t exponent) const = 0;
+                                      int64_t exponent) const = 0;
   virtual std::vector<CiphertextT> Pow(const absl::Span<const CiphertextT>& a,
-                                       uint64_t exponent) const = 0;
-  virtual void PowInplace(absl::Span<PlaintextT> a,
-                          uint64_t exponent) const = 0;
+                                       int64_t exponent) const = 0;
+  virtual void PowInplace(absl::Span<PlaintextT> a, int64_t exponent) const = 0;
   virtual void PowInplace(absl::Span<CiphertextT> a,
-                          uint64_t exponent) const = 0;
+                          int64_t exponent) const = 0;
 
   //===   Ciphertext maintains   ===//
 
