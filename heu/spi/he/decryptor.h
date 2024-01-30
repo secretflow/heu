@@ -20,6 +20,8 @@ namespace heu::lib::spi {
 
 class Decryptor {
  public:
+  virtual ~Decryptor() = default;
+
   // CT -> PT
   // CTs -> PTs
   virtual void Decrypt(const Item& ct, Item* out) const = 0;
