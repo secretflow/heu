@@ -17,7 +17,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "heu/library/spi/poly/poly_def.h"
+#include "heu/spi/poly/poly_def.h"
 
 namespace heu::lib::spi {
 

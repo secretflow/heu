@@ -23,12 +23,12 @@
 #include "yacl/base/byte_container_view.h"
 #include "yacl/utils/spi/spi_factory.h"
 
-#include "heu/library/spi/he/binary_evaluator.h"
-#include "heu/library/spi/he/decryptor.h"
-#include "heu/library/spi/he/encoder.h"
-#include "heu/library/spi/he/encryptor.h"
-#include "heu/library/spi/he/gate_evaluator.h"
-#include "heu/library/spi/he/word_evaluator.h"
+#include "heu/spi/he/binary_evaluator.h"
+#include "heu/spi/he/decryptor.h"
+#include "heu/spi/he/encoder.h"
+#include "heu/spi/he/encryptor.h"
+#include "heu/spi/he/gate_evaluator.h"
+#include "heu/spi/he/word_evaluator.h"
 
 namespace heu::lib::spi {
 
@@ -83,10 +83,11 @@ class HeKit {
   // Convert Item to a human-readable string
   virtual std::string ToString(const Item& x) const = 0;
 
-  // The format of object(s) is based on initial params
+  // Serialize HE objects to buffer.
   virtual yacl::Buffer Serialize(const Item& x) const = 0;
-  // serialize field element(s) to already allocated buffer.
-  // if buf is nullptr, then calc serialize size only
+  // Serialize HE objects to already allocated buffer.
+  // If buf is nullptr, then calc approximate serialize size only.
+  // And the approximate size is always larger than actual size.
   // @return: the actual size of serialized buffer
   virtual size_t Serialize(const Item& x, uint8_t* buf,
                            size_t buf_len) const = 0;

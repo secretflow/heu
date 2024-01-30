@@ -7,7 +7,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 SECRETFLOW_GIT = "https://github.com/secretflow"
 
-YACL_COMMIT_ID = "7d2f70a34947e25906a2ea4da29708f07eeb8e3a"
+YACL_COMMIT_ID = "61a0d980f0895245015b5c128d74eb3cbf758704"
 
 git_repository(
     name = "yacl",
@@ -40,6 +40,10 @@ rules_foreign_cc_dependencies(
 )
 
 #### for python ####
+
+load("@rules_python//python:repositories.bzl", "py_repositories")
+
+py_repositories()
 
 # Python binding.
 http_archive(

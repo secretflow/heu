@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-27 09:58+0800\n"
+"POT-Creation-Date: 2024-01-25 10:58+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.14.0\n"
 
 #: ../../getting_started/faq.rst:2
 msgid "常见问题"
@@ -46,6 +46,9 @@ msgid ""
 "检查 `Pypi <https://pypi.org/project/sf-heu>`__ 上面是否存在与您的 Python 环境匹配的 sf-"
 "heu 包"
 msgstr ""
+"Check whether there is an sf-heu package on `Pypi "
+"<https://pypi.org/project/sf-heu>`__ that matches your Python "
+"environment."
 
 #: ../../getting_started/faq.rst:19
 msgid "Pip 版本 22.0+"
@@ -66,20 +69,29 @@ msgid ""
 "支持。为了节约 Pypi 仓库存储空间，dev 版本仅发布基于 Python 3.8 的二进制包，beta 及以上的版本将会发布所有 Python"
 " 版本的二进制包。对于 dev 版本，您也可以自助 :doc:`从源码编译<./installation>` 所需的 Python 版本的二进制包"
 msgstr ""
+"Supported. To conserve PyPI repository storage space, the dev version "
+"only releases binary packages based on Python 3.8, while beta and higher "
+"versions will release binary packages for all Python versions. For the "
+"dev version, you can also self-help by :doc:`compiling from "
+"source<./installation>` the binary package for the required Python "
+"version."
 
 #: ../../getting_started/faq.rst:30
 msgid "功能咨询"
-msgstr ""
+msgstr "Function Consultation"
 
 #: ../../getting_started/faq.rst:33
 msgid "HEU 支持哪些半同态算法？"
-msgstr ""
+msgstr "Which homomorphic encryption algorithms does HEU support?"
 
 #: ../../getting_started/faq.rst:34
 msgid ""
 "Paillier、Okamoto–Uchiyama、EC ElGamal、Damgard-"
 "Jurik、DGK，其中部分算法还实现了硬件加速的版本，详见 :doc:`算法选择<./algo_choice>`。"
 msgstr ""
+"Paillier, Okamoto–Uchiyama, EC ElGamal, Damgard-Jurik, and DGK, among "
+"which some algorithms have hardware-accelerated versions, for more "
+"details see :doc:`algorithm selection<./algo_choice>`."
 
 #: ../../getting_started/faq.rst:38
 msgid "HEU 当前提供哪些功能，FHE 支持吗？"
@@ -107,7 +119,8 @@ msgstr ""
 
 #: ../../getting_started/faq.rst:45
 msgid "请问HEU支持硬件加速的详细说明在哪？"
-msgstr ""
+msgstr "Where can I find detailed information on hardware acceleration support in HEU?"
+
 
 #: ../../getting_started/faq.rst:46
 msgid ""
@@ -115,14 +128,26 @@ msgid ""
 "avx512ifma 以及 QAT 加速，在机器上已经安装相应硬件，且创建`HeKit`对象时`SchemaType`选择`IPCL`，那么 "
 "IPCL 支持的硬件加速能力即可启用，关于详细的算法能力可参考 :doc:`此处<./algo_choice>`。"
 msgstr ""
+"If you are a user: Whether HEU utilizes hardware acceleration is "
+"determined by the SchemaType parameter. For instance, HEU has integrated "
+"the Intel IPCL library, which supports avx512ifma and QAT acceleration. "
+"If your machine is already equipped with the corresponding hardware and "
+"you select `IPCL` for the `SchemaType` when creating the `HeKit` object, "
+"then the hardware acceleration capabilities supported by IPCL can be "
+"enabled. For more details about the algorithm capabilities, refer to "
+":doc:`here<./algo_choice>`."
 
 #: ../../getting_started/faq.rst:47
 msgid "如果您是开发者：假如您有一些硬件加速卡想让隐语兼容，可参考这个接入文档：https://www.secretflow.org.cn/docs/heu/zh_CN/development/phe_dev.html"
 msgstr ""
+"If you are a developer: If you have some hardware acceleration cards that"
+" you would like to make compatible with HEU, you can refer to this "
+"integration document: "
+"https://www.secretflow.org.cn/docs/heu/zh_CN/development/phe_dev.html"
 
 #: ../../getting_started/faq.rst:51
 msgid "FPaillier 和 ZPaillier 代表了什么？"
-msgstr ""
+msgstr "What do FPaillier and ZPaillier represent?"
 
 #: ../../getting_started/faq.rst:52
 msgid ""
@@ -130,6 +155,9 @@ msgid ""
 "？提供这两个选择是否存在什么需要trade-off的东西？ `Github Issue "
 "<https://github.com/secretflow/secretflow/issues/139>`__"
 msgstr ""
+"Q: What do SchemaType.FPaillier and SchemaType.ZPaillier represent? Are "
+"there any trade-offs involved in providing these two options? `Github "
+"Issue <https://github.com/secretflow/secretflow/issues/139>`__"
 
 #: ../../getting_started/faq.rst:55
 msgid ""
@@ -140,10 +168,25 @@ msgid ""
 "FPaillier 高很多。目前 Python API 并没有暴露浮点运算接口，因此 FPaillier "
 "的功能不能得到全部发挥，故不推荐使用，任何情况下都应该选择 ZPaillier。"
 msgstr ""
+"A: These two represent different implementations of the Paillier "
+"algorithm. On the C++ API level, FPaillier and ZPaillier have some "
+"differences. FPaillier is aligned with Python-Paillier and is essentially"
+" a C++ translation of the Python-Paillier logic. It supports encryption "
+"of floating-point numbers by incorporating the scale bits into the "
+"ciphertext as plaintext, and the algorithm will automatically align and "
+"update the scale values during secret computation. Other optimizations "
+"are not significant. ZPaillier is a highly optimized version of Paillier "
+"that we developed, which only supports integer encryption and has much "
+"higher performance than FPaillier. Since the Python API does not expose a"
+" floating-point operation interface, FPaillier's functionality cannot be "
+"fully utilized, therefore it is not recommended for use, and ZPaillier "
+"should be chosen in all cases."
 
 #: ../../getting_started/faq.rst:59
 msgid "heu 是否有类似 spu runtime config 的 enable_action_trace 开关？"
 msgstr ""
+"Does HEU have a feature similar to the enable_action_trace switch in spu "
+"runtime config?"
 
 #: ../../getting_started/faq.rst:60
 msgid "`Github Issue <https://github.com/secretflow/heu/issues/11>`__"
@@ -156,14 +199,22 @@ msgid ""
 "<https://github.com/secretflow/heu/blob/beta/heu/library/phe/phe.h>`__ "
 "看下，整体不复杂"
 msgstr ""
+"HEU currently does not have a compiler layer nor an Intermediate "
+"Representation (IR), hence it lacks a trace switch. If you are interested"
+" in HEU, you can refer to :doc:`quick start<quick_start>` and check the "
+"`HEU code "
+"<https://github.com/secretflow/heu/blob/beta/heu/library/phe/phe.h>`__, "
+"as it is overall not complex."
 
 #: ../../getting_started/faq.rst:67
 msgid "接口使用"
-msgstr ""
+msgstr "API Usage"
 
 #: ../../getting_started/faq.rst:71
 msgid "如果想执行浮点数加解密，有什么推荐的方式么？"
 msgstr ""
+"Is there a recommended way to perform floating-point number encryption "
+"and decryption?"
 
 #: ../../getting_started/faq.rst:72
 msgid "`Github Issue <https://github.com/secretflow/secretflow/issues/139>`__"
@@ -174,10 +225,13 @@ msgid ""
 "加密浮点数需要借助 Encoder，请参考 :doc:`快速入门<quick_start>` 和 :doc:`矩阵运算<numpy>` 中关于 "
 "Encoder 的介绍。"
 msgstr ""
+"Encrypting floating-point numbers requires the use of an Encoder. Please "
+"refer to :doc:`quick start<quick_start>` and the introduction to Encoders"
+" in :doc:`matrix operations<numpy>` for more information."
 
 #: ../../getting_started/faq.rst:78
 msgid "能否提供一个HEU运算的例子"
-msgstr ""
+msgstr "Can you provide an example of an HEU operation?"
 
 #: ../../getting_started/faq.rst:79
 msgid "`Github Issue <https://github.com/secretflow/secretflow/issues/54>`__"
@@ -188,10 +242,15 @@ msgid ""
 "取决于您如何使用 HEU, HEU 有两层含义，第一他是 secretflow 中的一个 device，第二他本身也是一个同态加密的 "
 "library："
 msgstr ""
+"Depending on how you use HEU, it has two meanings: first, it is a device "
+"within secretflow, and second, it is also a homomorphic encryption "
+"library:"
 
 #: ../../getting_started/faq.rst:83
 msgid "当做 Library 使用，即独立于 Secretflow 单独使用 HEU，请参考 :doc:`快速入门<quick_start>`"
 msgstr ""
+"When used as a library, meaning used independently from Secretflow, "
+"please refer to :doc:`quick start<quick_start>`."
 
 #: ../../getting_started/faq.rst:84
 msgid ""
@@ -202,3 +261,14 @@ msgid ""
 "<https://github.com/secretflow/secretflow/blob/main/secretflow/ml/linear/hess_sgd/model.py>`__，您可以参考"
 " HESS-LR 获取 HEU Device 的用法。"
 msgstr ""
+"When used as a device: Secretflow has simplified the HEU Library, "
+"abstracting it into a Device. Device initialization mainly requires "
+"specifyingi) Which participants comprise the HEU logical device, and what"
+" are their roles? Are they evaluators or sk_keepers? ii) What are the HE "
+"algorithms and parameters operated internally by HEU? iii) What "
+"information is required for HEU to interact with other Devices, such as "
+"the scale used by SPU? The documentation for the HEU Device is currently "
+"lacking, which we will supplement later. There is an implementation based"
+" on `HEU + SPU for LR (i.e., HESS-LR) "
+"<https://github.com/secretflow/secretflow/blob/main/secretflow/ml/linear/hess_sgd/model.py>`__,"
+" from which you can learn the usage of the HEU Device."

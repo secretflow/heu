@@ -15,6 +15,7 @@ yacl_cc_library(
 
 yacl_cc_library(
     name = "base",
+    srcs = ["base.cc"],
     hdrs = ["base.h"],
     deps = [
         "@yacl//yacl/utils/spi",
@@ -53,4 +54,12 @@ yacl_cc_library(
     name = "encoder",
     srcs = ["encoder.h"],
     deps = [":base"],
+)
+
+yacl_cc_test(
+    name = "base_test",
+    srcs = ["base_test.cc"],
+    deps = [
+        ":base",
+    ],
 )

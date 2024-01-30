@@ -14,12 +14,14 @@
 
 #pragma once
 
-#include "heu/library/spi/he/base.h"
+#include "heu/spi/he/base.h"
 
 namespace heu::lib::spi {
 
 class Decryptor {
  public:
+  virtual ~Decryptor() = default;
+
   // CT -> PT
   // CTs -> PTs
   virtual void Decrypt(const Item& ct, Item* out) const = 0;
