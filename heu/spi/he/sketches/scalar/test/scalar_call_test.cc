@@ -16,7 +16,7 @@
 
 #include "gtest/gtest.h"
 
-#include "heu/spi/he/sketches/scalar/test/test_util.h"
+#include "heu/spi/he/sketches/scalar/test/dummy_ops.h"
 
 namespace heu::lib::spi::test {
 
@@ -26,9 +26,9 @@ class TestWessScalarCall : public ::testing::Test {
 };
 
 TEST_F(TestWessScalarCall, TestScalar) {
-  Item pt = {DummyPt("1"), ItemType::Plaintext};
+  Item pt = {DummyPt("1"), ContentType::Plaintext};
   EXPECT_TRUE(pt.IsPlaintext());
-  Item ct(DummyCt("1"), ItemType::Ciphertext);
+  Item ct(DummyCt("1"), ContentType::Ciphertext);
   EXPECT_TRUE(ct.IsCiphertext());
 
   // negate
@@ -126,8 +126,8 @@ TEST_F(TestWessScalarCall, TestScalar) {
 
 TEST_F(TestWessScalarCall, TestScalarInplace) {
   // negate
-  Item pt = {DummyPt("2"), ItemType::Plaintext};
-  Item ct(DummyCt("2"), ItemType::Ciphertext);
+  Item pt = {DummyPt("2"), ContentType::Plaintext};
+  Item ct(DummyCt("2"), ContentType::Ciphertext);
   we_->NegateInplace(&pt);
   EXPECT_TRUE(pt.IsPlaintext());
   EXPECT_EQ(pt.As<DummyPt>().Id(), ":= -pt2");
@@ -136,39 +136,39 @@ TEST_F(TestWessScalarCall, TestScalarInplace) {
   EXPECT_EQ(ct.As<DummyCt>().Id(), ":= -ct2");
 
   // add
-  pt = {DummyPt("2"), ItemType::Plaintext};
-  ct = {DummyCt("2"), ItemType::Ciphertext};
+  pt = {DummyPt("2"), ContentType::Plaintext};
+  ct = {DummyCt("2"), ContentType::Ciphertext};
   we_->AddInplace(&ct, ct);
   EXPECT_TRUE(ct.IsCiphertext());
   EXPECT_EQ(ct.As<DummyCt>().Id(), "ct2+=ct2");
-  ct = {DummyCt("2"), ItemType::Ciphertext};
+  ct = {DummyCt("2"), ContentType::Ciphertext};
   we_->AddInplace(&ct, pt);
   EXPECT_TRUE(ct.IsCiphertext());
   EXPECT_EQ(ct.As<DummyCt>().Id(), "ct2+=pt2");
 
   // sub
-  ct = {DummyCt("2"), ItemType::Ciphertext};
+  ct = {DummyCt("2"), ContentType::Ciphertext};
   we_->SubInplace(&ct, ct);
   EXPECT_TRUE(ct.IsCiphertext());
   EXPECT_EQ(ct.As<DummyCt>().Id(), "ct2-=ct2");
-  ct = {DummyCt("2"), ItemType::Ciphertext};
+  ct = {DummyCt("2"), ContentType::Ciphertext};
   we_->SubInplace(&ct, pt);
   EXPECT_TRUE(ct.IsCiphertext());
   EXPECT_EQ(ct.As<DummyCt>().Id(), "ct2-=pt2");
 
   // mul
-  ct = {DummyCt("2"), ItemType::Ciphertext};
+  ct = {DummyCt("2"), ContentType::Ciphertext};
   we_->MulInplace(&ct, ct);
   EXPECT_TRUE(ct.IsCiphertext());
   EXPECT_EQ(ct.As<DummyCt>().Id(), "ct2*=ct2");
-  ct = {DummyCt("2"), ItemType::Ciphertext};
+  ct = {DummyCt("2"), ContentType::Ciphertext};
   we_->MulInplace(&ct, pt);
   EXPECT_TRUE(ct.IsCiphertext());
   EXPECT_EQ(ct.As<DummyCt>().Id(), "ct2*=pt2");
 
   // square
-  pt = {DummyPt("2"), ItemType::Plaintext};
-  ct = {DummyCt("2"), ItemType::Ciphertext};
+  pt = {DummyPt("2"), ContentType::Plaintext};
+  ct = {DummyCt("2"), ContentType::Ciphertext};
   we_->SquareInplace(&pt);
   EXPECT_TRUE(pt.IsPlaintext());
   EXPECT_EQ(pt.As<DummyPt>().Id(), ":= (pt2)^2");
@@ -177,8 +177,8 @@ TEST_F(TestWessScalarCall, TestScalarInplace) {
   EXPECT_EQ(ct.As<DummyCt>().Id(), ":= (ct2)^2");
 
   // pow
-  pt = {DummyPt("2"), ItemType::Plaintext};
-  ct = {DummyCt("2"), ItemType::Ciphertext};
+  pt = {DummyPt("2"), ContentType::Plaintext};
+  ct = {DummyCt("2"), ContentType::Ciphertext};
   we_->PowInplace(&pt, 0);
   EXPECT_TRUE(pt.IsPlaintext());
   EXPECT_EQ(pt.As<DummyPt>().Id(), ":= (pt2)^0");
@@ -187,38 +187,38 @@ TEST_F(TestWessScalarCall, TestScalarInplace) {
   EXPECT_EQ(ct.As<DummyCt>().Id(), ":= (ct2)^1");
 
   // ct maintain
-  ct = {DummyCt("2"), ItemType::Ciphertext};
+  ct = {DummyCt("2"), ContentType::Ciphertext};
   we_->Randomize(&ct);
   EXPECT_TRUE(ct.IsCiphertext());
   EXPECT_EQ(ct.As<DummyCt>().Id(), ":= rand(ct2)");
 
-  ct = {DummyCt("2"), ItemType::Ciphertext};
+  ct = {DummyCt("2"), ContentType::Ciphertext};
   we_->RelinearizeInplace(&ct);
   EXPECT_TRUE(ct.IsCiphertext());
   EXPECT_EQ(ct.As<DummyCt>().Id(), ":= rl(ct2)");
 
-  ct = {DummyCt("2"), ItemType::Ciphertext};
+  ct = {DummyCt("2"), ContentType::Ciphertext};
   we_->ModSwitchInplace(&ct);
   EXPECT_TRUE(ct.IsCiphertext());
   EXPECT_EQ(ct.As<DummyCt>().Id(), ":= ms(ct2)");
 
-  ct = {DummyCt("2"), ItemType::Ciphertext};
+  ct = {DummyCt("2"), ContentType::Ciphertext};
   we_->RescaleInplace(&ct);
   EXPECT_TRUE(ct.IsCiphertext());
   EXPECT_EQ(ct.As<DummyCt>().Id(), ":= rs(ct2)");
 
   // automorphism
-  ct = {DummyCt("2"), ItemType::Ciphertext};
+  ct = {DummyCt("2"), ContentType::Ciphertext};
   we_->SwapRowsInplace(&ct);
   EXPECT_TRUE(ct.IsCiphertext());
   EXPECT_EQ(ct.As<DummyCt>().Id(), ":= sr(ct2)");
 
-  ct = {DummyCt("2"), ItemType::Ciphertext};
+  ct = {DummyCt("2"), ContentType::Ciphertext};
   we_->ConjugateInplace(&ct);
   EXPECT_TRUE(ct.IsCiphertext());
   EXPECT_EQ(ct.As<DummyCt>().Id(), ":= cj(ct2)");
 
-  ct = {DummyCt("2"), ItemType::Ciphertext};
+  ct = {DummyCt("2"), ContentType::Ciphertext};
   we_->RotateInplace(&ct, -12);
   EXPECT_TRUE(ct.IsCiphertext());
   EXPECT_EQ(ct.As<DummyCt>().Id(), "ct2<<=-12");

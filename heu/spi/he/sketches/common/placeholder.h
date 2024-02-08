@@ -12,28 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/spi/he/base.h"
-
-static constexpr int kCipherSlot = 7;
+#pragma once
 
 namespace heu::lib::spi {
 
-// Slot 7: Ciphertext = 1(true), Plaintext = 0(false);
-void Item::MarkAs(ItemType cipher_or_plain) {
-  SetSlot<kCipherSlot>(cipher_or_plain == ItemType::Ciphertext);
-}
+class NoPk {};
 
-void Item::MarkAsCiphertext() { SetSlot<kCipherSlot>(true); }
+class NoRlk {};
 
-void Item::MarkAsPlaintext() { SetSlot<kCipherSlot>(false); }
+class NoGlK {};
 
-bool Item::IsPlaintext() const { return !GetSlot<kCipherSlot>(); }
-
-bool Item::IsCiphertext() const { return GetSlot<kCipherSlot>(); }
-
-std::string Item::ToString() const {
-  return fmt::format("{} {}", IsCiphertext() ? "Ciphertext" : "Plaintext",
-                     yacl::Item::ToString());
-}
+class NoBsk {};
 
 }  // namespace heu::lib::spi

@@ -20,7 +20,7 @@
 #include "fmt/format.h"
 #include "gtest/gtest.h"
 
-#include "heu/spi/he/sketches/scalar/test/test_util.h"
+#include "heu/spi/he/sketches/scalar/test/dummy_ops.h"
 
 namespace heu::lib::spi::test {
 
@@ -31,10 +31,10 @@ class TestWessVecCall : public ::testing::Test {
 
 TEST_F(TestWessVecCall, TestVec) {
   std::vector<DummyPt> pts_vec = {DummyPt("1"), DummyPt("2"), DummyPt("3")};
-  auto pts = Item::Take(std::move(pts_vec), ItemType::Plaintext);
+  auto pts = Item::Take(std::move(pts_vec), ContentType::Plaintext);
 
   std::vector<DummyCt> cts_vec = {DummyCt("1"), DummyCt("2"), DummyCt("3")};
-  auto cts = Item::Ref(cts_vec, ItemType::Ciphertext);
+  auto cts = Item::Ref(cts_vec, ContentType::Ciphertext);
 
   // negate
   Item res = we_->Negate(pts);
@@ -103,9 +103,9 @@ TEST_F(TestWessVecCall, TestVec) {
 
 TEST_F(TestWessVecCall, TestVecInplace) {
   std::vector<DummyPt> pts_vec = {DummyPt("1"), DummyPt("2"), DummyPt("3")};
-  auto pts = Item::Ref(pts_vec, ItemType::Plaintext);
+  auto pts = Item::Ref(pts_vec, ContentType::Plaintext);
   std::vector<DummyCt> cts_vec = {DummyCt("1"), DummyCt("2"), DummyCt("3")};
-  auto cts = Item::Ref(cts_vec, ItemType::Ciphertext);
+  auto cts = Item::Ref(cts_vec, ContentType::Ciphertext);
 
   // negate
   we_->NegateInplace(&pts);
@@ -184,9 +184,9 @@ TEST_F(TestWessVecCall, TestVecInplace) {
 
 TEST_F(TestWessVecCall, TestVecException) {
   std::vector<DummyPt> pts_vec = {DummyPt("1"), DummyPt("2"), DummyPt("3")};
-  auto pts = Item::Ref(pts_vec, ItemType::Plaintext);
+  auto pts = Item::Ref(pts_vec, ContentType::Plaintext);
   std::vector<DummyCt> cts_vec = {DummyCt("1"), DummyCt("2")};
-  auto cts = Item::Ref(cts_vec, ItemType::Ciphertext);
+  auto cts = Item::Ref(cts_vec, ContentType::Ciphertext);
 
   EXPECT_ANY_THROW(we_->Add(cts, pts));
   EXPECT_ANY_THROW(we_->AddInplace(&cts, pts));

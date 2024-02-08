@@ -14,8 +14,11 @@
 
 #pragma once
 
+#include <ostream>
 #include <string>
+#include <utility>
 
+#include "heu/spi/he/encoder.h"
 #include "heu/spi/he/sketches/scalar/decryptor.h"
 #include "heu/spi/he/sketches/scalar/encryptor.h"
 #include "heu/spi/he/sketches/scalar/word_evaluator.h"
@@ -33,6 +36,10 @@ class DummyObj {
 
   void SetId(const std::string &id) { id_ = id; }
 
+  friend std::ostream &operator<<(std::ostream &os, const DummyObj &obj) {
+    return os << obj.id_;
+  }
+
  private:
   std::string id_;
 };
@@ -42,6 +49,8 @@ class DummyPt : public DummyObj {
   using DummyObj::DummyObj;
 
   std::string Sign() const { return "pt" + Id(); }
+
+  bool operator==(const DummyPt &rhs) const { return Id() == rhs.Id(); }
 };
 
 class DummyCt : public DummyObj {
@@ -49,6 +58,8 @@ class DummyCt : public DummyObj {
   using DummyObj::DummyObj;
 
   std::string Sign() const { return "ct" + Id(); }
+
+  bool operator==(const DummyCt &rhs) const { return Id() == rhs.Id(); }
 };
 
 inline auto format_as(const DummyPt &a) { return a.Sign(); }

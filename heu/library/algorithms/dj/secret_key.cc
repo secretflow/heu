@@ -30,7 +30,7 @@ void SecretKey::Init(const MPInt& p, const MPInt& q, uint32_t s) {
   for (auto i = 2u; i <= s + 1; ++i) {
     lut_->pq_pow[i] = {lut_->pq_pow[i - 1].P * p, lut_->pq_pow[i - 1].Q * q};
   }
-  auto const& [ps, qs] = lut_->pq_pow[s];
+  const auto& [ps, qs] = lut_->pq_pow[s];
   pp_ = ps * ps.InvertMod(qs);
   inv_pq_ = {q.InvertMod(ps), p.InvertMod(qs)};
   lut_->precomp.resize(s + 1);
@@ -65,10 +65,10 @@ std::string SecretKey::ToString() const {
 MPInt SecretKey::Decrypt(const MPInt& ct) const {
   MPInt2 z, ls;
   // compute z = c^d mod n^(s+1)
-  auto const& [ps1, qs1] = lut_->pq_pow[s_ + 1];
+  const auto& [ps1, qs1] = lut_->pq_pow[s_ + 1];
   z = {(ct % ps1).PowMod(lambda_, ps1), (ct % qs1).PowMod(lambda_, qs1)};
   //  compute ls = L(z) mod n^s
-  auto const& [ps, qs] = lut_->pq_pow[s_];
+  const auto& [ps, qs] = lut_->pq_pow[s_];
   ls = {inv_pq_.P.MulMod((z.P - MPInt::_1_) / n_.P, ps),
         inv_pq_.Q.MulMod((z.Q - MPInt::_1_) / n_.Q, qs)};
 

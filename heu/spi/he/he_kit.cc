@@ -12,20 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
-
-#include "heu/spi/he/item.h"
+#include "heu/spi/he/he_kit.h"
 
 namespace heu::lib::spi {
 
-class Decryptor {
- public:
-  virtual ~Decryptor() = default;
-
-  // CT -> PT
-  // CTs -> PTs
-  virtual void Decrypt(const Item& ct, Item* out) const = 0;
-  virtual Item Decrypt(const Item& ct) const = 0;
-};
+HeFactory& HeFactory::Instance() {
+  static HeFactory factory;
+  return factory;
+}
 
 }  // namespace heu::lib::spi

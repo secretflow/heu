@@ -20,7 +20,7 @@
 
 #include "yacl/base/buffer.h"
 
-#include "heu/spi/he/base.h"
+#include "heu/spi/he/item.h"
 
 namespace heu::lib::spi {
 

@@ -17,7 +17,7 @@
 // ================================================================ //
 // <<<              Sketch 接口与 SPI 接口基本类似                 >>> //
 // <<<            此处仅以 WordEvaluator 为例展示接口              >>> //
-// <<< 其它 Encryptor/Evaluator/Decryptor 接口变化同理，此处不再展开 >>> //
+// <<<    Word/Gate/Binary Evaluator 接口变化同理，此处不再展开     >>> //
 // ================================================================ //
 
 #include <cstdint>
@@ -46,35 +46,62 @@ class WordEvaluatorScalarSketch : public WordEvaluator {
   // CT = CT + PT
   // CT = CT + CT
   virtual PlaintextT Add(const PlaintextT& a, const PlaintextT& b) const = 0;
-  virtual CiphertextT Add(const PlaintextT& a, const CiphertextT& b) const = 0;
   virtual CiphertextT Add(const CiphertextT& a, const PlaintextT& b) const = 0;
   virtual CiphertextT Add(const CiphertextT& a, const CiphertextT& b) const = 0;
+
+  virtual CiphertextT Add(const PlaintextT& a, const CiphertextT& b) const {
+    return Add(b, a);
+  }
+
   // CT += PT
   // CT += CT
   virtual void AddInplace(CiphertextT* a, const PlaintextT& b) const = 0;
   virtual void AddInplace(CiphertextT* a, const CiphertextT& b) const = 0;
 
-  // PT = PT + PT
-  // CT = PT + CT
-  // CT = CT + PT
-  // CT = CT + CT
-  // CT += PT
-  // CT += CT
-  virtual PlaintextT Sub(const PlaintextT& a, const PlaintextT& b) const = 0;
-  virtual CiphertextT Sub(const PlaintextT& a, const CiphertextT& b) const = 0;
-  virtual CiphertextT Sub(const CiphertextT& a, const PlaintextT& b) const = 0;
-  virtual CiphertextT Sub(const CiphertextT& a, const CiphertextT& b) const = 0;
-  virtual void SubInplace(CiphertextT* a, const PlaintextT& b) const = 0;
-  virtual void SubInplace(CiphertextT* a, const CiphertextT& b) const = 0;
+  // PT = PT - PT
+  // CT = PT - CT
+  // CT = CT - PT
+  // CT = CT - CT
+  virtual PlaintextT Sub(const PlaintextT& a, const PlaintextT& b) const {
+    return Add(a, Negate(b));
+  }
+
+  virtual CiphertextT Sub(const PlaintextT& a, const CiphertextT& b) const {
+    return Add(Negate(b), a);
+  }
+
+  virtual CiphertextT Sub(const CiphertextT& a, const PlaintextT& b) const {
+    return Add(a, Negate(b));
+  }
+
+  virtual CiphertextT Sub(const CiphertextT& a, const CiphertextT& b) const {
+    return Add(a, Negate(b));
+  }
+
+  // CT -= PT
+  // CT -= CT
+  virtual void SubInplace(CiphertextT* a, const PlaintextT& b) const {
+    AddInplace(a, Negate(b));
+  }
+
+  virtual void SubInplace(CiphertextT* a, const CiphertextT& b) const {
+    AddInplace(a, Negate(b));
+  }
 
   // PT = PT * PT [AHE/FHE]
   // CT = PT * CT [AHE/FHE]
   // CT = CT * PT [AHE/FHE]
   // CT = CT * CT [FHE]
   virtual PlaintextT Mul(const PlaintextT& a, const PlaintextT& b) const = 0;
-  virtual CiphertextT Mul(const PlaintextT& a, const CiphertextT& b) const = 0;
   virtual CiphertextT Mul(const CiphertextT& a, const PlaintextT& b) const = 0;
   virtual CiphertextT Mul(const CiphertextT& a, const CiphertextT& b) const = 0;
+
+  virtual CiphertextT Mul(const PlaintextT& a, const CiphertextT& b) const {
+    return Mul(b, a);
+  }
+
+  // CT *= PT [AHE/FHE]
+  // CT *= CT [FHE]
   virtual void MulInplace(CiphertextT* a, const PlaintextT& b) const = 0;
   virtual void MulInplace(CiphertextT* a, const CiphertextT& b) const = 0;
 

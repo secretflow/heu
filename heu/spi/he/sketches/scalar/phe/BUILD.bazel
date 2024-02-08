@@ -1,0 +1,19 @@
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library")
+
+yacl_cc_library(
+    name = "phe",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":word_evaluator",
+    ],
+)
+
+yacl_cc_library(
+    name = "word_evaluator",
+    hdrs = [
+        "word_evaluator.h",
+    ],
+    deps = [
+        "//heu/spi/he/sketches/scalar",
+    ],
+)

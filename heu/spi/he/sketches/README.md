@@ -19,3 +19,39 @@ Sketch 实现以下功能：
     - Scalar Sketch：无论上层为标量/向量调用，一律转换成标量调用模式
     - Vector Sketch：无论上层为标量/向量调用，一律转换成向量调用模式
 - 对于一些简单的功能，Sketch 提供默认实现
+
+# 目录组织结构
+
+Sketch 为 SPI 接口的预实现，实现不同 Lib 的公共部分逻辑，跟进逻辑抽象层级的不同，Sketch 目录的组织结构如下：
+
+```text
+                                             ─┐
+                    HE SPI                    │ SPI
+                       ▲                     ─┘
+                       │
+                       │                     ─┐
+                    Common                    │
+                       ▲                      │
+                       │                      │ Sketches
+           ┌───────────┴───────────┐          │
+           │                       │          │ Implement common logic
+        Scalar                   Vector       │ of different libraries
+         ▲  ▲                     ▲  ▲        │
+     ┌───┘  │                 ┌───┘  │        │
+     │      │                 │      │        │
+ ScalarPhe  │             VectorPhe  │       ─┘
+     ▲      │                 ▲      │
+     │      │                 │      │       ─┐
+    PHE    FHE               PHE    FHE       │ Various Libs
+    Libs   Libs              Libs   Libs     ─┘
+```
+
+各 Sketch 的解释如下：
+
+| Sketch 名称 | 路径           | 说明                   |
+|-----------|--------------|----------------------|
+| Common    | ./common     | 实现与具体 Lib 无关的公共功能    |
+| Scalar    | ./scalar     | 将上层调用全部转换成标量调用       |
+| ScalarPhe | ./scalar/phe | 专为标量化的加法同态加密库实现的公共功能 |
+| Vector    | ./vector     | 将上层调用全部转换成向量调用       |
+| VectorPhe | ./vector/phe | 专为向量化的加法同态加密库实现的公共功能 |

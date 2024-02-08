@@ -2,23 +2,32 @@ load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
 
 yacl_cc_library(
     name = "he",
-    srcs = ["kit.cc"],
-    hdrs = ["kit.h"],
+    srcs = ["he_kit.cc"],
+    hdrs = ["he_kit.h"],
     visibility = ["//visibility:public"],
     deps = [
         ":decryptor",
         ":encoder",
         ":encryptor",
         ":evaluator",
+        ":item_manipulator",
     ],
 )
 
 yacl_cc_library(
-    name = "base",
-    srcs = ["base.cc"],
-    hdrs = ["base.h"],
+    name = "item",
+    srcs = ["item.cc"],
+    hdrs = ["item.h"],
     deps = [
         "@yacl//yacl/utils/spi",
+    ],
+)
+
+yacl_cc_library(
+    name = "item_manipulator",
+    hdrs = ["item_manipulator.h"],
+    deps = [
+        ":item",
     ],
 )
 
@@ -26,7 +35,7 @@ yacl_cc_library(
     name = "encryptor",
     hdrs = ["encryptor.h"],
     deps = [
-        ":base",
+        ":item",
     ],
 )
 
@@ -34,7 +43,7 @@ yacl_cc_library(
     name = "decryptor",
     hdrs = ["decryptor.h"],
     deps = [
-        ":base",
+        ":item",
     ],
 )
 
@@ -46,20 +55,20 @@ yacl_cc_library(
         "word_evaluator.h",
     ],
     deps = [
-        ":base",
+        ":item",
     ],
 )
 
 yacl_cc_library(
     name = "encoder",
     srcs = ["encoder.h"],
-    deps = [":base"],
+    deps = [":item"],
 )
 
 yacl_cc_test(
-    name = "base_test",
-    srcs = ["base_test.cc"],
+    name = "item_test",
+    srcs = ["item_test.cc"],
     deps = [
-        ":base",
+        ":item",
     ],
 )

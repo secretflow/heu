@@ -20,7 +20,6 @@
 #include <string>
 
 #include "yacl/base/buffer.h"
-#include "yacl/base/byte_container_view.h"
 #include "yacl/utils/spi/spi_factory.h"
 
 #include "heu/spi/he/binary_evaluator.h"
@@ -28,17 +27,11 @@
 #include "heu/spi/he/encoder.h"
 #include "heu/spi/he/encryptor.h"
 #include "heu/spi/he/gate_evaluator.h"
+#include "heu/spi/he/item.h"
+#include "heu/spi/he/item_manipulator.h"
 #include "heu/spi/he/word_evaluator.h"
 
 namespace heu::lib::spi {
-
-enum class HeKeyType {
-  PublicKey,
-  SecretKey,
-  RelinKeys,
-  GaloisKeys,
-  BootstrappingKey,
-};
 
 class HeKit {
  public:
@@ -49,52 +42,43 @@ class HeKit {
   virtual std::string GetLibraryName() const = 0;
   virtual std::string GetSchemaName() const = 0;
 
-  virtual Item GetPublicKey() = 0;  // equal to GetKey(HeKeyType::PublicKey);
-  virtual Item GetSecretKey() = 0;
-  virtual Item GetKey(HeKeyType key_type) = 0;
+  // equal to GetKey(HeKeyType::PublicKey);
+  virtual Item GetPublicKey() const = 0;
+  virtual Item GetSecretKey() const = 0;
+  virtual Item GetKey(HeKeyType key_type) const = 0;
 
   //===   Get Operators   ===//
 
-  virtual std::shared_ptr<Encryptor> GetEncryptor() const;
-  virtual std::shared_ptr<Decryptor> GetDecryptor() const;
-  virtual std::shared_ptr<WordEvaluator> GetWordEvaluator() const;
-  virtual std::shared_ptr<GateEvaluator> GetGateEvaluator() const;
-  virtual std::shared_ptr<BinaryEvaluator> GetBinaryEvaluator() const;
+  // The state transition diagram:
+  // 1. Cleartext --(encoder)--> Plaintext --(Encryptor)--> Ciphertext
+  // 2. Plaintext/Ciphertext --(Evaluator)--> Plaintext/Ciphertext
+  // 3. Ciphertext --(Decryptor)--> Plaintext --(Encoder)--> Cleartext
+  // 4. ItemManipulator --> Apply operations to Items
 
-  //===   Get Encoders   ===//
+  virtual std::shared_ptr<Encryptor> GetEncryptor() const = 0;
+  virtual std::shared_ptr<Decryptor> GetDecryptor() const = 0;
+  virtual std::shared_ptr<WordEvaluator> GetWordEvaluator() const = 0;
+  virtual std::shared_ptr<GateEvaluator> GetGateEvaluator() const = 0;
+  virtual std::shared_ptr<BinaryEvaluator> GetBinaryEvaluator() const = 0;
+  virtual std::shared_ptr<ItemManipulator> GetItemManipulator() const = 0;
 
-  virtual std::shared_ptr<TrivialEncoder> GetTrivialEncoder() const = 0;
-  virtual std::shared_ptr<BatchEncoder> GetBatchEncoder() const = 0;
+  template <typename... T>
+  std::shared_ptr<Encoder> GetEncoder(T&&... encoder_args) const {
+    return CreateEncoder({std::forward<T>(encoder_args)...});
+  }
 
-  /*====================================//
-   *          I/O for HE Objects
-   *
-   *  以下所有函数的入参出参均支持如下形式：
-   *  1. Plaintext
-   *  2. Plaintext array
-   *  3. Ciphertext
-   *  4. Ciphertext array
-   *  5. All kinds of keys
-   *====================================*/
+  //===  I/O for HeKit itself  ===//
 
-  // Make a deep copy of obj.
-  virtual Item Clone(const Item& obj) const = 0;
+  // Print context info, key info, and so on
+  virtual std::string ToString() const = 0;
 
-  // Convert Item to a human-readable string
-  virtual std::string ToString(const Item& x) const = 0;
+  // Serialize HeKit itself, without key
+  // Save HeKit's param and context to Buffer
+  // 保存 HeKit 的参数（即 Context）以便其它参与者可以恢复出相同的 HeKit
+  virtual yacl::Buffer Serialize() const = 0;
+  virtual size_t Serialize(uint8_t* buf, size_t buf_len) const = 0;
 
-  // Serialize HE objects to buffer.
-  virtual yacl::Buffer Serialize(const Item& x) const = 0;
-  // Serialize HE objects to already allocated buffer.
-  // If buf is nullptr, then calc approximate serialize size only.
-  // And the approximate size is always larger than actual size.
-  // @return: the actual size of serialized buffer
-  virtual size_t Serialize(const Item& x, uint8_t* buf,
-                           size_t buf_len) const = 0;
-
-  virtual Item Deserialize(yacl::ByteContainerView buffer) const = 0;
-
-  // Save key to buffer (maybe in compressed format)
+  // Special api for serializing keys (maybe in compressed format)
   // For some algorithms, the serialized string returned by `SaveKey` has a
   // higher compression rate than `Serialize(hekit->GetKey())`. This is because
   // the pseudorandom part of some keys can be instead stored as a seed.
@@ -112,31 +96,12 @@ class HeKit {
   // HeKit 中的 Key 是只读的，不提供重置 Key 的机制，因此没有 `LoadKey()`
   // 之类的接口， 想要反序列化 Key，请将 Key 的二进制串作为参数传给工厂，
   // 从而得到新的、有相同 Key 的 HeKit
-  virtual yacl::Buffer SaveKey(HeKeyType key_type) const = 0;
-  virtual size_t SaveKey(HeKeyType key_type, uint8_t* buf,
-                         size_t buf_len) const = 0;
-
-  //===  I/O for HeKit itself  ===//
-
-  // Serialize HeKit itself, without key
-  // Save HeKit's param and context to Buffer
-  // 保存 HeKit 的参数（即 Context）以便其它参与者可以恢复出相同的 HeKit
-  virtual yacl::Buffer Save() const = 0;
-  virtual size_t Save(uint8_t* buf, size_t buf_len) const = 0;
-
-  // Print context info, key info, and so on
-  virtual std::string ToString() const = 0;
+  virtual yacl::Buffer Serialize(HeKeyType key_type) const = 0;
+  virtual size_t Serialize(HeKeyType key_type, uint8_t* buf,
+                           size_t buf_len) const = 0;
 
  protected:
-  // Generate all needed keys according to args.
-  // Or recover keys from previous serialized buffer
-  virtual void SetupContext(const SpiArgs& args) = 0;
-
-  std::shared_ptr<Encryptor> encryptor_;
-  std::shared_ptr<Decryptor> decryptor_;
-  std::shared_ptr<WordEvaluator> word_evaluator_;
-  std::shared_ptr<GateEvaluator> gate_evaluator_;
-  std::shared_ptr<BinaryEvaluator> binary_evaluator_;
+  virtual std::shared_ptr<Encoder> CreateEncoder(const SpiArgs&) const = 0;
 };
 
 class HeFactory final : public yacl::SpiFactoryBase<HeKit> {
