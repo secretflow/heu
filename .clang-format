@@ -17,3 +17,6 @@ IncludeCategories:
 SeparateDefinitionBlocks: Always
 EmptyLineBeforeAccessModifier: LogicalBlock
 InsertNewlineAtEOF: true
+PointerAlignment: Right
+ReferenceAlignment: Pointer
+QualifierAlignment: Left

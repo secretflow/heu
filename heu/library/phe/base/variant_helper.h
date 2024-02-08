@@ -44,7 +44,7 @@ Overloaded(Ts...) -> Overloaded<Ts...>;
 
 #define HE_DISPATCH_RET(T, ...)                        \
   ::heu::lib::phe::Overloaded {                        \
-    [](const std::monostate&) -> T {                   \
+    [](const std::monostate &) -> T {                  \
       YACL_THROW("illegal variable (no schema info)"); \
     },                                                 \
         HE_FOR_EACH(__VA_ARGS__),                      \

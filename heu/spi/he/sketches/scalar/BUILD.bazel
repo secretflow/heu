@@ -1,4 +1,4 @@
-load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library")
 
 yacl_cc_library(
     name = "scalar",
@@ -6,6 +6,7 @@ yacl_cc_library(
     deps = [
         ":decryptor",
         ":encryptor",
+        ":item_manipulator",
         ":word_evaluator",
     ],
 )
@@ -47,5 +48,17 @@ yacl_cc_library(
     ],
     deps = [
         ":helpful_macros",
+    ],
+)
+
+yacl_cc_library(
+    name = "item_manipulator",
+    hdrs = [
+        "item_manipulator.h",
+    ],
+    deps = [
+        ":helpful_macros",
+        "//heu/spi/he/sketches/common:item_manipulator",
+        "@yacl//yacl/utils/spi/sketch",
     ],
 )

@@ -16,7 +16,7 @@
 
 #include "gtest/gtest.h"
 
-#include "heu/spi/he/sketches/scalar/test/test_util.h"
+#include "heu/spi/he/sketches/scalar/test/dummy_ops.h"
 
 namespace heu::lib::spi::test {
 
@@ -26,12 +26,12 @@ class TestDecryptor : public ::testing::Test {
 };
 
 TEST_F(TestDecryptor, TestDec) {
-  Item ct = {DummyCt("1"), ItemType::Ciphertext};
+  Item ct = {DummyCt("1"), ContentType::Ciphertext};
   auto pt = dec_->Decrypt(ct);
   EXPECT_TRUE(pt.IsPlaintext());
   EXPECT_EQ(pt.As<DummyPt>().Id(), "Dec(ct1)");
 
-  ct = {DummyCt("2"), ItemType::Ciphertext};
+  ct = {DummyCt("2"), ContentType::Ciphertext};
   pt.MarkAsCiphertext();
   dec_->Decrypt(ct, &pt);
   EXPECT_TRUE(pt.IsPlaintext());
@@ -39,7 +39,7 @@ TEST_F(TestDecryptor, TestDec) {
 
   // vector call
   auto cts = Item::Take(std::vector{DummyCt("1"), DummyCt("2"), DummyCt("3")},
-                        ItemType::Ciphertext);
+                        ContentType::Ciphertext);
   auto pts = dec_->Decrypt(cts);
   EXPECT_FALSE(pts.IsCiphertext());
   ExpectItemEq<DummyPt>(pts, {"Dec(ct1)", "Dec(ct2)", "Dec(ct3)"});

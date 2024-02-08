@@ -1,0 +1,54 @@
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+yacl_cc_library(
+    name = "common",
+    deps = [
+        ":batch_encoder",
+        ":he_kit",
+        ":item_manipulator",
+        ":plain_encoder",
+    ],
+)
+
+yacl_cc_library(
+    name = "placeholder",
+    hdrs = ["placeholder.h"],
+)
+
+yacl_cc_library(
+    name = "he_kit",
+    hdrs = ["he_kit.h"],
+    deps = [
+        ":placeholder",
+        "//heu/spi/he",
+    ],
+)
+
+yacl_cc_library(
+    name = "item_manipulator",
+    hdrs = ["item_manipulator.h"],
+    deps = [
+        ":placeholder",
+        "//heu/spi/he",
+    ],
+)
+
+yacl_cc_library(
+    name = "encoder",
+    hdrs = ["encoder.h"],
+    deps = ["//heu/spi/he"],
+)
+
+yacl_cc_library(
+    name = "plain_encoder",
+    hdrs = ["plain_encoder.h"],
+    deps = [":encoder"],
+)
+
+yacl_cc_library(
+    name = "batch_encoder",
+    hdrs = ["batch_encoder.h"],
+    deps = [":encoder"],
+)

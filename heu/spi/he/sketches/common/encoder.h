@@ -14,18 +14,26 @@
 
 #pragma once
 
-#include "heu/spi/he/item.h"
+#include <cstdint>
+#include <string_view>
+
+#include "heu/spi/he/encoder.h"
 
 namespace heu::lib::spi {
 
-class Decryptor {
+template <typename PlaintextT>
+class EncoderSketch : public Encoder {
  public:
-  virtual ~Decryptor() = default;
+  virtual PlaintextT FromStringT(std::string_view pt_str) const = 0;
 
-  // CT -> PT
-  // CTs -> PTs
-  virtual void Decrypt(const Item& ct, Item* out) const = 0;
-  virtual Item Decrypt(const Item& ct) const = 0;
+  int64_t GetCleartextCount(const Item &plaintexts) const override {
+    return plaintexts.Size<PlaintextT>() * SlotCount();
+  }
+
+ private:
+  Item FromString(std::string_view plaintext) const override {
+    return {FromStringT(plaintext), ContentType::Plaintext};
+  }
 };
 
 }  // namespace heu::lib::spi

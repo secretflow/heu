@@ -45,7 +45,7 @@ class EncryptorScalarSketch : public Encryptor {
   DefineUnaryFuncPT(SemiEncrypt);
 
   Item EncryptZero() const override {
-    return Item(EncryptZeroT(), ItemType::Ciphertext);
+    return Item(EncryptZeroT(), ContentType::Ciphertext);
   }
 
   Item EncryptZero(size_t count) const override {
@@ -55,7 +55,7 @@ class EncryptorScalarSketch : public Encryptor {
         res[i] = EncryptZeroT();
       }
     });
-    return Item::Take(std::move(res), ItemType::Ciphertext);
+    return Item::Take(std::move(res), ContentType::Ciphertext);
   }
 
   void EncryptWithAudit(const Item &x, Item *ct_out,

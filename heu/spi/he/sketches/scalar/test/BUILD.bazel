@@ -1,11 +1,14 @@
 load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
 
 yacl_cc_library(
-    name = "test_util",
+    name = "dummy_lib",
     hdrs = [
-        "test_util.h",
+        "dummy_encoder.h",
+        "dummy_hekit.h",
+        "dummy_ops.h",
     ],
     deps = [
+        "//heu/spi/he/sketches/common",
         "//heu/spi/he/sketches/scalar",
     ],
 )
@@ -14,7 +17,7 @@ yacl_cc_test(
     name = "scalar_call_test",
     srcs = ["scalar_call_test.cc"],
     deps = [
-        ":test_util",
+        ":dummy_lib",
     ],
 )
 
@@ -22,7 +25,17 @@ yacl_cc_test(
     name = "vec_call_test",
     srcs = ["vec_call_test.cc"],
     deps = [
-        ":test_util",
+        ":dummy_lib",
+    ],
+)
+
+yacl_cc_test(
+    name = "encoder_test",
+    srcs = [
+        "test_encoder.cc",
+    ],
+    deps = [
+        ":dummy_lib",
     ],
 )
 
@@ -32,7 +45,7 @@ yacl_cc_test(
         "test_encryptor.cc",
     ],
     deps = [
-        ":test_util",
+        ":dummy_lib",
     ],
 )
 
@@ -42,6 +55,16 @@ yacl_cc_test(
         "test_decryptor.cc",
     ],
     deps = [
-        ":test_util",
+        ":dummy_lib",
+    ],
+)
+
+yacl_cc_test(
+    name = "hekit_test",
+    srcs = [
+        "test_hekit.cc",
+    ],
+    deps = [
+        ":dummy_lib",
     ],
 )

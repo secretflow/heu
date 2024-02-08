@@ -14,8 +14,10 @@
 
 namespace heu::lib::spi {
 
-#define GetItemType(T) \
-  std::is_same_v<CiphertextT, T> ? ItemType::Ciphertext : ItemType::Plaintext
+#define RuntimeType(T)                                      \
+  std::is_same_v<CiphertextT, T>  ? ContentType::Ciphertext \
+  : std::is_same_v<PlaintextT, T> ? ContentType::Plaintext  \
+                                  : ContentType::Others
 
 // Call:
 //   virtual auto FuncName(const T& x) const = 0;
@@ -33,9 +35,9 @@ namespace heu::lib::spi {
           res[i] = FuncName(xsp[i], ##__VA_ARGS__);                           \
         }                                                                     \
       });                                                                     \
-      return Item::Take(std::move(res), GetItemType(RES_T));                  \
+      return Item::Take(std::move(res), RuntimeType(RES_T));                  \
     } else {                                                                  \
-      return {FuncName(x.As<T>(), ##__VA_ARGS__), GetItemType(RES_T)};        \
+      return {FuncName(x.As<T>(), ##__VA_ARGS__), RuntimeType(RES_T)};        \
     }                                                                         \
   } while (0)
 
@@ -65,7 +67,7 @@ namespace heu::lib::spi {
                                                                               \
     switch (x, y) {                                                           \
       case yacl::OperandType::Scalar2Scalar: {                                \
-        return {FuncName(x.As<TX>(), y.As<TY>()), GetItemType(RES_T)};        \
+        return {FuncName(x.As<TX>(), y.As<TY>()), RuntimeType(RES_T)};        \
       }                                                                       \
       case yacl::OperandType::Vector2Vector: {                                \
         auto xsp = x.AsSpan<TX>();                                            \
@@ -82,7 +84,7 @@ namespace heu::lib::spi {
             res[i] = FuncName(xsp[i], ysp[i]);                                \
           }                                                                   \
         });                                                                   \
-        return Item::Take(std::move(res), GetItemType(RES_T));                \
+        return Item::Take(std::move(res), RuntimeType(RES_T));                \
       }                                                                       \
       default:                                                                \
         YACL_THROW("Scalar sketch method [{}] doesn't support broadcast now", \
@@ -127,13 +129,16 @@ namespace heu::lib::spi {
 //   virtual Item FuncName(const Item& x) const = 0;
 // To:
 //   virtual T FuncName(const T& x) const = 0;
-#define DefineUnaryFuncBoth(FuncName)           \
-  Item FuncName(const Item& x) const override { \
-    if (x.IsCiphertext()) {                     \
-      CallUnaryFunc(FuncName, CiphertextT, x);  \
-    } else {                                    \
-      CallUnaryFunc(FuncName, PlaintextT, x);   \
-    }                                           \
+#define DefineUnaryFuncBoth(FuncName)                                \
+  Item FuncName(const Item& x) const override {                      \
+    if (x.IsCiphertext()) {                                          \
+      CallUnaryFunc(FuncName, CiphertextT, x);                       \
+    } else if (x.IsPlaintext()) {                                    \
+      CallUnaryFunc(FuncName, PlaintextT, x);                        \
+    } else {                                                         \
+      YACL_THROW("Function {}: Unsupported item type {}", #FuncName, \
+                 x.GetContentType());                                \
+    }                                                                \
   }
 
 #define DefineUnaryFuncCT(FuncName)                                          \
@@ -167,7 +172,7 @@ namespace heu::lib::spi {
     } else {                                                              \
       FuncName(x.As<TX>(), out->As<TY*>());                               \
     };                                                                    \
-    out->MarkAs(GetItemType(TY));                                         \
+    out->MarkAs(RuntimeType(TY));                                         \
   }
 
 // From:

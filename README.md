@@ -33,6 +33,100 @@ Each algorithm includes a variety of different implementations, and some impleme
 hardware accelerators. For more details, please refer to
 the [Document](https://www.secretflow.org.cn/docs/heu/latest/zh-Hans/getting_started/algo_choice )
 
+
+### Layout
+
+```text
+.
+├── .circleci  # CI/CD configuration files for circleci
+├── .github    # Configuration files for GitHub
+├── docs       # HEU documentation in Sphinx format
+├── heu        # All the implementation code for HEU
+│   ├── algorithms     # Holds the implementations of all algorithms
+│   ├── experimental   # Contains some standalone experimental code
+│   ├── library        # Implements the application layer functionality of the HE Library
+│   │   ├── algorithms # Legacy algorithms not yet migrated to SPI (this directory will be deprecated after migration)
+│   │   ├── benchmark  # Contains benchmarking code
+│   │   ├── numpy      # Implements a set of Numpy-like interfaces
+│   │   └── phe        # PHE Dispatcher implementation (to be deprecated, with replaced by SPI)
+│   ├── pylib          # Python bindings
+│   └── spi            # Defines the HEU software and hardware access layer interface (SPI)
+│       ├── he         # Contains HE SPI and related Sketches
+│       └── poly       # Defines polynomial interfaces and related Sketches
+└── third_party        # Contains third-party libraries required for compilation; libraries will be automatically downloaded during build
+
+```
+
+HEU is currently transitioning from the old Dispatcher architecture to an SPI-based framework. The
+main modules and their code path mappings for both architectures are as follows:
+
+Dispatcher-based architecture:
+
+```text
+     Python APIs (Python binding)
+          PATH: heu/pylib
+                  │
+                  ├───────────────────┐
+                  │                   ▼
+                  │    Tensor Lib with Numpy-like API
+                  │        PATH: heu/library/numpy
+                  │                   │
+                  │     ┌─────────────┘
+                  │     │
+                  ▼     ▼
+     PHE Dispatcher & PHE C++ API
+        PATH: heu/library/phe
+                  │
+                  │
+                  ▼
+ Various PHE algorithm implementations
+     PATH: heu/library/algorithms
+```
+
+SPI-based architecture:
+
+```text
+    Python APIs (Python binding)
+         PATH: heu/pylib
+                 │
+                 ├───────────────────┐
+                 │                   ▼
+                 │    Tensor Lib with Numpy-like API
+                 │           PATH: heu/numpy
+                 │                   │
+                 │ ┌─────────────────┘
+                 │ │
+                 ▼ ▼
+         HE SPI (C++ APIs)
+         PATH: heu/spi/he
+                 │
+                 │
+                 ▼
+ Various HE algorithm implementations
+        PATH: heu/algorithms
+```
+
+For a more detailed introduction to SPI, please [click here](heu/spi/README.md)
+
+### 2024 Work Plan
+
+Architecture Transition Milestones:
+
+- [x] HE SPI: Designed a unified interface that supports all PHE/FHE algorithms.
+- [ ] Implementation of SPI Sketches. (in progress)
+- [ ] Migration of existing algorithms to SPI.
+- [ ] Automated testing framework for PHE/FHE algorithms.
+- [ ] Transition of Tensor Lib's underlying layer from Dispatcher to SPI.
+- [ ] Transition of PyLib's underlying layer from Dispatcher to SPI.
+
+FHE Milestones:
+
+- [ ] Integration of Microsoft SEAL
+- [ ] Integration of OpenFHE.
+- [ ] Support for GPU-accelerated CKKS algorithm.
+- [ ] Provides FHE interfaces in Tensor Lib.
+- [ ] Provides FHE interfaces in PyLib.
+
 ## Compile and install
 
 ### Environmental requirements
