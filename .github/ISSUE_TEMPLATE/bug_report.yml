@@ -14,25 +14,8 @@ body:
         - Support
         - Usability
         - Documentation
-        - Currentness/Accuracy
+        - Correctness/Accuracy
         - Others
-    validations:
-      required: true
-  - type: dropdown
-    id: head
-    attributes:
-      label: Have you reproduced the bug with HEU HEAD?
-      description: It is strongly suggested that you have reproduced the bug
-        with latest HEU code
-      options: ['Yes', 'No']
-    validations:
-      required: true
-  - type: dropdown
-    id: search
-    attributes:
-      label: Have you searched existing issues?
-      description: To prevent duplicated reports, it is strongly suggested that you search existing issues first.
-      options: ['Yes', 'No']
     validations:
       required: true
   - type: input
