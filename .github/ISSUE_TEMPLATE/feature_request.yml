@@ -50,6 +50,6 @@ body:
     id: context
     attributes:
       label: Additional context
-      values: Add any other context or screenshots about the feature request here.
+      value: Add any other context or screenshots about the feature request here.
     validations:
       required: false
