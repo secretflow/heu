@@ -13,23 +13,16 @@ body:
         - Performance
         - Usability
         - Documentation
-        - Currentness/Accuracy
+        - HE Algorithms
+        - Language binding
         - Others
-    validations:
-      required: true
-  - type: dropdown
-    id: head
-    attributes:
-      label: Have you searched existing issues?
-      description: To prevent duplicated reports, it is strongly suggested that you search existing issues first.
-      options: ['Yes', 'No']
     validations:
       required: true
   - type: textarea
     id: describe
     attributes:
-      label: Is your feature request related to a problem? Please describe
-      value: A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+      label: Describe the context
+      value: A clear and concise description of the context in which the feature will be used.
     validations:
       required: true
   - type: textarea
