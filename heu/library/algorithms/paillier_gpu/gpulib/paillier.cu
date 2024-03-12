@@ -397,7 +397,7 @@ void cudainit() {
 }
 
 //*********************************************gpu
-//api*****************************************
+// api*****************************************
 int gpu_paillier_enc_bk(h_paillier_ciphertext_t* res, h_paillier_pubkey_t* pub,
                         h_paillier_plaintext_t* pt, h_paillier_random_t* rand,
                         unsigned int count) {
