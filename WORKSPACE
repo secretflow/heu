@@ -107,3 +107,9 @@ load("@rules_cuda//cuda:repositories.bzl", "register_detected_cuda_toolchains", 
 rules_cuda_dependencies()
 
 register_detected_cuda_toolchains()
+
+#### for other third-party libs ####
+
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
