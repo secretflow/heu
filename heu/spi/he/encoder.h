@@ -21,13 +21,10 @@
 #include <vector>
 
 #include "absl/types/span.h"
-#include "yacl/math/mpint/mp_int.h"
 
 #include "heu/spi/he/item.h"
 
-namespace heu::lib::spi {
-
-using MPInt = yacl::math::MPInt;
+namespace heu::spi {
 
 // Encode cleartext into plaintext
 // Cleartext --(encoder)--> Plaintext --(Encryptor)--> Ciphertext
@@ -38,62 +35,101 @@ class Encoder {
   // Print encoder info, include encoding params
   virtual std::string ToString() const = 0;
 
-  // directly parse plaintext from string, skip encode
-  virtual Item FromString(std::string_view plaintext) const = 0;
-
   // The maximum number of cleartexts that can be encoded in a single plaintext
   // BatchEncoder: SlotCount() > 1
   // PlainEncoder: SlotCount() == 1
   virtual size_t SlotCount() const = 0;
-
-  // if size(message) <= SlotCount(), encode the entire message into a single
-  // plaintext.
-  // Otherwise, encode it into ⌈size(message)/SlotCount()⌉ separate plaintexts.
-  virtual Item Encode(absl::Span<const int64_t> message) const = 0;
-  virtual Item Encode(absl::Span<const uint64_t> message) const = 0;
-  virtual Item Encode(absl::Span<const double> message) const = 0;
-  virtual Item Encode(absl::Span<const std::complex<double>> message) const = 0;
 
   // Get the number of cleartexts contained within the Plaintext(s), where the
   // result is always an integer multiple of SlotCount().
   //
   // Please note that automatically padded cleartexts are also counted. For
   // example, if SlotCount() equals 4096, then
-  // GetCleartextCount(Encode(...4097 Cleartexts...)) would return 8192.
-  virtual int64_t GetCleartextCount(const Item& plaintexts) const = 0;
+  // CleartextCount(Encode(...4097 Cleartexts...)) would return 8192.
+  virtual int64_t CleartextCount(const Item &plaintexts) const = 0;
 
-  virtual void Decode(const Item& plaintexts,
+  // ========================================= //
+  //         Function for encoding             //
+  // ========================================= //
+
+  // Group 1. Functions for manual encoding.
+
+  // directly construct plaintext from string, skip encoding
+  virtual Item FromString(std::string_view plaintext) const = 0;
+
+  // Group 2. Functions for batch encoding.
+
+  // if size(message) <= SlotCount(), encode the entire message into a single
+  // plaintext. e.g., Item(Plaintext())
+  // Otherwise, encode it into ⌈size(message)/SlotCount()⌉ separate plaintexts.
+  // e.g., Item(std::vector<Plaintext>())
+  virtual Item Encode(absl::Span<const int64_t> message) const = 0;
+  virtual Item Encode(absl::Span<const uint64_t> message) const = 0;
+  virtual Item Encode(absl::Span<const double> message) const = 0;
+  virtual Item Encode(absl::Span<const std::complex<double>> message) const = 0;
+
+  // Group 3. Functions for single scalar encoding.
+
+  // Encoding a single cleartext.
+  //
+  // For the plain encoder, the following function acts as syntactic sugar, its
+  // function is completely identical to the Encoder() with a vector of
+  // length 1.
+  //
+  // For example, assume 'a' is an int64 number, the below two functions return
+  // the same value:
+  //  * Encode(a)
+  //  * Encode(std::vector<int64_t>{a})
+  //
+  // For the batch encoder, exercise caution when using the following methods,
+  // as different library implementations may not be consistent, typically
+  // exhibiting three behaviors:
+  //  1. Replicate the scalar multiple times, filling each slot and then
+  //     encoding.
+  //  2. Append zeros to fill all slots and then encode.
+  //  3. Does not support scalar encoding and throws an exception at runtime.
+  //
+  // The actual functionality will depend on the specific library that is being
+  // called.
+
+  virtual Item Encode(int64_t message) const = 0;
+  virtual Item Encode(uint64_t message) const = 0;
+  virtual Item Encode(double message) const = 0;
+  virtual Item Encode(const std::complex<double> &message) const = 0;
+
+  // ========================================= //
+  //         Function for decoding             //
+  // ========================================= //
+
+  // Group 1. Functions for batch decoding.
+
+  virtual void Decode(const Item &plaintexts,
                       absl::Span<int64_t> out_message) const = 0;
-  virtual void Decode(const Item& plaintexts,
+  virtual void Decode(const Item &plaintexts,
                       absl::Span<uint64_t> out_message) const = 0;
-  virtual void Decode(const Item& plaintexts,
+  virtual void Decode(const Item &plaintexts,
                       absl::Span<double> out_message) const = 0;
-  virtual void Decode(const Item& plaintexts,
+  virtual void Decode(const Item &plaintexts,
                       absl::Span<std::complex<double>> out_message) const = 0;
 
-  virtual std::vector<int64_t> DecodeInt64(const Item& plaintexts) const = 0;
-  virtual std::vector<uint64_t> DecodeUint64(const Item& plaintexts) const = 0;
-  virtual std::vector<double> DecodeDouble(const Item& plaintexts) const = 0;
+  virtual std::vector<int64_t> DecodeInt64(const Item &plaintexts) const = 0;
+  virtual std::vector<uint64_t> DecodeUint64(const Item &plaintexts) const = 0;
+  virtual std::vector<double> DecodeDouble(const Item &plaintexts) const = 0;
   virtual std::vector<std::complex<double>> DecodeComplex(
-      const Item& plaintexts) const = 0;
+      const Item &plaintexts) const = 0;
 
-  // ==================================================================== //
-  // <<<  The following functions are only supported by PlainEncoder  >>> //
-  // <<<       If you are using BatchEncoder, do not call them        >>> //
-  // ==================================================================== //
+  // Group 2. Functions for single scalar decoding.
 
-  virtual Item EncodeScalar(int64_t message) const = 0;
-  virtual Item EncodeScalar(uint64_t message) const = 0;
-  virtual Item EncodeScalar(double message) const = 0;
-  virtual Item EncodeScalar(const std::complex<double>& message) const = 0;
+  // Decode a single cleartext.
+  // Must have CleartextCount(plaintext) == 1.
+  // So if you are using batch encoders, do not call them
+  // The following functions are only supported by plain encoders.
 
-  // Decode single cleartext.
-  // Must have GetCleartextCount(plaintext) == 1.
-  virtual int64_t DecodeScalarInt64(const Item& plaintext) const = 0;
-  virtual uint64_t DecodeScalarUint64(const Item& plaintext) const = 0;
-  virtual double DecodeScalarDouble(const Item& plaintext) const = 0;
+  virtual int64_t DecodeScalarInt64(const Item &plaintext) const = 0;
+  virtual uint64_t DecodeScalarUint64(const Item &plaintext) const = 0;
+  virtual double DecodeScalarDouble(const Item &plaintext) const = 0;
   virtual std::complex<double> DecodeScalarComplex(
-      const Item& plaintext) const = 0;
+      const Item &plaintext) const = 0;
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

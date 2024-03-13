@@ -37,7 +37,7 @@ T MakeMask(size_t bw) {
   }
 }
 
-bool transform_to_ntt_inplace(RLWEPt& pt, const seal::SEALContext& context) {
+bool transform_to_ntt_inplace(RLWEPt &pt, const seal::SEALContext &context) {
   using namespace seal::util;
   auto cntxt_data = context.get_context_data(pt.parms_id());
   YACL_ENFORCE(cntxt_data != nullptr);
@@ -97,7 +97,7 @@ class A2HTest : public ::testing::TestWithParam<size_t> {
   }
 
   template <typename T>
-  void UniformRand(T* dst, size_t n, size_t bw = 0) {
+  void UniformRand(T *dst, size_t n, size_t bw = 0) {
     T mask = static_cast<T>(-1);
     if (bw > 0 && bw < sizeof(T) * 8) {
       mask = (static_cast<T>(1) << bw) - 1;
@@ -106,13 +106,13 @@ class A2HTest : public ::testing::TestWithParam<size_t> {
     std::generate_n(dst, n, [&]() { return uniform(rdv_) & mask; });
   }
 
-  void UniformRand(uint128_t* dst, size_t n, size_t bw) {
+  void UniformRand(uint128_t *dst, size_t n, size_t bw) {
     uint64_t mask = static_cast<uint64_t>(-1);
     if (bw > 0 && bw < 128) {
       mask = (1ULL << (bw - 64)) - 1;
     }
 
-    uint64_t* cast = reinterpret_cast<uint64_t*>(dst);
+    uint64_t *cast = reinterpret_cast<uint64_t *>(dst);
     UniformRand(cast, 2 * n);
     for (size_t i = 1; i < 2 * n; i += 2) {
       cast[i] &= mask;
@@ -148,12 +148,12 @@ TEST_P(A2HTest, Basic) {
   seal::Evaluator evaluator(*context_);
   LWEDecryptor decryptor(*lwe_sk_, *context_, ms_helper_);
   ShareConverter shr_conv(*context_, ms_helper_);
-  auto prng = [this](uint8_t* out, size_t n) { UniformRand(out, n); };
+  auto prng = [this](uint8_t *out, size_t n) { UniformRand(out, n); };
 
   if (bitlen_ <= 32) {
     using Scalar = uint32_t;
     auto mask = mask32;
-    auto& vec = vec_u32;
+    auto &vec = vec_u32;
     vec.resize(n);
     UniformRand(vec.data(), vec.size(), bitlen_);
 
@@ -178,7 +178,7 @@ TEST_P(A2HTest, Basic) {
   } else if (bitlen_ <= 64) {
     using Scalar = uint64_t;
     auto mask = mask64;
-    auto& vec = vec_u64;
+    auto &vec = vec_u64;
     vec.resize(n);
     UniformRand(vec.data(), vec.size(), bitlen_);
 
@@ -203,7 +203,7 @@ TEST_P(A2HTest, Basic) {
   } else if (bitlen_ <= 128) {
     using Scalar = uint128_t;
     auto mask = mask128;
-    auto& vec = vec_u128;
+    auto &vec = vec_u128;
     vec.resize(n);
     UniformRand(vec.data(), vec.size(), bitlen_);
 

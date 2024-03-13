@@ -7,7 +7,7 @@
 
 namespace heu::lib::algorithms::paillier_ipcl {
 
-void KeyGenerator::Generate(int key_size, SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(int key_size, SecretKey *sk, PublicKey *pk) {
   ipcl::KeyPair key_pair;
   bool enable_DJN = true;  // enable DJN scheme by default
 
@@ -16,7 +16,7 @@ void KeyGenerator::Generate(int key_size, SecretKey* sk, PublicKey* pk) {
   sk->Init(key_pair.priv_key);
 }
 
-void KeyGenerator::Generate(SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(SecretKey *sk, PublicKey *pk) {
   Generate(2048, sk, pk);
 }
 

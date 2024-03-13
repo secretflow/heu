@@ -18,7 +18,7 @@
 
 #include "heu/spi/he/sketches/scalar/test/dummy_ops.h"
 
-namespace heu::lib::spi::test {
+namespace heu::spi::test {
 
 class TestEncryptor : public ::testing::Test {
  protected:
@@ -91,4 +91,4 @@ TEST_F(TestEncryptor, TestEncVector) {
   EXPECT_EQ(audit, "rand(pt1)||rand(pt2)||rand(pt3)");
 }
 
-}  // namespace heu::lib::spi::test
+}  // namespace heu::spi::test

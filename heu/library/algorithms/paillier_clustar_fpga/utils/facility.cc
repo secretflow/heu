@@ -25,12 +25,12 @@ namespace heu::lib::algorithms::paillier_clustar_fpga {
 
 void CMonoFacility::CipherHeuToFpga(ConstSpan<Ciphertext> input_span,
                                     const unsigned cipher_byte,
-                                    const std::shared_ptr<char>& pen,
-                                    const std::shared_ptr<char>& base,
-                                    const std::shared_ptr<char>& exp) {
-  char* pen_ptr = pen.get();
-  char* base_ptr = base.get();
-  char* exp_ptr = exp.get();
+                                    const std::shared_ptr<char> &pen,
+                                    const std::shared_ptr<char> &base,
+                                    const std::shared_ptr<char> &exp) {
+  char *pen_ptr = pen.get();
+  char *base_ptr = base.get();
+  char *exp_ptr = exp.get();
   unsigned cipher_base = CFPGATypes::CIPHER_BASE;
   size_t i = 0;
   for (auto item : input_span) {
@@ -44,12 +44,12 @@ void CMonoFacility::CipherHeuToFpga(ConstSpan<Ciphertext> input_span,
   }
 }
 
-void CMonoFacility::CipherFpgaToHeu(const std::shared_ptr<char>& pen,
-                                    const std::shared_ptr<char>& exp,
+void CMonoFacility::CipherFpgaToHeu(const std::shared_ptr<char> &pen,
+                                    const std::shared_ptr<char> &exp,
                                     size_t size, const unsigned cipher_byte,
-                                    std::vector<Ciphertext>& result) {
-  char* pen_ptr = pen.get();
-  char* exp_ptr = exp.get();
+                                    std::vector<Ciphertext> &result) {
+  char *pen_ptr = pen.get();
+  char *exp_ptr = exp.get();
   for (size_t i = 0; i < size; i++) {
     Ciphertext cur_cipher(cipher_byte);
     memcpy(cur_cipher.GetMantissa(), pen_ptr + i * cipher_byte, cipher_byte);
@@ -62,17 +62,17 @@ void CMonoFacility::CipherFpgaToHeu(const std::shared_ptr<char>& pen,
   }
 }
 
-void CMonoFacility::CipherVecToFpga(const std::vector<Ciphertext>& input_vec,
+void CMonoFacility::CipherVecToFpga(const std::vector<Ciphertext> &input_vec,
                                     const unsigned cipher_byte,
-                                    const std::shared_ptr<char>& pen,
-                                    const std::shared_ptr<char>& base,
-                                    const std::shared_ptr<char>& exp) {
-  char* pen_ptr = pen.get();
-  char* base_ptr = base.get();
-  char* exp_ptr = exp.get();
+                                    const std::shared_ptr<char> &pen,
+                                    const std::shared_ptr<char> &base,
+                                    const std::shared_ptr<char> &exp) {
+  char *pen_ptr = pen.get();
+  char *base_ptr = base.get();
+  char *exp_ptr = exp.get();
   unsigned cipher_base = CFPGATypes::CIPHER_BASE;
   size_t i = 0;
-  for (const Ciphertext& item : input_vec) {
+  for (const Ciphertext &item : input_vec) {
     memcpy(pen_ptr + i * cipher_byte, item.GetMantissa(), cipher_byte);
     memcpy(base_ptr + i * CFPGATypes::U_INT32_BYTE, &cipher_base,
            CFPGATypes::U_INT32_BYTE);
@@ -84,7 +84,7 @@ void CMonoFacility::CipherVecToFpga(const std::vector<Ciphertext>& input_vec,
 }
 
 void CMonoFacility::PlainHeuToFpga(ConstSpan<Plaintext> input_span,
-                                   const std::shared_ptr<int64_t[]>& pt_arr) {
+                                   const std::shared_ptr<int64_t[]> &pt_arr) {
   int cnt = 0;
   for (auto item : input_span) {
     int64_t item_val = item->Get<int64_t>();
@@ -92,10 +92,10 @@ void CMonoFacility::PlainHeuToFpga(ConstSpan<Plaintext> input_span,
   }
 }
 
-void CMonoFacility::PlainFpgaToHeu(const std::shared_ptr<char>& res_sptr,
+void CMonoFacility::PlainFpgaToHeu(const std::shared_ptr<char> &res_sptr,
                                    size_t res_size,
-                                   std::vector<Plaintext>& res_vec) {
-  char* result_ptr = res_sptr.get();
+                                   std::vector<Plaintext> &res_vec) {
+  char *result_ptr = res_sptr.get();
   for (size_t k = 0; k < res_size; k++) {
     // TODO: transform to int64_t, what if uint64_t?
     int64_t val = 0;
@@ -107,12 +107,12 @@ void CMonoFacility::PlainFpgaToHeu(const std::shared_ptr<char>& res_sptr,
   }
 }
 
-void CMonoFacility::FpgaEncode(char* pub_key_n, size_t pts_size,
+void CMonoFacility::FpgaEncode(char *pub_key_n, size_t pts_size,
                                const unsigned plain_bits,
-                               const std::shared_ptr<int64_t[]>& pt_arr,
-                               const std::shared_ptr<char>& res_fpn,
-                               const std::shared_ptr<char>& res_base_fpn,
-                               const std::shared_ptr<char>& res_exp_fpn) {
+                               const std::shared_ptr<int64_t[]> &pt_arr,
+                               const std::shared_ptr<char> &res_fpn,
+                               const std::shared_ptr<char> &res_base_fpn,
+                               const std::shared_ptr<char> &res_exp_fpn) {
   int32_t precision = -1;   // hard code to -1 here
   size_t fpga_dev_num = 0;  // no effect
   fpga_engine::encode_int(pt_arr.get(), res_fpn.get(), res_base_fpn.get(),
@@ -120,7 +120,7 @@ void CMonoFacility::FpgaEncode(char* pub_key_n, size_t pts_size,
                           plain_bits, pts_size, fpga_dev_num);
 }
 
-std::string CMonoFacility::CharToString(char* input_str, size_t size) {
+std::string CMonoFacility::CharToString(char *input_str, size_t size) {
   std::ostringstream ss;
   // from low to high
   for (int i = 0; i < static_cast<int>(size); i++) {

@@ -18,13 +18,13 @@
 
 namespace heu::lib::phe {
 
-void Plaintext::SetValue(const std::string& num, int radix) {
-  Visit([&](auto& pt) { FOR_EACH_TYPE(pt) pt.Set(num, radix); });
+void Plaintext::SetValue(const std::string &num, int radix) {
+  Visit([&](auto &pt) { FOR_EACH_TYPE(pt) pt.Set(num, radix); });
 }
 
 #define SIMPLE_FUNCTION_IMPL_RET(RET, NAME)  \
   RET Plaintext::NAME() const {              \
-    return Visit([](const auto& pt) -> RET { \
+    return Visit([](const auto &pt) -> RET { \
       FOR_EACH_TYPE(pt) return pt.NAME();    \
     });                                      \
   }
@@ -37,27 +37,27 @@ SIMPLE_FUNCTION_IMPL_RET(std::string, ToHexString)
 
 yacl::Buffer Plaintext::ToBytes(size_t byte_len,
                                 algorithms::Endian endian) const {
-  return Visit([&](const auto& pt) -> yacl::Buffer {
+  return Visit([&](const auto &pt) -> yacl::Buffer {
     FOR_EACH_TYPE(pt) return pt.ToBytes(byte_len, endian);
   });
 }
 
-void Plaintext::ToBytes(unsigned char* buf, size_t buf_len,
+void Plaintext::ToBytes(unsigned char *buf, size_t buf_len,
                         algorithms::Endian endian) const {
-  Visit([&](const auto& pt) {
+  Visit([&](const auto &pt) {
     FOR_EACH_TYPE(pt) pt.ToBytes(buf, buf_len, endian);
   });
 }
 
 #define OPERATOR_RET_IMPL(op, opb)                                       \
   Plaintext Plaintext::operator op(const Plaintext & operand2) const {   \
-    return Visit([&](const auto& pt) -> Plaintext {                      \
+    return Visit([&](const auto &pt) -> Plaintext {                      \
       FOR_EACH_TYPE(pt) return Plaintext(pt op operand2.AsTypeLike(pt)); \
     });                                                                  \
   }                                                                      \
                                                                          \
   Plaintext Plaintext::operator opb(const Plaintext & operand2) {        \
-    Visit([&](auto& pt) {                                                \
+    Visit([&](auto &pt) {                                                \
       FOR_EACH_TYPE(pt) pt opb operand2.AsTypeLike(pt);                  \
     });                                                                  \
     return *this;                                                        \
@@ -73,34 +73,34 @@ OPERATOR_RET_IMPL(|, |=)
 OPERATOR_RET_IMPL(^, ^=)
 
 Plaintext Plaintext::operator<<(size_t operand2) const {
-  return Visit([&](const auto& pt) -> Plaintext {
+  return Visit([&](const auto &pt) -> Plaintext {
     FOR_EACH_TYPE(pt) return Plaintext(pt << operand2);
   });
 }
 
 Plaintext Plaintext::operator>>(size_t operand2) const {
-  return Visit([&](const auto& pt) -> Plaintext {
+  return Visit([&](const auto &pt) -> Plaintext {
     FOR_EACH_TYPE(pt) return Plaintext(pt >> operand2);
   });
 }
 
 Plaintext Plaintext::operator-() const {
-  return Visit([&](const auto& pt) -> Plaintext {
+  return Visit([&](const auto &pt) -> Plaintext {
     FOR_EACH_TYPE(pt) return Plaintext(-pt);
   });
 }
 
 void Plaintext::NegateInplace() {
-  Visit([&](auto& pt) { FOR_EACH_TYPE(pt) pt.NegateInplace(); });
+  Visit([&](auto &pt) { FOR_EACH_TYPE(pt) pt.NegateInplace(); });
 }
 
 Plaintext Plaintext::operator<<=(size_t operand2) {
-  Visit([&](auto& pt) { FOR_EACH_TYPE(pt) pt <<= operand2; });
+  Visit([&](auto &pt) { FOR_EACH_TYPE(pt) pt <<= operand2; });
   return *this;
 }
 
 Plaintext Plaintext::operator>>=(size_t operand2) {
-  Visit([&](auto& pt) { FOR_EACH_TYPE(pt) pt >>= operand2; });
+  Visit([&](auto &pt) { FOR_EACH_TYPE(pt) pt >>= operand2; });
   return *this;
 }
 
@@ -117,22 +117,22 @@ OPERATOR_BOOL_IMPL(==)
 OPERATOR_BOOL_IMPL(!=)
 
 void Plaintext::RandomExactBits(SchemaType schema, size_t bit_size,
-                                Plaintext* r) {
+                                Plaintext *r) {
   if (!r->IsCompatible(schema)) {
     *r = Plaintext(schema);
   }
 
-  r->Visit([&](auto& ir) {
+  r->Visit([&](auto &ir) {
     FOR_EACH_TYPE(ir) ir.RandomExactBits(bit_size, &ir);
   });
 }
 
-void Plaintext::RandomLtN(const Plaintext& n, Plaintext* r) {
+void Plaintext::RandomLtN(const Plaintext &n, Plaintext *r) {
   if (r->var_.index() != n.var_.index()) {
     r->EmplaceInstance(n.var_.index());
   }
 
-  r->Visit([&](auto& ir) {
+  r->Visit([&](auto &ir) {
     FOR_EACH_TYPE(ir) ir.RandomLtN(n.template AsTypeLike(ir), &ir);
   });
 }

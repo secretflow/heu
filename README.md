@@ -114,8 +114,8 @@ Architecture Transition Milestones:
 
 - [x] HE SPI: Designed a unified interface that supports all PHE/FHE algorithms.
 - [ ] Implementation of SPI Sketches. (in progress)
-- [ ] Migration of existing algorithms to SPI.
-- [ ] Automated testing framework for PHE/FHE algorithms.
+- [ ] Migration of existing algorithms to SPI. (in progress)
+- [ ] Automated testing framework for PHE/FHE algorithms. (in progress)
 - [ ] Transition of Tensor Lib's underlying layer from Dispatcher to SPI.
 - [ ] Transition of PyLib's underlying layer from Dispatcher to SPI.
 

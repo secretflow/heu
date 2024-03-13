@@ -27,11 +27,11 @@ class Decryptor {
   explicit Decryptor(PublicKey pk, SecretKey sk)
       : pk_(std::move(pk)), sk_(std::move(sk)) {}
 
-  void Decrypt(const Ciphertext& ct, Plaintext* out) const {
+  void Decrypt(const Ciphertext &ct, Plaintext *out) const {
     *out = Decrypt(ct);
   }
 
-  Plaintext Decrypt(const Ciphertext& ct) const;
+  Plaintext Decrypt(const Ciphertext &ct) const;
 
  private:
   PublicKey pk_;

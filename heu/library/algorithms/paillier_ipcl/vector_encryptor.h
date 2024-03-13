@@ -14,7 +14,7 @@ namespace heu::lib::algorithms::paillier_ipcl {
 
 class Encryptor {
  public:
-  explicit Encryptor(const PublicKey& pk);
+  explicit Encryptor(const PublicKey &pk);
 
   std::vector<Ciphertext> EncryptZero(int64_t size) const;
   std::vector<Ciphertext> Encrypt(ConstSpan<Plaintext> pts) const;

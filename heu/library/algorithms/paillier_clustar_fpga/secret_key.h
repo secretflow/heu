@@ -26,10 +26,10 @@ class CSecrKeyHelper;
 class SecretKey : public HeObject<SecretKey> {
  public:
   SecretKey() = default;
-  explicit SecretKey(const PublicKey& pub_key, const MPInt& p, const MPInt& q);
+  explicit SecretKey(const PublicKey &pub_key, const MPInt &p, const MPInt &q);
 
-  bool operator==(const SecretKey& other) const;
-  bool operator!=(const SecretKey& other) const;
+  bool operator==(const SecretKey &other) const;
+  bool operator!=(const SecretKey &other) const;
 
   std::string ToString() const override;
 
@@ -37,17 +37,17 @@ class SecretKey : public HeObject<SecretKey> {
   MSGPACK_DEFINE(p_, q_, p_square_, q_square_, q_inverse_, hp_, hq_, pub_key_);
 
   // Functions for unit test
-  const MPInt& GetP() const;
-  const MPInt& GetQ() const;
-  const MPInt& GetPSquare() const;
-  const MPInt& GetQSquare() const;
-  const MPInt& GetQInverse() const;
-  const MPInt& GetHP() const;
-  const MPInt& GetHQ() const;
-  const PublicKey& GetPubKey() const;
+  const MPInt &GetP() const;
+  const MPInt &GetQ() const;
+  const MPInt &GetPSquare() const;
+  const MPInt &GetQSquare() const;
+  const MPInt &GetQInverse() const;
+  const MPInt &GetHP() const;
+  const MPInt &GetHQ() const;
+  const PublicKey &GetPubKey() const;
 
  private:
-  void HFunc(const MPInt& x, const MPInt& x_square, MPInt& result);
+  void HFunc(const MPInt &x, const MPInt &x_square, MPInt &result);
 
   friend class CSecrKeyHelper;
 

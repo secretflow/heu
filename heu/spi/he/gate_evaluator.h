@@ -16,7 +16,7 @@
 
 #include "heu/spi/he/item.h"
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 // For single bit operations
 class GateEvaluator {
@@ -94,4 +94,4 @@ class GateEvaluator {
   virtual void BootXnorInplace(Item *x, const Item &y) const = 0;
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

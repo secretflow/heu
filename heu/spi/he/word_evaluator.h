@@ -16,7 +16,7 @@
 
 #include "heu/spi/he/item.h"
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 class WordEvaluator {
  public:
@@ -39,8 +39,8 @@ class WordEvaluator {
   // CT = -CT
   // PTs = -PTs
   // CTs = -CTs
-  virtual Item Negate(const Item& a) const = 0;
-  virtual void NegateInplace(Item* a) const = 0;
+  virtual Item Negate(const Item &a) const = 0;
+  virtual void NegateInplace(Item *a) const = 0;
 
   // PT = PT + PT
   // CT = PT + CT
@@ -58,18 +58,18 @@ class WordEvaluator {
   // CTs = PTs + CTs
   // CTs = CTs + PTs
   // CTs = CTs + CTs
-  virtual Item Add(const Item& a, const Item& b) const = 0;
+  virtual Item Add(const Item &a, const Item &b) const = 0;
   // CT += PT
   // CT += CT
   // CTs += PT [Broadcast]
   // CTs += CT [Broadcast]
   // CTs += PTs
   // CTs += CTs
-  virtual void AddInplace(Item* a, const Item& b) const = 0;
+  virtual void AddInplace(Item *a, const Item &b) const = 0;
 
   // 参数可能的组合类型与 Add 相同
-  virtual Item Sub(const Item& a, const Item& b) const = 0;
-  virtual void SubInplace(Item* a, const Item& b) const = 0;
+  virtual Item Sub(const Item &a, const Item &b) const = 0;
+  virtual void SubInplace(Item *a, const Item &b) const = 0;
 
   // PT = PT * PT [AHE/FHE]
   // CT = PT * CT [AHE/FHE]
@@ -87,44 +87,44 @@ class WordEvaluator {
   // CTs = PTs * CTs [AHE/FHE]
   // CTs = CTs * PTs [AHE/FHE]
   // CTs = CTs * CTs [FHE]
-  virtual Item Mul(const Item& a, const Item& b) const = 0;
-  virtual void MulInplace(Item* a, const Item& b) const = 0;
+  virtual Item Mul(const Item &a, const Item &b) const = 0;
+  virtual void MulInplace(Item *a, const Item &b) const = 0;
 
-  virtual Item Square(const Item& a) const = 0;
-  virtual void SquareInplace(Item* a) const = 0;
+  virtual Item Square(const Item &a) const = 0;
+  virtual void SquareInplace(Item *a) const = 0;
 
-  virtual Item Pow(const Item& a, int64_t exponent) const = 0;
-  virtual void PowInplace(Item* a, int64_t exponent) const = 0;
+  virtual Item Pow(const Item &a, int64_t exponent) const = 0;
+  virtual void PowInplace(Item *a, int64_t exponent) const = 0;
 
   //===   Ciphertext maintains   ===//
 
   // CT -> CT
   // CTs -> CTs
   // The result is same with ct += Enc(0)
-  virtual void Randomize(Item* ct) const = 0;
+  virtual void Randomize(Item *ct) const = 0;
 
-  virtual Item Relinearize(const Item& a) const = 0;
-  virtual void RelinearizeInplace(Item* a) const = 0;
+  virtual Item Relinearize(const Item &a) const = 0;
+  virtual void RelinearizeInplace(Item *a) const = 0;
 
   // Given a ciphertext with modulo q_1...q_k, this function switches the
   // modulus down to q_1...q_{k-1}
-  virtual Item ModSwitch(const Item& a) const = 0;
-  virtual void ModSwitchInplace(Item* a) const = 0;
+  virtual Item ModSwitch(const Item &a) const = 0;
+  virtual void ModSwitchInplace(Item *a) const = 0;
 
   // Given a ciphertext with modulo q_1...q_k, this function switches the
   // modulus down to q_1...q_{k-1}, and scales the message down accordingly
-  virtual Item Rescale(const Item& a) const = 0;
-  virtual void RescaleInplace(Item* a) const = 0;
+  virtual Item Rescale(const Item &a) const = 0;
+  virtual void RescaleInplace(Item *a) const = 0;
 
   //===   Galois automorphism   ===//
 
   // BFV/BGV only
-  virtual Item SwapRows(const Item& a) const = 0;
-  virtual void SwapRowsInplace(Item* a) const = 0;
+  virtual Item SwapRows(const Item &a) const = 0;
+  virtual void SwapRowsInplace(Item *a) const = 0;
 
   // CKKS only, for complex number
-  virtual Item Conjugate(const Item& a) const = 0;
-  virtual void ConjugateInplace(Item* a) const = 0;
+  virtual Item Conjugate(const Item &a) const = 0;
+  virtual void ConjugateInplace(Item *a) const = 0;
 
   // BFV/BGV batching mode:
   //   The size of matrix is 2-by-(N/2), so move each row cyclically to the left
@@ -133,8 +133,12 @@ class WordEvaluator {
   //   rotates the encrypted plaintext vector cyclically to the left (steps > 0)
   //   or to the right (steps < 0).
   // All schemas: require abs(steps) < N/2
-  virtual Item Rotate(const Item& a, int steps) const = 0;
-  virtual void RotateInplace(Item* a, int steps) const = 0;
+  virtual Item Rotate(const Item &a, int steps) const = 0;
+  virtual void RotateInplace(Item *a, int steps) const = 0;
+
+  // Refresh the noise budget of item 'a'.
+  // Require Lib to support FeatureSet::FHE.
+  virtual void BootstrapInplace(Item *a) const = 0;
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

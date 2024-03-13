@@ -14,13 +14,9 @@
 
 #include "heu/library/algorithms/dgk/key_generator.h"
 
-#include "yacl/base/exception.h"
-
-#include "heu/library/algorithms/util/mp_int.h"
-
 namespace heu::lib::algorithms::dgk {
 
-void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(size_t key_size, SecretKey *sk, PublicKey *pk) {
   YACL_ENFORCE(key_size % 2 == 0, "Key size must be even");
   YACL_ENFORCE(key_size >= 1024 && key_size <= 3072,
                "Key size must be in [1024, 3072] and 2048 bits is recommended");
@@ -65,7 +61,7 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
   pk->Init(n, g, h, u);
 }
 
-void KeyGenerator::Generate(SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(SecretKey *sk, PublicKey *pk) {
   Generate(2048, sk, pk);
 }
 

@@ -16,7 +16,7 @@
 
 namespace heu::lib::algorithms::paillier_g {
 
-int GetRdrand8Bytes(unsigned char* rand, int multiple) {
+int GetRdrand8Bytes(unsigned char *rand, int multiple) {
   __asm__(
       "movq %0, %%rcx         \n\t"
       "mov %1, %%edx          \n\t"
@@ -36,7 +36,7 @@ int GetRdrand8Bytes(unsigned char* rand, int multiple) {
   return 0;
 }
 
-int GetRdrand(unsigned char* rand, int randlen) {
+int GetRdrand(unsigned char *rand, int randlen) {
   int multiple, left;
   unsigned char buffer[8];
   // check parameters
@@ -62,7 +62,7 @@ int GetRdrand(unsigned char* rand, int randlen) {
 
 Encryptor::Encryptor(PublicKey pk) : pk_(std::move(pk)) {}
 
-Encryptor::Encryptor(const Encryptor& from) : Encryptor(from.pk_) {}
+Encryptor::Encryptor(const Encryptor &from) : Encryptor(from.pk_) {}
 
 MPInt Encryptor::GetRn() const {
   MPInt r;
@@ -78,7 +78,7 @@ std::vector<Ciphertext> Encryptor::EncryptZero(int64_t size) const {
   std::vector<Ciphertext> res(size);
   for (unsigned int i = 0; i < size; i++) {
     Plaintext p1(0);
-    Plaintext* ppts[]{&p1};
+    Plaintext *ppts[]{&p1};
     ConstSpan<Plaintext> pts = absl::MakeConstSpan(ppts);
     std::vector<Ciphertext> oneRes = Encrypt(pts);
     res[i] = oneRes[0];
@@ -100,7 +100,7 @@ std::vector<Ciphertext> Encryptor::Encrypt(ConstSpan<Plaintext> pts) const {
 
 template <bool audit>
 std::vector<Ciphertext> Encryptor::EncryptImpl(
-    ConstSpan<Plaintext> pts, std::vector<std::string>* audit_strs) const {
+    ConstSpan<Plaintext> pts, std::vector<std::string> *audit_strs) const {
   // a. pubkey
   h_paillier_pubkey_t g_pk;
   pk_.n_.ToBytes(g_pk.n, 512, algorithms::Endian::little);
@@ -118,11 +118,11 @@ std::vector<Ciphertext> Encryptor::EncryptImpl(
   // c. random data;
   auto scalar = std::make_unique<h_paillier_random_t[]>(count);
   for (unsigned int i = 0; i < count; i++) {
-    GetRdrand((unsigned char*)((unsigned char*)&scalar[i]),
+    GetRdrand((unsigned char *)((unsigned char *)&scalar[i]),
               pk_.key_size_ / 2 / 8);  // key_size/2->get bytes need divide 8
     if constexpr (audit) {
       Plaintext randr = Plaintext(0, 512);  // init with 4096bit
-      randr.FromMagBytes(yacl::ByteContainerView((uint8_t*)(scalar[i].r), 512),
+      randr.FromMagBytes(yacl::ByteContainerView((uint8_t *)(scalar[i].r), 512),
                          algorithms::Endian::little);
 
       Plaintext out;

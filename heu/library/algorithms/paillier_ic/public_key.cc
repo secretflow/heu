@@ -38,11 +38,11 @@ std::string PublicKey::ToString() const {
       PlaintextBound().ToHexString(), PlaintextBound().BitCount());
 }
 
-bool PublicKey::operator==(const PublicKey& other) const {
+bool PublicKey::operator==(const PublicKey &other) const {
   return n_ == other.n_ && h_s_ == other.h_s_;
 }
 
-bool PublicKey::operator!=(const PublicKey& other) const {
+bool PublicKey::operator!=(const PublicKey &other) const {
   return !this->operator==(other);
 }
 

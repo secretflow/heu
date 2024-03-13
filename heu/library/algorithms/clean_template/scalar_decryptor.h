@@ -25,10 +25,10 @@ namespace heu::lib::algorithms::your_algo {
 
 class Decryptor {
  public:
-  explicit Decryptor(const PublicKey& _, const SecretKey& sk);
+  explicit Decryptor(const PublicKey &_, const SecretKey &sk);
 
-  void Decrypt(const Ciphertext& ct, Plaintext* out) const;
-  Plaintext Decrypt(const Ciphertext& ct) const;
+  void Decrypt(const Ciphertext &ct, Plaintext *out) const;
+  Plaintext Decrypt(const Ciphertext &ct) const;
 };
 
 }  // namespace heu::lib::algorithms::your_algo

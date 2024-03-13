@@ -22,7 +22,7 @@ void Evaluator::Randomize(Span<Ciphertext> ct) const {
   unsigned int count = ct.size();
   // make the constspan of enc(0)
   std::vector<Ciphertext> res = encryptor_.EncryptZero(count);
-  Ciphertext* ccts[count];
+  Ciphertext *ccts[count];
   for (unsigned int i = 0; i < count; i++) {
     ccts[i] = &res[i];
   }

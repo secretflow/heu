@@ -19,7 +19,7 @@
 
 #include "heu/spi/poly/poly_def.h"
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 class ElementWisePolyOperator {
  public:
@@ -91,4 +91,4 @@ class ElementWisePolyOperator {
                                    const Moduli &coeff_modulus) const = 0;
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

@@ -16,6 +16,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <experimental/type_traits>
 #include <string>
 #include <vector>
 
@@ -24,7 +25,7 @@
 #include "yacl/utils/spi/sketch/scalar_tools.h"
 
 #include "heu/spi/he/item.h"
-#include "heu/spi/he/item_manipulator.h"
+#include "heu/spi/he/item_tool.h"
 #include "heu/spi/he/sketches/common/placeholder.h"
 
 // Suppress the superfluous warnings from clang
@@ -32,99 +33,85 @@
 #pragma clang diagnostic ignored "-Woverloaded-virtual"
 #endif
 
-namespace heu::lib::spi {
+namespace heu::spi {
+
+namespace internal {
+template <typename T>
+using kHasToStringMethod = decltype(std::declval<T>().ToString());
+
+template <typename T>
+using SupportsEqualsCompare = decltype(std::declval<T>() == std::declval<T>());
+}  // namespace internal
 
 template <typename PlaintextT, typename CiphertextT, typename SecretKeyT,
           typename PublicKeyT = NoPk, typename RelinKeyT = NoRlk,
-          typename GaloisKeyT = NoGlK, typename BootstrapKeyT = NoBsk>
-class ItemManipulatorCommon : public ItemManipulator {
+          typename GaloisKeyT = NoGlk, typename BootstrapKeyT = NoBsk>
+class ItemToolSketch : public ItemTool {
  public:
-  virtual ~ItemManipulatorCommon() = default;
+  virtual ~ItemToolSketch() = default;
 
   //===   Item operations   ===//
 
-  virtual SecretKeyT Clone(const SecretKeyT& key) const = 0;
-
-  virtual PublicKeyT Clone(const PublicKeyT&) const {
-    YACL_ENFORCE((std::is_same_v<PublicKeyT, NoPk>),
-                 "If you see this message, it means that the subclass misses "
-                 "this interface. Please override the Clone(const "
-                 "PublicKeyT&) method in the subclass.");
-    YACL_THROW("There is no public key in the current setting");
-  }
-
-  virtual RelinKeyT Clone(const RelinKeyT&) const {
-    YACL_ENFORCE((std::is_same_v<RelinKeyT, NoRlk>),
-                 "If you see this message, it means that the subclass misses "
-                 "this interface. Please override the Clone(const "
-                 "RelinKeyT&) method in the subclass.");
-    YACL_THROW("There is no relin key in the current setting");
-  }
-
-  virtual GaloisKeyT Clone(const GaloisKeyT&) const {
-    YACL_ENFORCE((std::is_same_v<GaloisKeyT, NoGlK>),
-                 "If you see this message, it means that the subclass misses "
-                 "this interface. Please override the Clone(const "
-                 "GaloisKeyT&) method in the subclass.");
-    YACL_THROW("There is no galois key in the current setting");
-  }
-
-  virtual BootstrapKeyT Clone(const BootstrapKeyT&) const {
-    YACL_ENFORCE((std::is_same_v<BootstrapKeyT, NoBsk>),
-                 "If you see this message, it means that the subclass misses "
-                 "this interface. Please override the Clone(const "
-                 "BootstrapKeyT&) method in the subclass.");
-    YACL_THROW("There is no bootstrapping key in the current setting");
-  }
-
-  // Clone Plaintext/Ciphertext is defined in subclass
-
   // To human-readable string
-  virtual std::string ToString(const SecretKeyT& key) const = 0;
-
-  virtual std::string ToString(const PublicKeyT&) const {
-    YACL_ENFORCE((std::is_same_v<PublicKeyT, NoPk>),
-                 "If you see this message, it means that the subclass misses "
-                 "this interface. Please override the ToString(const "
-                 "PublicKeyT&) method in the subclass.");
-    YACL_THROW("There is no public key in the current setting");
+  virtual std::string ToString(const PlaintextT &pt) const {
+    if constexpr (std::experimental::is_detected_v<internal::kHasToStringMethod,
+                                                   PlaintextT>) {
+      return pt.ToString();
+    } else {
+      YACL_THROW(
+          "You must override the ToString() method in the subclass of "
+          "ItemTool. type_info={}",
+          typeid(pt).name());
+    }
   }
 
-  virtual std::string ToString(const RelinKeyT&) const {
-    YACL_ENFORCE((std::is_same_v<RelinKeyT, NoRlk>),
-                 "If you see this message, it means that the subclass misses "
-                 "this interface. Please override the ToString(const "
-                 "RelinKeyT&) method in the subclass.");
-    YACL_THROW("There is no relin key in the current setting");
+  virtual std::string ToString(const CiphertextT &ct) const {
+    if constexpr (std::experimental::is_detected_v<internal::kHasToStringMethod,
+                                                   CiphertextT>) {
+      // Square brackets indicate that the object is a HE ciphertext.
+      return fmt::format("[{}]", ct.ToString());
+    } else {
+      YACL_THROW(
+          "You must override the ToString() method in the subclass of "
+          "ItemTool. type_info={}",
+          typeid(ct).name());
+    }
   }
 
-  virtual std::string ToString(const GaloisKeyT&) const {
-    YACL_ENFORCE((std::is_same_v<GaloisKeyT, NoGlK>),
-                 "If you see this message, it means that the subclass misses "
-                 "this interface. Please override the ToString(const "
-                 "GaloisKeyT&) method in the subclass.");
-    YACL_THROW("There is no galois key in the current setting");
+  virtual bool Equal(const PlaintextT &x, const PlaintextT &y) const {
+    if constexpr (std::experimental::is_detected_v<
+                      internal::SupportsEqualsCompare, PlaintextT>) {
+      return x == y;
+    } else {
+      YACL_THROW(
+          "Cannot compare two plaintexts. You must implement the '==' operator "
+          "for Plaintext, or override the Equal() method in the subclass of "
+          "ItemTool. type_info={}",
+          typeid(x).name());
+    }
   }
 
-  virtual std::string ToString(const BootstrapKeyT&) const {
-    YACL_ENFORCE((std::is_same_v<BootstrapKeyT, NoBsk>),
-                 "If you see this message, it means that the subclass misses "
-                 "this interface. Please override the ToString(const "
-                 "BootstrapKeyT&) method in the subclass.");
-    YACL_THROW("There is no bootstrapping key in the current setting");
+  virtual bool Equal(const CiphertextT &x, const CiphertextT &y) const {
+    if constexpr (std::experimental::is_detected_v<
+                      internal::SupportsEqualsCompare, CiphertextT>) {
+      return x == y;
+    } else {
+      YACL_THROW(
+          "Cannot compare two ciphertexts. You must implement the '==' "
+          "operator for Ciphertext, or override the Equal() method in the "
+          "subclass of ItemTool. type_info={}",
+          typeid(x).name());
+    }
   }
-
-  virtual std::string ToString(const PlaintextT& pt) const = 0;
-  virtual std::string ToString(const CiphertextT& ct) const = 0;
 
   //===   I/O for HE Objects   ===//
 
   // serialize plaintext/ciphertext to already allocated buffer.
   // if buf is nullptr, then calc serialize size only
   // @return: the actual size of serialized buffer
-  virtual size_t Serialize(const PlaintextT& pt, uint8_t* buf,
+  virtual size_t Serialize(const PlaintextT &pt, uint8_t *buf,
                            size_t buf_len) const = 0;
-  virtual size_t Serialize(const CiphertextT& ct, uint8_t* buf,
+  virtual size_t Serialize(const CiphertextT &ct, uint8_t *buf,
                            size_t buf_len) const = 0;
 
   virtual PlaintextT DeserializePT(yacl::ByteContainerView buffer) const = 0;
@@ -152,57 +139,35 @@ class ItemManipulatorCommon : public ItemManipulator {
                  item.GetContentType());                        \
   }
 
-  size_t ItemSize(const heu::lib::spi::Item& item) const override {
-    SWITCH_TYPE(item, Size);
-  }
+  size_t ItemSize(const Item &item) const override { SWITCH_TYPE(item, Size); }
 
-  Item SubItem(const Item& item, size_t pos, size_t len) const override {
+  Item SubItem(const Item &item, size_t pos, size_t len) const override {
     SWITCH_TYPE(item, SubItem, pos, len);
   }
 
-  Item SubItem(Item& item, size_t pos, size_t len) const override {
+  Item SubItem(Item &item, size_t pos, size_t len) const override {
     SWITCH_TYPE(item, SubItem, pos, len);
   }
 
-  Item SubItem(const Item& item, size_t pos) const override {
+  Item SubItem(const Item &item, size_t pos) const override {
     SWITCH_TYPE(item, SubItem, pos);
   }
 
-  Item SubItem(Item& item, size_t pos) const override {
+  Item SubItem(Item &item, size_t pos) const override {
     SWITCH_TYPE(item, SubItem, pos);
   }
 
-  void AppendItem(heu::lib::spi::Item*,
-                  const heu::lib::spi::Item&) const override {
+  void AppendItem(Item *, const Item &) const override {
     // todo
   }
 
-  Item CombineItem(const heu::lib::spi::Item&,
-                   const heu::lib::spi::Item&) const override {
+  Item CombineItem(const Item &, const Item &) const override {
     // todo
     YACL_THROW("todo");
   }
 
-  Item Clone(const Item& item) const override {
-    switch (item.GetContentType()) {
-      case ContentType::SecretKey:
-        return {Clone(item.As<SecretKeyT>()), ContentType::SecretKey};
-      case ContentType::PublicKey:
-        return {Clone(item.As<PublicKeyT>()), ContentType::PublicKey};
-      case ContentType::RelinKeys:
-        return {Clone(item.As<RelinKeyT>()), ContentType::RelinKeys};
-      case ContentType::GaloisKeys:
-        return {Clone(item.As<GaloisKeyT>()), ContentType::GaloisKeys};
-      case ContentType::BootstrapKey:
-        return {Clone(item.As<BootstrapKeyT>()), ContentType::BootstrapKey};
-      default:
-        YACL_THROW("Unsupported content type '{}', please check",
-                   item.GetContentType());
-    }
-  }
-
   template <class T>
-  std::string CallToString(const Item& item) const {
+  std::string CallToString(const Item &item) const {
     if (item.IsArray()) {
       auto xsp = item.AsSpan<T>();
       std::vector<std::string> res;
@@ -212,36 +177,80 @@ class ItemManipulatorCommon : public ItemManipulator {
           res[i] = ToString(xsp[i]);
         }
       });
-      return fmt::format("Array \\{{}\\}", fmt::join(res, ", "));
+      return fmt::format("Array {{{}}}", fmt::join(res, ", "));
     } else {
       return ToString(item.As<T>());
     }
   }
 
-  std::string ToString(const Item& item) const override {
+  std::string ToString(const Item &item) const override {
     switch (item.GetContentType()) {
       case ContentType::Plaintext:
         return CallToString<PlaintextT>(item);
       case ContentType::Ciphertext:
         return CallToString<CiphertextT>(item);
       case ContentType::SecretKey:
-        return ToString(item.As<SecretKeyT>());
+        // All keys have a default ToString() implement
+        // defined in heu/spi/he/sketches/common/keys.h
+        return item.As<SecretKeyT>().ToString();
       case ContentType::PublicKey:
-        return ToString(item.As<PublicKeyT>());
+        return item.As<PublicKeyT>().ToString();
       case ContentType::RelinKeys:
-        return ToString(item.As<RelinKeyT>());
+        return item.As<RelinKeyT>().ToString();
       case ContentType::GaloisKeys:
-        return ToString(item.As<GaloisKeyT>());
+        return item.As<GaloisKeyT>().ToString();
       case ContentType::BootstrapKey:
-        return ToString(item.As<BootstrapKeyT>());
+        return item.As<BootstrapKeyT>().ToString();
       default:
         YACL_THROW("Unsupported content type '{}', please check",
                    item.GetContentType());
     }
   }
 
+  template <class T>
+  bool CheckEquality(const heu::spi::Item &x, const heu::spi::Item &y) const {
+    auto xsp = x.AsSpan<T>();
+    auto ysp = y.AsSpan<T>();
+    if (xsp.size() != ysp.size()) {
+      return false;
+    }
+    for (size_t i = 0; i < xsp.size(); ++i) {
+      if (!Equal(xsp.at(i), ysp.at(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool Equal(const heu::spi::Item &x, const heu::spi::Item &y) const override {
+    if (x.GetContentType() != y.GetContentType()) {
+      return false;
+    }
+
+    switch (x.GetContentType()) {
+      case ContentType::Plaintext:
+        return CheckEquality<PlaintextT>(x, y);
+      case ContentType::Ciphertext:
+        return CheckEquality<CiphertextT>(x, y);
+      case ContentType::SecretKey:
+      case ContentType::PublicKey:
+      case ContentType::RelinKeys:
+      case ContentType::GaloisKeys:
+      case ContentType::BootstrapKey:
+        // Hekit->ListKeyParams() has low performance, so we do not provide
+        // equality test
+        YACL_THROW(
+            "Cannot compare the equality of two keys, please compare the "
+            "content of Hekit->ListKeyParams(HeKeyType::{}) instead.",
+            x.GetContentType());
+      default:
+        YACL_THROW("Unsupported content type '{}', please check",
+                   x.GetContentType());
+    }
+  }
+
   // THE MSGPACK SERIALIZE FORMAT: | 1bytes header | body |
-  size_t Serialize(const Item& item, uint8_t* buf,
+  size_t Serialize(const Item &item, uint8_t *buf,
                    size_t buf_len) const override {
     switch (item.GetContentType()) {
       case ContentType::Plaintext:
@@ -267,7 +276,7 @@ class ItemManipulatorCommon : public ItemManipulator {
     }
   }
 
-  yacl::Buffer Serialize(const Item& item) const override {
+  yacl::Buffer Serialize(const Item &item) const override {
     switch (item.GetContentType()) {
       case ContentType::Plaintext:
         return yacl::ScalarSketchTools::Serialize<PlaintextT>(
@@ -294,10 +303,10 @@ class ItemManipulatorCommon : public ItemManipulator {
   template <typename RES_T>
   Item DeserializeBody(
       ContentType content_type, yacl::ByteContainerView buffer, size_t offset,
-      RES_T (ItemManipulatorCommon::*deser_func)(yacl::ByteContainerView)
+      RES_T (ItemToolSketch::*deser_func)(yacl::ByteContainerView)
           const) const {
     msgpack::object_handle msg = msgpack::unpack(
-        reinterpret_cast<const char*>(buffer.data()), buffer.size(), offset);
+        reinterpret_cast<const char *>(buffer.data()), buffer.size(), offset);
 
     auto obj = msg.get();
     switch (obj.type) {
@@ -331,7 +340,7 @@ class ItemManipulatorCommon : public ItemManipulator {
     std::size_t off = 0;
     bool referenced;
     msgpack::object_handle header =
-        msgpack::unpack(reinterpret_cast<const char*>(buffer.data()),
+        msgpack::unpack(reinterpret_cast<const char *>(buffer.data()),
                         buffer.size(), off, referenced);
     auto obj = header.get();
     YACL_ENFORCE(off == 1 && obj.type == msgpack::type::POSITIVE_INTEGER,
@@ -341,10 +350,10 @@ class ItemManipulatorCommon : public ItemManipulator {
     switch (item_ct) {
       case ContentType::Plaintext:
         return DeserializeBody(item_ct, buffer, off,
-                               &ItemManipulatorCommon::DeserializePT);
+                               &ItemToolSketch::DeserializePT);
       case ContentType::Ciphertext:
         return DeserializeBody(item_ct, buffer, off,
-                               &ItemManipulatorCommon::DeserializeCT);
+                               &ItemToolSketch::DeserializeCT);
       case ContentType::SecretKey:
       case ContentType::PublicKey:
       case ContentType::RelinKeys:
@@ -359,4 +368,4 @@ class ItemManipulatorCommon : public ItemManipulator {
   }
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

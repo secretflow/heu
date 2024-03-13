@@ -24,7 +24,7 @@ namespace heu::lib::algorithms::your_algo {
 
 class Decryptor {
  public:
-  explicit Decryptor(const PublicKey& _, const SecretKey& sk);
+  explicit Decryptor(const PublicKey &_, const SecretKey &sk);
 
   std::vector<Plaintext> Decrypt(ConstSpan<Ciphertext> cts) const;
   void Decrypt(ConstSpan<Ciphertext> in_cts, Span<Plaintext> out_pts) const;

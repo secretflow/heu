@@ -18,7 +18,7 @@
 
 namespace heu::lib::algorithms::paillier_clustar_fpga {
 
-CPubKeyHelper::CPubKeyHelper(PublicKey* pub_key) : pub_key_(pub_key) {
+CPubKeyHelper::CPubKeyHelper(PublicKey *pub_key) : pub_key_(pub_key) {
   CreateBytesStore(pub_key_->GetN().BitCount());
 }
 
@@ -64,7 +64,7 @@ void CPubKeyHelper::TransformToBytes() const {
   ToBytes(pub_key_->max_int_, byte_max_int_flag_, bytes_max_int_.get());
 }
 
-char* CPubKeyHelper::GetBytesG() const {
+char *CPubKeyHelper::GetBytesG() const {
   if (!byte_g_flag_) {
     YACL_THROW("public_key g not transformed to bytes yet");
   }
@@ -72,7 +72,7 @@ char* CPubKeyHelper::GetBytesG() const {
   return bytes_g_.get();
 }
 
-char* CPubKeyHelper::GetBytesN() const {
+char *CPubKeyHelper::GetBytesN() const {
   if (!byte_n_flag_) {
     YACL_THROW("public_key n not transformed to bytes yet");
   }
@@ -80,7 +80,7 @@ char* CPubKeyHelper::GetBytesN() const {
   return bytes_n_.get();
 }
 
-char* CPubKeyHelper::GetBytesNSquare() const {
+char *CPubKeyHelper::GetBytesNSquare() const {
   if (!byte_n_square_flag_) {
     YACL_THROW("public_key n_square not transformed to bytes yet");
   }
@@ -88,7 +88,7 @@ char* CPubKeyHelper::GetBytesNSquare() const {
   return bytes_n_square_.get();
 }
 
-char* CPubKeyHelper::GetBytesMaxInt() const {
+char *CPubKeyHelper::GetBytesMaxInt() const {
   if (!byte_max_int_flag_) {
     YACL_THROW("public_key max_int not transformed to bytes yet");
   }

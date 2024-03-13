@@ -25,12 +25,12 @@ namespace heu::lib::algorithms::dj {
 
 class Encryptor {
  public:
-  explicit Encryptor(const PublicKey& pk) : pk_{std::move(pk)} {}
+  explicit Encryptor(const PublicKey &pk) : pk_{std::move(pk)} {}
 
   Ciphertext EncryptZero() const;
-  Ciphertext Encrypt(const Plaintext& m) const;
+  Ciphertext Encrypt(const Plaintext &m) const;
 
-  std::pair<Ciphertext, std::string> EncryptWithAudit(const Plaintext& m) const;
+  std::pair<Ciphertext, std::string> EncryptWithAudit(const Plaintext &m) const;
 
  private:
   const PublicKey pk_;

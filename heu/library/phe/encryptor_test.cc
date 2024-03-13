@@ -28,6 +28,7 @@ class EncryptorTest : public ::testing::TestWithParam<SchemaType> {
 INSTANTIATE_TEST_SUITE_P(Schema, EncryptorTest,
                          ::testing::ValuesIn(GetAllSchema()));
 
+// This UT has been migrated to SPI and will be deleted later
 TEST_P(EncryptorTest, EncryptZero) {
   auto ct0 = he_kit_.GetEncryptor()->EncryptZero();
   Plaintext plain;
@@ -58,11 +59,6 @@ TEST_P(EncryptorTest, EncryptZero) {
 
   he_kit_.GetEvaluator()->NegateInplace(&ct0);
   ASSERT_EQ(he_kit_.GetDecryptor()->Decrypt(ct0).GetValue<int32_t>(), 0);
-}
-
-TEST_P(EncryptorTest, NormalEnc) {
-  auto encryptor = he_kit_.GetEncryptor();
-  auto decryptor = he_kit_.GetDecryptor();
 }
 
 TEST_P(EncryptorTest, MinMaxEnc) {

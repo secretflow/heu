@@ -22,10 +22,10 @@
 namespace heu::lib::algorithms::paillier_g::test {
 
 template <typename T>
-using Span = absl::Span<T* const>;
+using Span = absl::Span<T *const>;
 
 template <typename T>
-using ConstSpan = absl::Span<const T* const>;
+using ConstSpan = absl::Span<const T *const>;
 
 class GPUTest : public ::testing::Test {
  protected:
@@ -83,7 +83,7 @@ class GPUTest : public ::testing::Test {
 
 void GPUTest::EncDec(int128_t a, int128_t b, int128_t c, int128_t d) {
   Plaintext p[2]{Plaintext(a), Plaintext(b)};
-  Plaintext* ppts[2];
+  Plaintext *ppts[2];
   ppts[0] = &p[0];
   ppts[1] = &p[1];
   // make the constspan for vector Encrypt
@@ -101,7 +101,7 @@ void GPUTest::EncDec(int128_t a, int128_t b, int128_t c, int128_t d) {
 
   // make the constspan for vector Decrypt
   ConstSpan<Ciphertext> cts;
-  Ciphertext* ccts[2];
+  Ciphertext *ccts[2];
   ccts[0] = &res[0];
   ccts[1] = &res[1];
   // create the constspan for GPU call
@@ -127,8 +127,8 @@ TEST_F(GPUTest, EncDecTest) {
 void GPUTest::CiphertextsAdd(int128_t a, int128_t b, int128_t c) {
   Plaintext p1(a);
   Plaintext p2(b);
-  Plaintext* ppts1[1]{&p1};
-  Plaintext* ppts2[1]{&p2};
+  Plaintext *ppts1[1]{&p1};
+  Plaintext *ppts2[1]{&p2};
   // make the constspan for vector Encrypt
   ConstSpan<Plaintext> cts1 = absl::MakeConstSpan(ppts1, 1);
   ConstSpan<Plaintext> cts2 = absl::MakeConstSpan(ppts2, 1);
@@ -137,8 +137,8 @@ void GPUTest::CiphertextsAdd(int128_t a, int128_t b, int128_t c) {
   res1 = encryptor_->Encrypt(cts1);
   res2 = encryptor_->Encrypt(cts2);
 
-  Ciphertext* cct1[1];
-  Ciphertext* cct2[1];
+  Ciphertext *cct1[1];
+  Ciphertext *cct2[1];
   cct1[0] = &res1[0];
   cct2[0] = &res2[0];
   ConstSpan<Ciphertext> ct0 = absl::MakeConstSpan(cct1, 1);
@@ -146,7 +146,7 @@ void GPUTest::CiphertextsAdd(int128_t a, int128_t b, int128_t c) {
   std::vector<Ciphertext> sum = evaluator_->Add(ct0, ct1);
 
   // make the constspan for vector Decrypt
-  Ciphertext* ccts[1]{&sum[0]};
+  Ciphertext *ccts[1]{&sum[0]};
   ConstSpan<Ciphertext> cts = absl::MakeConstSpan(ccts, 1);
   std::vector<Plaintext> apts;
   apts = decryptor_->Decrypt(cts);
@@ -167,8 +167,8 @@ TEST_F(GPUTest, CiphertextsAddTest) {
 void GPUTest::CiphertextsAddInplace(int128_t a, int128_t b, int128_t c) {
   Plaintext p1(a);
   Plaintext p2(b);
-  Plaintext* ppts1[1]{&p1};
-  Plaintext* ppts2[1]{&p2};
+  Plaintext *ppts1[1]{&p1};
+  Plaintext *ppts2[1]{&p2};
   // make the constspan for vector Encrypt
   ConstSpan<Plaintext> cts1 = absl::MakeConstSpan(ppts1, 1);
   ConstSpan<Plaintext> cts2 = absl::MakeConstSpan(ppts2, 1);
@@ -177,8 +177,8 @@ void GPUTest::CiphertextsAddInplace(int128_t a, int128_t b, int128_t c) {
   res1 = encryptor_->Encrypt(cts1);
   res2 = encryptor_->Encrypt(cts2);
 
-  Ciphertext* cct1[1];
-  Ciphertext* cct2[1];
+  Ciphertext *cct1[1];
+  Ciphertext *cct2[1];
   cct1[0] = &res1[0];
   cct2[0] = &res2[0];
   Span<Ciphertext> ct0 = absl::MakeSpan(cct1, 1);
@@ -198,13 +198,13 @@ TEST_F(GPUTest, CiphertextsAddInplaceTest) {
 
 void GPUTest::CiphertextsRandomize(int128_t a, int128_t b) {
   Plaintext p1(a);
-  Plaintext* ppts1[1]{&p1};
+  Plaintext *ppts1[1]{&p1};
   ConstSpan<Plaintext> cts = absl::MakeConstSpan(ppts1, 1);
 
   std::vector<Ciphertext> res = encryptor_->Encrypt(cts);
   std::vector<Ciphertext> res2{res[0]};
 
-  Ciphertext* cct1[1]{&res[0]};
+  Ciphertext *cct1[1]{&res[0]};
   Span<Ciphertext> ct0 = absl::MakeSpan(cct1, 1);
   evaluator_->Randomize(ct0);
 
@@ -230,8 +230,8 @@ void GPUTest::PlaintextsAdd(int128_t a, int128_t b, int128_t c, int128_t d,
   Plaintext p21(c);
   Plaintext p22(d);
 
-  Plaintext* ppts1[2]{&p11, &p12};
-  Plaintext* ppts2[2]{&p21, &p22};
+  Plaintext *ppts1[2]{&p11, &p12};
+  Plaintext *ppts2[2]{&p21, &p22};
   // make the constspan for vector Encrypt
   ConstSpan<Plaintext> pts1 = absl::MakeConstSpan(ppts1, 2);
   ConstSpan<Plaintext> pts2 = absl::MakeConstSpan(ppts2, 2);
@@ -255,8 +255,8 @@ void GPUTest::PlaintextsAddInplace(int128_t a, int128_t b, int128_t c,
   Plaintext p12(b);
   Plaintext p21(c);
   Plaintext p22(d);
-  Plaintext* ppts1[2]{&p11, &p12};
-  Plaintext* ppts2[2]{&p21, &p22};
+  Plaintext *ppts1[2]{&p11, &p12};
+  Plaintext *ppts2[2]{&p21, &p22};
   // make the constspan for vector Encrypt
   Span<Plaintext> pts1 = absl::MakeSpan(ppts1, 2);
   ConstSpan<Plaintext> pts2 = absl::MakeConstSpan(ppts2, 2);
@@ -279,8 +279,8 @@ TEST_F(GPUTest, PlaintextsAddInplace) {
 void GPUTest::CiphertextsAddPlaintexts(int128_t a, int128_t b, int128_t c) {
   Plaintext p1(a);
   Plaintext p2(b);
-  Plaintext* ppts1[1]{&p1};
-  Plaintext* ppts2[1]{&p2};
+  Plaintext *ppts1[1]{&p1};
+  Plaintext *ppts2[1]{&p2};
   // make the constspan for vector Encrypt
   ConstSpan<Plaintext> cts1 = absl::MakeConstSpan(ppts1, 1);
   ConstSpan<Plaintext> cts2 = absl::MakeConstSpan(ppts2, 1);
@@ -288,12 +288,12 @@ void GPUTest::CiphertextsAddPlaintexts(int128_t a, int128_t b, int128_t c) {
   std::vector<Ciphertext> res1;  // receive the GPU Encrypt results
   res1 = encryptor_->Encrypt(cts1);
 
-  Ciphertext* cct1[1];
+  Ciphertext *cct1[1];
   cct1[0] = &res1[0];
   ConstSpan<Ciphertext> ct0 = absl::MakeConstSpan(cct1, 1);
   std::vector<Ciphertext> sum = evaluator_->Add(ct0, cts2);
   // make the constspan for vector Decrypt
-  Ciphertext* ccts[1]{&sum[0]};
+  Ciphertext *ccts[1]{&sum[0]};
   ConstSpan<Ciphertext> cts =
       absl::MakeConstSpan(ccts, 1);  // create the constspan for GPU call
   std::vector<Plaintext> apts = decryptor_->Decrypt(cts);
@@ -313,21 +313,21 @@ TEST_F(GPUTest, CiphertextsAddPlaintexts) {
 void GPUTest::PlaintextsAddCiphertexts(int128_t a, int128_t b, int128_t c) {
   Plaintext p1(a);
   Plaintext p2(b);
-  Plaintext* ppts1[1]{&p1};
-  Plaintext* ppts2[1]{&p2};
+  Plaintext *ppts1[1]{&p1};
+  Plaintext *ppts2[1]{&p2};
   // make the constspan for vector Encrypt
   ConstSpan<Plaintext> cts1 = absl::MakeConstSpan(ppts1, 1);
   ConstSpan<Plaintext> cts2 = absl::MakeConstSpan(ppts2, 1);
   std::vector<Ciphertext> res1;  // receive the GPU Encrypt results
   res1 = encryptor_->Encrypt(cts1);
 
-  Ciphertext* cct1[1];
+  Ciphertext *cct1[1];
   cct1[0] = &res1[0];
   ConstSpan<Ciphertext> ct0 = absl::MakeConstSpan(cct1, 1);
   std::vector<Ciphertext> sum = evaluator_->Add(cts2, ct0);
 
   // make the constspan for vector Decrypt
-  Ciphertext* ccts[1]{&sum[0]};
+  Ciphertext *ccts[1]{&sum[0]};
   ConstSpan<Ciphertext> cts =
       absl::MakeConstSpan(ccts, 1);  // create the constspan for GPU call
   std::vector<Plaintext> apts = decryptor_->Decrypt(cts);
@@ -346,8 +346,8 @@ void GPUTest::PlaintextsAddCiphertextsInplace(int128_t a, int128_t b,
                                               int128_t c) {
   Plaintext p1(a);
   Plaintext p2(b);
-  Plaintext* ppts1[1]{&p1};
-  Plaintext* ppts2[1]{&p2};
+  Plaintext *ppts1[1]{&p1};
+  Plaintext *ppts2[1]{&p2};
   // make the constspan for vector Encrypt
   ConstSpan<Plaintext> cts1 = absl::MakeConstSpan(ppts1, 1);
   ConstSpan<Plaintext> cts2 = absl::MakeConstSpan(ppts2, 1);
@@ -355,12 +355,12 @@ void GPUTest::PlaintextsAddCiphertextsInplace(int128_t a, int128_t b,
   std::vector<Ciphertext> res1;  // receive the GPU Encrypt results
   res1 = encryptor_->Encrypt(cts1);
 
-  Ciphertext* cct1[1];
+  Ciphertext *cct1[1];
   cct1[0] = &res1[0];
   Span<Ciphertext> ct0 = absl::MakeSpan(cct1, 1);
   evaluator_->AddInplace(ct0, cts2);
 
-  Ciphertext* ccts[1]{ct0[0]};
+  Ciphertext *ccts[1]{ct0[0]};
   ConstSpan<Ciphertext> cts =
       absl::MakeConstSpan(ccts, 1);  // create the constspan for GPU call
   std::vector<Plaintext> apts = decryptor_->Decrypt(cts);
@@ -379,8 +379,8 @@ TEST_F(GPUTest, PlaintextsAddCiphertextsInplaceTest) {
 void GPUTest::CtsMulPts(int128_t a, int128_t b, int128_t c) {
   Plaintext p1(a);
   Plaintext p2(b);
-  Plaintext* ppts1[1]{&p1};
-  Plaintext* ppts2[1]{&p2};
+  Plaintext *ppts1[1]{&p1};
+  Plaintext *ppts2[1]{&p2};
   // make the constspan for vector Encrypt
   ConstSpan<Plaintext> cts1 = absl::MakeConstSpan(ppts1, 1);
   ConstSpan<Plaintext> cts2 = absl::MakeConstSpan(ppts2, 1);
@@ -388,12 +388,12 @@ void GPUTest::CtsMulPts(int128_t a, int128_t b, int128_t c) {
   std::vector<Ciphertext> res1;  // receive the GPU Encrypt results
   res1 = encryptor_->Encrypt(cts1);
   // vector -> ConstSpan
-  Ciphertext* cct1[1]{&res1[0]};
+  Ciphertext *cct1[1]{&res1[0]};
   ConstSpan<Ciphertext> ct0 = absl::MakeConstSpan(cct1, 1);
   std::vector<Ciphertext> sum = evaluator_->Mul(ct0, cts2);
 
   // make the constspan for vector Decrypt
-  Ciphertext* ccts[1]{&sum[0]};
+  Ciphertext *ccts[1]{&sum[0]};
   ConstSpan<Ciphertext> cts =
       absl::MakeConstSpan(ccts, 1);  // create the constspan for GPU call
   std::vector<Plaintext> apts = decryptor_->Decrypt(cts);
@@ -410,8 +410,8 @@ TEST_F(GPUTest, CtsMulPtsTest) {
 void GPUTest::PtsMulCts(int128_t a, int128_t b, int128_t c) {
   Plaintext p1(a);
   Plaintext p2(b);
-  Plaintext* ppts1[1]{&p1};
-  Plaintext* ppts2[1]{&p2};
+  Plaintext *ppts1[1]{&p1};
+  Plaintext *ppts2[1]{&p2};
   // make the constspan for vector Encrypt
   ConstSpan<Plaintext> cts1 = absl::MakeConstSpan(ppts1, 1);
   ConstSpan<Plaintext> cts2 = absl::MakeConstSpan(ppts2, 1);
@@ -419,12 +419,12 @@ void GPUTest::PtsMulCts(int128_t a, int128_t b, int128_t c) {
   std::vector<Ciphertext> res1;  // receive the GPU Encrypt results
   res1 = encryptor_->Encrypt(cts1);
   // vector -> ConstSpan
-  Ciphertext* cct1[1]{&res1[0]};
+  Ciphertext *cct1[1]{&res1[0]};
   ConstSpan<Ciphertext> ct0 = absl::MakeConstSpan(cct1, 1);
   std::vector<Ciphertext> sum = evaluator_->Mul(cts2, ct0);
 
   // make the constspan for vector Decrypt
-  Ciphertext* ccts[1]{&sum[0]};
+  Ciphertext *ccts[1]{&sum[0]};
   ConstSpan<Ciphertext> cts =
       absl::MakeConstSpan(ccts, 1);  // create the constspan for GPU call
   std::vector<Plaintext> apts = decryptor_->Decrypt(cts);
@@ -444,8 +444,8 @@ void GPUTest::PtsMulPts(int128_t a, int128_t b, int128_t c, int128_t d,
   Plaintext p12(b);
   Plaintext p21(c);
   Plaintext p22(d);
-  Plaintext* ppts1[2]{&p11, &p12};
-  Plaintext* ppts2[2]{&p21, &p22};
+  Plaintext *ppts1[2]{&p11, &p12};
+  Plaintext *ppts2[2]{&p21, &p22};
   // make the constspan for vector Encrypt
   ConstSpan<Plaintext> cts1 = absl::MakeConstSpan(ppts1, 2);
   ConstSpan<Plaintext> cts2 = absl::MakeConstSpan(ppts2, 2);
@@ -464,8 +464,8 @@ TEST_F(GPUTest, PtsMulPtsTest) {
 void GPUTest::CtsMulPtsInplace(int128_t a, int128_t b, int128_t c) {
   Plaintext p1(a);
   Plaintext p2(b);
-  Plaintext* ppts1[1]{&p1};
-  Plaintext* ppts2[1]{&p2};
+  Plaintext *ppts1[1]{&p1};
+  Plaintext *ppts2[1]{&p2};
   // make the constspan for vector Encrypt
   ConstSpan<Plaintext> cts1 = absl::MakeConstSpan(ppts1, 1);
   ConstSpan<Plaintext> cts2 = absl::MakeConstSpan(ppts2, 1);
@@ -474,7 +474,7 @@ void GPUTest::CtsMulPtsInplace(int128_t a, int128_t b, int128_t c) {
   res1 = encryptor_->Encrypt(cts1);
 
   // vector -> ConstSpan
-  Ciphertext* cct1[1]{&res1[0]};
+  Ciphertext *cct1[1]{&res1[0]};
   Span<Ciphertext> ct0 = absl::MakeSpan(cct1, 1);
   evaluator_->MulInplace(ct0, cts2);
 
@@ -496,8 +496,8 @@ void GPUTest::PtsMulPtsInplace(int128_t a, int128_t b, int128_t c, int128_t d,
   Plaintext p12(b);
   Plaintext p21(c);
   Plaintext p22(d);
-  Plaintext* ppts1[2]{&p11, &p12};
-  Plaintext* ppts2[2]{&p21, &p22};
+  Plaintext *ppts1[2]{&p11, &p12};
+  Plaintext *ppts2[2]{&p21, &p22};
   // make the constspan for vector Encrypt
   Span<Plaintext> cts1 = absl::MakeSpan(ppts1, 2);
   ConstSpan<Plaintext> cts2 = absl::MakeConstSpan(ppts2, 2);
@@ -517,15 +517,15 @@ TEST_F(GPUTest, PtsMulPtsInplaceTest) {
 
 void GPUTest::CiphertextsNegate(int128_t a, int128_t b) {
   Plaintext p1(a);
-  Plaintext* ppts[1]{&p1};
+  Plaintext *ppts[1]{&p1};
   Span<Plaintext> pts = absl::MakeSpan(ppts, 1);
   std::vector<Ciphertext> ctvec = encryptor_->Encrypt(pts);
 
-  Ciphertext* ccts[1]{&ctvec[0]};
+  Ciphertext *ccts[1]{&ctvec[0]};
   Span<Ciphertext> cts = absl::MakeSpan(ccts, 1);
   std::vector<Ciphertext> ctNeg = evaluator_->Negate(cts);
 
-  Ciphertext* ctArray[1]{&ctNeg[0]};
+  Ciphertext *ctArray[1]{&ctNeg[0]};
   Span<Ciphertext> cts_neg = absl::MakeSpan(ctArray, 1);
   std::vector<Plaintext> ptvec = decryptor_->Decrypt(cts_neg);
 
@@ -541,11 +541,11 @@ TEST_F(GPUTest, CiphertextsNegateTest) {
 
 void GPUTest::CiphertextsNegateInplace(int128_t a, int128_t b) {
   Plaintext p1(a);
-  Plaintext* ppts[1]{&p1};
+  Plaintext *ppts[1]{&p1};
   Span<Plaintext> pts = absl::MakeSpan(ppts, 1);
   std::vector<Ciphertext> ctvec = encryptor_->Encrypt(pts);
 
-  Ciphertext* ccts[1]{&ctvec[0]};
+  Ciphertext *ccts[1]{&ctvec[0]};
   Span<Ciphertext> cts = absl::MakeSpan(ccts, 1);
   evaluator_->NegateInplace(cts);
 
@@ -566,8 +566,8 @@ TEST_F(GPUTest, CiphertextsNegateInplaceTest) {
 void GPUTest::CiphertextsSub(int128_t a, int128_t b, int128_t c) {
   Plaintext p1(a);
   Plaintext p2(b);
-  Plaintext* ppts1[1]{&p1};
-  Plaintext* ppts2[1]{&p2};
+  Plaintext *ppts1[1]{&p1};
+  Plaintext *ppts2[1]{&p2};
   // make the constspan for vector Encrypt
   ConstSpan<Plaintext> cts1 = absl::MakeConstSpan(ppts1, 1);
   ConstSpan<Plaintext> cts2 = absl::MakeConstSpan(ppts2, 1);
@@ -576,15 +576,15 @@ void GPUTest::CiphertextsSub(int128_t a, int128_t b, int128_t c) {
   res1 = encryptor_->Encrypt(cts1);  // Encrypt: plaintext --> ciphertext
   res2 = encryptor_->Encrypt(cts2);
 
-  Ciphertext* cct1[1]{&res1[0]};
-  Ciphertext* cct2[1]{&res2[0]};
+  Ciphertext *cct1[1]{&res1[0]};
+  Ciphertext *cct2[1]{&res2[0]};
   ConstSpan<Ciphertext> ct0 = absl::MakeConstSpan(cct1, 1);
   ConstSpan<Ciphertext> ct1 = absl::MakeConstSpan(cct2, 1);
   std::vector<Ciphertext> sum =
       evaluator_->Sub(ct0, ct1);  // Sub: ciphertext - ciphertext
 
   // make the constspan for vector Decrypt
-  Ciphertext* ccts[1]{&sum[0]};
+  Ciphertext *ccts[1]{&sum[0]};
   ConstSpan<Ciphertext> cts =
       absl::MakeConstSpan(ccts, 1);  // create the constspan for GPU call
   std::vector<Plaintext> apts = decryptor_->Decrypt(cts);
@@ -602,8 +602,8 @@ TEST_F(GPUTest, CiphertextsSubTest) {
 void GPUTest::CtsSubPts(int128_t a, int128_t b, int128_t c) {
   Plaintext p1(a);
   Plaintext p2(b);
-  Plaintext* ppts1[1]{&p1};
-  Plaintext* ppts2[1]{&p2};
+  Plaintext *ppts1[1]{&p1};
+  Plaintext *ppts2[1]{&p2};
   // make the constspan for vector Encrypt
   ConstSpan<Plaintext> pts1 = absl::MakeConstSpan(ppts1, 1);
   ConstSpan<Plaintext> pts2 = absl::MakeConstSpan(ppts2, 1);
@@ -611,13 +611,13 @@ void GPUTest::CtsSubPts(int128_t a, int128_t b, int128_t c) {
   std::vector<Ciphertext> res1;
   res1 = encryptor_->Encrypt(pts1);  // Encrypt: plaintext --> ciphertext
 
-  Ciphertext* cct1[1]{&res1[0]};
+  Ciphertext *cct1[1]{&res1[0]};
   ConstSpan<Ciphertext> ct0 = absl::MakeConstSpan(cct1, 1);
   std::vector<Ciphertext> sum =
       evaluator_->Sub(ct0, pts2);  // Sub: ciphertext - ciphertext
 
   // make the constspan for vector Decrypt
-  Ciphertext* ccts[1]{&sum[0]};
+  Ciphertext *ccts[1]{&sum[0]};
   ConstSpan<Ciphertext> cts =
       absl::MakeConstSpan(ccts, 1);  // create the constspan for GPU call
   std::vector<Plaintext> apts = decryptor_->Decrypt(cts);
@@ -634,8 +634,8 @@ TEST_F(GPUTest, CtsSubPtsTest) {
 void GPUTest::PtsSubCts(int128_t a, int128_t b, int128_t c) {
   Plaintext p1(a);
   Plaintext p2(b);
-  Plaintext* ppts1[1]{&p1};
-  Plaintext* ppts2[1]{&p2};
+  Plaintext *ppts1[1]{&p1};
+  Plaintext *ppts2[1]{&p2};
   // make the constspan for vector Encrypt
   ConstSpan<Plaintext> pts1 = absl::MakeConstSpan(ppts1, 1);
   ConstSpan<Plaintext> pts2 = absl::MakeConstSpan(ppts2, 1);
@@ -643,13 +643,13 @@ void GPUTest::PtsSubCts(int128_t a, int128_t b, int128_t c) {
   std::vector<Ciphertext> res2;
   res2 = encryptor_->Encrypt(pts2);  // Encrypt: plaintext --> ciphertext
 
-  Ciphertext* cct2[1]{&res2[0]};
+  Ciphertext *cct2[1]{&res2[0]};
   ConstSpan<Ciphertext> ct2 = absl::MakeConstSpan(cct2, 1);
   std::vector<Ciphertext> sum =
       evaluator_->Sub(pts1, ct2);  // Sub: ciphertext - ciphertext
 
   // make the constspan for vector Decrypt
-  Ciphertext* ccts[1]{&sum[0]};
+  Ciphertext *ccts[1]{&sum[0]};
   ConstSpan<Ciphertext> cts =
       absl::MakeConstSpan(ccts, 1);  // create the constspan for GPU call
   std::vector<Plaintext> apts = decryptor_->Decrypt(cts);
@@ -666,8 +666,8 @@ TEST_F(GPUTest, PtsSubCtsTest) {
 void GPUTest::PtsSubPts(int128_t a, int128_t b, int128_t c) {
   Plaintext p1(a);
   Plaintext p2(b);
-  Plaintext* ppts1[1]{&p1};
-  Plaintext* ppts2[1]{&p2};
+  Plaintext *ppts1[1]{&p1};
+  Plaintext *ppts2[1]{&p2};
   // make the constspan for vector Encrypt
   ConstSpan<Plaintext> pts1 = absl::MakeConstSpan(ppts1, 1);
   ConstSpan<Plaintext> pts2 = absl::MakeConstSpan(ppts2, 1);
@@ -687,8 +687,8 @@ TEST_F(GPUTest, PtsSubPtsTest) {
 void GPUTest::CiphertextsSubInplace(int128_t a, int128_t b, int128_t c) {
   Plaintext p1(a);
   Plaintext p2(b);
-  Plaintext* ppts1[1]{&p1};
-  Plaintext* ppts2[1]{&p2};
+  Plaintext *ppts1[1]{&p1};
+  Plaintext *ppts2[1]{&p2};
   // make the constspan for vector Encrypt
   ConstSpan<Plaintext> cts1 = absl::MakeConstSpan(ppts1, 1);
   ConstSpan<Plaintext> cts2 = absl::MakeConstSpan(ppts2, 1);
@@ -697,8 +697,8 @@ void GPUTest::CiphertextsSubInplace(int128_t a, int128_t b, int128_t c) {
   res1 = encryptor_->Encrypt(cts1);  // Encrypt: plaintext --> ciphertext
   res2 = encryptor_->Encrypt(cts2);
 
-  Ciphertext* cct1[1]{&res1[0]};
-  Ciphertext* cct2[1]{&res2[0]};
+  Ciphertext *cct1[1]{&res1[0]};
+  Ciphertext *cct2[1]{&res2[0]};
   Span<Ciphertext> ct0 = absl::MakeSpan(cct1, 1);
   ConstSpan<Ciphertext> ct1 = absl::MakeConstSpan(cct2, 1);
   evaluator_->SubInplace(ct0, ct1);  // Sub: ciphertext - ciphertext
@@ -717,8 +717,8 @@ TEST_F(GPUTest, CiphertextsSubInplaceTest) {
 void GPUTest::CtsSubPtsInplace(int128_t a, int128_t b, int128_t c) {
   Plaintext p1(a);
   Plaintext p2(b);
-  Plaintext* ppts1[1]{&p1};
-  Plaintext* ppts2[1]{&p2};
+  Plaintext *ppts1[1]{&p1};
+  Plaintext *ppts2[1]{&p2};
   // make the constspan for vector Encrypt
   ConstSpan<Plaintext> pts1 = absl::MakeConstSpan(ppts1, 1);
   ConstSpan<Plaintext> pts2 = absl::MakeConstSpan(ppts2, 1);
@@ -726,7 +726,7 @@ void GPUTest::CtsSubPtsInplace(int128_t a, int128_t b, int128_t c) {
   std::vector<Ciphertext> res1;
   res1 = encryptor_->Encrypt(pts1);  // Encrypt: plaintext --> ciphertext
 
-  Ciphertext* cct1[1]{&res1[0]};
+  Ciphertext *cct1[1]{&res1[0]};
   Span<Ciphertext> ct0 = absl::MakeSpan(cct1, 1);
   evaluator_->SubInplace(ct0, pts2);  // Sub: ciphertext - ciphertext
 
@@ -744,8 +744,8 @@ TEST_F(GPUTest, CtsSubPtsInplaceTest) {
 void GPUTest::PtsSubPtsInplace(int128_t a, int128_t b, int128_t c) {
   Plaintext p1(a);
   Plaintext p2(b);
-  Plaintext* ppts1[1]{&p1};
-  Plaintext* ppts2[1]{&p2};
+  Plaintext *ppts1[1]{&p1};
+  Plaintext *ppts2[1]{&p2};
   // make the constspan for vector Encrypt
   Span<Plaintext> pts1 = absl::MakeSpan(ppts1, 1);
   ConstSpan<Plaintext> pts2 = absl::MakeConstSpan(ppts2, 1);

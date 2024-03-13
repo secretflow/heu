@@ -20,7 +20,7 @@
 
 namespace heu::lib::algorithms::paillier_f {
 
-void KeyGenerator::Generate(size_t key_bits, SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(size_t key_bits, SecretKey *sk, PublicKey *pk) {
   MPInt p;
   MPInt q;
   MPInt n;
@@ -45,7 +45,7 @@ void KeyGenerator::Generate(size_t key_bits, SecretKey* sk, PublicKey* pk) {
   *sk = SecretKey(*pk, p, q);
 }
 
-void KeyGenerator::Generate(SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(SecretKey *sk, PublicKey *pk) {
   Generate(2048, sk, pk);
 }
 

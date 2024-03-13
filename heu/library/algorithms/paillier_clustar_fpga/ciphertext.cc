@@ -23,41 +23,41 @@
 namespace heu::lib::algorithms::paillier_clustar_fpga {
 
 Ciphertext::Ciphertext(unsigned size) : size_(size) {
-  mantissa_ = static_cast<char*>(malloc(size_));
+  mantissa_ = static_cast<char *>(malloc(size_));
   memset(mantissa_, 0, size_);
   exp_ = 0;
 }
 
-Ciphertext::Ciphertext(const Ciphertext& other) { CopyInit(other); }
+Ciphertext::Ciphertext(const Ciphertext &other) { CopyInit(other); }
 
-Ciphertext::Ciphertext(Ciphertext&& other) { MoveInit(std::move(other)); }
+Ciphertext::Ciphertext(Ciphertext &&other) { MoveInit(std::move(other)); }
 
-Ciphertext::Ciphertext(char* mantissa, unsigned size, int exp)
+Ciphertext::Ciphertext(char *mantissa, unsigned size, int exp)
     : size_(size), exp_(exp) {
-  mantissa_ = static_cast<char*>(malloc(size_));
+  mantissa_ = static_cast<char *>(malloc(size_));
   memset(mantissa_, 0, size_);
   memcpy(mantissa_, mantissa, size_);
 }
 
-Ciphertext& Ciphertext::operator=(const Ciphertext& other) {
+Ciphertext &Ciphertext::operator=(const Ciphertext &other) {
   CopyInit(other);
   return *this;
 }
 
-Ciphertext& Ciphertext::operator=(Ciphertext&& other) {
+Ciphertext &Ciphertext::operator=(Ciphertext &&other) {
   MoveInit(std::move(other));
   return *this;
 }
 
-void Ciphertext::CopyInit(const Ciphertext& other) {
+void Ciphertext::CopyInit(const Ciphertext &other) {
   size_ = other.size_;
   exp_ = other.exp_;
-  mantissa_ = static_cast<char*>(malloc(size_));
+  mantissa_ = static_cast<char *>(malloc(size_));
   memset(mantissa_, 0, size_);
   memcpy(mantissa_, other.mantissa_, size_);
 }
 
-void Ciphertext::MoveInit(Ciphertext&& other) {
+void Ciphertext::MoveInit(Ciphertext &&other) {
   size_ = other.size_;
   exp_ = other.exp_;
   mantissa_ = other.mantissa_;
@@ -85,7 +85,7 @@ std::string Ciphertext::ToString() const {
 
 // TODO: Only for type int since int's exp is 0
 // Extend to double/float later
-bool Ciphertext::operator==(const Ciphertext& other) const {
+bool Ciphertext::operator==(const Ciphertext &other) const {
   if (this->size_ != other.size_) {
     return false;
   }
@@ -101,14 +101,14 @@ bool Ciphertext::operator==(const Ciphertext& other) const {
   return true;
 }
 
-bool Ciphertext::operator!=(const Ciphertext& other) const {
+bool Ciphertext::operator!=(const Ciphertext &other) const {
   return !this->operator==(other);
 }
 
 // put size_ + exp_ + mantissa_ to buffer
 yacl::Buffer Ciphertext::Serialize() const {
   yacl::Buffer buf(size_ + sizeof(int) * 2);
-  unsigned char* buf_ptr = buf.data<unsigned char>();
+  unsigned char *buf_ptr = buf.data<unsigned char>();
 
   memcpy(buf_ptr, &size_, sizeof(int));
   memcpy(buf_ptr + sizeof(int), &exp_, sizeof(int));
@@ -122,13 +122,13 @@ void Ciphertext::Deserialize(yacl::ByteContainerView in) {
   Release();
 
   //
-  const unsigned char* buffer = in.data();
+  const unsigned char *buffer = in.data();
   size_t buf_len = in.size();
   memcpy(&size_, buffer, sizeof(int));
   YACL_ENFORCE(size_ + sizeof(int) * 2 == buf_len, "buffer len invalid");
 
   // Alloc new resource
-  mantissa_ = static_cast<char*>(malloc(size_));
+  mantissa_ = static_cast<char *>(malloc(size_));
   memset(mantissa_, 0, size_);
 
   memcpy(&exp_, buffer + sizeof(int), sizeof(int));
@@ -142,7 +142,7 @@ void Ciphertext::Release() {
   exp_ = 0;
 }
 
-char* Ciphertext::GetMantissa() const { return mantissa_; }
+char *Ciphertext::GetMantissa() const { return mantissa_; }
 
 void Ciphertext::SetExp(int exp) { exp_ = exp; }
 

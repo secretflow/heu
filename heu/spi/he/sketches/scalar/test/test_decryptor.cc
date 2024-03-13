@@ -18,7 +18,7 @@
 
 #include "heu/spi/he/sketches/scalar/test/dummy_ops.h"
 
-namespace heu::lib::spi::test {
+namespace heu::spi::test {
 
 class TestDecryptor : public ::testing::Test {
  protected:
@@ -50,4 +50,4 @@ TEST_F(TestDecryptor, TestDec) {
   ExpectItemEq<DummyPt>(pts, {"Dec(ct1)", "Dec(ct2)", "Dec(ct3)"});
 }
 
-}  // namespace heu::lib::spi::test
+}  // namespace heu::spi::test

@@ -32,9 +32,9 @@ class Encryptor {
 
   // Get Enc(0)
   Ciphertext EncryptZero() const;
-  Ciphertext Encrypt(const Plaintext& clazz) const;
+  Ciphertext Encrypt(const Plaintext &clazz) const;
   std::pair<Ciphertext, std::string> EncryptWithAudit(
-      const Plaintext& clazz) const;
+      const Plaintext &clazz) const;
 
   SchemaType GetSchemaType() const;
 

@@ -66,7 +66,7 @@ class ModSwitchTest : public ::testing::TestWithParam<size_t> {
   }
 
   template <typename T>
-  void UniformRand(T* dst, size_t n, size_t bw = 0) {
+  void UniformRand(T *dst, size_t n, size_t bw = 0) {
     T mask = static_cast<T>(-1);
     if (bw > 0 && bw < sizeof(T) * 8) {
       mask = (static_cast<T>(1) << bw) - 1;
@@ -75,13 +75,13 @@ class ModSwitchTest : public ::testing::TestWithParam<size_t> {
     std::generate_n(dst, n, [&]() { return uniform(rdv_) & mask; });
   }
 
-  void UniformRand(uint128_t* dst, size_t n, size_t bw) {
+  void UniformRand(uint128_t *dst, size_t n, size_t bw) {
     uint64_t mask = static_cast<uint64_t>(-1);
     if (bw > 0 && bw < 128) {
       mask = (1ULL << (bw - 64)) - 1;
     }
 
-    uint64_t* cast = reinterpret_cast<uint64_t*>(dst);
+    uint64_t *cast = reinterpret_cast<uint64_t *>(dst);
     UniformRand(cast, 2 * n);
     for (size_t i = 1; i < 2 * n; i += 2) {
       cast[i] &= mask;
@@ -115,8 +115,8 @@ TEST_P(ModSwitchTest, TestAdd) {
   std::vector<uint64_t> lifted_y(num_modulus_ * ntrial);
 
   if (bitlen_ <= 32) {
-    auto& x = x32;
-    auto& y = y32;
+    auto &x = x32;
+    auto &y = y32;
     UniformRand(x.data(), x.size(), bitlen_);
     UniformRand(y.data(), y.size(), bitlen_);
 
@@ -133,8 +133,8 @@ TEST_P(ModSwitchTest, TestAdd) {
       ms_helper_->ModulusUpAt(y_span, l, lifted_y_span);
     }
   } else if (bitlen_ <= 64) {
-    auto& x = x64;
-    auto& y = y64;
+    auto &x = x64;
+    auto &y = y64;
 
     UniformRand(x.data(), x.size(), bitlen_);
     UniformRand(y.data(), y.size(), bitlen_);
@@ -152,8 +152,8 @@ TEST_P(ModSwitchTest, TestAdd) {
       ms_helper_->ModulusUpAt(y_span, l, lifted_y_span);
     }
   } else if (bitlen_ <= 128) {
-    auto& x = x128;
-    auto& y = y128;
+    auto &x = x128;
+    auto &y = y128;
 
     UniformRand(x.data(), x.size(), bitlen_);
     UniformRand(y.data(), y.size(), bitlen_);
@@ -171,7 +171,7 @@ TEST_P(ModSwitchTest, TestAdd) {
     }
   }
 
-  auto& modulus = context_->key_context_data()->parms().coeff_modulus();
+  auto &modulus = context_->key_context_data()->parms().coeff_modulus();
   std::vector<uint64_t> computed(num_modulus_ * ntrial);
   for (size_t l = 0; l < num_modulus_; ++l) {
     auto op0 = lifted_x.data() + l * ntrial;
@@ -233,7 +233,7 @@ TEST_P(ModSwitchTest, TestMul) {
   if (bitlen_ <= 32) {
     std::uniform_int_distribution<uint32_t> uniform(0,
                                                     static_cast<uint32_t>(-1));
-    auto& y = y32;
+    auto &y = y32;
     x32 = uniform(rdv);
     std::generate_n(y.data(), y.size(), [&]() { return uniform(rdv); });
 
@@ -251,7 +251,7 @@ TEST_P(ModSwitchTest, TestMul) {
   } else if (bitlen_ <= 64) {
     std::uniform_int_distribution<uint64_t> uniform(0,
                                                     static_cast<uint64_t>(-1));
-    auto& y = y64;
+    auto &y = y64;
     x64 = uniform(rdv);
     std::generate_n(y.data(), y.size(), [&]() { return uniform(rdv); });
 
@@ -269,7 +269,7 @@ TEST_P(ModSwitchTest, TestMul) {
   } else if (bitlen_ <= 128) {
     std::uniform_int_distribution<uint128_t> uniform(
         0, static_cast<uint128_t>(-1));
-    auto& y = y128;
+    auto &y = y128;
     x128 = uniform(rdv);
     std::generate_n(y.data(), y.size(), [&]() { return uniform(rdv); });
 
@@ -286,7 +286,7 @@ TEST_P(ModSwitchTest, TestMul) {
     }
   }
 
-  auto& modulus = context_->key_context_data()->parms().coeff_modulus();
+  auto &modulus = context_->key_context_data()->parms().coeff_modulus();
 
   std::vector<uint64_t> computed(num_modulus_ * ntrial);
   for (size_t l = 0; l < num_modulus_; ++l) {

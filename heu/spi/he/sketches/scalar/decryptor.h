@@ -17,17 +17,17 @@
 #include "heu/spi/he/decryptor.h"
 #include "heu/spi/he/sketches/scalar/helpful_macros.h"
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 template <typename PlaintextT, typename CiphertextT>
 class DecryptorScalarSketch : public Decryptor {
  public:
-  virtual void Decrypt(const CiphertextT& ct, PlaintextT* out) const = 0;
-  virtual PlaintextT Decrypt(const CiphertextT& ct) const = 0;
+  virtual void Decrypt(const CiphertextT &ct, PlaintextT *out) const = 0;
+  virtual PlaintextT Decrypt(const CiphertextT &ct) const = 0;
 
  private:
   DefineUnaryFuncCStyle(Decrypt, CiphertextT, PlaintextT);
   DefineUnaryFuncCT(Decrypt);
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

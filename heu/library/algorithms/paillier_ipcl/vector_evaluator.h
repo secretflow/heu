@@ -12,7 +12,7 @@ namespace heu::lib::algorithms::paillier_ipcl {
 
 class Evaluator {
  public:
-  explicit Evaluator(const PublicKey& pk);
+  explicit Evaluator(const PublicKey &pk);
 
   void Randomize(Span<Ciphertext> ct) const;
 

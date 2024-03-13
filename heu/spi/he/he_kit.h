@@ -16,10 +16,13 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <map>
 #include <memory>
+#include <ostream>
 #include <string>
 
 #include "yacl/base/buffer.h"
+#include "yacl/utils/spi/argument/arg_set.h"
 #include "yacl/utils/spi/spi_factory.h"
 
 #include "heu/spi/he/binary_evaluator.h"
@@ -28,10 +31,13 @@
 #include "heu/spi/he/encryptor.h"
 #include "heu/spi/he/gate_evaluator.h"
 #include "heu/spi/he/item.h"
-#include "heu/spi/he/item_manipulator.h"
+#include "heu/spi/he/item_tool.h"
+#include "heu/spi/he/schema.h"
 #include "heu/spi/he/word_evaluator.h"
 
-namespace heu::lib::spi {
+namespace heu::spi {
+
+using yacl::SpiArgs;
 
 class HeKit {
  public:
@@ -40,43 +46,34 @@ class HeKit {
   //===   Meta query   ===//
 
   virtual std::string GetLibraryName() const = 0;
-  virtual std::string GetSchemaName() const = 0;
+
+  // Gets the name of the feature set that the HeKit instance can provide.
+  //
+  // Which feature set HE belongs to depends on the implementation library;
+  // the same schema can offer different features in different libraries.
+  // For example, CKKS is implemented as LHE type in the SEAL library, but as
+  // FHE in OpenFHE.
+  virtual FeatureSet GetFeatureSet() const = 0;
+  virtual Schema GetSchema() const = 0;
+
+  //===   Key management   ===//
+
+  virtual bool HasKey(HeKeyType key_type) const = 0;
+  // If 'key_type' does not exist, then an exception will be thrown
+  virtual Item GetKey(HeKeyType key_type) const = 0;
 
   // equal to GetKey(HeKeyType::PublicKey);
   virtual Item GetPublicKey() const = 0;
   virtual Item GetSecretKey() const = 0;
-  virtual Item GetKey(HeKeyType key_type) const = 0;
+  // equal to HasKey(HeKeyType::SecretKey);
+  virtual bool HasSecretKey() const = 0;
 
-  //===   Get Operators   ===//
-
-  // The state transition diagram:
-  // 1. Cleartext --(encoder)--> Plaintext --(Encryptor)--> Ciphertext
-  // 2. Plaintext/Ciphertext --(Evaluator)--> Plaintext/Ciphertext
-  // 3. Ciphertext --(Decryptor)--> Plaintext --(Encoder)--> Cleartext
-  // 4. ItemManipulator --> Apply operations to Items
-
-  virtual std::shared_ptr<Encryptor> GetEncryptor() const = 0;
-  virtual std::shared_ptr<Decryptor> GetDecryptor() const = 0;
-  virtual std::shared_ptr<WordEvaluator> GetWordEvaluator() const = 0;
-  virtual std::shared_ptr<GateEvaluator> GetGateEvaluator() const = 0;
-  virtual std::shared_ptr<BinaryEvaluator> GetBinaryEvaluator() const = 0;
-  virtual std::shared_ptr<ItemManipulator> GetItemManipulator() const = 0;
-
-  template <typename... T>
-  std::shared_ptr<Encoder> GetEncoder(T&&... encoder_args) const {
-    return CreateEncoder({std::forward<T>(encoder_args)...});
-  }
-
-  //===  I/O for HeKit itself  ===//
-
-  // Print context info, key info, and so on
-  virtual std::string ToString() const = 0;
-
-  // Serialize HeKit itself, without key
-  // Save HeKit's param and context to Buffer
-  // 保存 HeKit 的参数（即 Context）以便其它参与者可以恢复出相同的 HeKit
-  virtual yacl::Buffer Serialize() const = 0;
-  virtual size_t Serialize(uint8_t* buf, size_t buf_len) const = 0;
+  // get the params of a key
+  // return: a map of <param_name, param_value>, all values are converted to
+  // string
+  // e.g., Paillier secretkey will return {p=xxx, q=xxx}
+  virtual std::map<std::string, std::string> ListKeyParams(
+      HeKeyType key_type) const = 0;
 
   // Special api for serializing keys (maybe in compressed format)
   // For some algorithms, the serialized string returned by `SaveKey` has a
@@ -97,25 +94,51 @@ class HeKit {
   // 之类的接口， 想要反序列化 Key，请将 Key 的二进制串作为参数传给工厂，
   // 从而得到新的、有相同 Key 的 HeKit
   virtual yacl::Buffer Serialize(HeKeyType key_type) const = 0;
-  virtual size_t Serialize(HeKeyType key_type, uint8_t* buf,
+  virtual size_t Serialize(HeKeyType key_type, uint8_t *buf,
                            size_t buf_len) const = 0;
 
+  //===   Encoders management   ===//
+
+  template <typename... T>
+  std::shared_ptr<Encoder> GetEncoder(T &&...encoder_args) const {
+    return CreateEncoder({std::forward<T>(encoder_args)...});
+  }
+
+  //===   Operators management   ===//
+
+  // The state transition diagram:
+  // 1. Cleartext --(encoder)--> Plaintext --(Encryptor)--> Ciphertext
+  // 2. Plaintext/Ciphertext --(Evaluator)--> Plaintext/Ciphertext
+  // 3. Ciphertext --(Decryptor)--> Plaintext --(Encoder)--> Cleartext
+  // 4. ItemTool --> Apply operations to Items
+
+  virtual std::shared_ptr<Encryptor> GetEncryptor() const = 0;
+  virtual std::shared_ptr<Decryptor> GetDecryptor() const = 0;
+  virtual std::shared_ptr<WordEvaluator> GetWordEvaluator() const = 0;
+  virtual std::shared_ptr<GateEvaluator> GetGateEvaluator() const = 0;
+  virtual std::shared_ptr<BinaryEvaluator> GetBinaryEvaluator() const = 0;
+  virtual std::shared_ptr<ItemTool> GetItemTool() const = 0;
+
+  //===  I/O for HeKit itself  ===//
+
+  // Serialize HeKit itself, without key
+  // Save HeKit's param and context to Buffer
+  // 保存 HeKit 的参数（即 Context）以便其它参与者可以恢复出相同的 HeKit
+  virtual yacl::Buffer Serialize() const = 0;
+  virtual size_t Serialize(uint8_t *buf, size_t buf_len) const = 0;
+
+  // Print context info, key info, and so on
+  virtual std::string ToString() const = 0;
+
+  friend std::ostream &operator<<(std::ostream &os, const HeKit &kit) {
+    return os << kit.ToString();
+  }
+
  protected:
-  virtual std::shared_ptr<Encoder> CreateEncoder(const SpiArgs&) const = 0;
+  virtual std::shared_ptr<Encoder> CreateEncoder(const SpiArgs &) const = 0;
 };
 
-class HeFactory final : public yacl::SpiFactoryBase<HeKit> {
- public:
-  static HeFactory& Instance();
-};
+// for fmt lib
+inline auto format_as(const HeKit &kit) { return kit.ToString(); }
 
-/*
- * The sign of creator/checker:
- * > std::unique_ptr<HeKit> Create(const std::string &schema, const SpiArgs &);
- * > bool Check(const std::string &schema, const SpiArgs &args);
- */
-#define REGISTER_HE_LIBRARY(lib_name, performance, checker, creator)     \
-  REGISTER_SPI_LIBRARY_HELPER(HeFactory, lib_name, performance, checker, \
-                              creator)
-
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

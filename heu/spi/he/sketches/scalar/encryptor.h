@@ -17,11 +17,14 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
+#include <vector>
+
+#include "absl/strings/str_join.h"
 
 #include "heu/spi/he/encryptor.h"
 #include "heu/spi/he/sketches/scalar/helpful_macros.h"
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 template <typename PlaintextT, typename CiphertextT>
 class EncryptorScalarSketch : public Encryptor {
@@ -79,4 +82,4 @@ class EncryptorScalarSketch : public Encryptor {
   }
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

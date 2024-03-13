@@ -18,7 +18,7 @@
 
 namespace heu::lib::algorithms::paillier_ic {
 
-void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(size_t key_size, SecretKey *sk, PublicKey *pk) {
   paillier_z::PublicKey zpk;
 
   paillier_z::KeyGenerator::Generate(key_size, sk, &zpk);
@@ -27,7 +27,7 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
   pk->Init();
 }
 
-void KeyGenerator::Generate(SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(SecretKey *sk, PublicKey *pk) {
   Generate(2048, sk, pk);
 }
 

@@ -37,12 +37,12 @@ namespace hnp = ::heu::lib::numpy;
 namespace {
 
 template <typename T>
-void BindMatrixCommon(py::class_<hnp::DenseMatrix<T>>& clazz) {
+void BindMatrixCommon(py::class_<hnp::DenseMatrix<T>> &clazz) {
   clazz.def("__str__", &hnp::DenseMatrix<T>::ToString)
       .def(PyUtils::PickleSupport<hnp::DenseMatrix<T>>())
       .def(
           "serialize",
-          [](const hnp::DenseMatrix<T>& m, hnp::MatrixSerializeFormat format) {
+          [](const hnp::DenseMatrix<T> &m, hnp::MatrixSerializeFormat format) {
             auto buffer = m.Serialize(format);
             return pybind11::bytes(buffer.template data<char>(), buffer.size());
           },
@@ -50,7 +50,7 @@ void BindMatrixCommon(py::class_<hnp::DenseMatrix<T>>& clazz) {
           "serialize matrix to bytes")
       .def_static(
           "load_from",
-          [](const pybind11::bytes& buffer, hnp::MatrixSerializeFormat format) {
+          [](const pybind11::bytes &buffer, hnp::MatrixSerializeFormat format) {
             // T has a static LoadFrom() function
             return hnp::DenseMatrix<T>::LoadFrom(
                 static_cast<std::string_view>(buffer), format);
@@ -74,13 +74,13 @@ void BindMatrixCommon(py::class_<hnp::DenseMatrix<T>>& clazz) {
 }
 
 template <typename T, typename... ARGS>
-void BindToNumpy(py::class_<hnp::PMatrix>& clazz, ARGS&&... args) {
+void BindToNumpy(py::class_<hnp::PMatrix> &clazz, ARGS &&...args) {
   // We can not accept EncoderParamsT type because we cannot get schema info
   // from PMatrix
   // TODO: add XXXDecoder() api.
   clazz.def(
       "to_numpy",
-      py::overload_cast<const lib::numpy::PMatrix&, const T&>(
+      py::overload_cast<const lib::numpy::PMatrix &, const T &>(
           &DecodeNdarray<T>),
       std::forward<ARGS>(args)..., py::return_value_policy::move,
       fmt::format("Decode plaintext array to numpy ndarray with type '{}'",
@@ -89,7 +89,7 @@ void BindToNumpy(py::class_<hnp::PMatrix>& clazz, ARGS&&... args) {
 }
 
 template <typename T>
-void BindArrayForModule(pybind11::module& m) {
+void BindArrayForModule(pybind11::module &m) {
   m.def("array", &EncodeNdarray<T>, py::arg("ndarray"), py::arg("encoder"),
         fmt::format("Create and encode an array using {}", py::type_id<T>())
             .c_str());
@@ -99,14 +99,14 @@ void BindArrayForModule(pybind11::module& m) {
 }
 
 template <typename EncoderParamT, typename PyClassT, typename PyArgT>
-void BindArrayForClass(PyClassT& m, const PyArgT& edr_arg) {
+void BindArrayForClass(PyClassT &m, const PyArgT &edr_arg) {
   using EncoderT =
-      decltype(std::declval<EncoderParamT&>().Instance(phe::SchemaType()));
+      decltype(std::declval<EncoderParamT &>().Instance(phe::SchemaType()));
 
   m.def(
       "array",
-      [](const phe::HeKitPublicBase& self, const py::array& ndarray,
-         const EncoderParamT& encoder) {
+      [](const phe::HeKitPublicBase &self, const py::array &ndarray,
+         const EncoderParamT &encoder) {
         return EncodeNdarray<EncoderT>(ndarray,
                                        encoder.Instance(self.GetSchemaType()));
       },
@@ -116,8 +116,8 @@ void BindArrayForClass(PyClassT& m, const PyArgT& edr_arg) {
           .c_str());
   m.def(
       "array",
-      [](const phe::HeKitPublicBase& self, const py::object& ptr,
-         const EncoderParamT& encoder) {
+      [](const phe::HeKitPublicBase &self, const py::object &ptr,
+         const EncoderParamT &encoder) {
         return ParseEncodeNdarray<EncoderT>(
             ptr, encoder.Instance(self.GetSchemaType()));
       },
@@ -128,8 +128,8 @@ void BindArrayForClass(PyClassT& m, const PyArgT& edr_arg) {
 
   m.def(
       "array",
-      [](const phe::HeKitPublicBase& self, const py::array& ndarray,
-         const EncoderT& encoder) {
+      [](const phe::HeKitPublicBase &self, const py::array &ndarray,
+         const EncoderT &encoder) {
         return EncodeNdarray<EncoderT>(ndarray, encoder);
       },
       py::arg("ndarray"), py::arg("encoder"),
@@ -138,8 +138,8 @@ void BindArrayForClass(PyClassT& m, const PyArgT& edr_arg) {
           .c_str());
   m.def(
       "array",
-      [](const phe::HeKitPublicBase& self, const py::object& ptr,
-         const EncoderT& encoder) {
+      [](const phe::HeKitPublicBase &self, const py::object &ptr,
+         const EncoderT &encoder) {
         return ParseEncodeNdarray<EncoderT>(ptr, encoder);
       },
       py::arg("object"), py::arg("encoder"),
@@ -150,29 +150,29 @@ void BindArrayForClass(PyClassT& m, const PyArgT& edr_arg) {
 
 }  // namespace
 
-void PyBindNumpy(pybind11::module& m) {
+void PyBindNumpy(pybind11::module &m) {
   py::register_local_exception<yacl::Exception>(m, "NumpyRuntimeError",
                                                 PyExc_RuntimeError);
   /****** Basic types ******/
   py::class_<hnp::Shape>(m, "Shape")
       .def(py::init<std::vector<int64_t>>())
-      .def(py::init([](const py::args& args) {
+      .def(py::init([](const py::args &args) {
         return hnp::Shape(py::cast<std::vector<int64_t>>(args));
       }))
       .def("__str__", &hnp::Shape::ToString)
       .def("__repr__",
-           [](const hnp::Shape& s) { return "Shape" + s.ToString(); })
-      .def("__len__", [](const hnp::Shape& s) { return s.Ndim(); })
+           [](const hnp::Shape &s) { return "Shape" + s.ToString(); })
+      .def("__len__", [](const hnp::Shape &s) { return s.Ndim(); })
       .def(
           "__iter__",
-          [](const hnp::Shape& s) {
+          [](const hnp::Shape &s) {
             return py::make_iterator(s.begin(), s.end());
           },
           // Essential: keep object alive while iterator exists
           py::keep_alive<0, 1>())
       .def(PyUtils::PickleSupport<hnp::Shape>())
-      .def("__getitem__", [](const hnp::Shape& s, int64_t i) { return s[i]; })
-      .def("__getitem__", [](const hnp::Shape& s, const py::slice& slice) {
+      .def("__getitem__", [](const hnp::Shape &s, int64_t i) { return s[i]; })
+      .def("__getitem__", [](const hnp::Shape &s, const py::slice &slice) {
         size_t start = 0, stop = 0, step = 0, slicelength = 0;
         if (!slice.compute(s.Ndim(), &start, &stop, &step, &slicelength)) {
           throw py::error_already_set();
@@ -200,8 +200,8 @@ void PyBindNumpy(pybind11::module& m) {
   BindToNumpy<PyBatchFloatEncoder>(pmatrix, py::arg("encoder"));
   pmatrix.def(
       "to_bytes",
-      [](const hnp::PMatrix& pm, size_t bytes_per_int,
-         const std::string& endian) {
+      [](const hnp::PMatrix &pm, size_t bytes_per_int,
+         const std::string &endian) {
         auto buf = hnp::Toolbox::PMatrixToBytes(pm, bytes_per_int,
                                                 PyUtils::PyEndianToCpp(endian));
         return py::bytes(buf.data<char>(), buf.size());  // this is a copy
@@ -266,7 +266,7 @@ void PyBindNumpy(pybind11::module& m) {
 
   m.def(
       "setup",
-      [](const std::string& schema_string, size_t key_size) {
+      [](const std::string &schema_string, size_t key_size) {
         return hnp::HeKit(
             phe::HeKit(phe::ParseSchemaType(schema_string), key_size));
       },
@@ -285,7 +285,7 @@ void PyBindNumpy(pybind11::module& m) {
 
   m.def(
       "setup",
-      [](const std::string& schema_string) {
+      [](const std::string &schema_string) {
         return hnp::HeKit(phe::HeKit(phe::ParseSchemaType(schema_string)));
       },
       py::arg("schema_string") = "z-paillier", py::return_value_policy::move,
@@ -323,16 +323,16 @@ void PyBindNumpy(pybind11::module& m) {
       // name in parent (phe::Encryptor) will be hidden, which may be a bug of
       // pybind11
       .def_property_readonly(
-          "phe", [](hnp::Encryptor& self) -> phe::Encryptor& { return self; },
+          "phe", [](hnp::Encryptor &self) -> phe::Encryptor & { return self; },
           "Get the instance of phe.Encryptor for scalar encryption")
       .def("encrypt",
-           py::overload_cast<const phe::Plaintext&>(&hnp::Encryptor::Encrypt,
-                                                    py::const_),
+           py::overload_cast<const phe::Plaintext &>(&hnp::Encryptor::Encrypt,
+                                                     py::const_),
            py::arg("plaintext"),
            "Encrypt plaintext (scalar) to ciphertext (scalar)")
       .def("encrypt",
-           py::overload_cast<const hnp::PMatrix&>(&hnp::Encryptor::Encrypt,
-                                                  py::const_),
+           py::overload_cast<const hnp::PMatrix &>(&hnp::Encryptor::Encrypt,
+                                                   py::const_),
            py::arg("plaintext_array"),
            "Encrypt plaintext array to ciphertext array")
       .def("encrypt_with_audit", &hnp::Encryptor::EncryptWithAudit,
@@ -345,19 +345,19 @@ void PyBindNumpy(pybind11::module& m) {
       // name in parent (phe::Decryptor) will be hidden, which may be a bug of
       // pybind11
       .def_property_readonly(
-          "phe", [](hnp::Decryptor& self) -> phe::Decryptor& { return self; })
+          "phe", [](hnp::Decryptor &self) -> phe::Decryptor & { return self; })
       .def("decrypt",
-           py::overload_cast<const phe::Ciphertext&>(&hnp::Decryptor::Decrypt,
-                                                     py::const_),
+           py::overload_cast<const phe::Ciphertext &>(&hnp::Decryptor::Decrypt,
+                                                      py::const_),
            py::arg("ciphertext"),
            "Decrypt ciphertext (scalar) to plaintext (scalar)")
       .def("decrypt",
-           py::overload_cast<const hnp::CMatrix&>(&hnp::Decryptor::Decrypt,
-                                                  py::const_),
+           py::overload_cast<const hnp::CMatrix &>(&hnp::Decryptor::Decrypt,
+                                                   py::const_),
            py::arg("ciphertext_array"),
            "Decrypt ciphertext array to plaintext array")
       .def("decrypt_in_range",
-           py::overload_cast<const phe::Ciphertext&, size_t>(
+           py::overload_cast<const phe::Ciphertext &, size_t>(
                &hnp::Decryptor::DecryptInRange, py::const_),
            py::arg("ciphertext"), py::arg("range_bits") = 128,
            "Decrypt ciphertext (scalar) and make sure plaintext is in range "
@@ -365,7 +365,7 @@ void PyBindNumpy(pybind11::module& m) {
            "plaintext overflow attack, see HEU documentation for details.\n"
            "throws an exception if plaintext is out of range.")
       .def("decrypt_in_range",
-           py::overload_cast<const hnp::CMatrix&, size_t>(
+           py::overload_cast<const hnp::CMatrix &, size_t>(
                &hnp::Decryptor::DecryptInRange, py::const_),
            py::arg("CMatrix"), py::arg("range_bits") = 128,
            "Decrypt ciphertext array and make sure each plaintext is in range "
@@ -379,40 +379,40 @@ void PyBindNumpy(pybind11::module& m) {
       // name in parent (phe::Evaluator) will be hidden, which may be a bug of
       // pybind11
       .def_property_readonly(
-          "phe", [](hnp::Evaluator& self) -> phe::Evaluator& { return self; })
-      .def("add", py::overload_cast<const hnp::CMatrix&, const hnp::CMatrix&>(
+          "phe", [](hnp::Evaluator &self) -> phe::Evaluator & { return self; })
+      .def("add", py::overload_cast<const hnp::CMatrix &, const hnp::CMatrix &>(
                       &hnp::Evaluator::Add, py::const_))
-      .def("add", py::overload_cast<const hnp::CMatrix&, const hnp::PMatrix&>(
+      .def("add", py::overload_cast<const hnp::CMatrix &, const hnp::PMatrix &>(
                       &hnp::Evaluator::Add, py::const_))
-      .def("add", py::overload_cast<const hnp::PMatrix&, const hnp::CMatrix&>(
+      .def("add", py::overload_cast<const hnp::PMatrix &, const hnp::CMatrix &>(
                       &hnp::Evaluator::Add, py::const_))
-      .def("add", py::overload_cast<const hnp::PMatrix&, const hnp::PMatrix&>(
+      .def("add", py::overload_cast<const hnp::PMatrix &, const hnp::PMatrix &>(
                       &hnp::Evaluator::Add, py::const_))
 
-      .def("sub", py::overload_cast<const hnp::CMatrix&, const hnp::CMatrix&>(
+      .def("sub", py::overload_cast<const hnp::CMatrix &, const hnp::CMatrix &>(
                       &hnp::Evaluator::Sub, py::const_))
-      .def("sub", py::overload_cast<const hnp::CMatrix&, const hnp::PMatrix&>(
+      .def("sub", py::overload_cast<const hnp::CMatrix &, const hnp::PMatrix &>(
                       &hnp::Evaluator::Sub, py::const_))
-      .def("sub", py::overload_cast<const hnp::PMatrix&, const hnp::CMatrix&>(
+      .def("sub", py::overload_cast<const hnp::PMatrix &, const hnp::CMatrix &>(
                       &hnp::Evaluator::Sub, py::const_))
-      .def("sub", py::overload_cast<const hnp::PMatrix&, const hnp::PMatrix&>(
+      .def("sub", py::overload_cast<const hnp::PMatrix &, const hnp::PMatrix &>(
                       &hnp::Evaluator::Sub, py::const_))
 
-      .def("mul", py::overload_cast<const hnp::CMatrix&, const hnp::PMatrix&>(
+      .def("mul", py::overload_cast<const hnp::CMatrix &, const hnp::PMatrix &>(
                       &hnp::Evaluator::Mul, py::const_))
-      .def("mul", py::overload_cast<const hnp::PMatrix&, const hnp::CMatrix&>(
+      .def("mul", py::overload_cast<const hnp::PMatrix &, const hnp::CMatrix &>(
                       &hnp::Evaluator::Mul, py::const_))
-      .def("mul", py::overload_cast<const hnp::PMatrix&, const hnp::PMatrix&>(
+      .def("mul", py::overload_cast<const hnp::PMatrix &, const hnp::PMatrix &>(
                       &hnp::Evaluator::Mul, py::const_))
 
       .def("matmul",
-           py::overload_cast<const hnp::PMatrix&, const hnp::PMatrix&>(
+           py::overload_cast<const hnp::PMatrix &, const hnp::PMatrix &>(
                &hnp::Evaluator::MatMul, py::const_))
       .def("matmul",
-           py::overload_cast<const hnp::PMatrix&, const hnp::CMatrix&>(
+           py::overload_cast<const hnp::PMatrix &, const hnp::CMatrix &>(
                &hnp::Evaluator::MatMul, py::const_))
       .def("matmul",
-           py::overload_cast<const hnp::CMatrix&, const hnp::PMatrix&>(
+           py::overload_cast<const hnp::CMatrix &, const hnp::PMatrix &>(
                &hnp::Evaluator::MatMul, py::const_))
 
       .def("sum", &hnp::Evaluator::Sum<phe::Plaintext>)

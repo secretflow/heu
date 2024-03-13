@@ -21,34 +21,34 @@ namespace heu::lib::algorithms::dj {
 
 class PublicKey : public HeObject<PublicKey> {
  public:
-  void Init(const MPInt& n, uint32_t s, const MPInt& hs = MPInt{0});
+  void Init(const MPInt &n, uint32_t s, const MPInt &hs = MPInt{0});
 
-  const MPInt& N() const { return n_; }
+  const MPInt &N() const { return n_; }
 
   uint32_t S() const { return s_; }
 
   // hs = h^(n^s) mod n^(s+1): h is a generator of Zn*
-  const MPInt& Hs() const { return hs_; }
+  const MPInt &Hs() const { return hs_; }
 
-  const MPInt& PlainModule() const { return pmod_; }
+  const MPInt &PlainModule() const { return pmod_; }
 
-  const MPInt& PlaintextBound() const& { return bound_; }
+  const MPInt &PlaintextBound() const & { return bound_; }
 
-  const MPInt& CipherModule() const { return cmod_; }
+  const MPInt &CipherModule() const { return cmod_; }
 
-  bool operator==(const PublicKey&) const;
-  bool operator!=(const PublicKey&) const;
+  bool operator==(const PublicKey &) const;
+  bool operator!=(const PublicKey &) const;
   std::string ToString() const override;
 
  public:
   // Random Zn* element of form r^(n^s) mod n^(s+1)
   MPInt RandomHsR() const;
   // Deterministic encryption
-  MPInt Encrypt(const MPInt&) const;
-  MPInt MapIntoMSpace(const MPInt&) const;
-  MPInt MapBackToZSpace(const MPInt&) const;
+  MPInt Encrypt(const MPInt &) const;
+  MPInt MapIntoMSpace(const MPInt &) const;
+  MPInt MapBackToZSpace(const MPInt &) const;
 
-  void MulMod(const MPInt& a, const MPInt& b, MPInt* dst) const {
+  void MulMod(const MPInt &a, const MPInt &b, MPInt *dst) const {
     lut_->m_space->MulMod(a, b, dst);
   }
 

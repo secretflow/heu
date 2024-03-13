@@ -17,16 +17,16 @@
 namespace heu::lib::numpy {
 
 template <typename CLAZZ, typename PT>
-using kHasVectorizedEncrypt = decltype(std::declval<const CLAZZ&>().Encrypt(
-    absl::Span<const PT* const>()));
+using kHasVectorizedEncrypt = decltype(std::declval<const CLAZZ &>().Encrypt(
+    absl::Span<const PT *const>()));
 
 // PT is each algorithm's Plaintext
 template <typename CLAZZ, typename PT>
-auto DoCallEncrypt(const CLAZZ& sub_encryptor, const PMatrix& in, CMatrix* out)
+auto DoCallEncrypt(const CLAZZ &sub_encryptor, const PMatrix &in, CMatrix *out)
     -> std::enable_if_t<
         std::experimental::is_detected_v<kHasVectorizedEncrypt, CLAZZ, PT>> {
   yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
-    std::vector<const PT*> pts;
+    std::vector<const PT *> pts;
     pts.reserve(end - beg);
     for (int64_t i = beg; i < end; ++i) {
       pts.push_back(&(in.data()[i].As<PT>()));
@@ -40,7 +40,7 @@ auto DoCallEncrypt(const CLAZZ& sub_encryptor, const PMatrix& in, CMatrix* out)
 
 // PT is each algorithm's Plaintext
 template <typename CLAZZ, typename PT>
-auto DoCallEncrypt(const CLAZZ& sub_encryptor, const PMatrix& in, CMatrix* out)
+auto DoCallEncrypt(const CLAZZ &sub_encryptor, const PMatrix &in, CMatrix *out)
     -> std::enable_if_t<
         !std::experimental::is_detected_v<kHasVectorizedEncrypt, CLAZZ, PT>> {
   yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
@@ -51,11 +51,11 @@ auto DoCallEncrypt(const CLAZZ& sub_encryptor, const PMatrix& in, CMatrix* out)
   });
 }
 
-CMatrix Encryptor::Encrypt(const PMatrix& in) const {
+CMatrix Encryptor::Encrypt(const PMatrix &in) const {
   CMatrix z(in.rows(), in.cols(), in.ndim());
 
 #define FUNC(ns)                                                        \
-  [&](const ns::Encryptor& sub_encryptor) {                             \
+  [&](const ns::Encryptor &sub_encryptor) {                             \
     DoCallEncrypt<ns::Encryptor, ns::Plaintext>(sub_encryptor, in, &z); \
   }
 
@@ -67,17 +67,17 @@ CMatrix Encryptor::Encrypt(const PMatrix& in) const {
 
 template <typename CLAZZ, typename PT>
 using kHasVectorizedEncryptWithAudit =
-    decltype(std::declval<const CLAZZ&>().EncryptWithAudit(
-        absl::Span<const PT* const>()));
+    decltype(std::declval<const CLAZZ &>().EncryptWithAudit(
+        absl::Span<const PT *const>()));
 
 // call vectorized EncryptWithAudit
 template <typename CLAZZ, typename PT>
-auto DoCallEncryptWithAudit(const CLAZZ& sub_encryptor, const PMatrix& in,
-                            CMatrix* out_c, DenseMatrix<std::string>* out_s)
+auto DoCallEncryptWithAudit(const CLAZZ &sub_encryptor, const PMatrix &in,
+                            CMatrix *out_c, DenseMatrix<std::string> *out_s)
     -> std::enable_if_t<std::experimental::is_detected_v<
         kHasVectorizedEncryptWithAudit, CLAZZ, PT>> {
   yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
-    std::vector<const PT*> pts;
+    std::vector<const PT *> pts;
     pts.reserve(end - beg);
     for (int64_t i = beg; i < end; ++i) {
       pts.push_back(&(in.data()[i].As<PT>()));
@@ -92,8 +92,8 @@ auto DoCallEncryptWithAudit(const CLAZZ& sub_encryptor, const PMatrix& in,
 
 // call scalar EncryptWithAudit
 template <typename CLAZZ, typename PT>
-auto DoCallEncryptWithAudit(const CLAZZ& sub_encryptor, const PMatrix& in,
-                            CMatrix* out_c, DenseMatrix<std::string>* out_s)
+auto DoCallEncryptWithAudit(const CLAZZ &sub_encryptor, const PMatrix &in,
+                            CMatrix *out_c, DenseMatrix<std::string> *out_s)
     -> std::enable_if_t<!std::experimental::is_detected_v<
         kHasVectorizedEncryptWithAudit, CLAZZ, PT>> {
   yacl::parallel_for(0, in.size(), 1, [&](int64_t beg, int64_t end) {
@@ -105,12 +105,12 @@ auto DoCallEncryptWithAudit(const CLAZZ& sub_encryptor, const PMatrix& in,
 }
 
 std::pair<CMatrix, DenseMatrix<std::string>> Encryptor::EncryptWithAudit(
-    const PMatrix& in) const {
+    const PMatrix &in) const {
   CMatrix z(in.rows(), in.cols(), in.ndim());
   DenseMatrix<std::string> adt(in.rows(), in.cols(), in.ndim());
 
 #define FUNC(ns)                                                            \
-  [&](const ns::Encryptor& sub_encryptor) {                                 \
+  [&](const ns::Encryptor &sub_encryptor) {                                 \
     DoCallEncryptWithAudit<ns::Encryptor, ns::Plaintext>(sub_encryptor, in, \
                                                          &z, &adt);         \
   }

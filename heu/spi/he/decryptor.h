@@ -16,7 +16,7 @@
 
 #include "heu/spi/he/item.h"
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 class Decryptor {
  public:
@@ -24,8 +24,8 @@ class Decryptor {
 
   // CT -> PT
   // CTs -> PTs
-  virtual void Decrypt(const Item& ct, Item* out) const = 0;
-  virtual Item Decrypt(const Item& ct) const = 0;
+  virtual void Decrypt(const Item &ct, Item *out) const = 0;
+  virtual Item Decrypt(const Item &ct) const = 0;
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

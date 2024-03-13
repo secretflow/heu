@@ -20,10 +20,10 @@
 namespace heu::lib::algorithms {
 
 template <typename T>
-using Span = absl::Span<T* const>;
+using Span = absl::Span<T *const>;
 
 template <typename T>
-using ConstSpan = absl::Span<const T* const>;
+using ConstSpan = absl::Span<const T *const>;
 
 using yacl::Endian;
 

@@ -16,6 +16,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <map>
 #include <memory>
 #include <string>
 
@@ -32,47 +33,16 @@
 #pragma clang diagnostic ignored "-Woverloaded-virtual"
 #endif
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 // A sketch class pre-process all keys
+// C++20: use concept to limit KeyT class
 template <typename SecretKeyT, typename PublicKeyT = NoPk,
-          typename RelinKeyT = NoRlk, typename GaloisKeyT = NoGlK,
+          typename RelinKeyT = NoRlk, typename GaloisKeyT = NoGlk,
           typename BootstrapKeyT = NoBsk>
 class HeKitSketch : public HeKit {
  public:
-  virtual SecretKeyT GetSecretKeyT() const = 0;
-
-  virtual PublicKeyT GetPublicKeyT() const {
-    YACL_ENFORCE((std::is_same_v<PublicKeyT, NoPk>),
-                 "If you see this message, it means that the subclass misses "
-                 "this interface. Please override the GetPublicKeyT() "
-                 "method in the subclass.");
-    YACL_THROW("There is no public key in the current setting");
-  }
-
-  virtual RelinKeyT GetRelinKeyT() const {
-    YACL_ENFORCE((std::is_same_v<RelinKeyT, NoRlk>),
-                 "If you see this message, it means that the subclass misses "
-                 "this interface. Please override the GetRelinKeyT() "
-                 "method in the subclass.");
-    YACL_THROW("There is no relin key in the current setting");
-  }
-
-  virtual GaloisKeyT GetGaloisKeyT() const {
-    YACL_ENFORCE((std::is_same_v<GaloisKeyT, NoGlK>),
-                 "If you see this message, it means that the subclass misses "
-                 "this interface. Please override the GetGaloisKeyT() "
-                 "method in the subclass.");
-    YACL_THROW("There is no galois key in the current setting");
-  }
-
-  virtual BootstrapKeyT GetBootstrapKeyT() const {
-    YACL_ENFORCE((std::is_same_v<BootstrapKeyT, NoBsk>),
-                 "If you see this message, it means that the subclass misses "
-                 "this interface. Please override the GetBootstrapKeyT() "
-                 "method in the subclass.");
-    YACL_THROW("There is no bootstrapping key in the current setting");
-  }
+  //===   Operators management   ===//
 
   std::shared_ptr<Encryptor> GetEncryptor() const override {
     YACL_ENFORCE(
@@ -109,15 +79,16 @@ class HeKitSketch : public HeKit {
     return binary_evaluator_;
   }
 
-  std::shared_ptr<ItemManipulator> GetItemManipulator() const override {
-    YACL_ENFORCE(item_manipulator_,
-                 "Item manipulator is not enabled according to your "
-                 "initialization params");
-    return item_manipulator_;
+  std::shared_ptr<ItemTool> GetItemTool() const override {
+    YACL_ENFORCE(
+        item_tool_,
+        "Item-tool is not enabled according to your initialization params");
+    return item_tool_;
   }
 
-  //===   I/O for HE Objects   ===//
+  //===   Key management   ===//
 
+  // Convert to 'Serialize(HeKeyType, uint8_t *, size_t)'
   yacl::Buffer Serialize(HeKeyType key_type) const override {
     yacl::Buffer buf(Serialize(key_type, nullptr, 0));
     auto real = Serialize(key_type, buf.data<uint8_t>(), buf.size());
@@ -141,41 +112,86 @@ class HeKitSketch : public HeKit {
   }
 
  protected:
-  // Generate all needed keys according to args.
-  // Or recover keys from previous serialized buffer
-  virtual void SetupContext(const SpiArgs& args) = 0;
+  //===   Key management   ===//
 
-  Item GetPublicKey() const override {
-    return {GetPublicKeyT(), ContentType::PublicKey};
-  }
+  bool HasSecretKey() const override { return HasKey(HeKeyType::SecretKey); }
 
-  Item GetSecretKey() const override {
-    return {GetSecretKeyT(), ContentType::SecretKey};
-  }
+  Item GetPublicKey() const override { return GetKey(HeKeyType::PublicKey); }
 
-  Item GetKey(HeKeyType key_type) const override {
+  Item GetSecretKey() const override { return GetKey(HeKeyType::SecretKey); }
+
+  bool HasKey(heu::spi::HeKeyType key_type) const override {
     switch (key_type) {
       case HeKeyType::SecretKey:
-        return {GetSecretKeyT(), ContentType::SecretKey};
+        return static_cast<bool>(sk_);
       case HeKeyType::PublicKey:
-        return {GetPublicKeyT(), ContentType::PublicKey};
+        return static_cast<bool>(pk_);
       case HeKeyType::RelinKeys:
-        return {GetRelinKeyT(), ContentType::RelinKeys};
+        return static_cast<bool>(rlk_);
       case HeKeyType::GaloisKeys:
-        return {GetGaloisKeyT(), ContentType::GaloisKeys};
+        return static_cast<bool>(glk_);
       case HeKeyType::BootstrapKey:
-        return {GetBootstrapKeyT(), ContentType::BootstrapKey};
+        return static_cast<bool>(bsk_);
       default:
         YACL_THROW("Unsupported key type {}", key_type);
     }
   }
+
+  Item GetKey(HeKeyType key_type) const override {
+    YACL_ENFORCE(HasKey(key_type), "There is no {} in the current setting",
+                 key_type);
+
+    switch (key_type) {
+      case HeKeyType::SecretKey:
+        return {*sk_, ContentType::SecretKey};
+      case HeKeyType::PublicKey:
+        return {*pk_, ContentType::PublicKey};
+      case HeKeyType::RelinKeys:
+        return {*rlk_, ContentType::RelinKeys};
+      case HeKeyType::GaloisKeys:
+        return {*glk_, ContentType::GaloisKeys};
+      case HeKeyType::BootstrapKey:
+        return {*bsk_, ContentType::BootstrapKey};
+      default:
+        YACL_THROW("Unsupported key type {}", key_type);
+    }
+  }
+
+  std::map<std::string, std::string> ListKeyParams(
+      heu::spi::HeKeyType key_type) const override {
+    YACL_ENFORCE(HasKey(key_type),
+                 "{} not exist in the current settings, cannot list params",
+                 key_type);
+
+    switch (key_type) {
+      case HeKeyType::SecretKey:
+        return sk_->ListParams();
+      case HeKeyType::PublicKey:
+        return pk_->ListParams();
+      case HeKeyType::RelinKeys:
+        return rlk_->ListParams();
+      case HeKeyType::GaloisKeys:
+        return glk_->ListParams();
+      case HeKeyType::BootstrapKey:
+        return bsk_->ListParams();
+      default:
+        YACL_THROW("Unsupported key type {}", key_type);
+    }
+  }
+
+  // The following fields should be initialized by subclasses
+  std::shared_ptr<SecretKeyT> sk_;
+  std::shared_ptr<PublicKeyT> pk_;
+  std::shared_ptr<RelinKeyT> rlk_;
+  std::shared_ptr<GaloisKeyT> glk_;
+  std::shared_ptr<BootstrapKeyT> bsk_;
 
   std::shared_ptr<Encryptor> encryptor_;
   std::shared_ptr<Decryptor> decryptor_;
   std::shared_ptr<WordEvaluator> word_evaluator_;
   std::shared_ptr<GateEvaluator> gate_evaluator_;
   std::shared_ptr<BinaryEvaluator> binary_evaluator_;
-  std::shared_ptr<ItemManipulator> item_manipulator_;
+  std::shared_ptr<ItemTool> item_tool_;
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

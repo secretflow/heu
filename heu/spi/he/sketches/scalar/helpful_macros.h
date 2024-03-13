@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 #define RuntimeType(T)                                      \
   std::is_same_v<CiphertextT, T>  ? ContentType::Ciphertext \
@@ -54,7 +54,7 @@ namespace heu::lib::spi {
         }                                                                 \
       });                                                                 \
     } else {                                                              \
-      FuncName(x->As<T*>(), ##__VA_ARGS__);                               \
+      FuncName(x->As<T *>(), ##__VA_ARGS__);                              \
     }                                                                     \
   } while (0)
 
@@ -98,7 +98,7 @@ namespace heu::lib::spi {
   do {                                                                        \
     switch (*x, y) {                                                          \
       case yacl::OperandType::Scalar2Scalar: {                                \
-        FuncName(x->As<TX*>(), y.As<TY>());                                   \
+        FuncName(x->As<TX *>(), y.As<TY>());                                  \
         return;                                                               \
       }                                                                       \
       case yacl::OperandType::Vector2Vector: {                                \
@@ -130,7 +130,7 @@ namespace heu::lib::spi {
 // To:
 //   virtual T FuncName(const T& x) const = 0;
 #define DefineUnaryFuncBoth(FuncName)                                \
-  Item FuncName(const Item& x) const override {                      \
+  Item FuncName(const Item &x) const override {                      \
     if (x.IsCiphertext()) {                                          \
       CallUnaryFunc(FuncName, CiphertextT, x);                       \
     } else if (x.IsPlaintext()) {                                    \
@@ -141,18 +141,20 @@ namespace heu::lib::spi {
     }                                                                \
   }
 
-#define DefineUnaryFuncCT(FuncName)                                          \
-  Item FuncName(const Item& x) const override {                              \
-    YACL_ENFORCE(x.IsCiphertext(), "input arg must be a cipher, real is {}", \
-                 x.ToString());                                              \
-    CallUnaryFunc(FuncName, CiphertextT, x);                                 \
+#define DefineUnaryFuncCT(FuncName)                                    \
+  Item FuncName(const Item &x) const override {                        \
+    YACL_ENFORCE(x.IsCiphertext(),                                     \
+                 #FuncName ": input arg must be a cipher, real is {}", \
+                 x.ToString());                                        \
+    CallUnaryFunc(FuncName, CiphertextT, x);                           \
   }
 
-#define DefineUnaryFuncPT(FuncName)                                            \
-  Item FuncName(const Item& x) const override {                                \
-    YACL_ENFORCE(x.IsPlaintext(), "input arg must be a plaintext, real is {}", \
-                 x.ToString());                                                \
-    CallUnaryFunc(FuncName, PlaintextT, x);                                    \
+#define DefineUnaryFuncPT(FuncName)                                       \
+  Item FuncName(const Item &x) const override {                           \
+    YACL_ENFORCE(x.IsPlaintext(),                                         \
+                 #FuncName ": input arg must be a plaintext, real is {}", \
+                 x.ToString());                                           \
+    CallUnaryFunc(FuncName, PlaintextT, x);                               \
   }
 
 // From:
@@ -160,7 +162,7 @@ namespace heu::lib::spi {
 // To:
 //   virtual void FuncName(const TX& x, TY *out) const = 0;
 #define DefineUnaryFuncCStyle(FuncName, TX, TY)                           \
-  void FuncName(const Item& x, Item* out) const override {                \
+  void FuncName(const Item &x, Item *out) const override {                \
     if (x.IsArray()) {                                                    \
       auto xsp = x.AsSpan<TX>();                                          \
       auto ysp = out->ResizeAndSpan<TY>(xsp.size());                      \
@@ -170,7 +172,7 @@ namespace heu::lib::spi {
         }                                                                 \
       });                                                                 \
     } else {                                                              \
-      FuncName(x.As<TX>(), out->As<TY*>());                               \
+      FuncName(x.As<TX>(), out->As<TY *>());                              \
     };                                                                    \
     out->MarkAs(RuntimeType(TY));                                         \
   }
@@ -180,7 +182,7 @@ namespace heu::lib::spi {
 // To:
 //   virtual void FuncName(T* x) const = 0;
 #define DefineUnaryInplaceFunc(FuncName)              \
-  void FuncName(Item* x) const override {             \
+  void FuncName(Item *x) const override {             \
     if (x->IsCiphertext()) {                          \
       CallUnaryInplaceFunc(FuncName, CiphertextT, x); \
     } else {                                          \
@@ -188,11 +190,12 @@ namespace heu::lib::spi {
     }                                                 \
   }
 
-#define DefineUnaryInplaceFuncOnlyCipher(FuncName)                            \
-  void FuncName(Item* x) const override {                                     \
-    YACL_ENFORCE(x->IsCiphertext(), "input arg must be a cipher, real is {}", \
-                 x->ToString());                                              \
-    CallUnaryInplaceFunc(FuncName, CiphertextT, x);                           \
+#define DefineUnaryInplaceFuncOnlyCipher(FuncName)                     \
+  void FuncName(Item *x) const override {                              \
+    YACL_ENFORCE(x->IsCiphertext(),                                    \
+                 #FuncName ": input arg must be a cipher, real is {}", \
+                 x->ToString());                                       \
+    CallUnaryInplaceFunc(FuncName, CiphertextT, x);                    \
   }
 
 // From:
@@ -200,7 +203,7 @@ namespace heu::lib::spi {
 // To:
 //   virtual T FuncName(const T& x, const T& y) const = 0;
 #define DefineBinaryFunc(FuncName)                             \
-  Item FuncName(const Item& x, const Item& y) const override { \
+  Item FuncName(const Item &x, const Item &y) const override { \
     if (x.IsCiphertext()) {                                    \
       if (y.IsCiphertext()) {                                  \
         CallBinaryFunc(FuncName, CiphertextT, CiphertextT);    \
@@ -221,7 +224,7 @@ namespace heu::lib::spi {
 // To:
 //   virtual void FuncName(T* x, const T& y) const = 0;
 #define DefineBinaryInplaceFunc(FuncName)                          \
-  void FuncName(Item* x, const Item& y) const override {           \
+  void FuncName(Item *x, const Item &y) const override {           \
     if (x->IsCiphertext()) {                                       \
       if (y.IsCiphertext()) {                                      \
         CallBinaryInplaceFunc(FuncName, CiphertextT, CiphertextT); \
@@ -231,4 +234,4 @@ namespace heu::lib::spi {
     } /* no plaintext branch */                                    \
   }
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

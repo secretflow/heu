@@ -22,7 +22,7 @@ namespace heu::lib::algorithms::paillier_ic {
   HE_ASSERT(!(ct).c_.IsNegative() && (ct).c_ < pk_.n_square_, \
             "Decryptor: Invalid ciphertext")
 
-void Decryptor::Decrypt(const Ciphertext& ct, MPInt* out) const {
+void Decryptor::Decrypt(const Ciphertext &ct, MPInt *out) const {
   VALIDATE(ct);
 
   auto cl = sk_.PowModNSquareCrt(ct.c_, sk_.lambda_);
@@ -33,7 +33,7 @@ void Decryptor::Decrypt(const Ciphertext& ct, MPInt* out) const {
   }
 }
 
-MPInt Decryptor::Decrypt(const Ciphertext& ct) const {
+MPInt Decryptor::Decrypt(const Ciphertext &ct) const {
   MPInt mp;
   Decrypt(ct, &mp);
   return mp;

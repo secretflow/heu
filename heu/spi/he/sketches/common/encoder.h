@@ -19,21 +19,29 @@
 
 #include "heu/spi/he/encoder.h"
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 template <typename PlaintextT>
 class EncoderSketch : public Encoder {
  public:
+  // directly construct plaintext from string, skip encoding
   virtual PlaintextT FromStringT(std::string_view pt_str) const = 0;
 
-  int64_t GetCleartextCount(const Item &plaintexts) const override {
+  // Get the number of cleartext contained in item 'plaintexts'
+  int64_t CleartextCount(const Item &plaintexts) const override {
+    YACL_ENFORCE(plaintexts.GetContentType() == ContentType::Plaintext,
+                 "Encoder: The input item is not plaintext(s), cannot count or "
+                 "decode, item={}",
+                 plaintexts);
+
     return plaintexts.Size<PlaintextT>() * SlotCount();
   }
 
  private:
+  // directly construct plaintext from string, skip encoding
   Item FromString(std::string_view plaintext) const override {
     return {FromStringT(plaintext), ContentType::Plaintext};
   }
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

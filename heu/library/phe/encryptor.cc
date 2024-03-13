@@ -23,7 +23,7 @@ namespace heu::lib::phe {
 DEFINE_INVOKE_METHOD_RET_0(Ciphertext, EncryptZero)
 
 Ciphertext Encryptor::EncryptZero() const {
-  return std::visit([](const auto& clazz) { return DoCallEncryptZero(clazz); },
+  return std::visit([](const auto &clazz) { return DoCallEncryptZero(clazz); },
                     encryptor_ptr_);
 }
 
@@ -31,7 +31,7 @@ Ciphertext Encryptor::EncryptZero() const {
 
 DEFINE_INVOKE_METHOD_RET_1(Ciphertext, Encrypt)
 
-Ciphertext Encryptor::Encrypt(const Plaintext& m) const {
+Ciphertext Encryptor::Encrypt(const Plaintext &m) const {
   return std::visit(
       HE_DISPATCH(DO_INVOKE_METHOD_RET_1, Encryptor, Encrypt, Plaintext, m),
       encryptor_ptr_);
@@ -41,10 +41,10 @@ Ciphertext Encryptor::Encrypt(const Plaintext& m) const {
 
 template <typename CLAZZ, typename PT>
 using kHasScalarEncryptWithAudit =
-    decltype(std::declval<const CLAZZ&>().EncryptWithAudit(PT()));
+    decltype(std::declval<const CLAZZ &>().EncryptWithAudit(PT()));
 
 template <typename CLAZZ, typename PT>
-auto DoCallEncryptWithAudit(const CLAZZ& sub_clazz, const PT& in1)
+auto DoCallEncryptWithAudit(const CLAZZ &sub_clazz, const PT &in1)
     -> std::enable_if_t<
         std::experimental::is_detected_v<kHasScalarEncryptWithAudit, CLAZZ, PT>,
         std::pair<Ciphertext, std::string>> {
@@ -53,7 +53,7 @@ auto DoCallEncryptWithAudit(const CLAZZ& sub_clazz, const PT& in1)
 }
 
 template <typename CLAZZ, typename PT>
-auto DoCallEncryptWithAudit(const CLAZZ& sub_clazz, const PT& in1)
+auto DoCallEncryptWithAudit(const CLAZZ &sub_clazz, const PT &in1)
     -> std::enable_if_t<!std::experimental::is_detected_v<
                             kHasScalarEncryptWithAudit, CLAZZ, PT>,
                         std::pair<Ciphertext, std::string>> {
@@ -62,7 +62,7 @@ auto DoCallEncryptWithAudit(const CLAZZ& sub_clazz, const PT& in1)
 }
 
 std::pair<Ciphertext, std::string> Encryptor::EncryptWithAudit(
-    const Plaintext& m) const {
+    const Plaintext &m) const {
   return std::visit(HE_DISPATCH(DO_INVOKE_METHOD_RET_1, Encryptor,
                                 EncryptWithAudit, Plaintext, m),
                     encryptor_ptr_);

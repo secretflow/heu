@@ -71,4 +71,6 @@ build:ubsan --linkopt -fsanitize=undefined
 
 test --keep_going
 test --test_output=errors
-test --test_timeout=360
+test --test_timeout=600
+
+coverage --test_timeout=1800

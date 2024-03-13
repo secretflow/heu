@@ -19,7 +19,7 @@
 
 #include "gtest/gtest.h"
 
-namespace heu::lib::spi::test {
+namespace heu::spi::test {
 
 class DummyPt {};
 
@@ -33,7 +33,7 @@ TEST(HeItemTest, BasicWorks) {
   EXPECT_FALSE(a.IsReadOnly());
   EXPECT_TRUE(a.IsView());
 
-  const std::vector<DummyPt>& pts2 = pts;
+  const std::vector<DummyPt> &pts2 = pts;
   a = Item::Ref(pts2, ContentType::Plaintext);
   EXPECT_FALSE(a.IsCiphertext());
   EXPECT_TRUE(a.IsPlaintext());
@@ -49,6 +49,17 @@ TEST(HeItemTest, BasicWorks) {
   EXPECT_FALSE(a.IsView());
   // check vector is moved
   EXPECT_EQ(pts.size(), 0);
+
+  // ResizeAndSpan
+  a = Item((int)19, ContentType::Ciphertext);
+  ASSERT_TRUE(a.IsCiphertext());
+  auto sp = a.ResizeAndSpan<int>(2);
+  ASSERT_TRUE(a.IsCiphertext());  // content type should not change
+  EXPECT_TRUE(a.IsArray());
+  EXPECT_FALSE(a.IsReadOnly());
+  EXPECT_FALSE(a.IsView());
+  EXPECT_EQ(sp.size(), 2);
+  EXPECT_EQ(a.Size<int>(), 2);
 }
 
 TEST(HeItemTest, MaskAsWorks) {
@@ -78,4 +89,4 @@ TEST(HeItemTest, MaskAsWorks) {
   EXPECT_EQ(item.GetContentType(), ContentType::BootstrapKey);
 }
 
-}  // namespace heu::lib::spi::test
+}  // namespace heu::spi::test

@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/spi/he/he_kit.h"
+#pragma once
 
-namespace heu::lib::spi {
+#include "yacl/math/mpint/mp_int.h"
 
-HeFactory& HeFactory::Instance() {
-  static HeFactory factory;
-  return factory;
-}
+namespace heu::algos {
 
-}  // namespace heu::lib::spi
+using yacl::math::MPInt;
+using yacl::math::PrimeType;
+
+}  // namespace heu::algos

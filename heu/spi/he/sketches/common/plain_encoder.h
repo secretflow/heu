@@ -14,12 +14,15 @@
 
 #pragma once
 
+#include <complex>
+#include <cstdint>
 #include <vector>
 
 #include "heu/spi/he/sketches/common/encoder.h"
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
+// Plain encoder: encode one cleartext in on plaintext
 template <typename PlaintextT>
 class PlainEncoderSketch : public EncoderSketch<PlaintextT> {
  public:
@@ -37,8 +40,17 @@ class PlainEncoderSketch : public EncoderSketch<PlaintextT> {
                        std::complex<double> *out) const = 0;
 
  private:
+  // Parallel dispatch function call to various EncoderT()
   template <typename T>
   Item CallEncoderT(const absl::Span<T> &message) const {
+    YACL_ENFORCE(message.size() > 0,
+                 "Nothing to encode, cannot create an Item");
+
+    // keep the action same with BatchEncoderSketch
+    if (message.size() == 1) {
+      return {EncodeT(message[0]), ContentType::Plaintext};
+    }
+
     std::vector<PlaintextT> res(message.size());
     auto in = message.data();
     yacl::parallel_for(0, message.size(), 1, [&](int64_t beg, int64_t end) {
@@ -49,24 +61,52 @@ class PlainEncoderSketch : public EncoderSketch<PlaintextT> {
     return {std::move(res), ContentType::Plaintext};
   }
 
+  // Encode multiple cleartexts into multiple plaintexts and package them into
+  // one Item.
   Item Encode(absl::Span<const int64_t> message) const override {
     return CallEncoderT(message);
   }
 
+  // Encode multiple cleartexts into multiple plaintexts and package them into
+  // one Item.
   Item Encode(absl::Span<const uint64_t> message) const override {
     return CallEncoderT(message);
   }
 
+  // Encode multiple cleartexts into multiple plaintexts and package them into
+  // one Item.
   Item Encode(absl::Span<const double> message) const override {
     return CallEncoderT(message);
   }
 
+  // Encode multiple cleartexts into multiple plaintexts and package them into
+  // one Item.
   Item Encode(absl::Span<const std::complex<double>> message) const override {
     return CallEncoderT(message);
   }
 
+  Item Encode(int64_t message) const override {
+    return {EncodeT(message), ContentType::Plaintext};
+  }
+
+  Item Encode(uint64_t message) const override {
+    return {EncodeT(message), ContentType::Plaintext};
+  }
+
+  Item Encode(double message) const override {
+    return {EncodeT(message), ContentType::Plaintext};
+  }
+
+  Item Encode(const std::complex<double> &message) const override {
+    return {EncodeT(message), ContentType::Plaintext};
+  }
+
+  // Parallel dispatch function call to various DecoderT()
   template <typename T>
   void CallDecodeT(const Item &pts, absl::Span<T> out) const {
+    YACL_ENFORCE(pts.GetContentType() == ContentType::Plaintext,
+                 "The input item is not plaintext(s), cannot decode, pts={}",
+                 pts);
     auto sp = pts.AsSpan<PlaintextT>();
     YACL_ENFORCE(out.size() >= sp.size(),
                  "There is not enough space to store all decoded numbers. "
@@ -103,56 +143,42 @@ class PlainEncoderSketch : public EncoderSketch<PlaintextT> {
   }
 
   std::vector<int64_t> DecodeInt64(const Item &plaintexts) const override {
-    std::vector<int64_t> res(plaintexts.Size<PlaintextT>());
+    std::vector<int64_t> res(this->CleartextCount(plaintexts));
     CallDecodeT(plaintexts, absl::MakeSpan(res));
     return res;
   }
 
   std::vector<uint64_t> DecodeUint64(const Item &plaintexts) const override {
-    std::vector<uint64_t> res(plaintexts.Size<PlaintextT>());
+    std::vector<uint64_t> res(this->CleartextCount(plaintexts));
     CallDecodeT(plaintexts, absl::MakeSpan(res));
     return res;
   }
 
   std::vector<double> DecodeDouble(const Item &plaintexts) const override {
-    std::vector<double> res(plaintexts.Size<PlaintextT>());
+    std::vector<double> res(this->CleartextCount(plaintexts));
     CallDecodeT(plaintexts, absl::MakeSpan(res));
     return res;
   }
 
   std::vector<std::complex<double>> DecodeComplex(
       const Item &plaintexts) const override {
-    std::vector<std::complex<double>> res(plaintexts.Size<PlaintextT>());
+    std::vector<std::complex<double>> res(this->CleartextCount(plaintexts));
     CallDecodeT(plaintexts, absl::MakeSpan(res));
     return res;
   }
 
-  // ===  Special functions for PlainEncoder  === //
-
-  Item EncodeScalar(int64_t message) const override {
-    return {EncodeT(message), ContentType::Plaintext};
-  }
-
-  Item EncodeScalar(uint64_t message) const override {
-    return {EncodeT(message), ContentType::Plaintext};
-  }
-
-  Item EncodeScalar(double message) const override {
-    return {EncodeT(message), ContentType::Plaintext};
-  }
-
-  Item EncodeScalar(const std::complex<double> &message) const override {
-    return {EncodeT(message), ContentType::Plaintext};
-  }
+  //===  Special functions for PlainEncoder  ===//
 
   template <typename T>
   void CallDecodeScalarT(const Item &pt, T *out) const {
+    YACL_ENFORCE(pt.GetContentType() == ContentType::Plaintext,
+                 "The input item is not a plaintext, cannot decode, pt={}", pt);
     YACL_ENFORCE(pt.Size<PlaintextT>() == 1,
                  "The plaintext contains more than one cleartext, cannot "
-                 "decode as a scalar, GetCleartextCount(pt)={}",
-                 this->GetCleartextCount(pt));
+                 "decode as a scalar, CleartextCount(pt)={}",
+                 this->CleartextCount(pt));
 
-    if (pt.DataTypeIs<PlaintextT>()) {
+    if (pt.RawTypeIs<PlaintextT>()) {
       DecodeT(pt.As<PlaintextT>(), out);
     } else {
       DecodeT(pt.AsSpan<PlaintextT>()[0], out);
@@ -160,7 +186,7 @@ class PlainEncoderSketch : public EncoderSketch<PlaintextT> {
   }
 
   // Decode single cleartext.
-  // Must have GetCleartextCount(plaintext) == 1.
+  // Must have CleartextCount(plaintext) == 1.
   int64_t DecodeScalarInt64(const Item &plaintext) const override {
     int64_t res;
     CallDecodeScalarT(plaintext, &res);
@@ -187,4 +213,4 @@ class PlainEncoderSketch : public EncoderSketch<PlaintextT> {
   }
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

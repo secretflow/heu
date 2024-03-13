@@ -18,9 +18,9 @@
 
 namespace heu::lib::algorithms::paillier_f {
 
-PublicKey::PublicKey(const MPInt& n) : n_(n) { Init(); }
+PublicKey::PublicKey(const MPInt &n) : n_(n) { Init(); }
 
-PublicKey::PublicKey(MPInt&& n) : n_(std::move(n)) { Init(); }
+PublicKey::PublicKey(MPInt &&n) : n_(std::move(n)) { Init(); }
 
 void PublicKey::Init() {
   g_ = n_ + MPInt::_1_;

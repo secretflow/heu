@@ -22,9 +22,9 @@ namespace heu::lib::algorithms::ou {
 class KeyGenerator {
  public:
   // Generate OU key pair
-  static void Generate(size_t key_size, SecretKey* sk, PublicKey* pk);
+  static void Generate(size_t key_size, SecretKey *sk, PublicKey *pk);
   // Generate PHE key pair by default configs
-  static void Generate(SecretKey* sk, PublicKey* pk);
+  static void Generate(SecretKey *sk, PublicKey *pk);
 };
 
 }  // namespace heu::lib::algorithms::ou

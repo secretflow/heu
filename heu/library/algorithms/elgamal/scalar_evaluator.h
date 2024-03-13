@@ -22,35 +22,35 @@ namespace heu::lib::algorithms::elgamal {
 
 class Evaluator {
  public:
-  explicit Evaluator(const PublicKey& pk);
+  explicit Evaluator(const PublicKey &pk);
 
-  void Randomize(Ciphertext* ct) const;
+  void Randomize(Ciphertext *ct) const;
 
-  Ciphertext Add(const Ciphertext& a, const Ciphertext& b) const;
-  Ciphertext Add(const Ciphertext& a, const Plaintext& b) const;
-  Ciphertext Add(const Plaintext& a, const Ciphertext& b) const;
-  Plaintext Add(const Plaintext& a, const Plaintext& b) const;
-  void AddInplace(Ciphertext* a, const Ciphertext& b) const;
-  void AddInplace(Ciphertext* a, const Plaintext& b) const;
-  void AddInplace(Plaintext* a, const Plaintext& b) const;
+  Ciphertext Add(const Ciphertext &a, const Ciphertext &b) const;
+  Ciphertext Add(const Ciphertext &a, const Plaintext &b) const;
+  Ciphertext Add(const Plaintext &a, const Ciphertext &b) const;
+  Plaintext Add(const Plaintext &a, const Plaintext &b) const;
+  void AddInplace(Ciphertext *a, const Ciphertext &b) const;
+  void AddInplace(Ciphertext *a, const Plaintext &b) const;
+  void AddInplace(Plaintext *a, const Plaintext &b) const;
 
-  Ciphertext Sub(const Ciphertext& a, const Ciphertext& b) const;
-  Ciphertext Sub(const Ciphertext& a, const Plaintext& b) const;
-  Ciphertext Sub(const Plaintext& a, const Ciphertext& b) const;
-  Plaintext Sub(const Plaintext& a, const Plaintext& b) const;
-  void SubInplace(Ciphertext* a, const Ciphertext& b) const;
-  void SubInplace(Ciphertext* a, const Plaintext& p) const;
-  void SubInplace(Plaintext* a, const Plaintext& b) const;
+  Ciphertext Sub(const Ciphertext &a, const Ciphertext &b) const;
+  Ciphertext Sub(const Ciphertext &a, const Plaintext &b) const;
+  Ciphertext Sub(const Plaintext &a, const Ciphertext &b) const;
+  Plaintext Sub(const Plaintext &a, const Plaintext &b) const;
+  void SubInplace(Ciphertext *a, const Ciphertext &b) const;
+  void SubInplace(Ciphertext *a, const Plaintext &p) const;
+  void SubInplace(Plaintext *a, const Plaintext &b) const;
 
-  Ciphertext Mul(const Ciphertext& a, const Plaintext& b) const;
-  Ciphertext Mul(const Plaintext& a, const Ciphertext& b) const;
-  Plaintext Mul(const Plaintext& a, const Plaintext& b) const;
-  void MulInplace(Ciphertext* a, const Plaintext& b) const;
-  void MulInplace(Plaintext* a, const Plaintext& b) const;
+  Ciphertext Mul(const Ciphertext &a, const Plaintext &b) const;
+  Ciphertext Mul(const Plaintext &a, const Ciphertext &b) const;
+  Plaintext Mul(const Plaintext &a, const Plaintext &b) const;
+  void MulInplace(Ciphertext *a, const Plaintext &b) const;
+  void MulInplace(Plaintext *a, const Plaintext &b) const;
 
   // out = -a
-  Ciphertext Negate(const Ciphertext& a) const;
-  void NegateInplace(Ciphertext* a) const;
+  Ciphertext Negate(const Ciphertext &a) const;
+  void NegateInplace(Ciphertext *a) const;
 
  private:
   PublicKey pk_;

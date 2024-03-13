@@ -20,7 +20,7 @@ namespace {
 
 inline bool IsLittleEndian() {
   int i = 1;
-  char* p = (char*)&i;
+  char *p = (char *)&i;
 
   if (p[0] == 1) {
     return true;
@@ -32,8 +32,8 @@ inline bool IsLittleEndian() {
 
 namespace heu::lib::phe {
 
-void EncodeFixed32(char* str, uint32_t value) {
-  auto* const buf = reinterpret_cast<uint8_t*>(str);
+void EncodeFixed32(char *str, uint32_t value) {
+  auto *const buf = reinterpret_cast<uint8_t *>(str);
 
   if (IsLittleEndian()) {
     std::memcpy(buf, &value, sizeof(uint32_t));
@@ -46,14 +46,14 @@ void EncodeFixed32(char* str, uint32_t value) {
   buf[3] = static_cast<uint8_t>(value >> 24);
 }
 
-void PutFixed32(std::string* str, uint32_t value) {
+void PutFixed32(std::string *str, uint32_t value) {
   char buf[sizeof(value)];
   EncodeFixed32(buf, value);
   str->append(buf, sizeof(buf));
 }
 
-uint32_t DecodeFixed32(const char* data) {
-  const auto* const buf = reinterpret_cast<const uint8_t*>(data);
+uint32_t DecodeFixed32(const char *data) {
+  const auto *const buf = reinterpret_cast<const uint8_t *>(data);
 
   if (IsLittleEndian()) {
     uint32_t result;

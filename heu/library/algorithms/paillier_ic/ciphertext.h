@@ -29,9 +29,9 @@ class Ciphertext {
 
   [[nodiscard]] std::string ToString() const { return c_.ToString(); }
 
-  bool operator==(const Ciphertext& other) const { return c_ == other.c_; }
+  bool operator==(const Ciphertext &other) const { return c_ == other.c_; }
 
-  bool operator!=(const Ciphertext& other) const {
+  bool operator!=(const Ciphertext &other) const {
     return !this->operator==(other);
   }
 

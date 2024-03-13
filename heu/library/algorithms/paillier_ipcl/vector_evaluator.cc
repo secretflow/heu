@@ -10,7 +10,7 @@
 
 namespace heu::lib::algorithms::paillier_ipcl {
 
-Evaluator::Evaluator(const PublicKey& pk) : pk_(pk) {}
+Evaluator::Evaluator(const PublicKey &pk) : pk_(pk) {}
 
 void Evaluator::Randomize(Span<Ciphertext> ct) const {
   size_t size = ct.size();
@@ -18,7 +18,7 @@ void Evaluator::Randomize(Span<Ciphertext> ct) const {
   ipcl::PlainText pt_zeros(bn_zeros);
   ipcl::CipherText ct_zeros = pk_.ipcl_pubkey_.encrypt(pt_zeros);
   auto ct_zeros_vec = IpclToHeu<Ciphertext, ipcl::CipherText>(ct_zeros);
-  std::vector<Ciphertext*> ct_zeros_pts;
+  std::vector<Ciphertext *> ct_zeros_pts;
   ValueVecToPtsVec(ct_zeros_vec, ct_zeros_pts);
   ConstSpan<Ciphertext> ct_zeros_span =
       absl::MakeConstSpan(ct_zeros_pts.data(), size);
@@ -87,7 +87,7 @@ std::vector<Ciphertext> Evaluator::Sub(ConstSpan<Ciphertext> a,
                                        ConstSpan<Ciphertext> b) const {
   HE_ASSERT(a.size() == b.size(), "CT - CT error: size mismatch.");
   std::vector<Ciphertext> neg_b_vec = Negate(b);
-  std::vector<Ciphertext*> neg_b_pts;
+  std::vector<Ciphertext *> neg_b_pts;
   ValueVecToPtsVec(neg_b_vec, neg_b_pts);
   ConstSpan<Ciphertext> neg_b_span =
       absl::MakeConstSpan(neg_b_pts.data(), neg_b_pts.size());
@@ -101,7 +101,7 @@ std::vector<Ciphertext> Evaluator::Sub(ConstSpan<Ciphertext> a,
   for (auto item : b) {
     neg_b_vec.push_back(-(*item));
   }
-  std::vector<Plaintext*> neg_b_pts;
+  std::vector<Plaintext *> neg_b_pts;
   ValueVecToPtsVec(neg_b_vec, neg_b_pts);
   ConstSpan<Plaintext> neg_b_span =
       absl::MakeConstSpan(neg_b_pts.data(), neg_b_pts.size());
@@ -112,7 +112,7 @@ std::vector<Ciphertext> Evaluator::Sub(ConstSpan<Plaintext> a,
                                        ConstSpan<Ciphertext> b) const {
   HE_ASSERT(a.size() == b.size(), "PT - CT error: size mismatch.");
   std::vector<Ciphertext> neg_b_vec = Negate(b);
-  std::vector<Ciphertext*> neg_b_pts;
+  std::vector<Ciphertext *> neg_b_pts;
   ValueVecToPtsVec(neg_b_vec, neg_b_pts);
   ConstSpan<Ciphertext> neg_b_span =
       absl::MakeConstSpan(neg_b_pts.data(), neg_b_pts.size());
@@ -235,7 +235,7 @@ void Evaluator::MulInplace(Span<Plaintext> a, ConstSpan<Plaintext> b) const {
 std::vector<Ciphertext> Evaluator::Negate(ConstSpan<Ciphertext> a) const {
   Plaintext pt_neg_one;
   pt_neg_one.Set(-1);
-  std::vector<Plaintext*> pts_neg_one;
+  std::vector<Plaintext *> pts_neg_one;
   pts_neg_one.push_back(&pt_neg_one);
   ConstSpan<Plaintext> span_neg_one =
       absl::MakeConstSpan(pts_neg_one.data(), 1);

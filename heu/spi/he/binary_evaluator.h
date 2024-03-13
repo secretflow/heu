@@ -16,7 +16,7 @@
 
 #include "heu/spi/he/item.h"
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 // Short int operations based on TFHE
 // 基于 Bitwise FHE 封装得到的高级 integer 操作
@@ -53,4 +53,4 @@ class BinaryEvaluator {
   // other api: type cast support, programmable bootstrapping support
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

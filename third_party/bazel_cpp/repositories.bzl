@@ -1,13 +1,39 @@
+# Copyright 2024 Ant Group Co., Ltd
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
 def heu_cpp_deps():
+    _bazel_skylib()
     _com_github_eigenteam_eigen()
     _com_github_microsoft_seal()
     _com_github_intel_ipcl()
     _com_github_uscilab_cereal()
     _com_github_nvlabs_cgbn()
     _com_github_intel_ipp()
+
+def _bazel_skylib():
+    maybe(
+        http_archive,
+        name = "bazel_skylib",
+        sha256 = "cd55a062e763b9349921f0f5db8c3933288dc8ba4f76dd9416aac68acee3cb94",
+        urls = [
+            "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.5.0/bazel-skylib-1.5.0.tar.gz",
+            "https://github.com/bazelbuild/bazel-skylib/releases/download/1.5.0/bazel-skylib-1.5.0.tar.gz",
+        ],
+    )
 
 def _com_github_eigenteam_eigen():
     EIGEN_COMMIT = "66e8f38891841bf88ee976a316c0c78a52f0cee5"
@@ -19,7 +45,9 @@ def _com_github_eigenteam_eigen():
         build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:eigen.BUILD",
         strip_prefix = "eigen-{commit}".format(commit = EIGEN_COMMIT),
         urls = [
-            "https://gitlab.com/libeigen/eigen/-/archive/{commit}/eigen-{commit}.tar.gz".format(commit = EIGEN_COMMIT),
+            "https://gitlab.com/libeigen/eigen/-/archive/{commit}/eigen-{commit}.tar.gz".format(
+                commit = EIGEN_COMMIT,
+            ),
         ],
     )
 
