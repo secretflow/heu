@@ -74,3 +74,6 @@ test --test_output=errors
 test --test_timeout=600
 
 coverage --test_timeout=1800
+
+# delete this line when YACL repo is synced
+build:linux --cxxopt -Wno-error=mismatched-new-delete
