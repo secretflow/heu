@@ -25,12 +25,12 @@ namespace heu::lib::algorithms::ou {
 class Encryptor {
  public:
   explicit Encryptor(PublicKey pk, bool enable_cache = false);
-  Encryptor(const Encryptor& from);
+  Encryptor(const Encryptor &from);
 
   Ciphertext EncryptZero() const;  // Get Enc(0)
-  Ciphertext Encrypt(const MPInt& m) const;
+  Ciphertext Encrypt(const MPInt &m) const;
 
-  std::pair<Ciphertext, std::string> EncryptWithAudit(const MPInt& m) const;
+  std::pair<Ciphertext, std::string> EncryptWithAudit(const MPInt &m) const;
 
   MPInt GetHr() const;
 
@@ -38,8 +38,8 @@ class Encryptor {
 
  private:
   template <bool audit = false>
-  Ciphertext EncryptImpl(const MPInt& m,
-                         std::string* audit_str = nullptr) const;
+  Ciphertext EncryptImpl(const MPInt &m,
+                         std::string *audit_str = nullptr) const;
 
   std::shared_ptr<MPInt> GetHrUsingCache() const;
 

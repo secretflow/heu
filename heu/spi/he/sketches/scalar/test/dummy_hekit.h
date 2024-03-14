@@ -21,44 +21,59 @@
 #include "gtest/gtest.h"
 #include "yacl/base/byte_container_view.h"
 
+#include "heu/spi/he/he_configs.h"
 #include "heu/spi/he/sketches/common/he_kit.h"
-#include "heu/spi/he/sketches/scalar/item_manipulator.h"
+#include "heu/spi/he/sketches/scalar/item_tool.h"
 #include "heu/spi/he/sketches/scalar/test/dummy_encoder.h"
 #include "heu/spi/he/sketches/scalar/test/dummy_ops.h"
 
-namespace heu::lib::spi::test {
+namespace heu::spi::test {
 
-class DummyPk : public DummyObj {
+template <HeKeyType key_type>
+class DummyKey : public spi::KeySketch<key_type>, public DummyObj {
  public:
   using DummyObj::DummyObj;
+
+  std::map<std::string, std::string> ListParams() const override {
+    return {{"id", id_}};
+  }
+
+  friend std::ostream &operator<<(std::ostream &os, const DummyKey &obj) {
+    return os << obj.ToString();
+  }
+};
+
+class DummyPk : public DummyKey<HeKeyType::PublicKey> {
+ public:
+  using DummyKey<HeKeyType::PublicKey>::DummyKey;
 
   bool operator==(const DummyPk &rhs) const { return Id() == rhs.Id(); }
 };
 
-class DummySk : public DummyObj {
+class DummySk : public DummyKey<HeKeyType::SecretKey> {
  public:
-  using DummyObj::DummyObj;
+  using DummyKey<HeKeyType::SecretKey>::DummyKey;
 
   bool operator==(const DummySk &rhs) const { return Id() == rhs.Id(); }
 };
 
-class DummyRlk : public DummyObj {
+class DummyRlk : public DummyKey<HeKeyType::RelinKeys> {
  public:
-  using DummyObj::DummyObj;
+  using DummyKey<HeKeyType::RelinKeys>::DummyKey;
 
   bool operator==(const DummyRlk &rhs) const { return Id() == rhs.Id(); }
 };
 
-class DummyGlk : public DummyObj {
+class DummyGlk : public DummyKey<HeKeyType::GaloisKeys> {
  public:
-  using DummyObj::DummyObj;
+  using DummyKey<HeKeyType::GaloisKeys>::DummyKey;
 
   bool operator==(const DummyGlk &rhs) const { return Id() == rhs.Id(); }
 };
 
-class DummyBsk : public DummyObj {
+class DummyBsk : public DummyKey<HeKeyType::BootstrapKey> {
  public:
-  using DummyObj::DummyObj;
+  using DummyKey<HeKeyType::BootstrapKey>::DummyKey;
 
   bool operator==(const DummyBsk &rhs) const { return Id() == rhs.Id(); }
 };
@@ -69,43 +84,13 @@ size_t Str2buf(const std::string &str, uint8_t *buf, size_t buf_len) {
   return str.length();
 }
 
-class DummyItemManipulator
-    : public ItemManipulatorScalarSketch<DummyPt, DummyCt, DummySk, DummyPk,
-                                         DummyRlk, DummyGlk, DummyBsk> {
+class DummyItemTool
+    : public ItemToolScalarSketch<DummyPt, DummyCt, DummySk, DummyPk, DummyRlk,
+                                  DummyGlk, DummyBsk> {
  public:
-  DummySk Clone(const DummySk &key) const override { return key; }
-
-  DummyPk Clone(const DummyPk &key) const override { return key; }
-
-  DummyRlk Clone(const DummyRlk &key) const override { return key; }
-
-  DummyGlk Clone(const DummyGlk &key) const override { return key; }
-
-  DummyBsk Clone(const DummyBsk &key) const override { return key; }
-
   DummyPt Clone(const DummyPt &pt) const override { return pt; }
 
   DummyCt Clone(const DummyCt &ct) const override { return ct; }
-
-  std::string ToString(const DummySk &key) const override {
-    return "dummy " + key.Id();
-  }
-
-  std::string ToString(const DummyPk &key) const override {
-    return "dummy " + key.Id();
-  }
-
-  std::string ToString(const DummyRlk &key) const override {
-    return "dummy " + key.Id();
-  }
-
-  std::string ToString(const DummyGlk &key) const override {
-    return "dummy " + key.Id();
-  }
-
-  std::string ToString(const DummyBsk &key) const override {
-    return "dummy " + key.Id();
-  }
 
   std::string ToString(const DummyPt &x) const override {
     return "dummy " + x.Id();
@@ -134,7 +119,6 @@ class DummyItemManipulator
   }
 };
 
-DEFINE_ARG_string(Encoder);
 DEFINE_ARG_uint64(Slot);
 
 class DummyHeKit
@@ -147,21 +131,13 @@ class DummyHeKit
 
   std::string GetLibraryName() const override { return "DummyLib"; }
 
-  std::string GetSchemaName() const override { return "DummySchema"; }
+  Schema GetSchema() const override { return Schema::Unknown; }
 
-  DummySk GetSecretKeyT() const override { return sk_; }
-
-  DummyPk GetPublicKeyT() const override { return pk_; }
-
-  DummyRlk GetRelinKeyT() const override { return rlk_; }
-
-  DummyGlk GetGaloisKeyT() const override { return glk_; }
-
-  DummyBsk GetBootstrapKeyT() const override { return bsk_; }
+  FeatureSet GetFeatureSet() const override { return FeatureSet::WordFHE; }
 
   std::shared_ptr<Encoder> CreateEncoder(
-      const heu::lib::spi::SpiArgs &args) const override {
-    std::string name = args.Get(ArgEncoder, "plain");
+      const yacl::SpiArgs &args) const override {
+    std::string name = args.GetOrDefault(ArgEncodingMethod, "plain");
     if (name == "plain") {
       return std::make_shared<DummyPlainEncoder>();
     } else if (name == "batch") {
@@ -174,20 +150,20 @@ class DummyHeKit
                    size_t buf_len) const override {
     switch (key_type) {
       case HeKeyType::SecretKey:
-        return buf == nullptr ? sk_.Id().length()
-                              : Str2buf(sk_.Id(), buf, buf_len);
+        return buf == nullptr ? sk_->Id().length()
+                              : Str2buf(sk_->Id(), buf, buf_len);
       case HeKeyType::PublicKey:
-        return buf == nullptr ? pk_.Id().length()
-                              : Str2buf(pk_.Id(), buf, buf_len);
+        return buf == nullptr ? pk_->Id().length()
+                              : Str2buf(pk_->Id(), buf, buf_len);
       case HeKeyType::RelinKeys:
-        return buf == nullptr ? rlk_.Id().length()
-                              : Str2buf(rlk_.Id(), buf, buf_len);
+        return buf == nullptr ? rlk_->Id().length()
+                              : Str2buf(rlk_->Id(), buf, buf_len);
       case HeKeyType::GaloisKeys:
-        return buf == nullptr ? glk_.Id().length()
-                              : Str2buf(glk_.Id(), buf, buf_len);
+        return buf == nullptr ? glk_->Id().length()
+                              : Str2buf(glk_->Id(), buf, buf_len);
       case HeKeyType::BootstrapKey:
-        return buf == nullptr ? bsk_.Id().length()
-                              : Str2buf(bsk_.Id(), buf, buf_len);
+        return buf == nullptr ? bsk_->Id().length()
+                              : Str2buf(bsk_->Id(), buf, buf_len);
       default:
         YACL_THROW("never reach here");
     }
@@ -202,18 +178,18 @@ class DummyHeKit
   }
 
  private:
-  void SetupContext(const heu::lib::spi::SpiArgs &) override {
+  void SetupContext(const yacl::SpiArgs &) {
+    sk_ = std::make_shared<DummySk>("sk1");
+    pk_ = std::make_shared<DummyPk>("pk1");
+    rlk_ = std::make_shared<DummyRlk>("rlk1");
+    glk_ = std::make_shared<DummyGlk>("glk1");
+    bsk_ = std::make_shared<DummyBsk>("bsk1");
+
     encryptor_ = std::make_shared<DummyEncryptorImpl>();
     decryptor_ = std::make_shared<DummyDecryptorImpl>();
     word_evaluator_ = std::make_shared<DummyEvaluatorImpl>();
-    item_manipulator_ = std::make_shared<DummyItemManipulator>();
+    item_tool_ = std::make_shared<DummyItemTool>();
   }
-
-  DummySk sk_{"sk1"};
-  DummyPk pk_{"pk1"};
-  DummyRlk rlk_{"rlk1"};
-  DummyGlk glk_{"glk1"};
-  DummyBsk bsk_{"bsk1"};
 };
 
-}  // namespace heu::lib::spi::test
+}  // namespace heu::spi::test

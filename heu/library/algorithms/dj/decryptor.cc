@@ -18,7 +18,7 @@
 
 namespace heu::lib::algorithms::dj {
 
-Plaintext Decryptor::Decrypt(const Ciphertext& ct) const {
+Plaintext Decryptor::Decrypt(const Ciphertext &ct) const {
   HE_ASSERT(!ct.c_.IsNegative() && ct.c_ < pk_.CipherModule(),
             "Decryptor: Invalid ciphertext");
   Plaintext m{sk_.Decrypt(pk_.MapBackToZSpace(ct.c_))};

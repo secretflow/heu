@@ -22,11 +22,11 @@ namespace heu::lib::algorithms::elgamal {
 class KeyGenerator {
  public:
   // Generate a PHE key pair
-  static void Generate(const yacl::crypto::CurveName& curve_name, SecretKey* sk,
-                       PublicKey* pk);
-  static void Generate(size_t key_size, SecretKey* sk, PublicKey* pk);
+  static void Generate(const yacl::crypto::CurveName &curve_name, SecretKey *sk,
+                       PublicKey *pk);
+  static void Generate(size_t key_size, SecretKey *sk, PublicKey *pk);
   // Generate a PHE key pair by default configs
-  static void Generate(SecretKey* sk, PublicKey* pk);
+  static void Generate(SecretKey *sk, PublicKey *pk);
 };
 
 }  // namespace heu::lib::algorithms::elgamal

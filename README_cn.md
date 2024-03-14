@@ -103,9 +103,9 @@ https://www.secretflow.org.cn/docs/heu/
 架构切换里程碑：
 
 - [x] HE SPI：设计一套大一统接口，同时支持所有的 PHE/FHE 算法
-- [ ] 实现 SPI Sketches （doing）
-- [ ] 存量算法迁移至 SPI
-- [ ] HE 算法自动化测试框架
+- [ ] 实现 SPI Sketches (in progress)
+- [ ] 存量算法迁移至 SPI (in progress)
+- [ ] HE 算法自动化测试框架 (in progress)
 - [ ] Tensor Lib 底层从 Dispatcher 切到 SPI
 - [ ] PyLib 底层从 Dispatcher 切到 SPI
 

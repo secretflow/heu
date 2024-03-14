@@ -27,7 +27,7 @@ namespace heu::lib::algorithms::paillier_clustar_fpga {
 class Encryptor {
  public:
   Encryptor() = default;
-  explicit Encryptor(const PublicKey& pk);
+  explicit Encryptor(const PublicKey &pk);
   ~Encryptor() = default;
 
   std::vector<Ciphertext> EncryptZero(int64_t size) const;
@@ -37,14 +37,14 @@ class Encryptor {
   std::pair<std::vector<Ciphertext>, std::vector<std::string>> EncryptWithAudit(
       ConstSpan<Plaintext> pts) const;
 
-  void Encode(ConstSpan<Plaintext> pts, std::shared_ptr<char>& res_fpn,
-              std::shared_ptr<char>& res_base_fpn,
-              std::shared_ptr<char>& res_exp_fpn) const;
+  void Encode(ConstSpan<Plaintext> pts, std::shared_ptr<char> &res_fpn,
+              std::shared_ptr<char> &res_base_fpn,
+              std::shared_ptr<char> &res_exp_fpn) const;
 
  private:
   std::shared_ptr<char> GenRandom(size_t count) const;
   std::vector<Ciphertext> EncryptImpl(
-      ConstSpan<Plaintext> pts, std::vector<std::string>* audit_vec) const;
+      ConstSpan<Plaintext> pts, std::vector<std::string> *audit_vec) const;
 
  private:
   PublicKey pub_key_;

@@ -18,7 +18,7 @@
 #include "heu/spi/he/sketches/common/plain_encoder.h"
 #include "heu/spi/he/sketches/scalar/test/dummy_ops.h"
 
-namespace heu::lib::spi::test {
+namespace heu::spi::test {
 
 class DummyPlainEncoder : public PlainEncoderSketch<DummyPt> {
  public:
@@ -70,24 +70,46 @@ class DummyBatchEncoder : public BatchEncoderSketch<DummyPt> {
   }
 
   DummyPt EncodeT(absl::Span<const int64_t> message) const override {
-    YACL_ENFORCE(message.size() <= max_slot_);
+    // Test: The size of the message is always in [1, SlotCount()]
+    // DO NOT use YACL_ENFORCE here, since we will test EXPECT_ANY_THROW outer.
+    EXPECT_TRUE(message.size() > 0);
+    EXPECT_TRUE(message.size() <= max_slot_);
     return DummyPt(fmt::format("Encode({})", fmt::join(message, ", ")));
   }
 
   DummyPt EncodeT(absl::Span<const uint64_t> message) const override {
-    YACL_ENFORCE(message.size() <= max_slot_);
+    // DO NOT use YACL_ENFORCE here, since we will test EXPECT_ANY_THROW outer.
+    EXPECT_TRUE(message.size() > 0 && message.size() <= max_slot_);
     return DummyPt(fmt::format("Encode({})", fmt::join(message, ", ")));
   }
 
   DummyPt EncodeT(absl::Span<const double> message) const override {
-    YACL_ENFORCE(message.size() <= max_slot_);
+    // DO NOT use YACL_ENFORCE here, since we will test EXPECT_ANY_THROW outer.
+    EXPECT_TRUE(message.size() > 0 && message.size() <= max_slot_);
     return DummyPt(fmt::format("Encode({})", fmt::join(message, ", ")));
   }
 
   DummyPt EncodeT(
       absl::Span<const std::complex<double>> message) const override {
-    YACL_ENFORCE(message.size() <= max_slot_);
+    // DO NOT use YACL_ENFORCE here, since we will test EXPECT_ANY_THROW outer.
+    EXPECT_TRUE(message.size() > 0 && message.size() <= max_slot_);
     return DummyPt(fmt::format("Encode(complex{})", message.size()));
+  }
+
+  DummyPt EncodeT(int64_t message) const override {
+    return EncodeT(std::vector<int64_t>(max_slot_, message));
+  }
+
+  DummyPt EncodeT(uint64_t message) const override {
+    return EncodeT(std::vector<uint64_t>(max_slot_, message));
+  }
+
+  DummyPt EncodeT(double message) const override {
+    return EncodeT(std::vector<double>(max_slot_, message));
+  }
+
+  DummyPt EncodeT(const std::complex<double> &message) const override {
+    return EncodeT(std::vector<std::complex<double>>(max_slot_, message));
   }
 
   void DecodeT(const DummyPt &, absl::Span<int64_t> out) const override {
@@ -123,4 +145,4 @@ class DummyBatchEncoder : public BatchEncoderSketch<DummyPt> {
   size_t max_slot_;
 };
 
-}  // namespace heu::lib::spi::test
+}  // namespace heu::spi::test

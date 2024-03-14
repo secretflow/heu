@@ -14,14 +14,32 @@
 
 #pragma once
 
-namespace heu::lib::spi {
+#include <map>
+#include <string>
 
-class NoPk {};
+#include "heu/spi/he/sketches/common/keys.h"
 
-class NoRlk {};
+namespace heu::spi {
 
-class NoGlK {};
+template <HeKeyType key_type>
+class NoKey : public spi::KeySketch<key_type> {
+ public:
+  std::map<std::string, std::string> ListParams() const override {
+    YACL_THROW("There is no {} in the current setting, cannot list params",
+               key_type);
+  }
 
-class NoBsk {};
+  std::string ToString() const override {
+    return fmt::format("There is no {} in the current setting", key_type);
+  }
+};
 
-}  // namespace heu::lib::spi
+class NoPk : public NoKey<HeKeyType::PublicKey> {};
+
+class NoRlk : public NoKey<HeKeyType::RelinKeys> {};
+
+class NoGlk : public NoKey<HeKeyType::GaloisKeys> {};
+
+class NoBsk : public NoKey<HeKeyType::BootstrapKey> {};
+
+}  // namespace heu::spi

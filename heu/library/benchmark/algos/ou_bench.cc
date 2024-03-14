@@ -41,7 +41,7 @@ void Initialize() {
   ou::KeyGenerator::Generate(kKeySize, &g_ou_secret_key, &g_ou_public_key);
 }
 
-static void OuEncrypt(benchmark::State& state) {
+static void OuEncrypt(benchmark::State &state) {
   // encrypt
   ou::Encryptor encryptor(g_ou_public_key);
   for (auto _ : state) {
@@ -51,7 +51,7 @@ static void OuEncrypt(benchmark::State& state) {
   }
 }
 
-static void OuAddCipher(benchmark::State& state) {
+static void OuAddCipher(benchmark::State &state) {
   // add (ciphertext + ciphertext)
   ou::Evaluator evaluator(g_ou_public_key);
   for (auto _ : state) {
@@ -61,7 +61,7 @@ static void OuAddCipher(benchmark::State& state) {
   }
 }
 
-static void OuSubCipher(benchmark::State& state) {
+static void OuSubCipher(benchmark::State &state) {
   // sub (ciphertext - ciphertext)
   ou::Evaluator evaluator(g_ou_public_key);
   for (auto _ : state) {
@@ -71,7 +71,7 @@ static void OuSubCipher(benchmark::State& state) {
   }
 }
 
-static void OuAddInt(benchmark::State& state) {
+static void OuAddInt(benchmark::State &state) {
   // add (ciphertext + plaintext)
   ou::Evaluator evaluator(g_ou_public_key);
   for (auto _ : state) {
@@ -81,7 +81,7 @@ static void OuAddInt(benchmark::State& state) {
   }
 }
 
-static void OuMulti(benchmark::State& state) {
+static void OuMulti(benchmark::State &state) {
   // mul (ciphertext * plaintext)
   ou::Evaluator evaluator(g_ou_public_key);
   for (auto _ : state) {
@@ -91,7 +91,7 @@ static void OuMulti(benchmark::State& state) {
   }
 }
 
-static void OuDecrypt(benchmark::State& state) {
+static void OuDecrypt(benchmark::State &state) {
   // decrypt
   ou::Decryptor decryptor(g_ou_public_key, g_ou_secret_key);
   for (auto _ : state) {
@@ -110,7 +110,7 @@ BENCHMARK(OuDecrypt)->Unit(benchmark::kMillisecond);
 
 }  // namespace heu::lib::bench
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   benchmark::Initialize(&argc, argv);
   heu::lib::bench::Initialize();
   benchmark::RunSpecifiedBenchmarks();

@@ -58,7 +58,7 @@ TEST_F(SchemaTest, HeMacroWorks) {
   std::vector<bool> res = {HE_FOR_EACH(TEST_NAMESPACE_LIST)};
   ASSERT_EQ(res.size(), GetAllSchema().size())
       << "HE_FOR_EACH not equal to SchemaType";
-  for (const auto& item : res) {
+  for (const auto &item : res) {
     ASSERT_TRUE(item);
   }
 }
@@ -66,8 +66,8 @@ TEST_F(SchemaTest, HeMacroWorks) {
 TEST_F(SchemaTest, AliasesUnique) {
   std::unordered_set<std::string> alias_set;
   int count = 0;
-  for (const auto& schema : GetAllSchema()) {
-    for (const auto& alias : GetSchemaAliases(schema)) {
+  for (const auto &schema : GetAllSchema()) {
+    for (const auto &alias : GetSchemaAliases(schema)) {
       ++count;
       ASSERT_TRUE(alias_set.count(alias) == 0)
           << fmt::format("all schema: {}, alias_set: {}, dup={}",

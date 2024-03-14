@@ -27,7 +27,7 @@
 // <<< 其它 Encryptor/Evaluator/Decryptor 接口变化同理，此处不再展开 >>> //
 // ================================================================ //
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 template <typename PlaintextT, typename CiphertextT>
 class WordEvaluatorVectorSketch : public WordEvaluator {
@@ -39,10 +39,10 @@ class WordEvaluatorVectorSketch : public WordEvaluator {
   // PT = -PT
   // CT = -CT
   virtual std::vector<PlaintextT> Negate(
-      const absl::Span<const PlaintextT>& a) const = 0;
+      const absl::Span<const PlaintextT> &a) const = 0;
   virtual void NegateInplace(absl::Span<PlaintextT> a) const = 0;
   virtual std::vector<CiphertextT> Negate(
-      const absl::Span<const CiphertextT>& a) const = 0;
+      const absl::Span<const CiphertextT> &a) const = 0;
   virtual void NegateInplace(absl::Span<CiphertextT> a) const = 0;
 
   // PT = PT + PT
@@ -50,23 +50,23 @@ class WordEvaluatorVectorSketch : public WordEvaluator {
   // CT = CT + PT
   // CT = CT + CT
   virtual std::vector<PlaintextT> Add(
-      const absl::Span<const PlaintextT>& a,
-      const absl::Span<const PlaintextT>& b) const = 0;
+      const absl::Span<const PlaintextT> &a,
+      const absl::Span<const PlaintextT> &b) const = 0;
   virtual std::vector<CiphertextT> Add(
-      const absl::Span<const PlaintextT>& a,
-      const absl::Span<const CiphertextT>& b) const = 0;
+      const absl::Span<const PlaintextT> &a,
+      const absl::Span<const CiphertextT> &b) const = 0;
   virtual std::vector<CiphertextT> Add(
-      const absl::Span<const CiphertextT>& a,
-      const absl::Span<const PlaintextT>& b) const = 0;
+      const absl::Span<const CiphertextT> &a,
+      const absl::Span<const PlaintextT> &b) const = 0;
   virtual std::vector<CiphertextT> Add(
-      const absl::Span<const CiphertextT>& a,
-      const absl::Span<const CiphertextT>& b) const = 0;
+      const absl::Span<const CiphertextT> &a,
+      const absl::Span<const CiphertextT> &b) const = 0;
   // CT += PT
   // CT += CT
   virtual void AddInplace(absl::Span<CiphertextT> a,
-                          const absl::Span<const PlaintextT>& b) const = 0;
+                          const absl::Span<const PlaintextT> &b) const = 0;
   virtual void AddInplace(absl::Span<CiphertextT> a,
-                          const absl::Span<const CiphertextT>& b) const = 0;
+                          const absl::Span<const CiphertextT> &b) const = 0;
 
   // PT = PT + PT
   // CT = PT + CT
@@ -75,53 +75,53 @@ class WordEvaluatorVectorSketch : public WordEvaluator {
   // CT += PT
   // CT += CT
   virtual std::vector<PlaintextT> Sub(
-      const absl::Span<const PlaintextT>& a,
-      const absl::Span<const PlaintextT>& b) const = 0;
+      const absl::Span<const PlaintextT> &a,
+      const absl::Span<const PlaintextT> &b) const = 0;
   virtual std::vector<CiphertextT> Sub(
-      const absl::Span<const PlaintextT>& a,
-      const absl::Span<const CiphertextT>& b) const = 0;
+      const absl::Span<const PlaintextT> &a,
+      const absl::Span<const CiphertextT> &b) const = 0;
   virtual std::vector<CiphertextT> Sub(
-      const absl::Span<const CiphertextT>& a,
-      const absl::Span<const PlaintextT>& b) const = 0;
+      const absl::Span<const CiphertextT> &a,
+      const absl::Span<const PlaintextT> &b) const = 0;
   virtual std::vector<CiphertextT> Sub(
-      const absl::Span<const CiphertextT>& a,
-      const absl::Span<const CiphertextT>& b) const = 0;
+      const absl::Span<const CiphertextT> &a,
+      const absl::Span<const CiphertextT> &b) const = 0;
   virtual void SubInplace(absl::Span<CiphertextT> a,
-                          const absl::Span<const PlaintextT>& b) const = 0;
+                          const absl::Span<const PlaintextT> &b) const = 0;
   virtual void SubInplace(absl::Span<CiphertextT> a,
-                          const absl::Span<const CiphertextT>& b) const = 0;
+                          const absl::Span<const CiphertextT> &b) const = 0;
 
   // PT = PT * PT [AHE/FHE]
   // CT = PT * CT [AHE/FHE]
   // CT = CT * PT [AHE/FHE]
   // CT = CT * CT [FHE]
   virtual std::vector<PlaintextT> Mul(
-      const absl::Span<const PlaintextT>& a,
-      const absl::Span<const PlaintextT>& b) const = 0;
+      const absl::Span<const PlaintextT> &a,
+      const absl::Span<const PlaintextT> &b) const = 0;
   virtual std::vector<CiphertextT> Mul(
-      const absl::Span<const PlaintextT>& a,
-      const absl::Span<const CiphertextT>& b) const = 0;
+      const absl::Span<const PlaintextT> &a,
+      const absl::Span<const CiphertextT> &b) const = 0;
   virtual std::vector<CiphertextT> Mul(
-      const absl::Span<const CiphertextT>& a,
-      const absl::Span<const PlaintextT>& b) const = 0;
+      const absl::Span<const CiphertextT> &a,
+      const absl::Span<const PlaintextT> &b) const = 0;
   virtual std::vector<CiphertextT> Mul(
-      const absl::Span<const CiphertextT>& a,
-      const absl::Span<const CiphertextT>& b) const = 0;
+      const absl::Span<const CiphertextT> &a,
+      const absl::Span<const CiphertextT> &b) const = 0;
   virtual void MulInplace(absl::Span<CiphertextT> a,
-                          const absl::Span<const PlaintextT>& b) const = 0;
+                          const absl::Span<const PlaintextT> &b) const = 0;
   virtual void MulInplace(absl::Span<CiphertextT> a,
-                          const absl::Span<const CiphertextT>& b) const = 0;
+                          const absl::Span<const CiphertextT> &b) const = 0;
 
   virtual std::vector<PlaintextT> Square(
-      const absl::Span<const PlaintextT>& a) const = 0;
+      const absl::Span<const PlaintextT> &a) const = 0;
   virtual std::vector<CiphertextT> Square(
-      const absl::Span<const CiphertextT>& a) const = 0;
+      const absl::Span<const CiphertextT> &a) const = 0;
   virtual void SquareInplace(absl::Span<PlaintextT> a) const = 0;
   virtual void SquareInplace(absl::Span<CiphertextT> a) const = 0;
 
-  virtual std::vector<PlaintextT> Pow(const absl::Span<const PlaintextT>& a,
+  virtual std::vector<PlaintextT> Pow(const absl::Span<const PlaintextT> &a,
                                       int64_t exponent) const = 0;
-  virtual std::vector<CiphertextT> Pow(const absl::Span<const CiphertextT>& a,
+  virtual std::vector<CiphertextT> Pow(const absl::Span<const CiphertextT> &a,
                                        int64_t exponent) const = 0;
   virtual void PowInplace(absl::Span<PlaintextT> a, int64_t exponent) const = 0;
   virtual void PowInplace(absl::Span<CiphertextT> a,
@@ -134,31 +134,31 @@ class WordEvaluatorVectorSketch : public WordEvaluator {
   virtual void Randomize(absl::Span<CiphertextT> ct) const = 0;
 
   virtual std::vector<CiphertextT> Relinearize(
-      const absl::Span<const CiphertextT>& a) const = 0;
+      const absl::Span<const CiphertextT> &a) const = 0;
   virtual void RelinearizeInplace(absl::Span<CiphertextT> a) const = 0;
 
   // Given a ciphertext with modulo q_1...q_k, this function switches the
   // modulus down to q_1...q_{k-1}
   virtual std::vector<CiphertextT> ModSwitch(
-      const absl::Span<const CiphertextT>& a) const = 0;
+      const absl::Span<const CiphertextT> &a) const = 0;
   virtual void ModSwitchInplace(absl::Span<CiphertextT> a) const = 0;
 
   // Given a ciphertext with modulo q_1...q_k, this function switches the
   // modulus down to q_1...q_{k-1}, and scales the message down accordingly
   virtual std::vector<CiphertextT> Rescale(
-      const absl::Span<const CiphertextT>& a) const = 0;
+      const absl::Span<const CiphertextT> &a) const = 0;
   virtual void RescaleInplace(absl::Span<CiphertextT> a) const = 0;
 
   //===   Galois automorphism   ===//
 
   // BFV/BGV only
   virtual std::vector<CiphertextT> SwapRows(
-      const absl::Span<const CiphertextT>& a) const = 0;
+      const absl::Span<const CiphertextT> &a) const = 0;
   virtual void SwapRowsInplace(absl::Span<CiphertextT> a) const = 0;
 
   // CKKS only, for complex number
   virtual std::vector<CiphertextT> Conjugate(
-      const absl::Span<const CiphertextT>& a) const = 0;
+      const absl::Span<const CiphertextT> &a) const = 0;
   virtual void ConjugateInplace(absl::Span<CiphertextT> a) const = 0;
 
   // BFV/BGV batching mode:
@@ -169,8 +169,8 @@ class WordEvaluatorVectorSketch : public WordEvaluator {
   //   or to the right (steps < 0).
   // All schemas: require abs(steps) < N/2
   virtual std::vector<CiphertextT> Rotate(
-      const absl::Span<const CiphertextT>& a, int steps) const = 0;
+      const absl::Span<const CiphertextT> &a, int steps) const = 0;
   virtual void RotateInplace(absl::Span<CiphertextT> a, int steps) const = 0;
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

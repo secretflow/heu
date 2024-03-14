@@ -18,7 +18,7 @@
 
 namespace heu::lib::algorithms::paillier_f {
 
-void Decryptor::Decrypt(const Ciphertext& cipher, MPInt* plain) const {
+void Decryptor::Decrypt(const Ciphertext &cipher, MPInt *plain) const {
   internal::EncodedNumber encoded;
   encoded.exponent = cipher.exponent_;
   DecryptRaw(cipher.c_, &encoded.encoding);
@@ -26,13 +26,13 @@ void Decryptor::Decrypt(const Ciphertext& cipher, MPInt* plain) const {
   internal::Codec(pk_).Decode(encoded, plain);
 }
 
-MPInt Decryptor::Decrypt(const Ciphertext& cipher) const {
+MPInt Decryptor::Decrypt(const Ciphertext &cipher) const {
   MPInt plain;
   Decrypt(cipher, &plain);
   return plain;
 }
 
-void Decryptor::Decrypt(const Ciphertext& cipher, double* plain) const {
+void Decryptor::Decrypt(const Ciphertext &cipher, double *plain) const {
   internal::EncodedNumber encoded;
   encoded.exponent = cipher.exponent_;
   DecryptRaw(cipher.c_, &encoded.encoding);
@@ -40,7 +40,7 @@ void Decryptor::Decrypt(const Ciphertext& cipher, double* plain) const {
   internal::Codec(pk_).Decode(encoded, plain);
 }
 
-void Decryptor::DecryptRaw(const MPInt& c, MPInt* m) const {
+void Decryptor::DecryptRaw(const MPInt &c, MPInt *m) const {
   MPInt::PowMod(c, sk_.lambda_, pk_.n_square_, m);
   m->DecrOne();
   MPInt::Div(*m, pk_.n_, m, nullptr);

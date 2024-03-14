@@ -18,7 +18,7 @@
 
 #include "heu/spi/he/sketches/scalar/word_evaluator.h"
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 template <typename PlaintextT, typename CiphertextT>
 class PheWordEvaluatorScalarSketch
@@ -26,37 +26,37 @@ class PheWordEvaluatorScalarSketch
  public:
   //===   Arithmetic Operations   ===//
 
-  CiphertextT Mul(const CiphertextT&, const CiphertextT&) const override {
+  CiphertextT Mul(const CiphertextT &, const CiphertextT &) const override {
     YACL_THROW(
         "Phe schema does not support ciphertext multiplication, please switch "
         "to FHE schemas");
   }
 
-  void MulInplace(CiphertextT*, const CiphertextT&) const override {
+  void MulInplace(CiphertextT *, const CiphertextT &) const override {
     YACL_THROW(
         "Phe schema does not support ciphertext multiplication, please switch "
         "to FHE schemas");
   }
 
-  CiphertextT Square(const CiphertextT&) const override {
+  CiphertextT Square(const CiphertextT &) const override {
     YACL_THROW(
         "Phe schema does not support ciphertext square, please switch to FHE "
         "schemas");
   }
 
-  void SquareInplace(CiphertextT*) const override {
+  void SquareInplace(CiphertextT *) const override {
     YACL_THROW(
         "Phe schema does not support ciphertext square, please switch to FHE "
         "schemas");
   }
 
-  CiphertextT Pow(const CiphertextT&, int64_t) const override {
+  CiphertextT Pow(const CiphertextT &, int64_t) const override {
     YACL_THROW(
         "Phe schema does not support ciphertext pow, please switch to FHE "
         "schemas");
   }
 
-  void PowInplace(CiphertextT*, int64_t) const override {
+  void PowInplace(CiphertextT *, int64_t) const override {
     YACL_THROW(
         "Phe schema does not support ciphertext pow, please switch to FHE "
         "schemas");
@@ -64,63 +64,69 @@ class PheWordEvaluatorScalarSketch
 
   //===   FHE only operations   ===//
 
-  CiphertextT Relinearize(const CiphertextT& a) const override {
-    return a;  // nothing to do
+  CiphertextT Relinearize(const CiphertextT &a) const override {
+    return a;  // nothing to do; PHE ciphertexts are always linearized.
   }
 
-  void RelinearizeInplace(CiphertextT*) const override {}  // nothing to do
+  void RelinearizeInplace(CiphertextT *) const override {
+    // nothing to do; PHE ciphertexts are always linearized.
+  }
 
-  CiphertextT ModSwitch(const CiphertextT&) const override {
+  CiphertextT ModSwitch(const CiphertextT &) const override {
     YACL_THROW(
         "Phe schema does not support modulus switch, please switch to FHE "
         "schemas");
   }
 
-  void ModSwitchInplace(CiphertextT*) const override {
+  void ModSwitchInplace(CiphertextT *) const override {
     YACL_THROW(
         "Phe schema does not support modulus switch, please switch to FHE "
         "schemas");
   }
 
-  CiphertextT Rescale(const CiphertextT&) const override {
+  CiphertextT Rescale(const CiphertextT &) const override {
     YACL_THROW(
         "Phe schema does not support rescaling, please switch to FHE schemas");
   }
 
-  void RescaleInplace(CiphertextT*) const override {
+  void RescaleInplace(CiphertextT *) const override {
     YACL_THROW(
         "Phe schema does not support rescaling, please switch to FHE schemas");
   }
 
-  CiphertextT SwapRows(const CiphertextT&) const override {
+  CiphertextT SwapRows(const CiphertextT &) const override {
     YACL_THROW(
         "Phe schema does not support swap rows, please switch to FHE schemas");
   }
 
-  void SwapRowsInplace(CiphertextT*) const override {
+  void SwapRowsInplace(CiphertextT *) const override {
     YACL_THROW(
         "Phe schema does not support swap rows, please switch to FHE schemas");
   }
 
-  CiphertextT Conjugate(const CiphertextT&) const override {
+  CiphertextT Conjugate(const CiphertextT &) const override {
     YACL_THROW(
         "Phe schema does not support conjugate, please switch to FHE schemas");
   }
 
-  void ConjugateInplace(CiphertextT*) const override {
+  void ConjugateInplace(CiphertextT *) const override {
     YACL_THROW(
         "Phe schema does not support conjugate, please switch to FHE schemas");
   }
 
-  CiphertextT Rotate(const CiphertextT&, int) const override {
+  CiphertextT Rotate(const CiphertextT &, int) const override {
     YACL_THROW(
         "Phe schema does not support rotating, please switch to FHE schemas");
   }
 
-  void RotateInplace(CiphertextT*, int) const override {
+  void RotateInplace(CiphertextT *, int) const override {
     YACL_THROW(
         "Phe schema does not support rotating, please switch to FHE schemas");
+  }
+
+  void BootstrapInplace(CiphertextT *) const override {
+    // nothing to do, PHE ciphertexts are always fresh.
   }
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

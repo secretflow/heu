@@ -33,13 +33,13 @@ using RowVector = const Eigen::Matrix<int8_t, 1, Eigen::Dynamic>;
 template <typename T>
 class ExtensionFunctions {
  public:
-  static T SelectSum(const lib::numpy::Evaluator& e,
-                     const lib::numpy::DenseMatrix<T>& x,
-                     const pybind11::object& key);
+  static T SelectSum(const lib::numpy::Evaluator &e,
+                     const lib::numpy::DenseMatrix<T> &x,
+                     const pybind11::object &key);
 
   static lib::numpy::DenseMatrix<T> BatchSelectSum(
-      const lib::numpy::Evaluator& e, const lib::numpy::DenseMatrix<T>& x,
-      const std::vector<pybind11::object>& key);
+      const lib::numpy::Evaluator &e, const lib::numpy::DenseMatrix<T> &x,
+      const std::vector<pybind11::object> &key);
 
   /// @brief Take elements in x according to order_map to caculate the row sum
   /// at each bin.
@@ -57,9 +57,9 @@ class ExtensionFunctions {
   /// @return dense matrix<T>, the row bin sum result. It has shape (bucket_num
   /// * feature_num, x.cols()).
   static lib::numpy::DenseMatrix<T> FeatureWiseBucketSum(
-      const lib::numpy::Evaluator& e, const lib::numpy::DenseMatrix<T>& x,
-      const Eigen::Ref<RowVector>& subgroup_map,
-      const Eigen::Ref<RowMatrixXd>& order_map, int bucket_num,
+      const lib::numpy::Evaluator &e, const lib::numpy::DenseMatrix<T> &x,
+      const Eigen::Ref<RowVector> &subgroup_map,
+      const Eigen::Ref<RowMatrixXd> &order_map, int bucket_num,
       bool cumsum = false);
 
   /// @brief Take elements in x according to order_map to caculate the row sum
@@ -79,9 +79,9 @@ class ExtensionFunctions {
   /// @return a list of dense matrix<T>, the row bin sum result. Each element
   /// has shape (bucket_num * feature_num, x.cols()).
   static std::vector<lib::numpy::DenseMatrix<T>> BatchFeatureWiseBucketSum(
-      const lib::numpy::Evaluator& e, const lib::numpy::DenseMatrix<T>& x,
-      const std::vector<Eigen::Ref<RowVector>>& subgroup_maps,
-      const Eigen::Ref<RowMatrixXd>& order_map, int bucket_num,
+      const lib::numpy::Evaluator &e, const lib::numpy::DenseMatrix<T> &x,
+      const std::vector<Eigen::Ref<RowVector>> &subgroup_maps,
+      const Eigen::Ref<RowMatrixXd> &order_map, int bucket_num,
       bool cumsum = false);
 };
 
@@ -92,8 +92,8 @@ class PureNumpyExtensionFunctions {
   // return shape is constant np array of size x.rows() *
   // split_features.size()+1
   static RowMatrixXd TreePredict(const Eigen::Ref<RowMatrixXdDouble> x,
-                                 const std::vector<int>& split_features,
-                                 const std::vector<double>& split_points);
+                                 const std::vector<int> &split_features,
+                                 const std::vector<double> &split_points);
 
   /// @brief unbalanced tree prediction
   /// @param x
@@ -104,9 +104,9 @@ class PureNumpyExtensionFunctions {
   /// @return indicator map of shape (x.rows(), leaf_number)
   static RowMatrixXd TreePredictWithIndices(
       const Eigen::Ref<RowMatrixXdDouble> x,
-      const std::vector<int>& split_features,
-      const std::vector<double>& split_points,
-      const std::vector<int>& node_indices,
-      const std::vector<int>& leaf_indices);
+      const std::vector<int> &split_features,
+      const std::vector<double> &split_points,
+      const std::vector<int> &node_indices,
+      const std::vector<int> &leaf_indices);
 };
 }  // namespace heu::pylib

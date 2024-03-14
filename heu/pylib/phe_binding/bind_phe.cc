@@ -28,13 +28,13 @@ namespace heu::pylib {
 namespace py = ::pybind11;
 namespace phe = ::heu::lib::phe;
 
-void PyBindPhe(pybind11::module& m) {
+void PyBindPhe(pybind11::module &m) {
   py::register_local_exception<yacl::Exception>(m, "PheRuntimeError",
                                                 PyExc_RuntimeError);
 
   /****** Basic types ******/
   auto st_bind = py::enum_<phe::SchemaType>(m, "SchemaType");
-  for (const auto& schema : phe::GetAllSchema()) {
+  for (const auto &schema : phe::GetAllSchema()) {
     st_bind.value(phe::SchemaToString(schema).c_str(), schema);
   }
   st_bind.export_values();
@@ -42,7 +42,7 @@ void PyBindPhe(pybind11::module& m) {
         "Parse schema string. (string -> SchemaType)");
 
   py::class_<phe::Plaintext>(m, "Plaintext")
-      .def(py::init([](const phe::SchemaType& schema_type, const py::int_& p) {
+      .def(py::init([](const phe::SchemaType &schema_type, const py::int_ &p) {
              return PyUtils::PyIntToPlaintext(schema_type, p);
            }),
            py::arg("schema"), py::arg("int_num"),
@@ -80,23 +80,23 @@ void PyBindPhe(pybind11::module& m) {
       .def("bit_count", &phe::Plaintext::BitCount, "Bit size of this plaintext")
       .def(
           "__int__",
-          [](const phe::Plaintext& mp) {
+          [](const phe::Plaintext &mp) {
             return PyUtils::PlaintextToPyInt(mp);
           },
           "Convert to python int without bit size limit")
       .def("__index__",  // PEP3100: use __index__ in oct() and hex() instead.
-           [](const phe::Plaintext& mp) {
+           [](const phe::Plaintext &mp) {
              return PyUtils::PlaintextToPyInt(mp);
            })
-      .def("__str__", [](const phe::Plaintext& mp) { return mp.ToString(); })
+      .def("__str__", [](const phe::Plaintext &mp) { return mp.ToString(); })
       .def("__repr__",
-           [](const phe::Plaintext& mp) {
+           [](const phe::Plaintext &mp) {
              return fmt::format(FMT_COMPILE("Plaintext({})"), mp.ToString());
            })
       .def(
           "to_bytes",
-          [](const phe::Plaintext& pt, size_t length,
-             const std::string& byteorder) {
+          [](const phe::Plaintext &pt, size_t length,
+             const std::string &byteorder) {
             auto buf = pt.ToBytes(length, PyUtils::PyEndianToCpp(byteorder));
             return py::bytes(buf.data<char>(), buf.size());  // this is a copy
           },
@@ -110,32 +110,32 @@ void PyBindPhe(pybind11::module& m) {
           "order value.");
 
   py::class_<phe::Ciphertext>(m, "Ciphertext")
-      .def("__str__", [](const phe::Ciphertext& ct) { return ct.ToString(); })
+      .def("__str__", [](const phe::Ciphertext &ct) { return ct.ToString(); })
       .def(PyUtils::PickleSupport<phe::Ciphertext>());
 
   /****** key management ******/
   py::class_<phe::PublicKey, std::shared_ptr<phe::PublicKey>>(m, "PublicKey")
-      .def("__str__", [](const phe::PublicKey& pk) { return pk.ToString(); })
+      .def("__str__", [](const phe::PublicKey &pk) { return pk.ToString(); })
       .def(PyUtils::PickleSupport<phe::PublicKey>())
       .def("plaintext_bound", &phe::PublicKey::PlaintextBound,
            "Get max_int, so valid plaintext range is [max_int_, -max_int_]")
       .def(
           "serialize",
-          [](const phe::PublicKey& pk) {
+          [](const phe::PublicKey &pk) {
             auto buffer = pk.Serialize();
             return pybind11::bytes(buffer.template data<char>(), buffer.size());
           },
           "serialize public key to bytes")
       .def_static(
           "load_from",
-          [](const pybind11::bytes& buffer) {
+          [](const pybind11::bytes &buffer) {
             phe::PublicKey pk;
             pk.Deserialize(static_cast<std::string_view>(buffer));
             return pk;
           },
           py::arg("bytes_buffer"), "deserialize matrix from bytes");
   py::class_<phe::SecretKey, std::shared_ptr<phe::SecretKey>>(m, "SecretKey")
-      .def("__str__", [](const phe::SecretKey& sk) { return sk.ToString(); })
+      .def("__str__", [](const phe::SecretKey &sk) { return sk.ToString(); })
       .def(PyUtils::PickleSupport<phe::SecretKey>());
 
   /****** He kit ******/
@@ -145,7 +145,7 @@ void PyBindPhe(pybind11::module& m) {
            "Get schema type")
       .def(
           "batch_integer_encoder",
-          [](const phe::HeKitPublicBase& kpb, int64_t scale,
+          [](const phe::HeKitPublicBase &kpb, int64_t scale,
              size_t padding_bits) {
             return PyBatchIntegerEncoder(kpb.GetSchemaType(), scale,
                                          padding_bits);
@@ -155,7 +155,7 @@ void PyBindPhe(pybind11::module& m) {
           "`phe.BatchIntegerEncoder(schema, scale, padding_size)`")
       .def(
           "batch_float_encoder",
-          [](const phe::HeKitPublicBase& kpb, int64_t scale,
+          [](const phe::HeKitPublicBase &kpb, int64_t scale,
              size_t padding_bits) {
             return PyBatchFloatEncoder(kpb.GetSchemaType(), scale,
                                        padding_bits);
@@ -165,14 +165,14 @@ void PyBindPhe(pybind11::module& m) {
           "`phe.BatchFloatEncoder(schema, scale, padding_size)`")
       .def(
           "bigint_encoder",
-          [](const phe::HeKitPublicBase& kpb) {
+          [](const phe::HeKitPublicBase &kpb) {
             return PyBigintEncoder(kpb.GetSchemaType());
           },
           "Get an instance of BigintEncoder, equal to "
           "`phe.BigintEncoder(schema)`")
       .def(
           "float_encoder",
-          [](const phe::HeKitPublicBase& kpb, int64_t scale) {
+          [](const phe::HeKitPublicBase &kpb, int64_t scale) {
             return PyFloatEncoder(kpb.GetSchemaType(), scale);
           },
           py::arg("scale") = (int64_t)1e6,
@@ -180,7 +180,7 @@ void PyBindPhe(pybind11::module& m) {
           "scale)`")
       .def(
           "integer_encoder",
-          [](const phe::HeKitPublicBase& kpb, int64_t scale) {
+          [](const phe::HeKitPublicBase &kpb, int64_t scale) {
             return PyIntegerEncoder(kpb.GetSchemaType(), scale);
           },
           py::arg("scale") = (int64_t)1e6,
@@ -188,7 +188,7 @@ void PyBindPhe(pybind11::module& m) {
           "`phe.IntegerEncoder(schema, scale)`")
       .def(
           "plaintext",
-          [](const phe::HeKitPublicBase& kpb, const py::int_& p) {
+          [](const phe::HeKitPublicBase &kpb, const py::int_ &p) {
             return PyUtils::PyIntToPlaintext(kpb.GetSchemaType(), p);
           },
           py::arg("int_num"),
@@ -214,7 +214,7 @@ void PyBindPhe(pybind11::module& m) {
 
   m.def(
       "setup",
-      [](const std::string& schema_string, size_t key_size) -> phe::HeKit {
+      [](const std::string &schema_string, size_t key_size) -> phe::HeKit {
         return {phe::ParseSchemaType(schema_string), key_size};
       },
       py::arg("schema_string"), py::arg("key_size"),
@@ -229,7 +229,7 @@ void PyBindPhe(pybind11::module& m) {
 
   m.def(
       "setup",
-      [](const std::string& schema_string) -> phe::HeKit {
+      [](const std::string &schema_string) -> phe::HeKit {
         return phe::HeKit(phe::ParseSchemaType(schema_string));
       },
       py::arg("schema_string") = "z-paillier", py::return_value_policy::move,
@@ -262,7 +262,7 @@ void PyBindPhe(pybind11::module& m) {
            "Encrypt plaintext to ciphertext")
       .def(
           "encrypt_raw",
-          [](const phe::Encryptor& encryptor, const py::int_& num) {
+          [](const phe::Encryptor &encryptor, const py::int_ &num) {
             return encryptor.Encrypt(
                 PyUtils::PyIntToPlaintext(encryptor.GetSchemaType(), num));
           },
@@ -277,8 +277,8 @@ void PyBindPhe(pybind11::module& m) {
   /****** decryption ******/
   py::class_<phe::Decryptor, std::shared_ptr<phe::Decryptor>>(m, "Decryptor")
       .def("decrypt",
-           py::overload_cast<const phe::Ciphertext&>(&phe::Decryptor::Decrypt,
-                                                     py::const_),
+           py::overload_cast<const phe::Ciphertext &>(&phe::Decryptor::Decrypt,
+                                                      py::const_),
            py::arg("ciphertext"), "Decrypt ciphertext to plaintext")
       .def("decrypt_in_range", &phe::Decryptor::DecryptInRange,
            py::arg("ciphertext"), py::arg("range_bits") = 128,
@@ -288,7 +288,7 @@ void PyBindPhe(pybind11::module& m) {
            "throws an exception if plaintext is out of range.")
       .def(
           "decrypt_raw",
-          [](const phe::Decryptor& decryptor, const phe::Ciphertext& ct) {
+          [](const phe::Decryptor &decryptor, const phe::Ciphertext &ct) {
             return PyUtils::PlaintextToPyInt(decryptor.Decrypt(ct));
           },
           py::arg("ciphertext"),
@@ -298,40 +298,40 @@ void PyBindPhe(pybind11::module& m) {
   /****** evaluation ******/
   py::class_<phe::Evaluator, std::shared_ptr<phe::Evaluator>>(m, "Evaluator")
       .def("add",
-           py::overload_cast<const phe::Ciphertext&, const phe::Plaintext&>(
+           py::overload_cast<const phe::Ciphertext &, const phe::Plaintext &>(
                &phe::Evaluator::Add, py::const_))
       .def("add",
-           py::overload_cast<const phe::Plaintext&, const phe::Ciphertext&>(
+           py::overload_cast<const phe::Plaintext &, const phe::Ciphertext &>(
                &phe::Evaluator::Add, py::const_))
       .def("add",
-           py::overload_cast<const phe::Ciphertext&, const phe::Ciphertext&>(
+           py::overload_cast<const phe::Ciphertext &, const phe::Ciphertext &>(
                &phe::Evaluator::Add, py::const_))
       .def("add_inplace",
-           py::overload_cast<phe::Ciphertext*, const phe::Plaintext&>(
+           py::overload_cast<phe::Ciphertext *, const phe::Plaintext &>(
                &phe::Evaluator::AddInplace, py::const_))
       .def("add_inplace",
-           py::overload_cast<phe::Ciphertext*, const phe::Ciphertext&>(
+           py::overload_cast<phe::Ciphertext *, const phe::Ciphertext &>(
                &phe::Evaluator::AddInplace, py::const_))
 
       .def("sub",
-           py::overload_cast<const phe::Ciphertext&, const phe::Plaintext&>(
+           py::overload_cast<const phe::Ciphertext &, const phe::Plaintext &>(
                &phe::Evaluator::Sub, py::const_))
       .def("sub",
-           py::overload_cast<const phe::Plaintext&, const phe::Ciphertext&>(
+           py::overload_cast<const phe::Plaintext &, const phe::Ciphertext &>(
                &phe::Evaluator::Sub, py::const_))
       .def("sub",
-           py::overload_cast<const phe::Ciphertext&, const phe::Ciphertext&>(
+           py::overload_cast<const phe::Ciphertext &, const phe::Ciphertext &>(
                &phe::Evaluator::Sub, py::const_))
       .def("sub_inplace",
-           py::overload_cast<phe::Ciphertext*, const phe::Plaintext&>(
+           py::overload_cast<phe::Ciphertext *, const phe::Plaintext &>(
                &phe::Evaluator::SubInplace, py::const_))
       .def("sub_inplace",
-           py::overload_cast<phe::Ciphertext*, const phe::Ciphertext&>(
+           py::overload_cast<phe::Ciphertext *, const phe::Ciphertext &>(
                &phe::Evaluator::SubInplace, py::const_))
 
       .def(
           "mul",
-          [](const phe::Evaluator& evaluator, const phe::Ciphertext& ct,
+          [](const phe::Evaluator &evaluator, const phe::Ciphertext &ct,
              int64_t p) -> phe::Ciphertext {
             return evaluator.Mul(ct,
                                  phe::Plaintext(evaluator.GetSchemaType(), p));
@@ -339,23 +339,23 @@ void PyBindPhe(pybind11::module& m) {
           py::arg("ciphertext"), py::arg("times"))
       .def(
           "mul",
-          [](const phe::Evaluator& evaluator, int64_t p,
-             const phe::Ciphertext& ct) -> phe::Ciphertext {
+          [](const phe::Evaluator &evaluator, int64_t p,
+             const phe::Ciphertext &ct) -> phe::Ciphertext {
             return evaluator.Mul(phe::Plaintext(evaluator.GetSchemaType(), p),
                                  ct);
           },
           py::arg("ciphertext"), py::arg("times"))
       .def(
           "mul_inplace",
-          [](const phe::Evaluator& evaluator, phe::Ciphertext* ct, int64_t p) {
+          [](const phe::Evaluator &evaluator, phe::Ciphertext *ct, int64_t p) {
             evaluator.MulInplace(ct,
                                  phe::Plaintext(evaluator.GetSchemaType(), p));
           },
           py::arg("ciphertext"), py::arg("times"))
 
-      .def("negate", py::overload_cast<const phe::Ciphertext&>(
+      .def("negate", py::overload_cast<const phe::Ciphertext &>(
                          &phe::Evaluator::Negate, py::const_))
-      .def("negate_inplace", py::overload_cast<phe::Ciphertext*>(
+      .def("negate_inplace", py::overload_cast<phe::Ciphertext *>(
                                  &phe::Evaluator::NegateInplace, py::const_));
 }
 }  // namespace heu::pylib

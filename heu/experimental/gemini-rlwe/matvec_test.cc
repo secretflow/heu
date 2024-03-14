@@ -38,7 +38,7 @@ T MakeMask(size_t bw) {
   }
 }
 
-bool transform_to_ntt_inplace(RLWEPt& pt, const seal::SEALContext& context) {
+bool transform_to_ntt_inplace(RLWEPt &pt, const seal::SEALContext &context) {
   using namespace seal::util;
   auto cntxt_data = context.get_context_data(pt.parms_id());
   YACL_ENFORCE(cntxt_data != nullptr);
@@ -99,8 +99,8 @@ class MatVecTest : public ::testing::TestWithParam<
   }
 
   template <typename T>
-  void MatVecPlain(const T* mat, const T* vec, size_t nrows, size_t ncols,
-                   T* out) const {
+  void MatVecPlain(const T *mat, const T *vec, size_t nrows, size_t ncols,
+                   T *out) const {
     for (size_t r = 0; r < nrows; ++r) {
       T accum{0};
       auto mat_row = mat + r * ncols;
@@ -112,7 +112,7 @@ class MatVecTest : public ::testing::TestWithParam<
   }
 
   template <typename T>
-  void UniformRand(T* dst, size_t n, size_t bw = 0) {
+  void UniformRand(T *dst, size_t n, size_t bw = 0) {
     T mask = static_cast<T>(-1);
     if (bw > 0 && bw < sizeof(T) * 8) {
       mask = (static_cast<T>(1) << bw) - 1;
@@ -121,13 +121,13 @@ class MatVecTest : public ::testing::TestWithParam<
     std::generate_n(dst, n, [&]() { return uniform(rdv_) & mask; });
   }
 
-  void UniformRand(uint128_t* dst, size_t n, size_t bw) {
+  void UniformRand(uint128_t *dst, size_t n, size_t bw) {
     uint64_t mask = static_cast<uint64_t>(-1);
     if (bw > 0 && bw < 128) {
       mask = (1ULL << (bw - 64)) - 1;
     }
 
-    uint64_t* cast = reinterpret_cast<uint64_t*>(dst);
+    uint64_t *cast = reinterpret_cast<uint64_t *>(dst);
     UniformRand(cast, 2 * n);
     for (size_t i = 1; i < 2 * n; i += 2) {
       cast[i] &= mask;
@@ -180,8 +180,8 @@ TEST_P(MatVecTest, Basic) {
 
   if (bitlen_ <= 32) {
     using Scalar = uint32_t;
-    auto& vec = vec_u32;
-    auto& mat = mat_u32;
+    auto &vec = vec_u32;
+    auto &mat = mat_u32;
     vec.resize(meta.ncols);
     mat.resize(meta.nrows * meta.ncols);
     UniformRand(vec.data(), vec.size(), bitlen_);
@@ -213,8 +213,8 @@ TEST_P(MatVecTest, Basic) {
 
   } else if (bitlen_ <= 64) {
     using Scalar = uint64_t;
-    auto& vec = vec_u64;
-    auto& mat = mat_u64;
+    auto &vec = vec_u64;
+    auto &mat = mat_u64;
     vec.resize(meta.ncols);
     mat.resize(meta.nrows * meta.ncols);
 
@@ -246,8 +246,8 @@ TEST_P(MatVecTest, Basic) {
     }
   } else if (bitlen_ <= 128) {
     using Scalar = uint128_t;
-    auto& vec = vec_u128;
-    auto& mat = mat_u128;
+    auto &vec = vec_u128;
+    auto &mat = mat_u128;
     vec.resize(meta.ncols);
     mat.resize(meta.nrows * meta.ncols);
 
@@ -304,8 +304,8 @@ TEST_P(MatVecTest, RandomMat) {
 
   if (bitlen_ <= 32) {
     using Scalar = uint32_t;
-    auto& vec = vec_u32;
-    auto& mat = mat_u32;
+    auto &vec = vec_u32;
+    auto &mat = mat_u32;
     vec.resize(meta.ncols);
     mat.resize(meta.nrows * meta.ncols);
     UniformRand(vec.data(), vec.size(), bitlen_);
@@ -320,7 +320,7 @@ TEST_P(MatVecTest, RandomMat) {
     }
 
     std::vector<LWECt> matvec_prod;
-    auto prng = [&](Scalar* out, size_t size) {
+    auto prng = [&](Scalar *out, size_t size) {
       UniformRand(out, size, bitlen_);
     };
 
@@ -340,8 +340,8 @@ TEST_P(MatVecTest, RandomMat) {
     }
   } else if (bitlen_ <= 64) {
     using Scalar = uint64_t;
-    auto& vec = vec_u64;
-    auto& mat = mat_u64;
+    auto &vec = vec_u64;
+    auto &mat = mat_u64;
     vec.resize(meta.ncols);
     mat.resize(meta.nrows * meta.ncols);
     UniformRand(vec.data(), vec.size(), bitlen_);
@@ -357,7 +357,7 @@ TEST_P(MatVecTest, RandomMat) {
     }
 
     std::vector<LWECt> matvec_prod;
-    auto prng = [&](Scalar* out, size_t size) {
+    auto prng = [&](Scalar *out, size_t size) {
       UniformRand(out, size, bitlen_);
     };
 
@@ -377,8 +377,8 @@ TEST_P(MatVecTest, RandomMat) {
     }
   } else if (bitlen_ <= 128) {
     using Scalar = uint128_t;
-    auto& vec = vec_u128;
-    auto& mat = mat_u128;
+    auto &vec = vec_u128;
+    auto &mat = mat_u128;
     vec.resize(meta.ncols);
     mat.resize(meta.nrows * meta.ncols);
     UniformRand(vec.data(), vec.size(), bitlen_);
@@ -394,7 +394,7 @@ TEST_P(MatVecTest, RandomMat) {
     }
 
     std::vector<LWECt> matvec_prod;
-    auto prng = [&](Scalar* out, size_t size) {
+    auto prng = [&](Scalar *out, size_t size) {
       UniformRand(out, size, bitlen_);
     };
 
@@ -450,10 +450,10 @@ TEST_P(MatVecTest, BiMatVecTriple) {
 
   if (bitlen_ <= 32) {
     using Scalar = uint32_t;
-    auto& vec0 = vec0_u32;
-    auto& vec1 = vec1_u32;
-    auto& mat0 = mat0_u32;
-    auto& mat1 = mat1_u32;
+    auto &vec0 = vec0_u32;
+    auto &vec1 = vec1_u32;
+    auto &mat0 = mat0_u32;
+    auto &mat1 = mat1_u32;
     auto mask = mask32;
 
     vec0.resize(meta.ncols);
@@ -476,11 +476,11 @@ TEST_P(MatVecTest, BiMatVecTriple) {
       encryptor.encrypt_symmetric(ecd_vec1[i], vec1_cipher[i]);
     }
 
-    auto prng = [&](Scalar* out, size_t size) {
+    auto prng = [&](Scalar *out, size_t size) {
       UniformRand(out, size, bitlen_);
     };
 
-    auto u8prng = [&](uint8_t* out, size_t size) { UniformRand(out, size); };
+    auto u8prng = [&](uint8_t *out, size_t size) { UniformRand(out, size); };
 
     // M0*[v1]
     mat0.resize(meta.nrows * meta.ncols);
@@ -543,10 +543,10 @@ TEST_P(MatVecTest, BiMatVecTriple) {
     }
   } else if (bitlen_ <= 64) {
     using Scalar = uint64_t;
-    auto& vec0 = vec0_u64;
-    auto& vec1 = vec1_u64;
-    auto& mat0 = mat0_u64;
-    auto& mat1 = mat1_u64;
+    auto &vec0 = vec0_u64;
+    auto &vec1 = vec1_u64;
+    auto &mat0 = mat0_u64;
+    auto &mat1 = mat1_u64;
     auto mask = mask64;
 
     vec0.resize(meta.ncols);
@@ -569,11 +569,11 @@ TEST_P(MatVecTest, BiMatVecTriple) {
       encryptor.encrypt_symmetric(ecd_vec1[i], vec1_cipher[i]);
     }
 
-    auto prng = [&](Scalar* out, size_t size) {
+    auto prng = [&](Scalar *out, size_t size) {
       UniformRand(out, size, bitlen_);
     };
 
-    auto u8prng = [&](uint8_t* out, size_t size) { UniformRand(out, size); };
+    auto u8prng = [&](uint8_t *out, size_t size) { UniformRand(out, size); };
 
     // M0*[v1]
     mat0.resize(meta.nrows * meta.ncols);
@@ -636,10 +636,10 @@ TEST_P(MatVecTest, BiMatVecTriple) {
     }
   } else if (bitlen_ <= 128) {
     using Scalar = uint128_t;
-    auto& vec0 = vec0_u128;
-    auto& vec1 = vec1_u128;
-    auto& mat0 = mat0_u128;
-    auto& mat1 = mat1_u128;
+    auto &vec0 = vec0_u128;
+    auto &vec1 = vec1_u128;
+    auto &mat0 = mat0_u128;
+    auto &mat1 = mat1_u128;
     auto mask = mask128;
 
     vec0.resize(meta.ncols);
@@ -662,11 +662,11 @@ TEST_P(MatVecTest, BiMatVecTriple) {
       encryptor.encrypt_symmetric(ecd_vec1[i], vec1_cipher[i]);
     }
 
-    auto prng = [&](Scalar* out, size_t size) {
+    auto prng = [&](Scalar *out, size_t size) {
       UniformRand(out, size, bitlen_);
     };
 
-    auto u8prng = [&](uint8_t* out, size_t size) { UniformRand(out, size); };
+    auto u8prng = [&](uint8_t *out, size_t size) { UniformRand(out, size); };
 
     // M0*[v1]
     mat0.resize(meta.nrows * meta.ncols);

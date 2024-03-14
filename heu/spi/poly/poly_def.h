@@ -17,7 +17,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 class Poly : public std::vector<uint64_t> {
  public:
@@ -37,4 +37,4 @@ using Moduli = std::vector<uint64_t>;
 
 using RnsPoly = Polys;
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

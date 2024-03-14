@@ -35,7 +35,7 @@ struct OuKey {
 
 OuKey ctx;
 
-static void BM_PowMod64(benchmark::State& state) {
+static void BM_PowMod64(benchmark::State &state) {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_int_distribution<uint64_t> dis;
@@ -48,7 +48,7 @@ static void BM_PowMod64(benchmark::State& state) {
   }
 }
 
-static void BM_PowMod64Mont(benchmark::State& state) {
+static void BM_PowMod64Mont(benchmark::State &state) {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_int_distribution<uint64_t> dis;
@@ -61,7 +61,7 @@ static void BM_PowMod64Mont(benchmark::State& state) {
   }
 }
 
-static void BM_PowMod128(benchmark::State& state) {
+static void BM_PowMod128(benchmark::State &state) {
 #if 0
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -83,7 +83,7 @@ static void BM_PowMod128(benchmark::State& state) {
   }
 }
 
-static void BM_PowMod128Mont(benchmark::State& state) {
+static void BM_PowMod128Mont(benchmark::State &state) {
   MPInt r, gm;
   MPInt::RandomMonicExactBits(128, &r);
 
@@ -92,7 +92,7 @@ static void BM_PowMod128Mont(benchmark::State& state) {
   }
 }
 
-static void BM_PowMod2048(benchmark::State& state) {
+static void BM_PowMod2048(benchmark::State &state) {
   MPInt r, gm;
   MPInt::RandomLtN(ctx.pk.n_, &r);
 
@@ -101,21 +101,21 @@ static void BM_PowMod2048(benchmark::State& state) {
   }
 }
 
-static void BM_MulMod2048(benchmark::State& state) {
+static void BM_MulMod2048(benchmark::State &state) {
   MPInt gm;
   for (auto _ : state) {
     MPInt::MulMod(ctx.pk.capital_g_, ctx.pk.capital_h_, ctx.pk.n_, &gm);
   }
 }
 
-static void BM_InvertMod2048(benchmark::State& state) {
+static void BM_InvertMod2048(benchmark::State &state) {
   MPInt gm;
   for (auto _ : state) {
     MPInt::InvertMod(ctx.pk.capital_g_, ctx.pk.n_, &gm);
   }
 }
 
-static void BM_SafePrime(benchmark::State& state) {
+static void BM_SafePrime(benchmark::State &state) {
   auto bits = state.range(0);
   MPInt p;
   for (auto _ : state) {
@@ -123,7 +123,7 @@ static void BM_SafePrime(benchmark::State& state) {
   }
 }
 
-static void BM_FastSafePrime(benchmark::State& state) {
+static void BM_FastSafePrime(benchmark::State &state) {
   auto bits = state.range(0);
   MPInt p;
   for (auto _ : state) {
@@ -151,7 +151,7 @@ BENCHMARK(BM_SafePrime)
 
 }  // namespace heu::lib::bench
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   ::benchmark::Initialize(&argc, argv);
   if (::benchmark::ReportUnrecognizedArguments(argc, argv)) {
     return 1;

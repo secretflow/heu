@@ -16,38 +16,33 @@
 
 #include <cstddef>
 
-#include "heu/spi/he/sketches/common/item_manipulator.h"
+#include "heu/spi/he/sketches/common/item_tool.h"
 #include "heu/spi/he/sketches/scalar/helpful_macros.h"
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 template <typename PlaintextT, typename CiphertextT, typename SecretKeyT,
           typename PublicKeyT = NoPk, typename RelinKeyT = NoRlk,
-          typename GaloisKeyT = NoGlK, typename BootstrapKeyT = NoBsk>
-class ItemManipulatorScalarSketch
-    : public ItemManipulatorCommon<PlaintextT, CiphertextT, SecretKeyT,
-                                   PublicKeyT, RelinKeyT, GaloisKeyT,
-                                   BootstrapKeyT> {
-  using Super =
-      ItemManipulatorCommon<PlaintextT, CiphertextT, SecretKeyT, PublicKeyT,
-                            RelinKeyT, GaloisKeyT, BootstrapKeyT>;
-
+          typename GaloisKeyT = NoGlk, typename BootstrapKeyT = NoBsk>
+class ItemToolScalarSketch
+    : public ItemToolSketch<PlaintextT, CiphertextT, SecretKeyT, PublicKeyT,
+                            RelinKeyT, GaloisKeyT, BootstrapKeyT> {
  public:
-  using Super::Clone;
-  virtual PlaintextT Clone(const PlaintextT& pt) const = 0;
-  virtual CiphertextT Clone(const CiphertextT& ct) const = 0;
+  virtual PlaintextT Clone(const PlaintextT &pt) const = 0;
+  virtual CiphertextT Clone(const CiphertextT &ct) const = 0;
 
  private:
-  Item Clone(const Item& item) const override {
+  Item Clone(const Item &item) const override {
     switch (item.GetContentType()) {
       case ContentType::Plaintext:
         CallUnaryFunc(Clone, PlaintextT, item);
       case ContentType::Ciphertext:
         CallUnaryFunc(Clone, CiphertextT, item);
       default:
-        return Super::Clone(item);
+        // If you really want to clone a key, please create a GitHub issue
+        YACL_THROW("Clone a {} is not supported.", item.GetContentType());
     }
   }
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

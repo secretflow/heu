@@ -18,7 +18,7 @@
 
 namespace heu::lib::algorithms::paillier_f {
 
-Ciphertext Evaluator::Add(const Ciphertext& a, const Ciphertext& b) const {
+Ciphertext Evaluator::Add(const Ciphertext &a, const Ciphertext &b) const {
   Ciphertext c;
   if (a.exponent_ > b.exponent_) {
     Ciphertext new_a = a;
@@ -38,63 +38,63 @@ Ciphertext Evaluator::Add(const Ciphertext& a, const Ciphertext& b) const {
   return c;
 }
 
-void Evaluator::Randomize(Ciphertext* ct) const {
+void Evaluator::Randomize(Ciphertext *ct) const {
   AddInplace(ct, encryptor_.EncryptZero());
 }
 
-Ciphertext Evaluator::Add(const Ciphertext& a, const MPInt& b) const {
+Ciphertext Evaluator::Add(const Ciphertext &a, const MPInt &b) const {
   internal::EncodedNumber encoded_b = internal::Codec(pk_).Encode(b);
 
   Ciphertext cipher_b = encryptor_.EncryptEncoded(encoded_b, 1);
   return Add(a, cipher_b);
 }
 
-Ciphertext Evaluator::Add(const Ciphertext& a, double b) const {
+Ciphertext Evaluator::Add(const Ciphertext &a, double b) const {
   internal::EncodedNumber encoded_b = internal::Codec(pk_).Encode(b);
 
   Ciphertext cipher_b = encryptor_.EncryptEncoded(encoded_b, 1);
   return Add(a, cipher_b);
 }
 
-void Evaluator::AddInplace(Ciphertext* a, const Ciphertext& b) const {
+void Evaluator::AddInplace(Ciphertext *a, const Ciphertext &b) const {
   *a = Add(*a, b);
 }
 
-void Evaluator::AddInplace(Ciphertext* a, const MPInt& b) const {
+void Evaluator::AddInplace(Ciphertext *a, const MPInt &b) const {
   *a = Add(*a, b);
 }
 
-void Evaluator::AddInplace(Ciphertext* a, double b) const { *a = Add(*a, b); }
+void Evaluator::AddInplace(Ciphertext *a, double b) const { *a = Add(*a, b); }
 
-MPInt Evaluator::AddRaw(const MPInt& a, const MPInt& b) const {
+MPInt Evaluator::AddRaw(const MPInt &a, const MPInt &b) const {
   MPInt c;
   MPInt::MulMod(a, b, pk_.n_square_, &c);
   return c;
 }
 
-Ciphertext Evaluator::Sub(const Ciphertext& a, const Ciphertext& b) const {
+Ciphertext Evaluator::Sub(const Ciphertext &a, const Ciphertext &b) const {
   return Add(a, Negate(b));
 }
 
-Ciphertext Evaluator::Sub(const Ciphertext& a, const MPInt& b) const {
+Ciphertext Evaluator::Sub(const Ciphertext &a, const MPInt &b) const {
   MPInt nb;
   b.Negate(&nb);
   return Add(a, nb);
 }
 
-void Evaluator::SubInplace(Ciphertext* a, const Ciphertext& b) const {
+void Evaluator::SubInplace(Ciphertext *a, const Ciphertext &b) const {
   *a = Sub(*a, b);
 }
 
-void Evaluator::SubInplace(Ciphertext* a, const MPInt& b) const {
+void Evaluator::SubInplace(Ciphertext *a, const MPInt &b) const {
   *a = Sub(*a, b);
 }
 
-Ciphertext Evaluator::Sub(const MPInt& p, const Ciphertext& a) const {
+Ciphertext Evaluator::Sub(const MPInt &p, const Ciphertext &a) const {
   return Add(Negate(a), p);
 }
 
-Ciphertext Evaluator::Mul(const Ciphertext& a, const MPInt& b) const {
+Ciphertext Evaluator::Mul(const Ciphertext &a, const MPInt &b) const {
   internal::EncodedNumber encoded_b = internal::Codec(pk_).Encode(b);
 
   Ciphertext c;
@@ -103,7 +103,7 @@ Ciphertext Evaluator::Mul(const Ciphertext& a, const MPInt& b) const {
   return c;
 }
 
-Ciphertext Evaluator::Mul(const Ciphertext& a, double b) const {
+Ciphertext Evaluator::Mul(const Ciphertext &a, double b) const {
   internal::EncodedNumber encoded_b = internal::Codec(pk_).Encode(b);
 
   Ciphertext c;
@@ -112,25 +112,25 @@ Ciphertext Evaluator::Mul(const Ciphertext& a, double b) const {
   return c;
 }
 
-void Evaluator::MulInplace(Ciphertext* a, const MPInt& b) const {
+void Evaluator::MulInplace(Ciphertext *a, const MPInt &b) const {
   *a = Mul(*a, b);
 }
 
-void Evaluator::MulInplace(Ciphertext* a, double b) const { *a = Mul(*a, b); }
+void Evaluator::MulInplace(Ciphertext *a, double b) const { *a = Mul(*a, b); }
 
-Ciphertext Evaluator::Negate(const Ciphertext& a) const {
+Ciphertext Evaluator::Negate(const Ciphertext &a) const {
   return Mul(a, MPInt(-1));
 }
 
-void Evaluator::NegateInplace(Ciphertext* a) const { *a = Negate(*a); }
+void Evaluator::NegateInplace(Ciphertext *a) const { *a = Negate(*a); }
 
-MPInt Evaluator::MulRaw(const MPInt& a, const MPInt& b) const {
+MPInt Evaluator::MulRaw(const MPInt &a, const MPInt &b) const {
   MPInt c;
   MPInt::PowMod(a, b, pk_.n_square_, &c);
   return c;
 }
 
-void Evaluator::DecreaseExponentTo(Ciphertext* cipher, int new_exp) const {
+void Evaluator::DecreaseExponentTo(Ciphertext *cipher, int new_exp) const {
   YACL_ENFORCE(new_exp <= cipher->exponent_,
                "new_exp should <= cipher's exponent");
 

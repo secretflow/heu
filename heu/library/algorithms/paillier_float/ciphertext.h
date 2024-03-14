@@ -40,12 +40,12 @@ class Ciphertext : public HeObject<Ciphertext> {
  public:
   Ciphertext() = default;
 
-  explicit Ciphertext(MPInt&& c, int exponent = 0)
+  explicit Ciphertext(MPInt &&c, int exponent = 0)
       : c_(std::move(c)), exponent_(exponent) {}
 
-  bool operator==(const Ciphertext& other) const { return c_ == other.c_; }
+  bool operator==(const Ciphertext &other) const { return c_ == other.c_; }
 
-  bool operator!=(const Ciphertext& other) const {
+  bool operator!=(const Ciphertext &other) const {
     return !this->operator==(other);
   }
 

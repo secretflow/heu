@@ -28,25 +28,25 @@ namespace heu::lib::algorithms::elgamal {
 template <typename KeyT, typename ValueT>
 class HashMap {
  public:
-  using HasherT = std::function<size_t(const KeyT& key)>;
-  using EqualorT = std::function<bool(const KeyT& v1, const KeyT& v2)>;
+  using HasherT = std::function<size_t(const KeyT &key)>;
+  using EqualorT = std::function<bool(const KeyT &v1, const KeyT &v2)>;
 
   struct Node {
-    Node(const KeyT& key, const ValueT& value) : key(key), value(value) {}
+    Node(const KeyT &key, const ValueT &value) : key(key), value(value) {}
 
     KeyT key;
     ValueT value;
-    Node* next = nullptr;
+    Node *next = nullptr;
   };
 
   // do not allow copy and move, because the address in slots_ cannot change
-  HashMap(const HashMap&) = delete;
-  HashMap(HashMap&&) = delete;
-  HashMap& operator=(const HashMap&) = delete;
-  HashMap& operator=(HashMap&&) = delete;
+  HashMap(const HashMap &) = delete;
+  HashMap(HashMap &&) = delete;
+  HashMap &operator=(const HashMap &) = delete;
+  HashMap &operator=(HashMap &&) = delete;
 
-  explicit HashMap(size_t slot_count, const HasherT& hash = std::hash<KeyT>(),
-                   const EqualorT& equal = std::equal_to<KeyT>())
+  explicit HashMap(size_t slot_count, const HasherT &hash = std::hash<KeyT>(),
+                   const EqualorT &equal = std::equal_to<KeyT>())
       : hasher_(hash), equalor_(equal) {
     slots_.resize(slot_count * 1.2);
     mem_pool_.resize(sizeof(Node) * slot_count);
@@ -57,21 +57,21 @@ class HashMap {
   ~HashMap() {
     // the type of mem_pool_ is uint8_t, so we should call destructor explicitly
     for (size_t i = 0; i < used_; ++i) {
-      Node* mem_pt = reinterpret_cast<Node*>(&mem_pool_[sizeof(Node) * i]);
+      Node *mem_pt = reinterpret_cast<Node *>(&mem_pool_[sizeof(Node) * i]);
       mem_pt->~Node();
     }
   }
 
   // The caller must make sure that the key is unique.
   // We will NOT CHECK is key is duplicate since call equalor_ is expensive
-  void Insert(const KeyT& key, const ValueT& value) {
+  void Insert(const KeyT &key, const ValueT &value) {
     Insert(hasher_(key) % slots_.size(), key, value);
   }
 
   // return the address of value. if key is not exist, then return nullptr
-  ValueT* Find(const KeyT& key) const {
+  ValueT *Find(const KeyT &key) const {
     auto idx = hasher_(key) % slots_.size();
-    for (Node* p = slots_[idx]; p != nullptr; p = p->next) {
+    for (Node *p = slots_[idx]; p != nullptr; p = p->next) {
       if (equalor_(p->key, key)) {
         return &p->value;
       }
@@ -80,11 +80,11 @@ class HashMap {
   }
 
  private:
-  void Insert(size_t slot_idx, const KeyT& key, const ValueT& value) {
+  void Insert(size_t slot_idx, const KeyT &key, const ValueT &value) {
     size_t mem_idx = sizeof(Node) * used_++;
     YACL_ENFORCE_LT(mem_idx, mem_pool_.size(),
                     "hashmap is full, cannot insert anymore");
-    Node* mem_pt = new (&mem_pool_[mem_idx]) Node(key, value);
+    Node *mem_pt = new (&mem_pool_[mem_idx]) Node(key, value);
 
     std::lock_guard<std::mutex> guard(mutex_);
     if (slots_[slot_idx] == nullptr) {
@@ -92,7 +92,7 @@ class HashMap {
       return;
     }
 
-    for (Node* p = slots_[slot_idx];; p = p->next) {
+    for (Node *p = slots_[slot_idx];; p = p->next) {
       if (p->next == nullptr) {
         // insert
         p->next = mem_pt;
@@ -105,7 +105,7 @@ class HashMap {
 
   HasherT hasher_;
   EqualorT equalor_;
-  std::vector<Node*> slots_;
+  std::vector<Node *> slots_;
 
   std::atomic<size_t> used_ = 0;
   // we use uint8_t instead of Node to avoid run ctor on resize()

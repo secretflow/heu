@@ -22,69 +22,69 @@ namespace heu::lib::algorithms::dj {
 
 class Evaluator {
  public:
-  explicit Evaluator(const PublicKey& pk) : pk_(pk), encryptor_(pk) {}
+  explicit Evaluator(const PublicKey &pk) : pk_(pk), encryptor_(pk) {}
 
-  void Randomize(Ciphertext* ct) const;
+  void Randomize(Ciphertext *ct) const;
 
-  Ciphertext Add(const Ciphertext& a, const Ciphertext& b) const;
+  Ciphertext Add(const Ciphertext &a, const Ciphertext &b) const;
 
-  Ciphertext Add(const Ciphertext& a, const Plaintext& b) const {
+  Ciphertext Add(const Ciphertext &a, const Plaintext &b) const {
     return Add(a, Ciphertext{pk_.Encrypt(b)});
   }
 
-  Ciphertext Add(const Plaintext& a, const Ciphertext& b) const {
+  Ciphertext Add(const Plaintext &a, const Ciphertext &b) const {
     return Add(b, a);
   }
 
-  Plaintext Add(const Plaintext& a, const Plaintext& b) const { return a + b; }
+  Plaintext Add(const Plaintext &a, const Plaintext &b) const { return a + b; }
 
-  void AddInplace(Ciphertext* a, const Ciphertext& b) const { *a = Add(*a, b); }
+  void AddInplace(Ciphertext *a, const Ciphertext &b) const { *a = Add(*a, b); }
 
-  void AddInplace(Ciphertext* a, const Plaintext& b) const {
+  void AddInplace(Ciphertext *a, const Plaintext &b) const {
     return AddInplace(a, Ciphertext{pk_.Encrypt(b)});
   }
 
-  void AddInplace(Plaintext* a, const Plaintext& b) const { *a += b; }
+  void AddInplace(Plaintext *a, const Plaintext &b) const { *a += b; }
 
-  Ciphertext Sub(const Ciphertext& a, const Ciphertext& b) const {
+  Ciphertext Sub(const Ciphertext &a, const Ciphertext &b) const {
     return Add(a, Negate(b));
   }
 
-  Ciphertext Sub(const Ciphertext& a, const Plaintext& b) const {
+  Ciphertext Sub(const Ciphertext &a, const Plaintext &b) const {
     return Add(a, Plaintext{-b});
   }
 
-  Ciphertext Sub(const Plaintext& a, const Ciphertext& b) const {
+  Ciphertext Sub(const Plaintext &a, const Ciphertext &b) const {
     return Add(Negate(b), a);
   }
 
-  Plaintext Sub(const Plaintext& a, const Plaintext& b) const { return a - b; }
+  Plaintext Sub(const Plaintext &a, const Plaintext &b) const { return a - b; }
 
-  void SubInplace(Ciphertext* a, const Ciphertext& b) const {
+  void SubInplace(Ciphertext *a, const Ciphertext &b) const {
     AddInplace(a, Negate(b));
   }
 
-  void SubInplace(Ciphertext* a, const Plaintext& b) const {
+  void SubInplace(Ciphertext *a, const Plaintext &b) const {
     AddInplace(a, Plaintext{-b});
   }
 
-  void SubInplace(Plaintext* a, const Plaintext& b) const { *a -= b; }
+  void SubInplace(Plaintext *a, const Plaintext &b) const { *a -= b; }
 
-  Ciphertext Mul(const Ciphertext& a, const Plaintext& p) const;
+  Ciphertext Mul(const Ciphertext &a, const Plaintext &p) const;
 
-  Ciphertext Mul(const Plaintext& a, const Ciphertext& b) const {
+  Ciphertext Mul(const Plaintext &a, const Ciphertext &b) const {
     return Mul(b, a);
   }
 
-  Plaintext Mul(const Plaintext& a, const Plaintext& b) const { return a * b; }
+  Plaintext Mul(const Plaintext &a, const Plaintext &b) const { return a * b; }
 
-  void MulInplace(Ciphertext* a, const Plaintext& p) const { *a = Mul(*a, p); }
+  void MulInplace(Ciphertext *a, const Plaintext &p) const { *a = Mul(*a, p); }
 
-  void MulInplace(Plaintext* a, const Plaintext& b) const { *a *= b; }
+  void MulInplace(Plaintext *a, const Plaintext &b) const { *a *= b; }
 
-  Ciphertext Negate(const Ciphertext& a) const { return Mul(a, Plaintext{-1}); }
+  Ciphertext Negate(const Ciphertext &a) const { return Mul(a, Plaintext{-1}); }
 
-  void NegateInplace(Ciphertext* a) const { *a = Negate(*a); }
+  void NegateInplace(Ciphertext *a) const { *a = Negate(*a); }
 
  private:
   const PublicKey pk_;

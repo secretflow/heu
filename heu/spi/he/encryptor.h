@@ -22,7 +22,7 @@
 
 #include "heu/spi/he/item.h"
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 class Encryptor {
  public:
@@ -36,9 +36,11 @@ class Encryptor {
   virtual Item Encrypt(const Item &plaintext) const = 0;
   virtual void Encrypt(const Item &plaintext, Item *out) const = 0;
 
-  // scalar version: return a single element
+  // Create a zero plaintext(s) and encrypt
+  // return a single element, e.g. Item(Plaintext(0))
   virtual Item EncryptZero() const = 0;
-  // vector version: return a vector of 'count' elements
+  // return a vector of 'count' elements,
+  // e.g., Item(std::vector<Plaintext>(count))
   virtual Item EncryptZero(size_t count) const = 0;
 
   // Encrypts plaintext(s) with the secret key and returns the ciphertext(s) as
@@ -75,4 +77,4 @@ class Encryptor {
                                 std::string *audit_out) const = 0;
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

@@ -26,11 +26,11 @@ namespace heu::pylib {
 template <typename T>
 class PySlicer {
  public:
-  static pybind11::object GetItem(const lib::numpy::DenseMatrix<T>& p_matrix,
-                                  const pybind11::object& key);
-  static void SetItem(lib::numpy::DenseMatrix<T>* p_matrix,
-                      const pybind11::object& key,
-                      const pybind11::object& value);
+  static pybind11::object GetItem(const lib::numpy::DenseMatrix<T> &p_matrix,
+                                  const pybind11::object &key);
+  static void SetItem(lib::numpy::DenseMatrix<T> *p_matrix,
+                      const pybind11::object &key,
+                      const pybind11::object &value);
 };
 
 }  // namespace heu::pylib

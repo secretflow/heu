@@ -24,7 +24,7 @@
 #include "yacl/utils/spi/argument/arg_set.h"
 #include "yacl/utils/spi/item.h"
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 enum class ContentType : uint8_t {
   Others = 0,
@@ -80,25 +80,25 @@ class Item : public yacl::Item {
   // T should be scalar.
   // If T is container, call Item::Ref() or Item::Take() instead.
   template <typename T>
-  constexpr Item(T&& value, ContentType type)
+  constexpr Item(T &&value, ContentType type)
       : yacl::Item(std::forward<T>(value)) {
     MarkAs(type);
   }
 
   // Ref a vector/span
   template <typename T, typename _ = std::enable_if_t<yacl::is_container_v<T>>>
-  static Item Ref(T& c, ContentType type) {
+  static Item Ref(T &c, ContentType type) {
     return Item{absl::MakeSpan(c), type};
   }
 
   template <typename T>
-  static Item Ref(T* ptr, size_t len, ContentType type) {
+  static Item Ref(T *ptr, size_t len, ContentType type) {
     return Item{absl::MakeSpan(ptr, len), type};
   }
 
   // Take vector
   template <typename T>
-  static Item Take(std::vector<T>&& v, ContentType type) {
+  static Item Take(std::vector<T> &&v, ContentType type) {
     return Item{std::move(v), type};
   }
 
@@ -108,16 +108,16 @@ class Item : public yacl::Item {
   }
 
   // prevent implicit convert yacl::Item to Item
-  Item(const Item&) = default;
-  Item(Item&&) = default;
-  Item& operator=(const Item&) = default;
-  Item& operator=(Item&&) = default;
-  Item& operator=(yacl::Item&&) = delete;
-  Item& operator=(const yacl::Item&) = delete;
+  Item(const Item &) = default;
+  Item(Item &&) = default;
+  Item &operator=(const Item &) = default;
+  Item &operator=(Item &&) = default;
+  Item &operator=(yacl::Item &&) = delete;
+  Item &operator=(const yacl::Item &) = delete;
 
-  Item(const yacl::Item&) = delete;  // avoid copy construct
+  Item(const yacl::Item &) = delete;  // avoid copy construct
 
-  Item(yacl::Item&& base, ContentType type) : yacl::Item(std::move(base)) {
+  Item(yacl::Item &&base, ContentType type) : yacl::Item(std::move(base)) {
     MarkAs(type);
   }
 
@@ -128,9 +128,10 @@ class Item : public yacl::Item {
   ContentType GetContentType() const;
   bool IsPlaintext() const;
   bool IsCiphertext() const;
+  bool IsKey() const;
 
   std::string ToString() const;
-  friend std::ostream& operator<<(std::ostream& os, const Item& item);
+  friend std::ostream &operator<<(std::ostream &os, const Item &item);
 
   template <typename T>
   Item SubItem(size_t pos, size_t len = absl::Span<T>::npos) {
@@ -143,7 +144,7 @@ class Item : public yacl::Item {
   }
 };
 
-inline auto format_as(const Item& item) { return item.ToString(); }
+inline auto format_as(const Item &item) { return item.ToString(); }
 
 // ===  THE MSGPACK SERIALIZE FORMAT === //
 // | 1bytes header | body |
@@ -152,6 +153,4 @@ inline auto format_as(const Item& item) { return item.ToString(); }
 // - Scalar: |STR len| serialized buffer |
 // - Vector: |ARRAY len|STR len|element-1 buf|STR len|element-2 buf|...
 
-using SpiArgs = yacl::SpiArgs;
-
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

@@ -20,8 +20,8 @@
 namespace heu::lib::algorithms::paillier_f {
 
 template <bool audit>
-MPInt Encryptor::EncryptRaw(const MPInt& m, absl::optional<uint32_t> rand,
-                            std::string* audit_str) const {
+MPInt Encryptor::EncryptRaw(const MPInt &m, absl::optional<uint32_t> rand,
+                            std::string *audit_str) const {
   MPInt r;
   if (rand.has_value()) {
     r = MPInt(*rand);
@@ -59,12 +59,12 @@ Ciphertext Encryptor::Encrypt(int64_t value) const {
   return Encrypt(MPInt(value));
 }
 
-Ciphertext Encryptor::Encrypt(const MPInt& value) const {
+Ciphertext Encryptor::Encrypt(const MPInt &value) const {
   internal::EncodedNumber encoding = internal::Codec(pk_).Encode(value);
   return EncryptEncoded(encoding);
 }
 
-Ciphertext Encryptor::EncryptEncoded(const internal::EncodedNumber& encoding,
+Ciphertext Encryptor::EncryptEncoded(const internal::EncodedNumber &encoding,
                                      absl::optional<uint32_t> rand) const {
   // only encrypt EncodedNumber's encoding_
   MPInt encoding_cipher = EncryptRaw(encoding.encoding, rand);
@@ -72,7 +72,7 @@ Ciphertext Encryptor::EncryptEncoded(const internal::EncodedNumber& encoding,
 }
 
 std::pair<Ciphertext, std::string> Encryptor::EncryptWithAudit(
-    const MPInt& m) const {
+    const MPInt &m) const {
   internal::EncodedNumber encoding = internal::Codec(pk_).Encode(m);
   std::string audit_str;
   MPInt encoding_cipher =

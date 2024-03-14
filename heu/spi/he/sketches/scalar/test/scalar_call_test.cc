@@ -18,7 +18,7 @@
 
 #include "heu/spi/he/sketches/scalar/test/dummy_ops.h"
 
-namespace heu::lib::spi::test {
+namespace heu::spi::test {
 
 class TestWessScalarCall : public ::testing::Test {
  protected:
@@ -28,8 +28,14 @@ class TestWessScalarCall : public ::testing::Test {
 TEST_F(TestWessScalarCall, TestScalar) {
   Item pt = {DummyPt("1"), ContentType::Plaintext};
   EXPECT_TRUE(pt.IsPlaintext());
+  EXPECT_FALSE(pt.IsCiphertext());
+  EXPECT_FALSE(pt.IsKey());
+  EXPECT_NO_THROW(std::cout << pt);
   Item ct(DummyCt("1"), ContentType::Ciphertext);
+  EXPECT_FALSE(ct.IsPlaintext());
   EXPECT_TRUE(ct.IsCiphertext());
+  EXPECT_FALSE(pt.IsKey());
+  EXPECT_NO_THROW(std::cout << ct);
 
   // negate
   Item res = we_->Negate(pt);
@@ -222,6 +228,11 @@ TEST_F(TestWessScalarCall, TestScalarInplace) {
   we_->RotateInplace(&ct, -12);
   EXPECT_TRUE(ct.IsCiphertext());
   EXPECT_EQ(ct.As<DummyCt>().Id(), "ct2<<=-12");
+
+  ct = {DummyCt("2"), ContentType::Ciphertext};
+  we_->BootstrapInplace(&ct);
+  EXPECT_TRUE(ct.IsCiphertext());
+  EXPECT_EQ(ct.As<DummyCt>().Id(), ":= boot(ct2)");
 }
 
-}  // namespace heu::lib::spi::test
+}  // namespace heu::spi::test

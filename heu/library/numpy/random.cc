@@ -16,13 +16,13 @@
 
 namespace heu::lib::numpy {
 
-PMatrix Random::RandInt(const phe::Plaintext& min, const phe::Plaintext& max,
-                        const Shape& size) {
+PMatrix Random::RandInt(const phe::Plaintext &min, const phe::Plaintext &max,
+                        const Shape &size) {
   YACL_ENFORCE(min < max, "random range invalid, min={}, max={}", min, max);
 
   PMatrix res(size);
   auto up = max - min;
-  res.ForEach([&](int64_t, int64_t, phe::Plaintext* item) {
+  res.ForEach([&](int64_t, int64_t, phe::Plaintext *item) {
     phe::Plaintext::RandomLtN(up, item);
     *item += min;
   });
@@ -30,9 +30,9 @@ PMatrix Random::RandInt(const phe::Plaintext& min, const phe::Plaintext& max,
 }
 
 PMatrix Random::RandBits(phe::SchemaType schema, size_t bits,
-                         const Shape& size) {
+                         const Shape &size) {
   PMatrix res(size);
-  res.ForEach([&](int64_t, int64_t, phe::Plaintext* item) {
+  res.ForEach([&](int64_t, int64_t, phe::Plaintext *item) {
     phe::Plaintext::RandomExactBits(schema, bits, item);
   });
   return res;

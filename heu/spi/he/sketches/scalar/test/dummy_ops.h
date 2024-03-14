@@ -23,7 +23,7 @@
 #include "heu/spi/he/sketches/scalar/encryptor.h"
 #include "heu/spi/he/sketches/scalar/word_evaluator.h"
 
-namespace heu::lib::spi::test {
+namespace heu::spi::test {
 
 class DummyObj {
  public:
@@ -40,7 +40,7 @@ class DummyObj {
     return os << obj.id_;
   }
 
- private:
+ protected:
   std::string id_;
 };
 
@@ -275,6 +275,10 @@ class DummyEvaluatorImpl : public WordEvaluatorScalarSketch<DummyPt, DummyCt> {
   void RotateInplace(DummyCt *a, int steps) const override {
     a->SetId(fmt::format("{}<<={}", *a, steps));
   }
+
+  void BootstrapInplace(heu::spi::test::DummyCt *ct) const override {
+    ct->SetId(fmt::format(":= boot({})", *ct));
+  }
 };
 
 template <typename T>
@@ -292,4 +296,4 @@ void ExpectItemEq(const Item &item, std::vector<std::string> ids) {
   }
 }
 
-}  // namespace heu::lib::spi::test
+}  // namespace heu::spi::test

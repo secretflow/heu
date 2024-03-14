@@ -25,12 +25,12 @@ namespace heu::lib::phe {
 
 class HeKitPublicBase {
  public:
-  [[nodiscard]] const std::shared_ptr<PublicKey>& GetPublicKey() const {
+  [[nodiscard]] const std::shared_ptr<PublicKey> &GetPublicKey() const {
     return public_key_;
   }
 
   template <typename T, typename... ARGS>
-  T GetEncoder(ARGS&&... args) {
+  T GetEncoder(ARGS &&...args) {
     return T(schema_type_, std::forward<ARGS>(args)...);
   }
 
@@ -46,7 +46,7 @@ class HeKitPublicBase {
 
 class HeKitSecretBase : public HeKitPublicBase {
  public:
-  [[nodiscard]] const std::shared_ptr<SecretKey>& GetSecretKey() const {
+  [[nodiscard]] const std::shared_ptr<SecretKey> &GetSecretKey() const {
     return secret_key_;
   }
 
@@ -64,15 +64,15 @@ class HeKit : public HeKitSecretBase {
   HeKit(std::shared_ptr<PublicKey> pk, std::shared_ptr<SecretKey> sk);
   HeKit(yacl::ByteContainerView pk_buffer, yacl::ByteContainerView sk_buffer);
 
-  [[nodiscard]] const std::shared_ptr<Encryptor>& GetEncryptor() const {
+  [[nodiscard]] const std::shared_ptr<Encryptor> &GetEncryptor() const {
     return encryptor_;
   }
 
-  [[nodiscard]] const std::shared_ptr<Evaluator>& GetEvaluator() const {
+  [[nodiscard]] const std::shared_ptr<Evaluator> &GetEvaluator() const {
     return evaluator_;
   }
 
-  [[nodiscard]] const std::shared_ptr<Decryptor>& GetDecryptor() const {
+  [[nodiscard]] const std::shared_ptr<Decryptor> &GetDecryptor() const {
     return decryptor_;
   }
 
@@ -90,11 +90,11 @@ class DestinationHeKit : public HeKitPublicBase {
   explicit DestinationHeKit(std::shared_ptr<PublicKey> pk);
   explicit DestinationHeKit(yacl::ByteContainerView pk_buffer);
 
-  [[nodiscard]] const std::shared_ptr<Encryptor>& GetEncryptor() const {
+  [[nodiscard]] const std::shared_ptr<Encryptor> &GetEncryptor() const {
     return encryptor_;
   }
 
-  [[nodiscard]] const std::shared_ptr<Evaluator>& GetEvaluator() const {
+  [[nodiscard]] const std::shared_ptr<Evaluator> &GetEvaluator() const {
     return evaluator_;
   }
 

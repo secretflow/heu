@@ -18,32 +18,51 @@
 
 #include "heu/spi/he/sketches/common/encoder.h"
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
+// Batch encoder: encode multiple cleartexts into one plaintext
+//
+// Here is an illustration of the BatchEncoder, assuming SlotCount() == 2:
+// +-------------+-------------+-------------+-------------+
+// | Cleartext 1 | Cleartext 2 | Cleartext 3 | Cleartext 4 |
+// +-------------+-------------+-------------+-------------+
+// |        Plaintext 1        |        Plaintext 2        |
+// +---------------------------+---------------------------+
+// |                      Single Item                      |
+// +-------------------------------------------------------+
 template <typename PlaintextT>
 class BatchEncoderSketch : public EncoderSketch<PlaintextT> {
  public:
   // Functions to override:
   //   virtual size_t SlotCount() const = 0;
 
-  // The size of the message is always in [0, SlotCount())
-  // So there is enough space to encode message into one plaintext
+  // The size of the message is always in [1, SlotCount()]
+  // So there is enough slots to encode messages into one plaintext
   virtual PlaintextT EncodeT(absl::Span<const int64_t> message) const = 0;
   virtual PlaintextT EncodeT(absl::Span<const uint64_t> message) const = 0;
   virtual PlaintextT EncodeT(absl::Span<const double> message) const = 0;
   virtual PlaintextT EncodeT(
       absl::Span<const std::complex<double>> message) const = 0;
 
-  virtual void DecodeT(const PlaintextT& pt, absl::Span<int64_t> out) const = 0;
-  virtual void DecodeT(const PlaintextT& pt,
+  virtual PlaintextT EncodeT(int64_t message) const = 0;
+  virtual PlaintextT EncodeT(uint64_t message) const = 0;
+  virtual PlaintextT EncodeT(double message) const = 0;
+  virtual PlaintextT EncodeT(const std::complex<double> &message) const = 0;
+
+  virtual void DecodeT(const PlaintextT &pt, absl::Span<int64_t> out) const = 0;
+  virtual void DecodeT(const PlaintextT &pt,
                        absl::Span<uint64_t> out) const = 0;
-  virtual void DecodeT(const PlaintextT& pt, absl::Span<double> out) const = 0;
-  virtual void DecodeT(const PlaintextT& pt,
+  virtual void DecodeT(const PlaintextT &pt, absl::Span<double> out) const = 0;
+  virtual void DecodeT(const PlaintextT &pt,
                        absl::Span<std::complex<double>> out) const = 0;
 
  private:
+  // Parallel dispatch function call to various EncoderT()
   template <typename T>
-  Item CallEncoderT(const absl::Span<T>& message) const {
+  Item CallEncoderT(const absl::Span<T> &message) const {
+    YACL_ENFORCE(message.size() > 0,
+                 "Nothing to encode, cannot create an Item");
+
     auto slots = this->SlotCount();
     if (message.size() <= slots) {
       return {EncodeT(message), ContentType::Plaintext};
@@ -75,8 +94,12 @@ class BatchEncoderSketch : public EncoderSketch<PlaintextT> {
     return CallEncoderT(message);
   }
 
+  // Parallel dispatch function call to various DecoderT()
   template <typename T>
-  void CallDecodeT(const Item& pts, absl::Span<T> out) const {
+  void CallDecodeT(const Item &pts, absl::Span<T> out) const {
+    YACL_ENFORCE(pts.GetContentType() == ContentType::Plaintext,
+                 "The input item is not plaintext(s), cannot decode, pts={}",
+                 pts);
     auto sp = pts.AsSpan<PlaintextT>();
     auto slots = this->SlotCount();
     auto total = sp.size() * slots;
@@ -93,49 +116,65 @@ class BatchEncoderSketch : public EncoderSketch<PlaintextT> {
     });
   }
 
-  void Decode(const Item& plaintexts,
+  void Decode(const Item &plaintexts,
               absl::Span<int64_t> out_message) const override {
     CallDecodeT(plaintexts, out_message);
   }
 
-  void Decode(const Item& plaintexts,
+  void Decode(const Item &plaintexts,
               absl::Span<uint64_t> out_message) const override {
     CallDecodeT(plaintexts, out_message);
   }
 
-  void Decode(const Item& plaintexts,
+  void Decode(const Item &plaintexts,
               absl::Span<double> out_message) const override {
     CallDecodeT(plaintexts, out_message);
   }
 
-  void Decode(const Item& plaintexts,
+  void Decode(const Item &plaintexts,
               absl::Span<std::complex<double>> out_message) const override {
     CallDecodeT(plaintexts, out_message);
   }
 
-  std::vector<int64_t> DecodeInt64(const Item& plaintexts) const override {
-    std::vector<int64_t> res(this->GetCleartextCount(plaintexts));
+  std::vector<int64_t> DecodeInt64(const Item &plaintexts) const override {
+    std::vector<int64_t> res(this->CleartextCount(plaintexts));
     CallDecodeT(plaintexts, absl::MakeSpan(res));
     return res;
   }
 
-  std::vector<uint64_t> DecodeUint64(const Item& plaintexts) const override {
-    std::vector<uint64_t> res(this->GetCleartextCount(plaintexts));
+  std::vector<uint64_t> DecodeUint64(const Item &plaintexts) const override {
+    std::vector<uint64_t> res(this->CleartextCount(plaintexts));
     CallDecodeT(plaintexts, absl::MakeSpan(res));
     return res;
   }
 
-  std::vector<double> DecodeDouble(const Item& plaintexts) const override {
-    std::vector<double> res(this->GetCleartextCount(plaintexts));
+  std::vector<double> DecodeDouble(const Item &plaintexts) const override {
+    std::vector<double> res(this->CleartextCount(plaintexts));
     CallDecodeT(plaintexts, absl::MakeSpan(res));
     return res;
   }
 
   std::vector<std::complex<double>> DecodeComplex(
-      const Item& plaintexts) const override {
-    std::vector<std::complex<double>> res(this->GetCleartextCount(plaintexts));
+      const Item &plaintexts) const override {
+    std::vector<std::complex<double>> res(this->CleartextCount(plaintexts));
     CallDecodeT(plaintexts, absl::MakeSpan(res));
     return res;
+  }
+
+  Item Encode(int64_t message) const override {
+    return {EncodeT(message), ContentType::Plaintext};
+  }
+
+  Item Encode(uint64_t message) const override {
+    return {EncodeT(message), ContentType::Plaintext};
+  }
+
+  Item Encode(double message) const override {
+    return {EncodeT(message), ContentType::Plaintext};
+  }
+
+  Item Encode(const std::complex<double> &message) const override {
+    return {EncodeT(message), ContentType::Plaintext};
   }
 
   // ==================================================================== //
@@ -143,49 +182,21 @@ class BatchEncoderSketch : public EncoderSketch<PlaintextT> {
   // <<<       If you are using BatchEncoder, do not call them        >>> //
   // ==================================================================== //
 
-  Item EncodeScalar(int64_t message) const override {
-    YACL_THROW(
-        "Batch encoder cannot encode scalar {}, please use Encode() "
-        "instead.",
-        message);
-  }
-
-  Item EncodeScalar(uint64_t message) const override {
-    YACL_THROW(
-        "Batch encoder cannot encode scalar {}, please use Encode() "
-        "instead.",
-        message);
-  }
-
-  Item EncodeScalar(double message) const override {
-    YACL_THROW(
-        "Batch encoder cannot encode scalar {}, please use Encode() "
-        "instead.",
-        message);
-  }
-
-  Item EncodeScalar(const std::complex<double>& message) const override {
-    YACL_THROW(
-        "Batch encoder cannot encode scalar {}+{}i, please use Encode() "
-        "instead.",
-        message.real(), message.imag());
-  }
-
-  int64_t DecodeScalarInt64(const Item& plaintext) const override {
+  int64_t DecodeScalarInt64(const Item &plaintext) const override {
     YACL_THROW(
         "Batch encoder cannot decode plaintext as a single number, please use "
         "Decode() instead. plaintext={}",
         plaintext);
   }
 
-  uint64_t DecodeScalarUint64(const Item& plaintext) const override {
+  uint64_t DecodeScalarUint64(const Item &plaintext) const override {
     YACL_THROW(
         "Batch encoder cannot decode plaintext as a single number, please use "
         "Decode() instead. plaintext={}",
         plaintext);
   }
 
-  double DecodeScalarDouble(const Item& plaintext) const override {
+  double DecodeScalarDouble(const Item &plaintext) const override {
     YACL_THROW(
         "Batch encoder cannot decode plaintext as a single number, please use "
         "Decode() instead. plaintext={}",
@@ -193,7 +204,7 @@ class BatchEncoderSketch : public EncoderSketch<PlaintextT> {
   }
 
   std::complex<double> DecodeScalarComplex(
-      const Item& plaintext) const override {
+      const Item &plaintext) const override {
     YACL_THROW(
         "Batch encoder cannot decode plaintext as a single number, please use "
         "Decode() instead. plaintext={}",
@@ -201,4 +212,4 @@ class BatchEncoderSketch : public EncoderSketch<PlaintextT> {
   }
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

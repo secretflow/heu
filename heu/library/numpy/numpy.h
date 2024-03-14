@@ -26,7 +26,7 @@ namespace heu::lib::numpy {
 // numpy adapter of phe::HeKit
 class HeKit : public phe::HeKitSecretBase {
  public:
-  explicit HeKit(const phe::HeKit& phe_kit) {
+  explicit HeKit(const phe::HeKit &phe_kit) {
     Setup(phe_kit.GetPublicKey(), phe_kit.GetSecretKey());
 
     encryptor_ = std::make_shared<Encryptor>(*phe_kit.GetEncryptor());
@@ -34,15 +34,15 @@ class HeKit : public phe::HeKitSecretBase {
     evaluator_ = std::make_shared<Evaluator>(*phe_kit.GetEvaluator());
   }
 
-  [[nodiscard]] const std::shared_ptr<Encryptor>& GetEncryptor() const {
+  [[nodiscard]] const std::shared_ptr<Encryptor> &GetEncryptor() const {
     return encryptor_;
   }
 
-  [[nodiscard]] const std::shared_ptr<Decryptor>& GetDecryptor() const {
+  [[nodiscard]] const std::shared_ptr<Decryptor> &GetDecryptor() const {
     return decryptor_;
   }
 
-  [[nodiscard]] const std::shared_ptr<Evaluator>& GetEvaluator() const {
+  [[nodiscard]] const std::shared_ptr<Evaluator> &GetEvaluator() const {
     return evaluator_;
   }
 
@@ -62,11 +62,11 @@ class DestinationHeKit : public phe::HeKitPublicBase {
     evaluator_ = std::make_shared<Evaluator>(*phe_kit.GetEvaluator());
   }
 
-  [[nodiscard]] const std::shared_ptr<Encryptor>& GetEncryptor() const {
+  [[nodiscard]] const std::shared_ptr<Encryptor> &GetEncryptor() const {
     return encryptor_;
   }
 
-  [[nodiscard]] const std::shared_ptr<Evaluator>& GetEvaluator() const {
+  [[nodiscard]] const std::shared_ptr<Evaluator> &GetEvaluator() const {
     return evaluator_;
   }
 

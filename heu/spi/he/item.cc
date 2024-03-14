@@ -20,7 +20,7 @@
 static constexpr int kContentSlot = 5;
 static constexpr int kContentSlotLen = 3;
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 void Item::MarkAs(ContentType type) {
   SetSlot<kContentSlot, kContentSlotLen>(static_cast<uint8_t>(type));
@@ -42,6 +42,19 @@ bool Item::IsCiphertext() const {
   return GetContentType() == ContentType::Ciphertext;
 }
 
+bool Item::IsKey() const {
+  switch (GetContentType()) {
+    case ContentType::SecretKey:
+    case ContentType::PublicKey:
+    case ContentType::RelinKeys:
+    case ContentType::GaloisKeys:
+    case ContentType::BootstrapKey:
+      return true;
+    default:
+      return false;
+  }
+}
+
 std::string Item::ToString() const {
   return fmt::format("ContentType={} {}", GetContentType(),
                      yacl::Item::ToString());
@@ -51,4 +64,4 @@ std::ostream &operator<<(std::ostream &os, const Item &item) {
   return os << item.ToString();
 }
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

@@ -27,10 +27,10 @@ class Encryptor : public phe::Encryptor {
       : phe::Encryptor(std::move(encryptor)) {}
 
   using phe::Encryptor::Encrypt;
-  CMatrix Encrypt(const PMatrix& in) const;
+  CMatrix Encrypt(const PMatrix &in) const;
 
   std::pair<CMatrix, DenseMatrix<std::string>> EncryptWithAudit(
-      const PMatrix& in) const;
+      const PMatrix &in) const;
 };
 
 }  // namespace heu::lib::numpy

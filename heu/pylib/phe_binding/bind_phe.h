@@ -18,6 +18,6 @@
 
 namespace heu::pylib {
 
-void PyBindPhe(pybind11::module& m);
+void PyBindPhe(pybind11::module &m);
 
 }  // namespace heu::pylib

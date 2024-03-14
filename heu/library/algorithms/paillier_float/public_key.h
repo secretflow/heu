@@ -38,15 +38,15 @@ class PublicKey : public HeObject<PublicKey> {
   PublicKey() = default;
 
   // Valid plaintext range: [max_int_, -max_int_]
-  [[nodiscard]] const MPInt& PlaintextBound() const& { return max_int_; }
+  [[nodiscard]] const MPInt &PlaintextBound() const & { return max_int_; }
 
   [[nodiscard]] std::string ToString() const override;
 
-  bool operator==(const PublicKey& other) const {
+  bool operator==(const PublicKey &other) const {
     return n_ == other.n_ && g_ == other.g_;
   }
 
-  bool operator!=(const PublicKey& other) const {
+  bool operator!=(const PublicKey &other) const {
     return !this->operator==(other);
   }
 
@@ -55,8 +55,8 @@ class PublicKey : public HeObject<PublicKey> {
   MSGPACK_DEFINE(n_, n_square_, g_, max_int_);
 
  private:
-  explicit PublicKey(const MPInt& n);
-  explicit PublicKey(MPInt&& n);
+  explicit PublicKey(const MPInt &n);
+  explicit PublicKey(MPInt &&n);
 
   // setup bits_, n_square_, g_, max_int_ based on n_
   void Init();

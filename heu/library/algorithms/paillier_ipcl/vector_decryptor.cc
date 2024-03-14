@@ -5,7 +5,7 @@
 
 namespace heu::lib::algorithms::paillier_ipcl {
 
-Decryptor::Decryptor(const PublicKey& pk, const SecretKey& sk) {
+Decryptor::Decryptor(const PublicKey &pk, const SecretKey &sk) {
   pk_ = pk.ipcl_pubkey_;
   sk_ = sk.ipcl_prikey_;
   half_n_.bn_ = *pk_.getN() / 2;

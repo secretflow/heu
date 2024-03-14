@@ -41,7 +41,7 @@ void Initialize(int base_bits) {
                               fmt::format("{}", g_sk.n_square_.BitCount()));
 }
 
-void PowModCrt(benchmark::State& state) {
+void PowModCrt(benchmark::State &state) {
   MPInt exp;
   MPInt::RandomExactBits(state.range(0), &exp);
   for (auto _ : state) {
@@ -49,7 +49,7 @@ void PowModCrt(benchmark::State& state) {
   }
 }
 
-void PowModCacheTable(benchmark::State& state) {
+void PowModCacheTable(benchmark::State &state) {
   MPInt exp;
   MPInt::RandomExactBits(state.range(0), &exp);
   for (auto _ : state) {
@@ -57,7 +57,7 @@ void PowModCacheTable(benchmark::State& state) {
   }
 }
 
-void PowModTommath(benchmark::State& state) {
+void PowModTommath(benchmark::State &state) {
   MPInt exp;
   MPInt::RandomExactBits(state.range(0), &exp);
   for (auto _ : state) {

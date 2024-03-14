@@ -20,7 +20,7 @@
 
 namespace heu::lib::algorithms::dj {
 
-void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(size_t key_size, SecretKey *sk, PublicKey *pk) {
   YACL_ENFORCE(key_size % 2 == 0, "Key size must be even");
 
   MPInt p, q, gcd;
@@ -33,7 +33,7 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
   pk->Init(p * q, s_);
 }
 
-void KeyGenerator::Generate(SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(SecretKey *sk, PublicKey *pk) {
   Generate(2048, sk, pk);
 }
 

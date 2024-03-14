@@ -16,7 +16,7 @@
 
 #include "heu/spi/poly/poly_def.h"
 
-namespace heu::lib::spi {
+namespace heu::spi {
 
 // Performs nega-cyclic forward and inverse number-theoretic transform (NTT)
 // nega-cyclic means polynomial is mod by (X^N + 1)
@@ -32,4 +32,4 @@ class NttOperator {
   virtual void InverseInplace(Polys *Polys) const = 0;
 };
 
-}  // namespace heu::lib::spi
+}  // namespace heu::spi

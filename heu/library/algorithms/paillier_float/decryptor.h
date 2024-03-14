@@ -25,15 +25,15 @@ class Decryptor {
   explicit Decryptor(PublicKey pk, SecretKey sk)
       : pk_(std::move(pk)), sk_(std::move(sk)) {}
 
-  void Decrypt(const Ciphertext& cipher, MPInt* plain) const;
-  MPInt Decrypt(const Ciphertext& cipher) const;
+  void Decrypt(const Ciphertext &cipher, MPInt *plain) const;
+  MPInt Decrypt(const Ciphertext &cipher) const;
 
-  void Decrypt(const Ciphertext& cipher, double* plain) const;
+  void Decrypt(const Ciphertext &cipher, double *plain) const;
 
-  const SecretKey& secret_key() const { return sk_; }
+  const SecretKey &secret_key() const { return sk_; }
 
  private:
-  void DecryptRaw(const MPInt& c, MPInt* m) const;
+  void DecryptRaw(const MPInt &c, MPInt *m) const;
 
  private:
   PublicKey pk_;

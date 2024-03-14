@@ -36,7 +36,7 @@ paillier_f::Ciphertext g_paillier_ciphertext[kTestSize];
 
 typedef std::function<std::chrono::microseconds()> Action;
 
-std::chrono::microseconds bench(const Action& action, int rounds = 10) {
+std::chrono::microseconds bench(const Action &action, int rounds = 10) {
   std::chrono::microseconds time_sum{0};
   for (int i = 0; i < rounds; i++) {
     time_sum += action();
@@ -120,7 +120,7 @@ void Initialize() {
                                      &g_paillier_public_key);
 }
 
-static void PaillierEncrypt(benchmark::State& state) {
+static void PaillierEncrypt(benchmark::State &state) {
   // encrypt
   paillier_f::Encryptor encryptor(g_paillier_public_key);
   for (auto _ : state) {
@@ -130,7 +130,7 @@ static void PaillierEncrypt(benchmark::State& state) {
   }
 }
 
-static void PaillierAddCipher(benchmark::State& state) {
+static void PaillierAddCipher(benchmark::State &state) {
   // add (ciphertext + ciphertext)
   paillier_f::Evaluator evaluator(g_paillier_public_key);
   for (auto _ : state) {
@@ -140,7 +140,7 @@ static void PaillierAddCipher(benchmark::State& state) {
   }
 }
 
-static void PaillierAddInt(benchmark::State& state) {
+static void PaillierAddInt(benchmark::State &state) {
   // add (ciphertext + plaintext)
   paillier_f::Evaluator evaluator(g_paillier_public_key);
   for (auto _ : state) {
@@ -150,7 +150,7 @@ static void PaillierAddInt(benchmark::State& state) {
   }
 }
 
-static void PaillierMulti(benchmark::State& state) {
+static void PaillierMulti(benchmark::State &state) {
   // mul (ciphertext * plaintext)
   paillier_f::Evaluator evaluator(g_paillier_public_key);
   for (auto _ : state) {
@@ -160,7 +160,7 @@ static void PaillierMulti(benchmark::State& state) {
   }
 }
 
-static void PaillierDecrypt(benchmark::State& state) {
+static void PaillierDecrypt(benchmark::State &state) {
   // decrypt
   paillier_f::Decryptor decryptor(g_paillier_public_key, g_paillier_secret_key);
   for (auto _ : state) {
@@ -177,7 +177,7 @@ BENCHMARK(PaillierMulti)->Unit(benchmark::kMillisecond);
 BENCHMARK(PaillierDecrypt)->Unit(benchmark::kMillisecond);
 }  // namespace heu::lib::bench
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   benchmark::Initialize(&argc, argv);
   heu::lib::bench::Initialize();
   benchmark::RunSpecifiedBenchmarks();

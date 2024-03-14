@@ -64,16 +64,16 @@ static const std::map<SchemaType, std::vector<std::string>>
 std::vector<SchemaType> GetAllSchema() {
   std::vector<SchemaType> res;
   res.reserve(kSchemaTypeToString.size());
-  for (const auto& item : kSchemaTypeToString) {
+  for (const auto &item : kSchemaTypeToString) {
     res.push_back(item.first);
   }
   return res;
 }
 
-SchemaType ParseSchemaType(const std::string& schema_string) {
+SchemaType ParseSchemaType(const std::string &schema_string) {
   auto schema_str = absl::AsciiStrToLower(schema_string);
-  for (const auto& schema : kSchemaTypeToString) {
-    for (const auto& alias : schema.second) {
+  for (const auto &schema : kSchemaTypeToString) {
+    for (const auto &alias : schema.second) {
       if (alias == schema_str) {
         return schema.first;
       }
@@ -82,12 +82,12 @@ SchemaType ParseSchemaType(const std::string& schema_string) {
   YACL_THROW("Unknown schema type {}", schema_string);
 }
 
-std::vector<SchemaType> SelectSchemas(const std::string& regex_pattern,
+std::vector<SchemaType> SelectSchemas(const std::string &regex_pattern,
                                       bool full_match) {
   std::vector<SchemaType> res;
   std::regex p(regex_pattern);
-  for (const auto& schema : kSchemaTypeToString) {
-    for (const auto& alias : schema.second) {
+  for (const auto &schema : kSchemaTypeToString) {
+    for (const auto &alias : schema.second) {
       if (full_match ? std::regex_match(alias, p)
                      : std::regex_search(alias, p)) {
         res.push_back(schema.first);
@@ -106,7 +106,7 @@ std::vector<std::string> GetSchemaAliases(SchemaType schema_type) {
   return kSchemaTypeToString.at(schema_type);
 }
 
-std::ostream& operator<<(std::ostream& os, SchemaType st) {
+std::ostream &operator<<(std::ostream &os, SchemaType st) {
   return os << SchemaToString(st);
 }
 
