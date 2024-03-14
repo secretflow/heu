@@ -41,7 +41,8 @@ header: # <1>
     - '.gitignore'
     - '.gitmodules'
     - 'pyproject.toml'
-    - 'third_party/bazel_rust/*.bazel' # Generated
+    - 'third_party/bazel_rust/**/*.bazel' # Generated
+    - 'third_party/bazel_rust/**/*.bzl' # Generated
 
   comment: never # <9>
 
