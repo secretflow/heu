@@ -137,11 +137,11 @@ FHE Milestones:
 - OS
     - Ubuntu 18.04+
     - Centos 7
-    - macOS 11.1+ (macOS Big Sur+)<sup>1</sup>
+    - macOS 12.0+ (macOS Monterey+)<sup>1</sup>
 - Python
-    - Python 3.8+
+    - Python 3.9+
 
-1. Due to CI resource limitation, macOS x64 prebuild binary will no longer available since next release.
+1. Due to CI resource limitation, macOS x64 prebuild binary is no longer available.
 
 ### Install via Pip
 

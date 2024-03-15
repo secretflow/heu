@@ -4,12 +4,12 @@
 环境准备
 --------------
 
-Python >= 3.8
+Python >= 3.9
 
 OS：
  - Centos 7
  - Ubuntu 18.04+
- - macOS 11.1+ (macOS Big Sur+)
+ - macOS 12.0+ (macOS Monterey+)
 
 
 安装
