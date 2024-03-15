@@ -128,9 +128,9 @@ FHE 里程碑
 - OS
     - Ubuntu 18.04+
     - Centos 7
-    - macOS 11.1+ (macOS Big Sur+)
+    - macOS 12.0+ (macOS Monterey+)
 - Python
-    - Python 3.8+
+    - Python 3.9+
 
 ### 通过 Pip 安装
 

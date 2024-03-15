@@ -558,10 +558,10 @@ msgid "运行已有单测（必须）"
 msgstr "Run existing unit tests (required)"
 
 #: ../../development/phe_dev.rst:291
-msgid "即使您没有编写任何单测，HEU 也会自动测试您的算法，单测请在 Python 3.8 环境下执行，请执行以下命令测试整个 HEU："
+msgid "即使您没有编写任何单测，HEU 也会自动测试您的算法，单测请在 Python 3.10 环境下执行，请执行以下命令测试整个 HEU："
 msgstr ""
 "HEU will automatically test your algorithm even if you haven't written "
-"any unit tests. Please set up a Python 3.8 environment and execute the "
+"any unit tests. Please set up a Python 3.10 environment and execute the "
 "following command to test entire HEU:"
 
 #: ../../development/phe_dev.rst:299
