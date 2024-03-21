@@ -11,6 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+#include <random>
+#include <climits>
+#include <gmp.h>
 #include "cgbn/cgbn.h"
 #include "heu/library/algorithms/paillier_dl/cgbn_wrapper/cgbn_wrapper.h"
 #include "heu/library/algorithms/paillier_dl/cgbn_wrapper/gpu_support.h"
@@ -43,7 +46,7 @@ static void buf_cal_used(mp_digit *buf, int size, int *used) {
   *used = count;
 }
 
-static void store2dev(dev_mem_t<BITS> *address, MPInt &z) {
+static void store2dev(dev_mem_t<BITS> *address, const MPInt &z) {
   auto buffer = z.ToMagBytes(Endian::little);
   if (buffer.size() > sizeof(address->_limbs)) {
     printf("%s:%d No enough memory, need: %d, real: %d\n", __FILE__, __LINE__, buffer.size(), sizeof(address->_limbs));
@@ -62,7 +65,7 @@ static void store2dev(void *address, SecretKey *sk) {
   CUDA_CHECK(cudaMemcpy(address, sk, sizeof(SecretKey), cudaMemcpyHostToDevice));
 }
 
-static void store2host(MPInt &z, dev_mem_t<BITS> *address) {
+static void store2host(MPInt *z, dev_mem_t<BITS> *address) {
   int32_t z_size = sizeof(address->_limbs);
   
   yacl::Buffer buffer(z_size);
@@ -74,7 +77,7 @@ static void store2host(MPInt &z, dev_mem_t<BITS> *address) {
 
   buffer.resize(used * sizeof(mp_digit));
   Endian endian = Endian::little;
-  z.FromMagBytes(buffer, endian);
+  (*z).FromMagBytes(buffer, endian);
 }
 
 __device__ __forceinline__ void powmod(env_t &bn_env, env_t::cgbn_t &r, env_t::cgbn_t &a, env_t::cgbn_t &b, env_t::cgbn_t &c) {
@@ -259,10 +262,10 @@ __global__ __noinline__ void raw_encrypt(PublicKey *pub_key, cgbn_error_report_t
 #endif
 }
 
-void CGBNWrapper::Encrypt(const std::vector<Plaintext>& pts, const PublicKey& pk, std::vector<MPInt>& rns, std::vector<Ciphertext>& cts) {
+void CGBNWrapper::Encrypt(const std::vector<Plaintext>& pts, const PublicKey& pk, std::vector<Ciphertext>* cts) {
   int32_t              TPB=128;
   int32_t              IPB=TPB/TPI;
-  int count = pts.size();
+  int32_t count = pts.size();
 
   cgbn_error_report_t *report;
   cgbn_mem_t<BITS> *dev_plains;
@@ -280,11 +283,15 @@ void CGBNWrapper::Encrypt(const std::vector<Plaintext>& pts, const PublicKey& pk
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
 
-  raw_encrypt<<<(count+IPB-1)/IPB, TPB>>>(pk.dev_pk_, report,  dev_plains, dev_ciphers, count, 12345); 
+  std::random_device rd;
+  std::default_random_engine engine{rd()};
+  std::uniform_int_distribution<int> gen_data{0, INT_MAX};
+  int32_t rnd_number = gen_data(engine);
+  raw_encrypt<<<(count+IPB-1)/IPB, TPB>>>(pk.dev_pk_, report,  dev_plains, dev_ciphers, count, rnd_number); 
   CUDA_CHECK(cudaDeviceSynchronize());
 
   for (int i=0; i<count; i++) {
-    store2host(cts[i].c_, (dev_mem_t<BITS> *)(dev_ciphers + i));
+    store2host(&(*cts)[i].c_, (dev_mem_t<BITS> *)(dev_ciphers + i));
   }
 
   CGBN_CHECK(report);
@@ -348,7 +355,7 @@ __global__ void raw_decrypt(SecretKey *priv_key, dev_mem_t<BITS> *pk_n, cgbn_err
 #endif
 } 
 
-void CGBNWrapper::Decrypt(const std::vector<Ciphertext>& cts, const SecretKey& sk, const PublicKey& pk, std::vector<Plaintext>& pts) {
+void CGBNWrapper::Decrypt(const std::vector<Ciphertext>& cts, const SecretKey& sk, const PublicKey& pk, std::vector<Plaintext>* pts) {
   int32_t              TPB=128;
   int32_t              IPB=TPB/TPI;
   int count = cts.size();
@@ -375,7 +382,7 @@ void CGBNWrapper::Decrypt(const std::vector<Ciphertext>& cts, const SecretKey& s
   CGBN_CHECK(report);
 
   for (int i=0; i<count; i++) {
-    store2host(pts[i], (dev_mem_t<BITS> *)(dev_plains + i));
+    store2host(&(*pts)[i], (dev_mem_t<BITS> *)(dev_plains + i));
   }
 
   CUDA_CHECK(cgbn_error_report_free(report));
@@ -417,7 +424,7 @@ cgbn_mont2bn(bn_env, r, r, nsquare, np0);
 #endif
 }
 
-void CGBNWrapper::Add(const PublicKey& pk, const std::vector<Ciphertext>& as, const std::vector<Ciphertext>& bs, std::vector<Ciphertext>& cs) {
+void CGBNWrapper::Add(const PublicKey& pk, const std::vector<Ciphertext>& as, const std::vector<Ciphertext>& bs, std::vector<Ciphertext>* cs) {
   int32_t              TPB=128;
   int32_t              IPB=TPB/TPI;
   int count = as.size();
@@ -447,7 +454,7 @@ void CGBNWrapper::Add(const PublicKey& pk, const std::vector<Ciphertext>& as, co
   CGBN_CHECK(report);
 
   for (int i=0; i<count; i++) {
-    store2host(cs[i].c_, (dev_mem_t<BITS> *)(dev_cs + i));
+    store2host(&(*cs)[i].c_, (dev_mem_t<BITS> *)(dev_cs + i));
   }
 
   CUDA_CHECK(cgbn_error_report_free(report));
@@ -456,7 +463,7 @@ void CGBNWrapper::Add(const PublicKey& pk, const std::vector<Ciphertext>& as, co
   CUDA_CHECK(cudaFree(dev_cs));
 }
 
-void CGBNWrapper::Add(const PublicKey& pk, const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs, std::vector<Ciphertext>& cs) {
+void CGBNWrapper::Add(const PublicKey& pk, const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs, std::vector<Ciphertext>* cs) {
   int32_t              TPB=128;
   int32_t              IPB=TPB/TPI;
   int count = as.size();
@@ -483,13 +490,18 @@ void CGBNWrapper::Add(const PublicKey& pk, const std::vector<Ciphertext>& as, co
   }
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
-  raw_encrypt<<<(count+IPB-1)/IPB, TPB>>>(pk.dev_pk_, report,  dev_bs, dev_ctbs, count, 12345); 
+
+  std::random_device rd;
+  std::default_random_engine engine{rd()};
+  std::uniform_int_distribution<int> gen_data{0, INT_MAX};
+  int32_t rnd_number = gen_data(engine);
+  raw_encrypt<<<(count+IPB-1)/IPB, TPB>>>(pk.dev_pk_, report,  dev_bs, dev_ctbs, count, rnd_number); 
   raw_add<<<(count+IPB-1)/IPB, TPB>>>(pk.dev_nsquare_, report, dev_cs, dev_as, dev_ctbs, count);
   CUDA_CHECK(cudaDeviceSynchronize());
   CGBN_CHECK(report);
 
   for (int i=0; i<count; i++) {
-    store2host(cs[i].c_, (dev_mem_t<BITS> *)(dev_cs + i));
+    store2host(&(*cs)[i].c_, (dev_mem_t<BITS> *)(dev_cs + i));
   }
 
   CUDA_CHECK(cgbn_error_report_free(report));
@@ -535,7 +547,7 @@ __global__ void raw_mul(dev_mem_t<BITS> *pk_n, dev_mem_t<BITS> *pk_max_int, dev_
 #endif
 }
 
-void CGBNWrapper::Mul(const PublicKey& pk, const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs, std::vector<Ciphertext>& cs) {
+void CGBNWrapper::Mul(const PublicKey& pk, const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs, std::vector<Ciphertext>* cs) {
   int32_t              TPB=128;
   int32_t              IPB=TPB/TPI;
   int count = as.size();
@@ -565,7 +577,7 @@ void CGBNWrapper::Mul(const PublicKey& pk, const std::vector<Ciphertext>& as, co
   CGBN_CHECK(report);
 
   for (int i=0; i<count; i++) {
-    store2host(cs[i].c_, (dev_mem_t<BITS> *)(dev_cs + i));
+    store2host(&(*cs)[i].c_, (dev_mem_t<BITS> *)(dev_cs + i));
   }
 
   CUDA_CHECK(cgbn_error_report_free(report));
@@ -595,7 +607,7 @@ __global__ void raw_negate(dev_mem_t<BITS> *pk_nsquare,  cgbn_error_report_t *re
 #endif
 }
 
-void CGBNWrapper::Negate(const PublicKey& pk, const std::vector<Ciphertext>& as, std::vector<Ciphertext>& cs) {
+void CGBNWrapper::Negate(const PublicKey& pk, const std::vector<Ciphertext>& as, std::vector<Ciphertext>* cs) {
 
   int32_t              TPB=128;
   int32_t              IPB=TPB/TPI;
@@ -622,7 +634,7 @@ void CGBNWrapper::Negate(const PublicKey& pk, const std::vector<Ciphertext>& as,
   CGBN_CHECK(report);
 
   for (int i=0; i<count; i++) {
-    store2host(cs[i].c_, (dev_mem_t<BITS> *)(dev_cs + i));
+    store2host(&(*cs)[i].c_, (dev_mem_t<BITS> *)(dev_cs + i));
   }
 
   CUDA_CHECK(cgbn_error_report_free(report));
@@ -639,13 +651,21 @@ void CGBNWrapper::DevMalloc(PublicKey *pk) {
 }
 
 void CGBNWrapper::DevFree(PublicKey *pk) {
-  if（pk->dev_pk_）{
+  if (pk->dev_pk_) {
     CUDA_CHECK(cudaFree(pk->dev_g_));
     CUDA_CHECK(cudaFree(pk->dev_n_));
     CUDA_CHECK(cudaFree(pk->dev_nsquare_));
     CUDA_CHECK(cudaFree(pk->dev_max_int_));
     CUDA_CHECK(cudaFree(pk->dev_pk_));
   }
+}
+
+void CGBNWrapper::DevCopy(PublicKey *dst_pk, const PublicKey &pk) {
+  CUDA_CHECK(cudaMemcpy(dst_pk->dev_g_, pk.dev_g_, sizeof(cgbn_mem_t<BITS>), cudaMemcpyDeviceToDevice));
+  CUDA_CHECK(cudaMemcpy(dst_pk->dev_n_, pk.dev_n_, sizeof(cgbn_mem_t<BITS>), cudaMemcpyDeviceToDevice));
+  CUDA_CHECK(cudaMemcpy(dst_pk->dev_nsquare_, pk.dev_nsquare_, sizeof(cgbn_mem_t<BITS>), cudaMemcpyDeviceToDevice));
+  CUDA_CHECK(cudaMemcpy(dst_pk->dev_max_int_, pk.dev_max_int_, sizeof(cgbn_mem_t<BITS>), cudaMemcpyDeviceToDevice));
+  CUDA_CHECK(cudaMemcpy(dst_pk->dev_pk_, dst_pk, sizeof(PublicKey), cudaMemcpyHostToDevice));
 }
 
 void CGBNWrapper::DevMalloc(SecretKey *sk) {
@@ -661,7 +681,7 @@ void CGBNWrapper::DevMalloc(SecretKey *sk) {
 }
 
 void CGBNWrapper::DevFree(SecretKey *sk) {
-  if（sk->dev_sk_）{
+  if (sk->dev_sk_) {
     CUDA_CHECK(cudaFree(sk->dev_g_));
     CUDA_CHECK(cudaFree(sk->dev_p_));
     CUDA_CHECK(cudaFree(sk->dev_q_));
@@ -674,6 +694,17 @@ void CGBNWrapper::DevFree(SecretKey *sk) {
   }
 }
 
+void CGBNWrapper::DevCopy(SecretKey *dst_sk, const SecretKey &sk) {
+  CUDA_CHECK(cudaMemcpy(dst_sk->dev_g_, sk.dev_g_, sizeof(cgbn_mem_t<BITS>), cudaMemcpyDeviceToDevice));
+  CUDA_CHECK(cudaMemcpy(dst_sk->dev_p_, sk.dev_p_, sizeof(cgbn_mem_t<BITS>), cudaMemcpyDeviceToDevice));
+  CUDA_CHECK(cudaMemcpy(dst_sk->dev_q_, sk.dev_q_, sizeof(cgbn_mem_t<BITS>), cudaMemcpyDeviceToDevice));
+  CUDA_CHECK(cudaMemcpy(dst_sk->dev_psquare_, sk.dev_psquare_, sizeof(cgbn_mem_t<BITS>), cudaMemcpyDeviceToDevice));
+  CUDA_CHECK(cudaMemcpy(dst_sk->dev_qsquare_, sk.dev_qsquare_, sizeof(cgbn_mem_t<BITS>), cudaMemcpyDeviceToDevice));
+  CUDA_CHECK(cudaMemcpy(dst_sk->dev_q_inverse_, sk.dev_q_inverse_, sizeof(cgbn_mem_t<BITS>), cudaMemcpyDeviceToDevice));
+  CUDA_CHECK(cudaMemcpy(dst_sk->dev_hp_, sk.dev_hp_, sizeof(cgbn_mem_t<BITS>), cudaMemcpyDeviceToDevice));
+  CUDA_CHECK(cudaMemcpy(dst_sk->dev_hq_, sk.dev_hq_, sizeof(cgbn_mem_t<BITS>), cudaMemcpyDeviceToDevice));
+  CUDA_CHECK(cudaMemcpy(dst_sk->dev_sk_, dst_sk, sizeof(SecretKey), cudaMemcpyHostToDevice));
+}
 
 void CGBNWrapper::StoreToDev(PublicKey *pk) {
   store2dev(pk->dev_n_, pk->n_);
@@ -688,17 +719,17 @@ void CGBNWrapper::StoreToDev(SecretKey *sk) {
 }
 
 void CGBNWrapper::StoreToHost(PublicKey *pk) {
-  store2host(pk->g_, pk->dev_g_);
-  store2host(pk->nsquare_, pk->dev_nsquare_);
-  store2host(pk->max_int_, pk->dev_max_int_);
+  store2host(&pk->g_, pk->dev_g_);
+  store2host(&pk->nsquare_, pk->dev_nsquare_);
+  store2host(&pk->max_int_, pk->dev_max_int_);
 }
 
 void CGBNWrapper::StoreToHost(SecretKey *sk) {
-  store2host(sk->psquare_, sk->dev_psquare_);
-  store2host(sk->qsquare_, sk->dev_qsquare_);
-  store2host(sk->q_inverse_, sk->dev_q_inverse_);
-  store2host(sk->hp_, sk->dev_hp_);
-  store2host(sk->hq_, sk->dev_hq_);
+  store2host(&sk->psquare_, sk->dev_psquare_);
+  store2host(&sk->qsquare_, sk->dev_qsquare_);
+  store2host(&sk->q_inverse_, sk->dev_q_inverse_);
+  store2host(&sk->hp_, sk->dev_hp_);
+  store2host(&sk->hq_, sk->dev_hq_);
 }
 
 } // namespace heu::lib::algorithms::paillier_dl

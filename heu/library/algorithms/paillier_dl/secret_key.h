@@ -19,18 +19,16 @@
 #include "heu/library/algorithms/paillier_dl/cgbn_wrapper/cgbn_wrapper_defs.h"
 #include "heu/library/algorithms/paillier_dl/cgbn_wrapper/cgbn_wrapper.h"
 
-#define NOT_SUPPORT do {                                                    \
-  printf("%s:%d %s not support.\n", __FILE__, __LINE__, __FUNCTION__);      \
-  abort();                                                                  \
-} while (0)
-
 namespace heu::lib::algorithms::paillier_dl {
 
 class SecretKey : public HeObject<SecretKey> {
  public:
-  ~SecretKey() {
-    CGBNWrapper::DevFree(this);
-  }
+  SecretKey();
+  ~SecretKey();
+  SecretKey(const SecretKey& other);
+  SecretKey& operator=(const SecretKey& other);
+  SecretKey(SecretKey&& other) noexcept;
+  SecretKey& operator=(SecretKey&& other) noexcept;
   
  public:
   MPInt g_;
@@ -55,59 +53,14 @@ class SecretKey : public HeObject<SecretKey> {
   void Init(MPInt g, MPInt raw_p, MPInt raw_q);
 
   bool operator==(const SecretKey &other) const {
-    NOT_SUPPORT;
-    // return p_ == other.p_ && q_ == other.q_ && lambda_ == other.lambda_ &&
-    //        mu_ == other.mu_;
+    return p_ == other.p_ && q_ == other.q_ && q_ == other.q_ && g_ == other.g_;
   }
 
   bool operator!=(const SecretKey &other) const {
-    NOT_SUPPORT;
-    // return !this->operator==(other);
+    return !this->operator==(other);
   }
 
   [[nodiscard]] std::string ToString() const override;
 };
 
 }  // namespace heu::lib::algorithms::paillier_dl
-
-// clang-format off
-namespace msgpack {
-MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
-namespace adaptor {
-
-// template<>
-// struct pack<heu::lib::algorithms::paillier_dl::SecretKey> {
-//   template<typename Stream>
-//   packer<Stream> &operator()(msgpack::packer<Stream> &o,
-//       const heu::lib::algorithms::paillier_dl::SecretKey &sk) const {
-//     // packing member variables as an array.
-//     o.pack_array(4);
-//     o.pack(sk.lambda_);
-//     o.pack(sk.mu_);
-//     o.pack(sk.p_);
-//     o.pack(sk.q_);
-//     return o;
-//   }
-// };
-
-// template<>
-// struct convert<heu::lib::algorithms::paillier_dl::SecretKey> {
-//   msgpack::object const &operator()(const msgpack::object &object,
-//       heu::lib::algorithms::paillier_dl::SecretKey &sk) const {
-//     if (object.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-//     if (object.via.array.size != 4) { throw msgpack::type_error(); }
-
-//     // The order here corresponds to the packer above
-//     sk.lambda_ = object.via.array.ptr[0].as<heu::lib::algorithms::MPInt>();
-//     sk.mu_ = object.via.array.ptr[1].as<heu::lib::algorithms::MPInt>();
-//     sk.p_ = object.via.array.ptr[2].as<heu::lib::algorithms::MPInt>();
-//     sk.q_ = object.via.array.ptr[3].as<heu::lib::algorithms::MPInt>();
-//     sk.Init();
-//     return object;
-//   }
-// };
-
-}  // namespace adaptor
-}  // namespace msgpack
-}  // namespace msgpack
-// clang-format on

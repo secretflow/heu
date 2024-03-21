@@ -25,7 +25,7 @@ namespace heu::lib::algorithms::paillier_dl {
 
 std::vector<Plaintext> Decryptor::DecryptImplVector(const std::vector<Ciphertext>& in_cts) const {
   std::vector<Plaintext> out_pts(in_cts.size()); 
-  CGBNWrapper::Decrypt(in_cts, sk_, pk_, out_pts);
+  CGBNWrapper::Decrypt(in_cts, sk_, pk_, &out_pts);
   for (int i=0; i<out_pts.size(); ++i) {
     if (out_pts[i] >= pk_.half_n_) {
       out_pts[i] -= pk_.n_;

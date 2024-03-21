@@ -30,16 +30,18 @@ class CGBNWrapper {
     public:
         static void InitSK(SecretKey *sk);
         static void InitPK(PublicKey *pk);
-        static void Encrypt(const std::vector<Plaintext>& pts, const PublicKey& pk, std::vector<MPInt>& rns, std::vector<Ciphertext>& cts);
-        static void Decrypt(const std::vector<Ciphertext>& cts, const SecretKey& sk, const PublicKey& pk, std::vector<Plaintext>& pts);
-        static void Add(const PublicKey& pk, const std::vector<Ciphertext>& as, const std::vector<Ciphertext>& bs, std::vector<Ciphertext>& cs);
-        static void Add(const PublicKey& pk, const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs, std::vector<Ciphertext>& cs);
-        static void Mul(const PublicKey& pk, const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs, std::vector<Ciphertext>& cs);
-        static void Negate(const PublicKey& pk, const std::vector<Ciphertext>& as, std::vector<Ciphertext>& cs);
+        static void Encrypt(const std::vector<Plaintext>& pts, const PublicKey& pk, std::vector<Ciphertext>* cts);
+        static void Decrypt(const std::vector<Ciphertext>& cts, const SecretKey& sk, const PublicKey& pk, std::vector<Plaintext>* pts);
+        static void Add(const PublicKey& pk, const std::vector<Ciphertext>& as, const std::vector<Ciphertext>& bs, std::vector<Ciphertext>* cs);
+        static void Add(const PublicKey& pk, const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs, std::vector<Ciphertext>* cs);
+        static void Mul(const PublicKey& pk, const std::vector<Ciphertext>& as, const std::vector<Plaintext>& bs, std::vector<Ciphertext>* cs);
+        static void Negate(const PublicKey& pk, const std::vector<Ciphertext>& as, std::vector<Ciphertext>* cs);
         static void DevMalloc(PublicKey *pk);
         static void DevMalloc(SecretKey *sk);
         static void DevFree(PublicKey *pk);
         static void DevFree(SecretKey *sk);
+        static void DevCopy(PublicKey *dst_pk, const PublicKey& pk);
+        static void DevCopy(SecretKey *dst_sk, const SecretKey& sk);
         static void StoreToDev(PublicKey *pk);
         static void StoreToDev(SecretKey *sk);
         static void StoreToHost(PublicKey *pk);

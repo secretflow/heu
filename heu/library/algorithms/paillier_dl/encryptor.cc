@@ -19,7 +19,7 @@
 
 namespace heu::lib::algorithms::paillier_dl {
 
-Encryptor::Encryptor(PublicKey pk) : pk_(std::move(pk)) {}
+Encryptor::Encryptor(PublicKey pk) : pk_(pk) {}
 Encryptor::Encryptor(const Encryptor &from) : Encryptor(from.pk_) {}
 
 template <bool audit>
@@ -29,7 +29,6 @@ std::vector<Ciphertext> Encryptor::EncryptImplVector(ConstSpan<Plaintext> pts,
   // YACL_ENFORCE(m.CompareAbs(pk_.PlaintextBound()) < 0,
   //              "message number out of range, message={}, max (abs)={}",
   //              m.ToHexString(), pk_.PlaintextBound());
-  std::vector<MPInt> rns;
   std::vector<Ciphertext> cts;
   std::vector<Plaintext> handled_pts;
   for (int i=0; i<pts.size(); i++) {
@@ -43,9 +42,8 @@ std::vector<Ciphertext> Encryptor::EncryptImplVector(ConstSpan<Plaintext> pts,
     Ciphertext ct;
     MPInt rn;
     cts.push_back(ct);
-    rns.push_back(rn);
   }
-  CGBNWrapper::Encrypt(handled_pts, pk_, rns, cts);
+  CGBNWrapper::Encrypt(handled_pts, pk_, &cts);
 
 
   // if constexpr (audit) {

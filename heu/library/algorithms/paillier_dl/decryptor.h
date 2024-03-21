@@ -25,7 +25,7 @@ namespace heu::lib::algorithms::paillier_dl {
 class Decryptor {
  public:
   explicit Decryptor(PublicKey pk, SecretKey sk)
-      : pk_(std::move(pk)), sk_(std::move(sk)) {}
+      : pk_(pk), sk_(sk) {}
 
   void Decrypt(ConstSpan<Ciphertext> in_cts, Span<Plaintext> out_pts) const;
   std::vector<Plaintext> Decrypt(ConstSpan<Ciphertext> in_cts) const;

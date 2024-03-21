@@ -19,7 +19,6 @@ namespace heu::lib::algorithms::paillier_dl {
 
 void PublicKey::Init(const MPInt &n, MPInt *g) {
   n_ = n;
-  CGBNWrapper::DevMalloc(this);
   CGBNWrapper::StoreToDev(this);
 
   CGBNWrapper::InitPK(this);
@@ -29,11 +28,82 @@ void PublicKey::Init(const MPInt &n, MPInt *g) {
 }
 
 std::string PublicKey::ToString() const {
-  NOT_SUPPORT;
-  // return fmt::format(
-  //     "Z-paillier PK: n={}[{}bits], h_s={}, max_plaintext={}[~{}bits]",
-  //     n_.ToHexString(), n_.BitCount(), h_s_.ToHexString(),
-  //     PlaintextBound().ToHexString(), PlaintextBound().BitCount());
+  return fmt::format(
+      "DL-paillier PK: n={}[{}bits], max_plaintext={}[~{}bits]",
+      n_.ToHexString(), n_.BitCount(),  max_int_.ToHexString(), max_int_.BitCount());
+}
+
+PublicKey::PublicKey(){
+  CGBNWrapper::DevMalloc(this);
+}
+
+PublicKey::~PublicKey(){
+  CGBNWrapper::DevFree(this);
+}
+
+PublicKey::PublicKey(const PublicKey& other) {
+  this->g_ = other.g_;
+  this->n_ = other.n_;
+  this->nsquare_ = other.nsquare_;
+  this->max_int_ = other.max_int_;
+  this->half_n_ = other.half_n_;
+  CGBNWrapper::DevMalloc(this);
+  CGBNWrapper::DevCopy(this, other);
+}
+
+PublicKey& PublicKey::operator=(const PublicKey& other) {
+  if (this != &other) {
+    this->g_ = other.g_;
+    this->n_ = other.n_;
+    this->nsquare_ = other.nsquare_;
+    this->max_int_ = other.max_int_;
+    this->half_n_ = other.half_n_;
+    CGBNWrapper::DevCopy(this, other);
+  }
+  return *this;
+}
+
+PublicKey::PublicKey(PublicKey&& other) noexcept {
+  this->g_ = other.g_;
+  this->n_ = other.n_;
+  this->nsquare_ = other.nsquare_;
+  this->max_int_ = other.max_int_;
+  this->half_n_ = other.half_n_;
+  this->dev_g_ = other.dev_g_;
+  this->dev_n_ = other.dev_n_;
+  this->dev_nsquare_ = other.dev_nsquare_;
+  this->dev_max_int_ = other.dev_max_int_;
+  this->dev_pk_ = other.dev_pk_;
+
+  other.dev_g_ = nullptr;
+  other.dev_n_ = nullptr;
+  other.dev_nsquare_ = nullptr;
+  other.dev_max_int_ = nullptr;
+  other.dev_pk_ = nullptr;
+}
+
+PublicKey& PublicKey::operator=(PublicKey&& other) noexcept {
+  if (this != &other) {
+    CGBNWrapper::DevFree(this);
+    
+    this->g_ = other.g_;
+    this->n_ = other.n_;
+    this->nsquare_ = other.nsquare_;
+    this->max_int_ = other.max_int_;
+    this->half_n_ = other.half_n_;
+    this->dev_g_ = other.dev_g_;
+    this->dev_n_ = other.dev_n_;
+    this->dev_nsquare_ = other.dev_nsquare_;
+    this->dev_max_int_ = other.dev_max_int_;
+    this->dev_pk_ = other.dev_pk_;
+
+    other.dev_g_ = nullptr;
+    other.dev_n_ = nullptr;
+    other.dev_nsquare_ = nullptr;
+    other.dev_max_int_ = nullptr;
+    other.dev_pk_ = nullptr;
+  }
+  return *this;
 }
 
 }  // namespace heu::lib::algorithms::paillier_dl

@@ -28,7 +28,7 @@ std::vector<Ciphertext> Evaluator::Add(ConstSpan<Ciphertext> as, ConstSpan<Ciphe
   }
   std::vector<Ciphertext> outs_vec(as_vec.size());
 
-  CGBNWrapper::Add(pk_, as_vec, bs_vec, outs_vec);
+  CGBNWrapper::Add(pk_, as_vec, bs_vec, &outs_vec);
 
   return outs_vec;
 }
@@ -42,7 +42,7 @@ void Evaluator::AddInplace(Span<Ciphertext> as, ConstSpan<Ciphertext> bs) const 
   }
   std::vector<Ciphertext> outs_vec(as_vec.size());
 
-  CGBNWrapper::Add(pk_, as_vec, bs_vec, as_vec);
+  CGBNWrapper::Add(pk_, as_vec, bs_vec, &as_vec);
   for (int i=0; i<as.size(); ++i) {
     *as[i] = as_vec[i];
   }
@@ -58,7 +58,7 @@ std::vector<Ciphertext> Evaluator::Add(ConstSpan<Ciphertext> as, ConstSpan<Plain
   std::vector<Plaintext> handled_bs_vec = HandleNeg(bs_vec);
   std::vector<Ciphertext> outs_vec(as_vec.size());
 
-  CGBNWrapper::Add(pk_, as_vec, handled_bs_vec, outs_vec); 
+  CGBNWrapper::Add(pk_, as_vec, handled_bs_vec, &outs_vec); 
 
   return outs_vec;
 }
@@ -73,7 +73,7 @@ void Evaluator::AddInplace(Span<Ciphertext> as, ConstSpan<Plaintext> bs) const {
   std::vector<Plaintext> handled_bs_vec = HandleNeg(bs_vec);
   std::vector<Ciphertext> outs_vec(as_vec.size());
 
-  CGBNWrapper::Add(pk_, as_vec, handled_bs_vec, as_vec); 
+  CGBNWrapper::Add(pk_, as_vec, handled_bs_vec, &as_vec); 
   for (int i=0; i<as.size(); ++i) {
     *as[i] = as_vec[i];
   }
@@ -136,7 +136,7 @@ std::vector<Ciphertext> Evaluator::Mul(ConstSpan<Ciphertext> as, ConstSpan<Plain
   std::vector<Plaintext> handled_bs_vec = HandleNeg(bs_vec);
   std::vector<Ciphertext> outs_vec(as_vec.size());
 
-  CGBNWrapper::Mul(pk_, as_vec, handled_bs_vec, outs_vec); 
+  CGBNWrapper::Mul(pk_, as_vec, handled_bs_vec, &outs_vec); 
   
   return outs_vec;
 }
@@ -151,7 +151,7 @@ void Evaluator::MulInplace(Span<Ciphertext> as, ConstSpan<Plaintext> bs) const {
   std::vector<Plaintext> handled_bs_vec = HandleNeg(bs_vec);
   std::vector<Ciphertext> outs_vec(as_vec.size());
 
-  CGBNWrapper::Mul(pk_, as_vec, handled_bs_vec, as_vec);
+  CGBNWrapper::Mul(pk_, as_vec, handled_bs_vec, &as_vec);
   for (int i=0; i<as.size(); ++i) {
     *as[i] = as_vec[i];
   }
