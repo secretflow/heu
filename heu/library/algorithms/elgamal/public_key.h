@@ -15,7 +15,7 @@
 #pragma once
 
 #include "fmt/format.h"
-#include "yacl/crypto/base/ecc/ecc_spi.h"
+#include "yacl/crypto/ecc/ecc_spi.h"
 
 #include "heu/library/algorithms/elgamal/plaintext.h"
 #include "heu/library/algorithms/util/he_object.h"

@@ -35,7 +35,7 @@ yacl_cc_library(
     deps = [
         ":hash_map",
         "//heu/library/algorithms/util",
-        "@yacl//yacl/crypto/base/ecc",
+        "@yacl//yacl/crypto/ecc",
         "@yacl//yacl/utils:parallel",
     ],
 )

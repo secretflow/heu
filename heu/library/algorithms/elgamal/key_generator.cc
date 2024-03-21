@@ -14,7 +14,7 @@
 
 #include "heu/library/algorithms/elgamal/key_generator.h"
 
-#include "yacl/crypto/base/ecc/ecc_spi.h"
+#include "yacl/crypto/ecc/ecc_spi.h"
 
 #include "heu/library/algorithms/elgamal/ciphertext.h"
 

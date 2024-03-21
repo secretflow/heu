@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "yacl/crypto/base/ecc/ecc_spi.h"
+#include "yacl/crypto/ecc/ecc_spi.h"
 
 #include "heu/library/algorithms/elgamal/utils/hash_map.h"
 #include "heu/library/algorithms/util/mp_int.h"
