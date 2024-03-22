@@ -29,7 +29,7 @@ class MockObj {
   explicit MockObj(const std::vector<int64_t> &array, double scale = 1)
       : array_(array), scale_(scale) {}
 
-  ~MockObj() = default;
+  virtual ~MockObj() = default;
 
   auto operator->() { return &array_; }
 
