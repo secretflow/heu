@@ -26,18 +26,18 @@
 
 namespace heu::spi::test {
 
-// map: schema -> config
-static std::multimap<Schema, SpiArgs> kSpecialConfigs = {
-    {Schema::MockBfv,
-     {ArgPolyModulusDegree = 2048, ArgGenNewPkSk = true, ArgGenNewRlk = true,
-      ArgGenNewGlk = true, ArgGenNewBsk = true}},
-    {Schema::MockCkks,
-     {ArgPolyModulusDegree = 4096, ArgGenNewPkSk = true, ArgGenNewRlk = true,
-      ArgGenNewGlk = true, ArgScale = 100}},
-};
-
 auto SelectHeKitsForTest(std::unordered_set<FeatureSet> groups)
     -> decltype(::testing::ValuesIn(std::vector<std::shared_ptr<HeKit>>())) {
+  // map: schema -> config
+  static std::multimap<Schema, SpiArgs> kSpecialConfigs = {
+      {Schema::MockBfv,
+       {ArgPolyModulusDegree = 2048, ArgGenNewPkSk = true, ArgGenNewRlk = true,
+        ArgGenNewGlk = true, ArgGenNewBsk = true}},
+      {Schema::MockCkks,
+       {ArgPolyModulusDegree = 4096, ArgGenNewPkSk = true, ArgGenNewRlk = true,
+        ArgGenNewGlk = true, ArgScale = 100}},
+  };
+
   const static std::set<std::shared_ptr<HeKit>> all_kits = []() {
     // below code only runs once
     std::set<std::shared_ptr<HeKit>> res;

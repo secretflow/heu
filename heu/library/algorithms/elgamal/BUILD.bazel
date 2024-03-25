@@ -70,7 +70,7 @@ yacl_cc_library(
         ":public_key",
         "//heu/library/algorithms/util",
         "@com_github_msgpack_msgpack//:msgpack",
-        "@yacl//yacl/crypto/base/ecc",
+        "@yacl//yacl/crypto/ecc",
     ],
 )
 

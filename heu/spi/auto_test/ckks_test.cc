@@ -44,8 +44,6 @@ INSTANTIATE_TEST_SUITE_P(HeCollection, CkksTest,
                          SelectHeKitsForTest({FeatureSet::ApproxFHE}),
                          GenTestName<CkksTest>);
 
-GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST(CkksTest);
-
 TEST_P(CkksTest, TestEvaluate) {
   using namespace std::complex_literals;
   auto edr = kit_->GetEncoder(ArgEncodingMethod = "batch");
