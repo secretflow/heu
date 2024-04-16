@@ -36,7 +36,7 @@ static __device__ void p_cgbn(char *name, cgbn_mem_t<BITS> *d) {
   printf("\n");
 }
 
-static void buf_cal_used(mp_digit *buf, int size, int *used) {
+static void buf_cal_used(uint64_t *buf, int size, int *used) {
   int count = 0;
   for (int i=0; i<size; i++) {
     if (buf[i] != 0) {
@@ -57,12 +57,12 @@ static void store2dev(dev_mem_t<BITS> *address, const MPInt &z) {
   CUDA_CHECK(cudaMemcpy(address->_limbs, buffer.data(), buffer.size(), cudaMemcpyHostToDevice));
 }
 
-static void store2dev(void *address, PublicKey *pk) {
-  CUDA_CHECK(cudaMemcpy(address, pk, sizeof(PublicKey), cudaMemcpyHostToDevice));
+static void store2dev(void *address, const PublicKey &pk) {
+  CUDA_CHECK(cudaMemcpy(address, &pk, sizeof(PublicKey), cudaMemcpyHostToDevice));
 }
 
-static void store2dev(void *address, SecretKey *sk) {
-  CUDA_CHECK(cudaMemcpy(address, sk, sizeof(SecretKey), cudaMemcpyHostToDevice));
+static void store2dev(void *address, const SecretKey &sk) {
+  CUDA_CHECK(cudaMemcpy(address, &sk, sizeof(SecretKey), cudaMemcpyHostToDevice));
 }
 
 static void store2host(MPInt *z, dev_mem_t<BITS> *address) {
@@ -217,7 +217,7 @@ void CGBNWrapper::InitPK(PublicKey *pk) {
   CUDA_CHECK(cgbn_error_report_free(report));
 }
 
-__global__ __noinline__ void raw_encrypt(PublicKey *pub_key, cgbn_error_report_t *report, gpu_mpz *plains, gpu_mpz *ciphers,int count, int rand_seed ) {
+__global__ __noinline__ void raw_encrypt(PublicKey *pub_key, cgbn_error_report_t *report, gpu_mpz *plains, gpu_mpz *ciphers,  gpu_mpz *rs, int count) {
   int tid=(blockIdx.x*blockDim.x + threadIdx.x)/TPI;
   if(tid>=count)
     return;
@@ -229,6 +229,7 @@ __global__ __noinline__ void raw_encrypt(PublicKey *pub_key, cgbn_error_report_t
   cgbn_load(bn_env, nsquare, (cgbn_mem_t<BITS> *)pub_key->dev_nsquare_);
   cgbn_load(bn_env, max_int, (cgbn_mem_t<BITS> *)pub_key->dev_max_int_);
   cgbn_load(bn_env, plain, plains + tid);
+  cgbn_load(bn_env, r, rs);
   cgbn_sub(bn_env, tmp, n, max_int); 
   if(cgbn_compare(bn_env, plain, tmp) >= 0 &&  cgbn_compare(bn_env, plain, n) < 0) {
     // Very large plaintext, take a sneaky shortcut using inverses
@@ -242,7 +243,6 @@ __global__ __noinline__ void raw_encrypt(PublicKey *pub_key, cgbn_error_report_t
     cgbn_add_ui32(bn_env, cipher, cipher, 1);
     cgbn_rem(bn_env, cipher, cipher, nsquare);
   }
-  cgbn_set_ui32(bn_env, r, rand_seed);
   cgbn_modular_power(bn_env, tmp, r, n, nsquare); 
   cgbn_mul(bn_env, tmp, cipher, tmp); 
   cgbn_rem(bn_env, r, tmp, nsquare);
@@ -270,24 +270,26 @@ void CGBNWrapper::Encrypt(const std::vector<Plaintext>& pts, const PublicKey& pk
   cgbn_error_report_t *report;
   cgbn_mem_t<BITS> *dev_plains;
   cgbn_mem_t<BITS> *dev_ciphers;
+  cgbn_mem_t<BITS> *dev_r;
 
   CUDA_CHECK(cudaMalloc((void **)&dev_plains, sizeof(cgbn_mem_t<BITS>) * count));
   CUDA_CHECK(cudaMalloc((void **)&dev_ciphers, sizeof(cgbn_mem_t<BITS>) * count));
+  CUDA_CHECK(cudaMalloc((void **)&dev_r, sizeof(cgbn_mem_t<BITS>)));
 
   CUDA_CHECK(cudaMemset(dev_plains->_limbs, 0, sizeof(cgbn_mem_t<BITS>) * count));
   CUDA_CHECK(cudaMemset(dev_ciphers->_limbs, 0, sizeof(cgbn_mem_t<BITS>) * count));
 
   for (int i=0; i<count; i++) {
-    store2dev((dev_mem_t<BITS> *)(dev_plains + i), *const_cast<Plaintext *>(&pts[i])); 
+    store2dev((dev_mem_t<BITS> *)(dev_plains + i), pts[i]); 
   }
+  MPInt r;
+  MPInt::RandomLtN(pk.max_int_, &r);
+  store2dev((dev_mem_t<BITS> *)dev_r, r); 
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
 
-  std::random_device rd;
-  std::default_random_engine engine{rd()};
-  std::uniform_int_distribution<int> gen_data{0, INT_MAX};
-  int32_t rnd_number = gen_data(engine);
-  raw_encrypt<<<(count+IPB-1)/IPB, TPB>>>(pk.dev_pk_, report,  dev_plains, dev_ciphers, count, rnd_number); 
+
+  raw_encrypt<<<(count+IPB-1)/IPB, TPB>>>(pk.dev_pk_, report,  dev_plains, dev_ciphers, dev_r, count); 
   CUDA_CHECK(cudaDeviceSynchronize());
 
   for (int i=0; i<count; i++) {
@@ -299,6 +301,7 @@ void CGBNWrapper::Encrypt(const std::vector<Plaintext>& pts, const PublicKey& pk
   CUDA_CHECK(cgbn_error_report_free(report));
   CUDA_CHECK(cudaFree(dev_plains));
   CUDA_CHECK(cudaFree(dev_ciphers));
+  CUDA_CHECK(cudaFree(dev_r));
 }
 
 
@@ -372,7 +375,7 @@ void CGBNWrapper::Decrypt(const std::vector<Ciphertext>& cts, const SecretKey& s
   CUDA_CHECK(cudaMemset(dev_ciphers->_limbs, 0, sizeof(cgbn_mem_t<BITS>) * count));
 
   for (int i=0; i<count; i++) {
-    store2dev((dev_mem_t<BITS> *)(dev_ciphers + i), *const_cast<MPInt *>(&cts[i].c_)); 
+    store2dev((dev_mem_t<BITS> *)(dev_ciphers + i), cts[i].c_); 
   }
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
@@ -443,8 +446,8 @@ void CGBNWrapper::Add(const PublicKey& pk, const std::vector<Ciphertext>& as, co
   CUDA_CHECK(cudaMemset(dev_cs->_limbs, 0, sizeof(cgbn_mem_t<BITS>) * count));
 
   for (int i=0; i<count; i++) {
-    store2dev((dev_mem_t<BITS> *)(dev_as + i), *const_cast<MPInt *>(&as[i].c_)); 
-    store2dev((dev_mem_t<BITS> *)(dev_bs + i), *const_cast<MPInt *>(&bs[i].c_)); 
+    store2dev((dev_mem_t<BITS> *)(dev_as + i), as[i].c_); 
+    store2dev((dev_mem_t<BITS> *)(dev_bs + i), bs[i].c_); 
   }
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
@@ -473,29 +476,31 @@ void CGBNWrapper::Add(const PublicKey& pk, const std::vector<Ciphertext>& as, co
   cgbn_mem_t<BITS> *dev_bs;
   cgbn_mem_t<BITS> *dev_ctbs;
   cgbn_mem_t<BITS> *dev_cs;
+  cgbn_mem_t<BITS> *dev_r;
 
   CUDA_CHECK(cudaMalloc((void **)&dev_as, sizeof(cgbn_mem_t<BITS>) * count));
   CUDA_CHECK(cudaMalloc((void **)&dev_bs, sizeof(cgbn_mem_t<BITS>) * count));
   CUDA_CHECK(cudaMalloc((void **)&dev_ctbs, sizeof(cgbn_mem_t<BITS>) * count));
   CUDA_CHECK(cudaMalloc((void **)&dev_cs, sizeof(cgbn_mem_t<BITS>) * count)); 
+  CUDA_CHECK(cudaMalloc((void **)&dev_r, sizeof(cgbn_mem_t<BITS>))); 
 
   CUDA_CHECK(cudaMemset(dev_as->_limbs, 0, sizeof(cgbn_mem_t<BITS>) * count));
   CUDA_CHECK(cudaMemset(dev_bs->_limbs, 0, sizeof(cgbn_mem_t<BITS>) * count));
   CUDA_CHECK(cudaMemset(dev_ctbs->_limbs, 0, sizeof(cgbn_mem_t<BITS>) * count));
   CUDA_CHECK(cudaMemset(dev_cs->_limbs, 0, sizeof(cgbn_mem_t<BITS>) * count));
+  CUDA_CHECK(cudaMemset(dev_r->_limbs, 0, sizeof(cgbn_mem_t<BITS>)));
 
   for (int i=0; i<count; i++) {
-    store2dev((dev_mem_t<BITS> *)(dev_as + i), *const_cast<MPInt *>(&as[i].c_)); 
-    store2dev((dev_mem_t<BITS> *)(dev_bs + i), *const_cast<MPInt *>(&bs[i])); 
+    store2dev((dev_mem_t<BITS> *)(dev_as + i), as[i].c_); 
+    store2dev((dev_mem_t<BITS> *)(dev_bs + i), bs[i]); 
   }
+  MPInt r;
+  MPInt::RandomLtN(pk.max_int_, &r);
+  store2dev((dev_mem_t<BITS> *)dev_r, r); 
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
 
-  std::random_device rd;
-  std::default_random_engine engine{rd()};
-  std::uniform_int_distribution<int> gen_data{0, INT_MAX};
-  int32_t rnd_number = gen_data(engine);
-  raw_encrypt<<<(count+IPB-1)/IPB, TPB>>>(pk.dev_pk_, report,  dev_bs, dev_ctbs, count, rnd_number); 
+  raw_encrypt<<<(count+IPB-1)/IPB, TPB>>>(pk.dev_pk_, report,  dev_bs, dev_ctbs, dev_r, count); 
   raw_add<<<(count+IPB-1)/IPB, TPB>>>(pk.dev_nsquare_, report, dev_cs, dev_as, dev_ctbs, count);
   CUDA_CHECK(cudaDeviceSynchronize());
   CGBN_CHECK(report);
@@ -509,6 +514,7 @@ void CGBNWrapper::Add(const PublicKey& pk, const std::vector<Ciphertext>& as, co
   CUDA_CHECK(cudaFree(dev_bs));
   CUDA_CHECK(cudaFree(dev_ctbs));
   CUDA_CHECK(cudaFree(dev_cs));
+  CUDA_CHECK(cudaFree(dev_r));
 }
 
 __global__ void raw_mul(dev_mem_t<BITS> *pk_n, dev_mem_t<BITS> *pk_max_int, dev_mem_t<BITS> *pk_nsquare, 
@@ -566,8 +572,8 @@ void CGBNWrapper::Mul(const PublicKey& pk, const std::vector<Ciphertext>& as, co
   CUDA_CHECK(cudaMemset(dev_cs->_limbs, 0, sizeof(cgbn_mem_t<BITS>) * count));
 
   for (int i=0; i<count; i++) {
-    store2dev((dev_mem_t<BITS> *)(dev_as + i), *const_cast<MPInt *>(&as[i].c_)); 
-    store2dev((dev_mem_t<BITS> *)(dev_bs + i), *const_cast<Plaintext *>(&bs[i])); 
+    store2dev((dev_mem_t<BITS> *)(dev_as + i), as[i].c_); 
+    store2dev((dev_mem_t<BITS> *)(dev_bs + i), bs[i]); 
   }
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
@@ -624,7 +630,7 @@ void CGBNWrapper::Negate(const PublicKey& pk, const std::vector<Ciphertext>& as,
   CUDA_CHECK(cudaMemset(dev_cs->_limbs, 0, sizeof(cgbn_mem_t<BITS>) * count));
 
   for (int i=0; i<count; i++) {
-    store2dev((dev_mem_t<BITS> *)(dev_as + i), *const_cast<MPInt *>(&as[i].c_)); 
+    store2dev((dev_mem_t<BITS> *)(dev_as + i), as[i].c_); 
   }
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
@@ -708,14 +714,14 @@ void CGBNWrapper::DevCopy(SecretKey *dst_sk, const SecretKey &sk) {
 
 void CGBNWrapper::StoreToDev(PublicKey *pk) {
   store2dev(pk->dev_n_, pk->n_);
-  store2dev(pk->dev_pk_, pk);
+  store2dev(pk->dev_pk_, *pk);
 }
 
 void CGBNWrapper::StoreToDev(SecretKey *sk) {
   store2dev(sk->dev_g_, sk->g_);
   store2dev(sk->dev_p_, sk->p_);
   store2dev(sk->dev_q_, sk->q_);
-  store2dev(sk->dev_sk_, sk);
+  store2dev(sk->dev_sk_, *sk);
 }
 
 void CGBNWrapper::StoreToHost(PublicKey *pk) {

@@ -34,7 +34,6 @@ class DLPaillierTest : public ::testing::Test {
   std::shared_ptr<Encryptor> encryptor_;
   std::shared_ptr<Evaluator> evaluator_;
   std::shared_ptr<Decryptor> decryptor_;
-
 };
 
 TEST_F(DLPaillierTest, VectorEncryptDecrypt) {
