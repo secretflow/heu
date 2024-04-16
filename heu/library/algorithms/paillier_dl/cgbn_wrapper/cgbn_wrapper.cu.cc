@@ -73,9 +73,9 @@ static void store2host(MPInt *z, dev_mem_t<BITS> *address) {
   CUDA_CHECK(cudaMemcpy(buffer.data(), address->_limbs,  z_size, cudaMemcpyDeviceToHost));
 
   int used = 0;
-  buf_cal_used((mp_digit *)buffer.data(), z_size / sizeof(mp_digit), &used);
+  buf_cal_used((uint64_t *)buffer.data(), z_size / sizeof(uint64_t), &used);
 
-  buffer.resize(used * sizeof(mp_digit));
+  buffer.resize(used * sizeof(uint64_t));
   Endian endian = Endian::little;
   (*z).FromMagBytes(buffer, endian);
 }
