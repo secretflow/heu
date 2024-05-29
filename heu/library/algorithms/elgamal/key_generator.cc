@@ -26,7 +26,7 @@ void KeyGenerator::Generate(const yacl::crypto::CurveName &curve_name,
       ::yacl::crypto::EcGroupFactory::Instance().Create(curve_name);
   MPInt x;
   do {
-    MPInt::RandomLtN(curve->GetField(), &x);
+    MPInt::RandomLtN(curve->GetOrder(), &x);
     // The following operations may not be necessary, but there is no harm even
     // if they are done. It is a kind of psychological comfort and makes people
     // feel safer.

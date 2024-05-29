@@ -111,7 +111,22 @@ void PyBindPhe(pybind11::module &m) {
 
   py::class_<phe::Ciphertext>(m, "Ciphertext")
       .def("__str__", [](const phe::Ciphertext &ct) { return ct.ToString(); })
-      .def(PyUtils::PickleSupport<phe::Ciphertext>());
+      .def(PyUtils::PickleSupport<phe::Ciphertext>())
+      .def(
+          "serialize",
+          [](const phe::Ciphertext &ct) {
+            auto buffer = ct.Serialize();
+            return pybind11::bytes(buffer.template data<char>(), buffer.size());
+          },
+          "serialize ciphertext to bytes")
+      .def_static(
+          "load_from",
+          [](const pybind11::bytes &buffer) {
+            phe::Ciphertext ct;
+            ct.Deserialize(static_cast<std::string_view>(buffer));
+            return ct;
+          },
+          py::arg("bytes_buffer"), "deserialize ciphertext from bytes");
 
   /****** key management ******/
   py::class_<phe::PublicKey, std::shared_ptr<phe::PublicKey>>(m, "PublicKey")
@@ -133,10 +148,25 @@ void PyBindPhe(pybind11::module &m) {
             pk.Deserialize(static_cast<std::string_view>(buffer));
             return pk;
           },
-          py::arg("bytes_buffer"), "deserialize matrix from bytes");
+          py::arg("bytes_buffer"), "deserialize public key from bytes");
   py::class_<phe::SecretKey, std::shared_ptr<phe::SecretKey>>(m, "SecretKey")
       .def("__str__", [](const phe::SecretKey &sk) { return sk.ToString(); })
-      .def(PyUtils::PickleSupport<phe::SecretKey>());
+      .def(PyUtils::PickleSupport<phe::SecretKey>())
+      .def(
+          "serialize",
+          [](const phe::SecretKey &sk) {
+            auto buffer = sk.Serialize();
+            return pybind11::bytes(buffer.template data<char>(), buffer.size());
+          },
+          "serialize secret key to bytes")
+      .def_static(
+          "load_from",
+          [](const pybind11::bytes &buffer) {
+            phe::SecretKey sk;
+            sk.Deserialize(static_cast<std::string_view>(buffer));
+            return sk;
+          },
+          py::arg("bytes_buffer"), "deserialize secret key from bytes");
 
   /****** He kit ******/
   py::class_<phe::HeKitPublicBase>(m, "HeKitPublicBase")
