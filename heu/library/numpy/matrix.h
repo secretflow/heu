@@ -265,13 +265,16 @@ class DenseMatrix {
 
   static DenseMatrix<T> LoadFrom(
       yacl::ByteContainerView in,
-      MatrixSerializeFormat format = MatrixSerializeFormat::Best) {
+      MatrixSerializeFormat format = MatrixSerializeFormat::Best,
+      size_t *offset = nullptr) {
     if (format == MatrixSerializeFormat::Interconnection) {
       return LoadFromIc(in);
     }
 
-    auto msg =
-        msgpack::unpack(reinterpret_cast<const char *>(in.data()), in.size());
+    size_t zero = 0;
+    size_t *off = (offset == nullptr ? &zero : offset);
+    auto msg = msgpack::unpack(reinterpret_cast<const char *>(in.data()),
+                               in.size(), *off);
     msgpack::object o = msg.get();
 
     YACL_ENFORCE(o.type == msgpack::type::ARRAY && o.via.array.size == 4,

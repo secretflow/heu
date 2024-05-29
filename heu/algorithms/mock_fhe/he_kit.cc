@@ -98,9 +98,10 @@ std::unique_ptr<spi::HeKit> HeKit::Create(spi::Schema schema,
   YACL_ENFORCE(
       schema == spi::Schema::MockBfv || schema == spi::Schema::MockCkks,
       "Schema {} not supported by {}", schema, kLibName);
-  YACL_ENFORCE(
-      args.Exist(spi::ArgGenNewPkSk) || args.Exist(spi::ArgPkFrom),
-      "Neither ArgGenNewPkSk nor ArgPkFrom is set, you must set one of them");
+  YACL_ENFORCE(args.Exist(spi::ArgGenNewPkSk) || args.Exist(spi::ArgPkFrom),
+               "Neither ArgGenNewPkSk nor ArgPkFrom is set, you must set one "
+               "of them, args={}",
+               args);
 
   // process context
   auto kit = std::make_unique<HeKit>();

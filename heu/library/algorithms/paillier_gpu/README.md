@@ -17,6 +17,13 @@ paillier_gpu 算法默认关闭，请用以下方式启用：
 bazel test --config=gpu //heu/...
 ```
 
+运行性能测试：
+```
+bazel run -c opt heu/library/benchmark:phe --config=gpu -- --schema=gpaillier
+# 或者
+bazel run -c opt heu/library/benchmark:np --config=gpu -- --schema=gpaillier
+```
+
 编译带 paillier_gpu 的 pip 包：
 
 ```

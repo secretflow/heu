@@ -1,3 +1,6 @@
+如果您是 SPI 的使用者，则无需关心 `sketches/` 目录，该目录存放 SPI 接口的实现
+
+
 # Sketch 说明
 
 `sketches/` 目录存放 HE SPI 接口的预实现，根据预实现的方式不同 Sketch 分为两大类：
