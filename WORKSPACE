@@ -16,29 +16,15 @@ workspace(name = "com_alipay_sf_heu")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-### ref yacl ###
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
-
-SECRETFLOW_GIT = "https://github.com/secretflow"
-
-YACL_COMMIT_ID = "05b879b8133e280d16ee03d24d2f2bba1c9db7ea"
-
-git_repository(
-    name = "yacl",
-    commit = YACL_COMMIT_ID,
-    recursive_init_submodules = True,
-    remote = "{}/yacl.git".format(SECRETFLOW_GIT),
-)
-
-load("@yacl//bazel:repositories.bzl", "yacl_deps")
-
-yacl_deps()
-
 #### fetch third-party deps ####
 
 load("//third_party/bazel_cpp:repositories.bzl", "heu_cpp_deps")
 
 heu_cpp_deps()
+
+load("@yacl//bazel:repositories.bzl", "yacl_deps")
+
+yacl_deps()
 
 #### for cpp ####
 
@@ -105,16 +91,6 @@ load("//third_party/bazel_rust/cargo:crates.bzl", "rust_fetch_remote_crates")
 rust_fetch_remote_crates()
 
 #### for cuda ####
-
-http_archive(
-    name = "rules_cuda",
-    sha256 = "f62baee0150ac91f4cdfcb10df2be0d0e9b941d1d32c8cddf00b16b57bdb1540",
-    strip_prefix = "rules_cuda-17ca7f8c04cf746aa4c0a0c3722799278df7ca93",
-    urls = [
-        # Main branch as of 2023-1-07
-        "https://github.com/bazel-contrib/rules_cuda/archive/17ca7f8c04cf746aa4c0a0c3722799278df7ca93.tar.gz",
-    ],
-)
 
 load("@rules_cuda//cuda:repositories.bzl", "register_detected_cuda_toolchains", "rules_cuda_dependencies")
 
