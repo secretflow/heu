@@ -49,7 +49,7 @@ jobs:
             set +e
             declare -i test_status
 
-            pip install numpy
+            pip install -r requirements.txt
             bazel test //heu/... --test_timeout=1800 --test_output=errors --verbose_failures; test_status=${PIPESTATUS[0]}
 
             sh ../devtools/rename-junit-xml.sh
@@ -88,7 +88,7 @@ jobs:
             set +e
             declare -i test_status
 
-            pip install numpy
+            pip install -r requirements.txt
             bazel test //heu/library/... //heu/pylib/... --test_timeout=1800 --test_output=errors --verbose_failures; test_status=${PIPESTATUS[0]}
 
             sh ../devtools/rename-junit-xml.sh
@@ -118,7 +118,7 @@ jobs:
             bash ~/miniconda.sh -b -p $HOME/miniconda
             source $HOME/miniconda/bin/activate
             conda init bash zsh
-            pip install numpy
+            pip install -r requirements.txt
       - run:
           name: Checkout devtools
           command: git clone https://github.com/secretflow/devtools.git ../devtools
