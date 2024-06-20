@@ -137,10 +137,10 @@ def _yacl():
         http_archive,
         name = "yacl",
         urls = [
-            "https://github.com/secretflow/yacl/archive/refs/tags/0.4.5b1.tar.gz",
+            "https://github.com/secretflow/yacl/archive/refs/tags/0.4.5b2.tar.gz",
         ],
-        strip_prefix = "yacl-0.4.5b1",
-        sha256 = "28064053b9add0db8e1e8e648421a0579f1d3e7ee8a4bbd7bd5959cb59598088",
+        strip_prefix = "yacl-0.4.5b2",
+        sha256 = "b3fb75d41a32b80145a3bb9d36b8c039a262191f1a2f037292c649344289b01b",
     )
 
 def _rules_cuda():
