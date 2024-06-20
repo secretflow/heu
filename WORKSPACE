@@ -62,10 +62,10 @@ py_repositories()
 # Python binding.
 http_archive(
     name = "pybind11_bazel",
-    sha256 = "6426567481ee345eb48661e7db86adc053881cb4dd39fbf527c8986316b682b9",
-    strip_prefix = "pybind11_bazel-fc56ce8a8b51e3dd941139d329b63ccfea1d304b",
+    sha256 = "dc4882b23a617575d0fd822aba88aa4a14133c3d428b5a8fb83d81d03444a475",
+    strip_prefix = "pybind11_bazel-8889d39b2b925b2a47519ae09402a96f00ccf2b4",
     urls = [
-        "https://github.com/pybind/pybind11_bazel/archive/fc56ce8a8b51e3dd941139d329b63ccfea1d304b.zip",
+        "https://github.com/pybind/pybind11_bazel/archive/8889d39b2b925b2a47519ae09402a96f00ccf2b4.zip",
     ],
 )
 
@@ -73,10 +73,10 @@ http_archive(
 http_archive(
     name = "pybind11",
     build_file = "@pybind11_bazel//:pybind11.BUILD",
-    sha256 = "eacf582fa8f696227988d08cfc46121770823839fe9e301a20fbce67e7cd70ec",
-    strip_prefix = "pybind11-2.10.0",
+    sha256 = "bf8f242abd1abcd375d516a7067490fb71abd79519a282d22b6e4d19282185a7",
+    strip_prefix = "pybind11-2.12.0",
     urls = [
-        "https://github.com/pybind/pybind11/archive/refs/tags/v2.10.0.tar.gz",
+        "https://github.com/pybind/pybind11/archive/refs/tags/v2.12.0.tar.gz",
     ],
 )
 
