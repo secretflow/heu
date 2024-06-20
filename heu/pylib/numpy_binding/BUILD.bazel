@@ -21,6 +21,7 @@ pybind_library(
     name = "numpy_binding",
     srcs = ["bind_numpy.cc"],
     hdrs = ["bind_numpy.h"],
+    defines = ["PYBIND11_NO_ASSERT_GIL_HELD_INCREF_DECREF"],
     deps = [
         ":extension_functions",
         ":infeed",
