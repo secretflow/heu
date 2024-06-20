@@ -190,6 +190,7 @@ void fpn_matrix_elementwise_multiply_pen_matrix(
 
   fpga_config *cfg;
   cfg = (fpga_config *)malloc(sizeof(fpga_config));
+  memset(cfg, 0, sizeof(fpga_config));
   cfg->operate_mode = 7;  // call encrypted mul2 function of FPGA to calulate
   cfg->para_data_size = para_length / 8;
   cfg->data3_size = 0;
@@ -533,6 +534,7 @@ void encrypt_without_obf(char *fpn_encode, void *fpn_base_void,
 
   fpga_config *cfg;
   cfg = (fpga_config *)malloc(sizeof(fpga_config));
+  memset(cfg, 0, sizeof(fpga_config));
   cfg->operate_mode =
       15;  // call encrypt without obfucation function of FPGA to calculate
   cfg->para_data_size = (para_length + data2_length) / 8;
@@ -633,6 +635,7 @@ void obf_modular_exponentiation(char *randoms, size_t random_bitlength, char *n,
 
   fpga_config *cfg;
   cfg = (fpga_config *)malloc(sizeof(fpga_config));
+  memset(cfg, 0, sizeof(fpga_config));
   cfg->operate_mode = 1;  // call modexp function of FPGA to calulate
   cfg->para_data_size = (para_length + data2_length) / 8;
   cfg->data2_size = 0;
@@ -723,6 +726,7 @@ void obf_modular_multiplication(char *pen_cipher, void *pen_base_void,
 
   fpga_config *cfg;
   cfg = (fpga_config *)malloc(sizeof(fpga_config));
+  memset(cfg, 0, sizeof(fpga_config));
   cfg->operate_mode = 2;  // call mulmod function of FPGA to calulate
   cfg->para_data_size = para_length / 8;
   cfg->data3_size = 0;
@@ -812,6 +816,7 @@ void decrypt(char *pen_cipher, void *pen_base_void, void *pen_exp_void,
 
   fpga_config *cfg;
   cfg = (fpga_config *)malloc(sizeof(fpga_config));
+  memset(cfg, 0, sizeof(fpga_config));
   cfg->operate_mode = 10;  // call decrypt function of FPGA to calulate
   cfg->para_data_size = (para_length * 11) / 8;
   cfg->data2_size = 0;
@@ -931,6 +936,7 @@ void pen_add_with_same_exp(char *pen1_cipher, void *pen1_base_void,
 
   fpga_config *cfg;
   cfg = (fpga_config *)malloc(sizeof(fpga_config));
+  memset(cfg, 0, sizeof(fpga_config));
   cfg->operate_mode = 2;
   cfg->para_data_size = para_length / 8;
   cfg->para_bitlen = get_data_width(para_length);

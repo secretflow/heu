@@ -114,12 +114,8 @@ void ShiftRightN(std::vector<uint32_t> &bn, int n) {
   uint32_t shift;
   uint32_t carry = 0;
   uint32_t next_carry;
-  if (n > BN_DIGITS) {
-    num_digits = n / BN_DIGITS;
-    remainder = n % BN_DIGITS;
-  } else {
-    remainder = n;
-  }
+  num_digits = n / BN_DIGITS;
+  remainder = n % BN_DIGITS;
   if (remainder > 0) {
     int size = bn.size();
     mask = ((uint32_t)1 << remainder) - (uint32_t)1;
@@ -143,12 +139,8 @@ void ShiftLeftN(std::vector<uint32_t> &bn, int n) {
   uint32_t shift;
   uint32_t carry = 0;
   uint32_t next_carry;
-  if (n > BN_DIGITS) {
-    num_digits = n / BN_DIGITS;
-    remainder = n % BN_DIGITS;
-  } else {
-    remainder = n;
-  }
+  num_digits = n / BN_DIGITS;
+  remainder = n % BN_DIGITS;
   if (remainder > 0) {
     size_t size = bn.size();
     mask = ((uint32_t)1 << remainder) - (uint32_t)1;

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
@@ -23,6 +24,8 @@ def heu_cpp_deps():
     _com_github_uscilab_cereal()
     _com_github_nvlabs_cgbn()
     _com_github_intel_ipp()
+    _yacl()
+    _rules_cuda()
 
 def _bazel_skylib():
     maybe(
@@ -126,5 +129,28 @@ def _com_github_intel_ipp():
         ],
         urls = [
             "https://github.com/intel/ipp-crypto/archive/refs/tags/ippcp_2021.8.tar.gz",
+        ],
+    )
+
+def _yacl():
+    maybe(
+        http_archive,
+        name = "yacl",
+        urls = [
+            "https://github.com/secretflow/yacl/archive/refs/tags/0.4.5b1.tar.gz",
+        ],
+        strip_prefix = "yacl-0.4.5b1",
+        sha256 = "28064053b9add0db8e1e8e648421a0579f1d3e7ee8a4bbd7bd5959cb59598088",
+    )
+
+def _rules_cuda():
+    maybe(
+        http_archive,
+        name = "rules_cuda",
+        sha256 = "f62baee0150ac91f4cdfcb10df2be0d0e9b941d1d32c8cddf00b16b57bdb1540",
+        strip_prefix = "rules_cuda-17ca7f8c04cf746aa4c0a0c3722799278df7ca93",
+        urls = [
+            # Main branch as of 2023-1-07
+            "https://github.com/bazel-contrib/rules_cuda/archive/17ca7f8c04cf746aa4c0a0c3722799278df7ca93.tar.gz",
         ],
     )
