@@ -47,30 +47,6 @@ jobs:
       python_ver:
         type: string
       executor:
-<<<<<<< HEAD
-        type: string
-    executor: <<parameters.executor>>
-    steps:
-      - checkout
-      - run:
-          name: "build package and publish"
-          command: |
-            conda create -n build python=<< parameters.python_ver >> -y
-            conda activate build
-
-            sh ./build_wheel_entrypoint.sh
-            ls dist/*.whl
-
-            python3 -m pip install twine
-            python3 -m twine upload -r pypi -u __token__ -p ${PYPI_TWINE_TOKEN} dist/*.whl
-  macOS_x64_publish:
-    macos:
-      xcode: 15.1
-    resource_class: macos.x86.medium.gen2
-    parameters:
-      python_ver:
-=======
->>>>>>> origin
         type: string
     executor: <<parameters.executor>>
     steps:
@@ -126,25 +102,11 @@ workflows:
       - linux_publish:
           matrix:
             parameters:
-<<<<<<< HEAD
-              python_ver: [ "3.8", "3.9", "3.10", "3.11" ]
-=======
               python_ver: [ "3.9", "3.10", "3.11" ]
->>>>>>> origin
               executor: ["linux_x64_executor", "linux_aarch64_executor"]
           filters:
             tags:
               only: /.*(?<!dev\d{8})$/
-<<<<<<< HEAD
-      - macOS_x64_publish:
-          matrix:
-            parameters:
-              python_ver: [ '3.8', '3.9', '3.10', '3.11' ]
-          filters:
-            tags:
-              only: /.*(?<!dev\d{8})$/
-=======
->>>>>>> origin
       - macOS_arm64_publish:
           matrix:
             parameters:
