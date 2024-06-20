@@ -19,7 +19,7 @@
 #include <utility>
 
 #include "yacl/base/byte_container_view.h"
-#include "yacl/crypto/base/ecc/ecc_spi.h"
+#include "yacl/crypto/ecc/ecc_spi.h"
 
 #include "heu/library/algorithms/elgamal/public_key.h"
 

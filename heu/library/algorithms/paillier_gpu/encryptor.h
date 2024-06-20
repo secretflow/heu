@@ -28,9 +28,9 @@ namespace heu::lib::algorithms::paillier_g {
 class Encryptor {
  public:
   explicit Encryptor(PublicKey pk);
-  Encryptor(const Encryptor& from);
+  Encryptor(const Encryptor &from);
 
-  const PublicKey& public_key() const { return pk_; }
+  const PublicKey &public_key() const { return pk_; }
 
   // Get R^n
   MPInt GetRn() const;
@@ -45,7 +45,7 @@ class Encryptor {
   template <bool audit = false>
   std::vector<Ciphertext> EncryptImpl(
       ConstSpan<Plaintext> pts,
-      std::vector<std::string>* audit_strs = nullptr) const;
+      std::vector<std::string> *audit_strs = nullptr) const;
 
  private:
   const PublicKey pk_;

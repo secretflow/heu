@@ -31,37 +31,37 @@ class CPubKeyHelper;
 class PublicKey : public HeObject<PublicKey> {
  public:
   PublicKey() = default;
-  PublicKey(const PublicKey& pub_key);
-  PublicKey(PublicKey&& pub_key);
-  explicit PublicKey(const MPInt& n);
-  explicit PublicKey(MPInt&& n);
+  PublicKey(const PublicKey &pub_key);
+  PublicKey(PublicKey &&pub_key);
+  explicit PublicKey(const MPInt &n);
+  explicit PublicKey(MPInt &&n);
 
-  PublicKey& operator=(const PublicKey& pub_key);
-  PublicKey& operator=(PublicKey&& pub_key);
-  PublicKey& operator=(const MPInt& n);
-  PublicKey& operator=(MPInt&& n);
+  PublicKey &operator=(const PublicKey &pub_key);
+  PublicKey &operator=(PublicKey &&pub_key);
+  PublicKey &operator=(const MPInt &n);
+  PublicKey &operator=(MPInt &&n);
 
-  bool operator==(const PublicKey& other) const;
-  bool operator!=(const PublicKey& other) const;
+  bool operator==(const PublicKey &other) const;
+  bool operator!=(const PublicKey &other) const;
 
   std::string ToString() const override;
 
   // Valid plaintext range: [max_int_, -max_int_]
-  const Plaintext& PlaintextBound() const&;
+  const Plaintext &PlaintextBound() const &;
 
   // Serialize and Deserialize
   MSGPACK_DEFINE(n_, n_square_, g_, max_int_, pt_bound_);
 
   // Functions for unit test
-  const MPInt& GetN() const;
-  const MPInt& GetG() const;
-  const MPInt& GetNSquare() const;
+  const MPInt &GetN() const;
+  const MPInt &GetG() const;
+  const MPInt &GetNSquare() const;
   const Plaintext GetMaxInt() const;
 
  private:
   void Init();
-  void InitCopy(const PublicKey& pub_key);
-  void InitMove(PublicKey&& pub_key);
+  void InitCopy(const PublicKey &pub_key);
+  void InitMove(PublicKey &&pub_key);
   void CalcPlaintextBound();
 
   friend class CPubKeyHelper;

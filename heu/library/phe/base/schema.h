@@ -61,15 +61,15 @@ enum class SchemaType {
 // SchemaType <-> String
 // If you add a new schema, change schema <-> string map in schema.cc !!
 std::vector<SchemaType> GetAllSchema();
-SchemaType ParseSchemaType(const std::string& schema_string);
+SchemaType ParseSchemaType(const std::string &schema_string);
 // Select schemas with pattern 'regex_pattern'
 // full_match: true - The whole schema string must match pattern
 //             false - Any substring matching pattern will be selected
-std::vector<SchemaType> SelectSchemas(const std::string& regex_pattern,
+std::vector<SchemaType> SelectSchemas(const std::string &regex_pattern,
                                       bool full_match = true);
 std::string SchemaToString(SchemaType schema_type);
 std::vector<std::string> GetSchemaAliases(SchemaType schema_type);
-std::ostream& operator<<(std::ostream& os, SchemaType st);
+std::ostream &operator<<(std::ostream &os, SchemaType st);
 // for fmt lib
 std::string format_as(SchemaType i);
 

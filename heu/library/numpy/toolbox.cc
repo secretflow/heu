@@ -16,12 +16,12 @@
 
 namespace heu::lib::numpy {
 
-yacl::Buffer Toolbox::PMatrixToBytes(const PMatrix& pm, size_t bytes_per_int,
+yacl::Buffer Toolbox::PMatrixToBytes(const PMatrix &pm, size_t bytes_per_int,
                                      algorithms::Endian endian) {
   yacl::Buffer res(bytes_per_int * pm.size());
-  auto* buf = res.data<unsigned char>();
+  auto *buf = res.data<unsigned char>();
   int64_t cols = pm.cols();
-  pm.ForEach([&](int64_t row, int64_t col, const phe::Plaintext& pt) {
+  pm.ForEach([&](int64_t row, int64_t col, const phe::Plaintext &pt) {
     // row major
     pt.ToBytes(buf + bytes_per_int * (row * cols + col), bytes_per_int, endian);
   });

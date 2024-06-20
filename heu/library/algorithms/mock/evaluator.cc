@@ -95,8 +95,7 @@ void Evaluator::NegateInplace(Ciphertext *a) const { *a = Negate(*a); }
 #endif
 
 #ifdef IMPL_VECTORIZED_SPI
-void Evaluator::Randomize(Span<Ciphertext>) const { /* nothing to do */
-}
+void Evaluator::Randomize(Span<Ciphertext>) const { /* nothing to do */ }
 
 #define SIMD_FUNCTION_IMPL(NAME, RET, T1, OP, T2)                             \
   std::vector<RET> Evaluator::NAME(ConstSpan<T1> a, ConstSpan<T2> b) const {  \

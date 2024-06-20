@@ -23,40 +23,40 @@ namespace heu::lib::algorithms::paillier_z {
 
 class Evaluator {
  public:
-  explicit Evaluator(const PublicKey& pk) : pk_(pk), encryptor_(pk) {}
+  explicit Evaluator(const PublicKey &pk) : pk_(pk), encryptor_(pk) {}
 
   // The performance of Randomize() is exactly the same as that of Encrypt().
-  void Randomize(Ciphertext* ct) const;
+  void Randomize(Ciphertext *ct) const;
 
   // out = a + b
   // Warning: if a, b are in batch encoding form, then p must also be in batch
   // encoding form
-  Ciphertext Add(const Ciphertext& a, const Ciphertext& b) const;
-  Ciphertext Add(const Ciphertext& a, const Plaintext& b) const;
+  Ciphertext Add(const Ciphertext &a, const Ciphertext &b) const;
+  Ciphertext Add(const Ciphertext &a, const Plaintext &b) const;
 
-  Plaintext Add(const Plaintext& a, const Plaintext& b) const { return a + b; };
+  Plaintext Add(const Plaintext &a, const Plaintext &b) const { return a + b; };
 
-  Ciphertext Add(const Plaintext& a, const Ciphertext& b) const {
+  Ciphertext Add(const Plaintext &a, const Ciphertext &b) const {
     return Add(b, a);
   }
 
-  void AddInplace(Ciphertext* a, const Ciphertext& b) const;
-  void AddInplace(Ciphertext* a, const Plaintext& p) const;
+  void AddInplace(Ciphertext *a, const Ciphertext &b) const;
+  void AddInplace(Ciphertext *a, const Plaintext &p) const;
 
-  void AddInplace(Plaintext* a, const Plaintext& b) const { *a += b; }
+  void AddInplace(Plaintext *a, const Plaintext &b) const { *a += b; }
 
   // out = a - b
   // Warning: Subtraction is not supported if a, b are in batch encoding
-  Ciphertext Sub(const Ciphertext& a, const Ciphertext& b) const;
-  Ciphertext Sub(const Ciphertext& a, const Plaintext& b) const;
-  Ciphertext Sub(const Plaintext& a, const Ciphertext& b) const;
+  Ciphertext Sub(const Ciphertext &a, const Ciphertext &b) const;
+  Ciphertext Sub(const Ciphertext &a, const Plaintext &b) const;
+  Ciphertext Sub(const Plaintext &a, const Ciphertext &b) const;
 
-  Plaintext Sub(const Plaintext& a, const Plaintext& b) const { return a - b; };
+  Plaintext Sub(const Plaintext &a, const Plaintext &b) const { return a - b; };
 
-  void SubInplace(Ciphertext* a, const Ciphertext& b) const;
-  void SubInplace(Ciphertext* a, const Plaintext& p) const;
+  void SubInplace(Ciphertext *a, const Ciphertext &b) const;
+  void SubInplace(Ciphertext *a, const Plaintext &p) const;
 
-  void SubInplace(Plaintext* a, const Plaintext& b) const { *a -= b; }
+  void SubInplace(Plaintext *a, const Plaintext &b) const { *a -= b; }
 
   // out = a * p
   // Warning 1:
@@ -66,21 +66,21 @@ class Evaluator {
   // subsequent operations), Randomize can be omitted.
   // Warning 2:
   // Multiplication is not supported if a is in batch encoding form
-  Ciphertext Mul(const Ciphertext& a, const MPInt& p) const;
+  Ciphertext Mul(const Ciphertext &a, const MPInt &p) const;
 
-  Plaintext Mul(const Plaintext& a, const Plaintext& b) const { return a * b; };
+  Plaintext Mul(const Plaintext &a, const Plaintext &b) const { return a * b; };
 
-  Ciphertext Mul(const Plaintext& a, const Ciphertext& b) const {
+  Ciphertext Mul(const Plaintext &a, const Ciphertext &b) const {
     return Mul(b, a);
   }
 
-  void MulInplace(Ciphertext* a, const MPInt& p) const;
+  void MulInplace(Ciphertext *a, const MPInt &p) const;
 
-  void MulInplace(Plaintext* a, const Plaintext& b) const { *a *= b; };
+  void MulInplace(Plaintext *a, const Plaintext &b) const { *a *= b; };
 
   // out = -a
-  Ciphertext Negate(const Ciphertext& a) const;
-  void NegateInplace(Ciphertext* a) const;
+  Ciphertext Negate(const Ciphertext &a) const;
+  void NegateInplace(Ciphertext *a) const;
 
  private:
   PublicKey pk_;

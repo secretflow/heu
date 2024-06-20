@@ -24,7 +24,7 @@ namespace {
 std::unordered_map<size_t, std::shared_ptr<yacl::crypto::EcGroup>>
     kEcGroupCache;
 
-size_t HashEcGroup(const std::shared_ptr<yacl::crypto::EcGroup>& ec) {
+size_t HashEcGroup(const std::shared_ptr<yacl::crypto::EcGroup> &ec) {
   auto h = std::hash<std::string>();
   return h(ec->GetCurveName()) ^ h(ec->GetLibraryName());
 }
@@ -36,21 +36,21 @@ std::string Ciphertext::ToString() const {
                      ec->GetAffinePoint(c1), ec->GetAffinePoint(c2));
 }
 
-std::ostream& operator<<(std::ostream& os, const Ciphertext& c) {
+std::ostream &operator<<(std::ostream &os, const Ciphertext &c) {
   return os << c.ToString();
 }
 
-bool Ciphertext::operator==(const Ciphertext& other) const {
+bool Ciphertext::operator==(const Ciphertext &other) const {
   return ec && other.ec && ec->PointEqual(c1, other.c1) &&
          ec->PointEqual(c2, other.c2);
 }
 
-bool Ciphertext::operator!=(const Ciphertext& other) const {
+bool Ciphertext::operator!=(const Ciphertext &other) const {
   return !(*this == other);
 }
 
 void Ciphertext::EnableEcGroup(
-    const std::shared_ptr<yacl::crypto::EcGroup>& curve) {
+    const std::shared_ptr<yacl::crypto::EcGroup> &curve) {
   static std::mutex m;
   std::lock_guard<std::mutex> lock(m);
   kEcGroupCache.try_emplace(HashEcGroup(curve), curve);
@@ -71,12 +71,12 @@ yacl::Buffer Ciphertext::Serialize(bool with_meta) const {
   o.pack(std::string_view(ec->SerializePoint(c2)));
 
   auto sz = buffer.size();
-  return {buffer.release(), sz, [](void* ptr) { free(ptr); }};
+  return {buffer.release(), sz, [](void *ptr) { free(ptr); }};
 }
 
 void Ciphertext::Deserialize(yacl::ByteContainerView in) {
   auto msg =
-      msgpack::unpack(reinterpret_cast<const char*>(in.data()), in.size());
+      msgpack::unpack(reinterpret_cast<const char *>(in.data()), in.size());
   msgpack::object object = msg.get();
 
   if (object.type != msgpack::type::ARRAY) {

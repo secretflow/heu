@@ -28,31 +28,31 @@ class MatVecProtocol {
     size_t ncols;
   };
 
-  explicit MatVecProtocol(const seal::SEALContext& context,
-                          const ModulusSwitchHelper& ms_helper);
+  explicit MatVecProtocol(const seal::SEALContext &context,
+                          const ModulusSwitchHelper &ms_helper);
 
-  void EncodeVector(const Meta& meta, absl::Span<const uint32_t> vec_view,
-                    std::vector<RLWEPt>* out) const;
+  void EncodeVector(const Meta &meta, absl::Span<const uint32_t> vec_view,
+                    std::vector<RLWEPt> *out) const;
 
-  void EncodeVector(const Meta& meta, absl::Span<const uint64_t> vec_view,
-                    std::vector<RLWEPt>* out) const;
+  void EncodeVector(const Meta &meta, absl::Span<const uint64_t> vec_view,
+                    std::vector<RLWEPt> *out) const;
 
-  void EncodeVector(const Meta& meta, absl::Span<const uint128_t> vec_view,
-                    std::vector<RLWEPt>* out) const;
+  void EncodeVector(const Meta &meta, absl::Span<const uint128_t> vec_view,
+                    std::vector<RLWEPt> *out) const;
 
-  void MatVec(const Meta& meta, absl::Span<const uint32_t> mat_view,
-              const std::vector<RLWECt>& vec, std::vector<LWECt>* out) const;
+  void MatVec(const Meta &meta, absl::Span<const uint32_t> mat_view,
+              const std::vector<RLWECt> &vec, std::vector<LWECt> *out) const;
 
-  void MatVec(const Meta& meta, absl::Span<const uint64_t> mat_view,
-              const std::vector<RLWECt>& vec, std::vector<LWECt>* out) const;
+  void MatVec(const Meta &meta, absl::Span<const uint64_t> mat_view,
+              const std::vector<RLWECt> &vec, std::vector<LWECt> *out) const;
 
-  void MatVec(const Meta& meta, absl::Span<const uint128_t> mat_view,
-              const std::vector<RLWECt>& vec, std::vector<LWECt>* out) const;
+  void MatVec(const Meta &meta, absl::Span<const uint128_t> mat_view,
+              const std::vector<RLWECt> &vec, std::vector<LWECt> *out) const;
 
   template <typename T>
-  void MatVecRandomMat(const Meta& meta, const std::vector<RLWECt>& vec,
-                       std::function<void(T*, size_t)> prng,
-                       absl::Span<T> rnd_mat, std::vector<LWECt>* out) const {
+  void MatVecRandomMat(const Meta &meta, const std::vector<RLWECt> &vec,
+                       std::function<void(T *, size_t)> prng,
+                       absl::Span<T> rnd_mat, std::vector<LWECt> *out) const {
     YACL_ENFORCE_EQ(seal::util::mul_safe(meta.nrows, meta.ncols),
                     rnd_mat.size());
     prng(rnd_mat.data(), rnd_mat.size());
@@ -62,19 +62,19 @@ class MatVecProtocol {
   inline size_t poly_degree() const { return poly_deg_; }
 
  protected:
-  inline size_t GetVecSize(const Meta& meta) const {
+  inline size_t GetVecSize(const Meta &meta) const {
     return meta.transposed ? meta.nrows : meta.ncols;
   }
 
-  bool IsValidMeta(const Meta& meta) const;
+  bool IsValidMeta(const Meta &meta) const;
 
   template <typename T>
-  void DoEncodeVector(const Meta& meta, absl::Span<const T> vec_view,
-                      std::vector<RLWEPt>* out) const;
+  void DoEncodeVector(const Meta &meta, absl::Span<const T> vec_view,
+                      std::vector<RLWEPt> *out) const;
 
   template <typename T>
-  void DoMatVec(const Meta& meta, absl::Span<const T> mat_view,
-                const std::vector<RLWECt>& vec, std::vector<LWECt>* out) const;
+  void DoMatVec(const Meta &meta, absl::Span<const T> mat_view,
+                const std::vector<RLWECt> &vec, std::vector<LWECt> *out) const;
 
  private:
   size_t poly_deg_{0};

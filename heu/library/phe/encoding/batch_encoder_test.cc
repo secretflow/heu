@@ -22,7 +22,7 @@ namespace heu::lib::phe::test {
 class BatchEncoderTest : public testing::Test {
  protected:
   template <class T>
-  void EncodingTest(const BatchEncoder& be, T a, T b) {
+  void EncodingTest(const BatchEncoder &be, T a, T b) {
     auto var_info = [&]() {
       return fmt::format("Encoder={}, a={}, b={}", be.ToString(), a, b);
     };
@@ -59,7 +59,7 @@ TEST_F(BatchEncoderTest, EncodingIntWorks) {
                               BatchEncoder(SchemaType::ZPaillier, 2),
                               BatchEncoder(SchemaType::ZPaillier, 10, 16)};
 
-  for (const auto& be : bes) {
+  for (const auto &be : bes) {
     EncodingTest<uint8_t>(be, 1, 6);
     EncodingTest<uint16_t>(be, 10, 60);
     EncodingTest<uint32_t>(be, 100, 6000);

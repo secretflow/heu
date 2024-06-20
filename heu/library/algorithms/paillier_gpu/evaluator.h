@@ -22,7 +22,7 @@ namespace heu::lib::algorithms::paillier_g {
 
 class Evaluator {
  public:
-  explicit Evaluator(const PublicKey& pk) : pk_(pk), encryptor_(pk) {}
+  explicit Evaluator(const PublicKey &pk) : pk_(pk), encryptor_(pk) {}
 
   // The performance of Randomize() is exactly the same as that of Encrypt().
   void Randomize(Span<Ciphertext> ct) const;

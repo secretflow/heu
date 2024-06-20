@@ -1,5 +1,16 @@
 // Copyright (C) 2021 Intel Corporation
-// SPDX-License-Identifier: Apache-2.0
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #include "utils.h"
 
@@ -11,7 +22,7 @@
 namespace heu::lib::algorithms::paillier_ipcl {
 
 // Compile a with b, returning 1:a>b, 0:a==b, -1:a<b
-int Compare(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) {
+int Compare(const std::vector<uint32_t> &a, const std::vector<uint32_t> &b) {
   const auto max_size = std::max(a.size(), b.size());
   for (auto i = max_size; i > 0; i--) {
     auto idx = i - 1;
@@ -24,7 +35,7 @@ int Compare(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) {
   return 0;
 }
 
-bool IsZero(std::vector<uint32_t>& value) {
+bool IsZero(std::vector<uint32_t> &value) {
   for (auto val : value) {
     if (val) {
       return false;
@@ -34,7 +45,7 @@ bool IsZero(std::vector<uint32_t>& value) {
 }
 
 // Remove leading zero words
-void Clamp(std::vector<uint32_t>& bn) {
+void Clamp(std::vector<uint32_t> &bn) {
   const auto size = bn.size();
   if (!size || bn[size - 1]) {
     return;
@@ -50,7 +61,7 @@ void Clamp(std::vector<uint32_t>& bn) {
 
 // Subtract b from a inplace
 // a >= b must be guaranteed by caller
-void SubFrom(std::vector<uint32_t>& a, std::vector<uint32_t>& b) {
+void SubFrom(std::vector<uint32_t> &a, std::vector<uint32_t> &b) {
   uint32_t borrow = 0;
   for (std::size_t i = 0; i < b.size(); i++) {
     if (b[i] || borrow) {
@@ -71,7 +82,7 @@ void SubFrom(std::vector<uint32_t>& a, std::vector<uint32_t>& b) {
 }
 
 // Divide bn by 2, truncating any fraction
-void ShiftRightOne(std::vector<uint32_t>& bn) {
+void ShiftRightOne(std::vector<uint32_t> &bn) {
   uint32_t carry = 0;
   for (auto i = bn.size(); i > 0; i--) {
     const auto next_carry = (bn[i - 1] & 1) ? HI_BIT_SET : 0;
@@ -83,7 +94,7 @@ void ShiftRightOne(std::vector<uint32_t>& bn) {
 }
 
 // Multiply bn by 2
-void ShiftLeftOne(std::vector<uint32_t>& bn) {
+void ShiftLeftOne(std::vector<uint32_t> &bn) {
   uint32_t carry = 0;
   for (std::size_t i = 0; i < bn.size(); i++) {
     const uint32_t next_carry = !!(bn[i] & HI_BIT_SET);
@@ -96,19 +107,15 @@ void ShiftLeftOne(std::vector<uint32_t>& bn) {
   }
 }
 
-void ShiftRightN(std::vector<uint32_t>& bn, int n) {
+void ShiftRightN(std::vector<uint32_t> &bn, int n) {
   int num_digits = 0;
   int remainder = 0;
   uint32_t mask;
   uint32_t shift;
   uint32_t carry = 0;
   uint32_t next_carry;
-  if (n > BN_DIGITS) {
-    num_digits = n / BN_DIGITS;
-    remainder = n % BN_DIGITS;
-  } else {
-    remainder = n;
-  }
+  num_digits = n / BN_DIGITS;
+  remainder = n % BN_DIGITS;
   if (remainder > 0) {
     int size = bn.size();
     mask = ((uint32_t)1 << remainder) - (uint32_t)1;
@@ -125,19 +132,15 @@ void ShiftRightN(std::vector<uint32_t>& bn, int n) {
   // Clamp(bn);
 }
 
-void ShiftLeftN(std::vector<uint32_t>& bn, int n) {
+void ShiftLeftN(std::vector<uint32_t> &bn, int n) {
   int num_digits = 0;
   int remainder = 0;
   uint32_t mask;
   uint32_t shift;
   uint32_t carry = 0;
   uint32_t next_carry;
-  if (n > BN_DIGITS) {
-    num_digits = n / BN_DIGITS;
-    remainder = n % BN_DIGITS;
-  } else {
-    remainder = n;
-  }
+  num_digits = n / BN_DIGITS;
+  remainder = n % BN_DIGITS;
   if (remainder > 0) {
     size_t size = bn.size();
     mask = ((uint32_t)1 << remainder) - (uint32_t)1;
@@ -158,7 +161,7 @@ void ShiftLeftN(std::vector<uint32_t>& bn, int n) {
 }
 
 // Set an indexed bit in bn, growing the vector when required
-void SetBitAt(std::vector<uint32_t>& bn, std::size_t index, bool set) {
+void SetBitAt(std::vector<uint32_t> &bn, std::size_t index, bool set) {
   std::size_t widx = index / (sizeof(uint32_t) * 8);
   std::size_t bidx = index % (sizeof(uint32_t) * 8);
   if (bn.size() < widx + 1) {
@@ -172,7 +175,7 @@ void SetBitAt(std::vector<uint32_t>& bn, std::size_t index, bool set) {
 }
 
 // Divide n by d, returning the result and leaving the remainder in n
-std::vector<uint32_t> Divide(std::vector<uint32_t>& n,
+std::vector<uint32_t> Divide(std::vector<uint32_t> &n,
                              std::vector<uint32_t> d) {
   if (IsZero(d)) {
     YACL_THROW("Divide by 0.");
@@ -195,7 +198,7 @@ std::vector<uint32_t> Divide(std::vector<uint32_t>& n,
   return result;
 }
 
-std::string ToString(const BigNumber& bn) {
+std::string ToString(const BigNumber &bn) {
   IppsBigNumSGN bnSgn;
   ippsRef_BN(&bnSgn, NULL, NULL, bn);
   std::string result;
@@ -214,7 +217,7 @@ std::string ToString(const BigNumber& bn) {
 }
 
 // TODO: combine with the below as a template function?
-ipcl::CipherText ToIpclCiphertext(const PublicKey& pk,
+ipcl::CipherText ToIpclCiphertext(const PublicKey &pk,
                                   ConstSpan<Ciphertext> ct) {
   std::vector<BigNumber> bn_vec;
   size_t ct_size = ct.size();

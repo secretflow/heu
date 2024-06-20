@@ -21,8 +21,8 @@ namespace heu::lib::algorithms::dj {
 
 class KeyGenerator {
  public:
-  static void Generate(size_t key_size, SecretKey* sk, PublicKey* pk);
-  static void Generate(SecretKey* sk, PublicKey* pk);
+  static void Generate(size_t key_size, SecretKey *sk, PublicKey *pk);
+  static void Generate(SecretKey *sk, PublicKey *pk);
 
   static inline uint32_t s_{2u};
 };

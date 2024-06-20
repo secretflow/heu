@@ -19,7 +19,7 @@
 namespace heu::lib::algorithms::paillier_clustar_fpga {
 
 // key_size: unit in bit, 1024 bits is recommended in FPGA case
-void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(size_t key_size, SecretKey *sk, PublicKey *pk) {
   MPInt p;
   MPInt q;
   MPInt n;
@@ -39,7 +39,7 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
   *sk = SecretKey(*pk, p, q);
 }
 
-void KeyGenerator::Generate(SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(SecretKey *sk, PublicKey *pk) {
   Generate(2048, sk, pk);
 }
 

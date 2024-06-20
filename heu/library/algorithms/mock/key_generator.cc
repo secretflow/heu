@@ -16,14 +16,14 @@
 
 namespace heu::lib::algorithms::mock {
 
-void KeyGenerator::Generate(int key_size, SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(int key_size, SecretKey *sk, PublicKey *pk) {
   sk->key_size_ = key_size;
   pk->key_size_ = key_size;
   pk->max_int_.Set(1);
   pk->max_int_ <<= (key_size - 2);
 }
 
-void KeyGenerator::Generate(SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(SecretKey *sk, PublicKey *pk) {
   Generate(2048, sk, pk);
 }
 

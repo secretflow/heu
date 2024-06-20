@@ -19,10 +19,10 @@
 
 namespace heu::lib::phe {
 
-void EncodeFixed32(char* str, uint32_t value);
+void EncodeFixed32(char *str, uint32_t value);
 
-void PutFixed32(std::string* str, uint32_t value);
+void PutFixed32(std::string *str, uint32_t value);
 
-uint32_t DecodeFixed32(const char* data);
+uint32_t DecodeFixed32(const char *data);
 
 }  // namespace heu::lib::phe

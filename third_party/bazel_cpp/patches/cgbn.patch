@@ -3,9 +3,9 @@ index 7248af9..e2e363b 100644
 --- a/include/cgbn/arith/arith.h
 +++ b/include/cgbn/arith/arith.h
 @@ -135,10 +135,10 @@ template<uint32_t limbs, uint32_t max_rotation> __device__ __forceinline__ void
-
+ 
  }  /* CGBN namespace */
-
+ 
 -#include "static_divide.cu"
 -#include "asm.cu"
 -#include "chain.cu"
@@ -57,9 +57,9 @@ index 5e103f6..72e813b 100644
 --- a/include/cgbn/cgbn.h
 +++ b/include/cgbn/cgbn.h
 @@ -22,6 +22,8 @@ IN THE SOFTWARE.
-
+ 
  ***/
-
+ 
 +#pragma once
 +
  #include <stdio.h>
@@ -68,7 +68,7 @@ index 5e103f6..72e813b 100644
 @@ -62,24 +64,10 @@ bool        cgbn_error_report_check(cgbn_error_report_t *report);
  void        cgbn_error_report_reset(cgbn_error_report_t *report);
  const char *cgbn_error_string(cgbn_error_report_t *report);
-
+ 
 -#include "cgbn.cu"
 -
 -#if defined(__CUDA_ARCH__)
@@ -91,8 +91,8 @@ index 5e103f6..72e813b 100644
 +
 +#define XMP_WMAD
 +#include "cgbn_cuda.h"
-
-
+ 
+ 
  template<class env_t, class source_cgbn_t>
 diff --git a/include/cgbn/cgbn_cuda.h b/include/cgbn/cgbn_cuda.h
 index 7be8e59..aa041ac 100644
@@ -101,10 +101,10 @@ index 7be8e59..aa041ac 100644
 @@ -247,7 +247,7 @@ class cgbn_env_t {
    __device__ __forceinline__ void       store(cgbn_local_t *address, const cgbn_t &a) const;
  };
-
+ 
 -#include "impl_cuda.cu"
 +#include "impl_cuda.cuh"
-
+ 
  /*
  experimental:
 diff --git a/include/cgbn/core/core.cu b/include/cgbn/core/core.cuh
@@ -115,9 +115,9 @@ index b355bd6..d3ff467 100644
 --- a/include/cgbn/core/core.cu
 +++ b/include/cgbn/core/core.cuh
 @@ -22,11 +22,11 @@ IN THE SOFTWARE.
-
+ 
  ***/
-
+ 
 -#include "dispatch_padding.cu"
 -#include "dispatch_resolver.cu"
 -#include "dispatch_masking.cu"
@@ -128,13 +128,13 @@ index b355bd6..d3ff467 100644
 +#include "dispatch_masking.cuh"
 +#include "dispatch_shift_rotate.cuh"
 +#include "dispatch_dlimbs.cuh"
-
+ 
  namespace cgbn {
-
+ 
 @@ -296,31 +296,31 @@ class core_t {
-
+ 
  } /* namespace cgbn */
-
+ 
 -#include "core_add_sub.cu"
 -#include "core_short_math.cu"
 -#include "core_compare.cu"
@@ -165,7 +165,7 @@ index b355bd6..d3ff467 100644
 +#include "core_binary_inverse.cuh"
 +#include "core_modular_inverse.cuh"
 +#include "core_mont.cuh"
-
+ 
  #if defined(XMP_IMAD)
 -  #include "core_mul_imad.cu"
 -  #include "core_mont_imad.cu"
@@ -210,7 +210,7 @@ index c23615f..6ae2b84 100644
 -  return umin(topctz, TPI);
 +  return umin(bottomctz, TPI);
  }
-
+ 
  } /* namespace cgbn */
 \ No newline at end of file
 diff --git a/include/cgbn/core/core_divide_multi.cu b/include/cgbn/core/core_divide_multi.cuh
@@ -305,9 +305,9 @@ index 4218e11..49f4097 100644
 --- a/include/cgbn/core/dispatch_resolver.cu
 +++ b/include/cgbn/core/dispatch_resolver.cuh
 @@ -22,6 +22,6 @@ IN THE SOFTWARE.
-
+ 
  ***/
-
+ 
 -#include "padded_resolver.cu"
 -#include "warp_resolver.cu"
 -#include "subwarp_resolver.cu"
@@ -333,24 +333,24 @@ index 9b26a29..eb7e8bd 100644
 +    uint32_t g, p, land, lor;
      int32_t  c;
      int32_t  result;
-
+     
 @@ -263,7 +263,7 @@ class dispatch_resolver_t {
        x[index]=addc_cc(x[index], c);
      c=addc(0, c);
-
+   
 -    lor=mplor<limbs>(x);
 +    lor=mplor<LIMBS>(x);
      g=__ballot_sync(sync, c==0xFFFFFFFF);
      p=__ballot_sync(sync, lor==0);
-
+   
 @@ -272,7 +272,7 @@ class dispatch_resolver_t {
      c=(c==0) ? 0 : 0xFFFFFFFF;
      x[0]=add_cc(x[0], c);
      #pragma unroll
--    for(int32_t index=1;index<limbs;index++)
-+    for(int32_t index=1;index<LIMBS;index++)
+-    for(int32_t index=1;index<limbs;index++) 
++    for(int32_t index=1;index<LIMBS;index++) 
        x[index]=addc_cc(x[index], c);
-
+     
      result=__shfl_sync(sync, x[PAD_LIMB], PAD_THREAD, tpi);
 diff --git a/include/cgbn/core/subwarp_resolver.cu b/include/cgbn/core/subwarp_resolver.cuh
 similarity index 100%
@@ -373,7 +373,7 @@ index cd9ebca..1aa7701 100644
 +++ b/include/cgbn/impl_cuda.cuh
 @@ -23,9 +23,9 @@ IN THE SOFTWARE.
  ***/
-
+ 
  #include "arith/arith.h"
 -#include "core/unpadded.cu"
 -#include "core/core.cu"
@@ -381,6 +381,6 @@ index cd9ebca..1aa7701 100644
 +#include "core/unpadded.cuh"
 +#include "core/core.cuh"
 +#include "core/core_singleton.cuh"
-
+ 
  #if(__CUDACC_VER_MAJOR__<9 || (__CUDACC_VER_MAJOR__==9 && __CUDACC_VER_MINOR__<2))
    #if __CUDA_ARCH__>=700

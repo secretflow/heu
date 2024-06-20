@@ -26,7 +26,7 @@ class CMPIntWrapper {
   CMPIntWrapper() = default;
   ~CMPIntWrapper() = default;
 
-  static void MPIntToBytes(const MPInt& v, char* ptr, size_t len);
+  static void MPIntToBytes(const MPInt &v, char *ptr, size_t len);
 };
 
 }  // namespace heu::lib::algorithms::paillier_clustar_fpga::fpga_engine

@@ -25,10 +25,10 @@
 namespace heu::lib::algorithms::paillier_g::test {
 
 template <typename T>
-using Span = absl::Span<T* const>;
+using Span = absl::Span<T *const>;
 
 template <typename T>
-using ConstSpan = absl::Span<const T* const>;
+using ConstSpan = absl::Span<const T *const>;
 
 class GPUTest : public ::testing::Test {
  protected:
@@ -51,9 +51,9 @@ class GPUTest : public ::testing::Test {
 };
 
 TEST_F(GPUTest, EncDecBigintTest) {
-  auto enc_dec_func = [&](const MPInt& plain) {
+  auto enc_dec_func = [&](const MPInt &plain) {
     fmt::print("in = {}\n", plain);
-    std::vector<const MPInt*> in = {&plain};
+    std::vector<const MPInt *> in = {&plain};
     auto cts = encryptor_->Encrypt(in);
     auto plain_dec = decryptor_->Decrypt({&cts[0]});
     fmt::print("out= {}\n", plain_dec[0]);
@@ -80,7 +80,7 @@ TEST_F(GPUTest, EncDecLongTest) {
   for (int i = 0; i < num; i++) {
     p[i] = Plaintext(33);
   }
-  Plaintext* ppts[num];
+  Plaintext *ppts[num];
   for (int i = 0; i < num; i++) {
     ppts[i] = &p[i];
   }
@@ -88,7 +88,7 @@ TEST_F(GPUTest, EncDecLongTest) {
   ConstSpan<Plaintext> pts = absl::MakeConstSpan(ppts, num);
   std::vector<Ciphertext> res = encryptor_->Encrypt(pts);
   // make the constspan for vector Decrypt
-  Ciphertext* ccts[num];
+  Ciphertext *ccts[num];
   for (int i = 0; i < num; i++) {
     ccts[i] = &res[i];
   }

@@ -59,7 +59,7 @@ class Shape : public algorithms::HeObject<Shape> {
     return fmt::format("({})", fmt::join(shape_, ","));
   }
 
-  friend std::ostream& operator<<(std::ostream& os, const Shape& s) {
+  friend std::ostream &operator<<(std::ostream &os, const Shape &s) {
     return os << s.ToString();
   }
 
@@ -69,6 +69,6 @@ class Shape : public algorithms::HeObject<Shape> {
   std::vector<int64_t> shape_;
 };
 
-inline auto format_as(const Shape& p) { return fmt::streamed(p); }
+inline auto format_as(const Shape &p) { return fmt::streamed(p); }
 
 }  // namespace heu::lib::numpy

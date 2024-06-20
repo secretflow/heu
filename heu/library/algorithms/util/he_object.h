@@ -31,16 +31,16 @@ class HeObject {
  public:
   [[nodiscard]] yacl::Buffer Serialize() const {
     msgpack::sbuffer buffer;
-    msgpack::pack(buffer, *static_cast<const T*>(this));
+    msgpack::pack(buffer, *static_cast<const T *>(this));
     auto sz = buffer.size();
-    return {buffer.release(), sz, [](void* ptr) { free(ptr); }};
+    return {buffer.release(), sz, [](void *ptr) { free(ptr); }};
   }
 
   void Deserialize(yacl::ByteContainerView in) {
     auto msg =
-        msgpack::unpack(reinterpret_cast<const char*>(in.data()), in.size());
+        msgpack::unpack(reinterpret_cast<const char *>(in.data()), in.size());
     msgpack::object obj = msg.get();
-    obj.convert(*static_cast<T*>(this));
+    obj.convert(*static_cast<T *>(this));
   }
 
   [[nodiscard]] virtual std::string ToString() const = 0;

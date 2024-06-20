@@ -222,27 +222,26 @@ msgid ""
 "BatchIntegerEncoder 和 BatchFloatEncoder 是上述 IntegerEncoder、FloatEncoder 的"
 " batch 版本，功能类似，但是 BatchEncoder "
 "支持将两个原文（Cleartext，int64整数）打包加密到一个明文（Plaintext）中，实现 SIMD 功能。"
-msgstr ""
+msgstr "BatchIntegerEncoder and BatchFloatEncoder are batch versions of the aforementioned IntegerEncoder and FloatEncoder, "
+"with similar functionalities. However, BatchEncoder supports packaging two cleartexts (int64 integers) into one plaintext (Plaintext) for encryption, enabling SIMD capabilities."
 
 #: ../../getting_started/quick_start.rst:134
 msgid "``phe.BatchIntegerEncoder`` 有数值大小上限，每个原文不大于 64 比特"
-msgstr ""
-"``phe.BatchIntegerEncoder`` has an upper limit on cleartext size, please make "
-"sure each cleartext is less than 64 bits"
+msgstr "``phe.BatchIntegerEncoder`` has an upper limit on numerical size, with each cleartext not exceeding 64 bits"
 
 #: ../../getting_started/quick_start.rst:136
 msgid ""
 "BatchIntegerEncoder、BatchFloatEncoder "
 "并不完全兼容密态减法，仅当密文中所有元素都是正整数时才可以使用，如果您无法确定元素数值范围，应当避免使用密态减法。"
-msgstr ""
-"BatchIntegerEncoder and BatchFloatEncoder are not fully compatible with cryptographic subtraction. They "
-"can only be used when all elements in ciphertext are positive integers. "
-"If you cannot infer the value range of elements, cryptographic "
-"subtraction should be avoided."
+msgstr "BatchIntegerEncoder and BatchFloatEncoder are not fully compatible with secure subtraction. "
+"It can only be used when all elements in the ciphertext are positive integers. "
+"If you cannot determine the range of values for the elements, you should avoid using secure subtraction."
 
 #: ../../getting_started/quick_start.rst:162
 msgid "BatchEncoder 当前一次仅支持打包2个原文，如果您有打包更多数字的需求，欢迎提 Issue 或者直接参与共建。"
-msgstr ""
+msgstr "BatchEncoder currently only supports packing two cleartexts at a time. "
+"If you have a need to package more numbers, you are welcome to raise an Issue or contribute to the project directly."
+
 
 #: ../../getting_started/quick_start.rst:166
 msgid "持久化"

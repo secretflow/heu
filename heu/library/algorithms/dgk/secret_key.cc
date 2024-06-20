@@ -16,8 +16,8 @@
 
 namespace heu::lib::algorithms::dgk {
 
-void SecretKey::Init(const MPInt& p, const MPInt& q, const MPInt& vp,
-                     const MPInt& vq, const MPInt& u, const MPInt& g) {
+void SecretKey::Init(const MPInt &p, const MPInt &q, const MPInt &vp,
+                     const MPInt &vq, const MPInt &u, const MPInt &g) {
   p_ = p;
   q_ = q;
   vp_ = vp;
@@ -34,12 +34,12 @@ void SecretKey::Init(const MPInt& p, const MPInt& q, const MPInt& vp,
   }
 }
 
-bool SecretKey::operator==(const SecretKey& sk) const {
+bool SecretKey::operator==(const SecretKey &sk) const {
   return p_ == sk.p_ && q_ == sk.q_ && vp_ == sk.vp_ && vq_ == sk.vq_ &&
          u_ == sk.u_ && g_ == sk.g_;
 }
 
-bool SecretKey::operator!=(const SecretKey& sk) const { return !(*this == sk); }
+bool SecretKey::operator!=(const SecretKey &sk) const { return !(*this == sk); }
 
 std::string SecretKey::ToString() const {
   return fmt::format(
@@ -50,7 +50,7 @@ std::string SecretKey::ToString() const {
       u_.ToHexString(), g_.ToHexString());
 }
 
-MPInt SecretKey::Decrypt(const MPInt& ct) const {
+MPInt SecretKey::Decrypt(const MPInt &ct) const {
   auto it = log_table_->find((ct % p_).PowMod(vp_, p_));
   YACL_ENFORCE(it != log_table_->end(), "SecretKey: Invalid ciphertext");
   return it->second;

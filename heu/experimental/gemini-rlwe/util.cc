@@ -18,8 +18,8 @@
 
 namespace heu::expt::rlwe {
 
-void RemoveCoefficientsInplace(RLWECt& ciphertext,
-                               const std::set<size_t>& to_remove) {
+void RemoveCoefficientsInplace(RLWECt &ciphertext,
+                               const std::set<size_t> &to_remove) {
   YACL_ENFORCE(!ciphertext.is_ntt_form());
   YACL_ENFORCE_EQ(2UL, ciphertext.size());
 
@@ -39,8 +39,8 @@ void RemoveCoefficientsInplace(RLWECt& ciphertext,
   }
 }
 
-void KeepCoefficientsInplace(RLWECt& ciphertext,
-                             const std::set<size_t>& to_keep) {
+void KeepCoefficientsInplace(RLWECt &ciphertext,
+                             const std::set<size_t> &to_keep) {
   YACL_ENFORCE(!ciphertext.is_ntt_form());
   YACL_ENFORCE_EQ(2UL, ciphertext.size());
 

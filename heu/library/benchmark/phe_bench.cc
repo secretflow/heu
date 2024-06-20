@@ -39,39 +39,39 @@ class PheBenchmarks {
 
     benchmark::RegisterBenchmark(
         fmt::format("{:^9}|Encrypt", he_kit_->GetSchemaType()).c_str(),
-        [this](benchmark::State& st) { Encrypt(st); })
+        [this](benchmark::State &st) { Encrypt(st); })
         ->Unit(benchmark::kMillisecond);
     benchmark::RegisterBenchmark(
         fmt::format("{:^9}|CT+CT", he_kit_->GetSchemaType()).c_str(),
-        [this](benchmark::State& st) { AddCipher(st); })
+        [this](benchmark::State &st) { AddCipher(st); })
         ->Unit(benchmark::kMillisecond);
     benchmark::RegisterBenchmark(
         fmt::format("{:^9}|CT-CT", he_kit_->GetSchemaType()).c_str(),
-        [this](benchmark::State& st) { SubCipher(st); })
+        [this](benchmark::State &st) { SubCipher(st); })
         ->Unit(benchmark::kMillisecond);
     benchmark::RegisterBenchmark(
         fmt::format("{:^9}|CT+PT", he_kit_->GetSchemaType()).c_str(),
-        [this](benchmark::State& st) { AddInt(st); })
+        [this](benchmark::State &st) { AddInt(st); })
         ->Unit(benchmark::kMillisecond);
     benchmark::RegisterBenchmark(
         fmt::format("{:^9}|CT-PT", he_kit_->GetSchemaType()).c_str(),
-        [this](benchmark::State& st) { SubInt(st); })
+        [this](benchmark::State &st) { SubInt(st); })
         ->Unit(benchmark::kMillisecond);
     benchmark::RegisterBenchmark(
         fmt::format("{:^9}|CT*PT", he_kit_->GetSchemaType()).c_str(),
-        [this](benchmark::State& st) { Multi(st); })
+        [this](benchmark::State &st) { Multi(st); })
         ->Unit(benchmark::kMillisecond);
     benchmark::RegisterBenchmark(
         fmt::format("{:^9}|Decrypt", he_kit_->GetSchemaType()).c_str(),
-        [this](benchmark::State& st) { Decrypt(st); })
+        [this](benchmark::State &st) { Decrypt(st); })
         ->Unit(benchmark::kMillisecond);
   }
 
-  void Encrypt(benchmark::State& state) {
+  void Encrypt(benchmark::State &state) {
     std::call_once(flag_, []() { fmt::print("{:-^62}\n", ""); });
 
     // encrypt
-    const auto& encryptor = he_kit_->GetEncryptor();
+    const auto &encryptor = he_kit_->GetEncryptor();
     for (auto _ : state) {
       for (int i = 0; i < kTestSize; ++i) {
         *(cts_ + i) = encryptor->Encrypt(pts_[i]);
@@ -79,9 +79,9 @@ class PheBenchmarks {
     }
   }
 
-  void AddCipher(benchmark::State& state) {
+  void AddCipher(benchmark::State &state) {
     // add (ciphertext + ciphertext)
-    const auto& evaluator = he_kit_->GetEvaluator();
+    const auto &evaluator = he_kit_->GetEvaluator();
     auto ct = he_kit_->GetEncryptor()->EncryptZero();
     for (auto _ : state) {
       for (int i = 0; i < kTestSize; ++i) {
@@ -90,9 +90,9 @@ class PheBenchmarks {
     }
   }
 
-  void SubCipher(benchmark::State& state) {
+  void SubCipher(benchmark::State &state) {
     // sub (ciphertext - ciphertext)
-    const auto& evaluator = he_kit_->GetEvaluator();
+    const auto &evaluator = he_kit_->GetEvaluator();
     auto ct = he_kit_->GetEncryptor()->EncryptZero();
     for (auto _ : state) {
       for (int i = 0; i < kTestSize; ++i) {
@@ -101,9 +101,9 @@ class PheBenchmarks {
     }
   }
 
-  void AddInt(benchmark::State& state) {
+  void AddInt(benchmark::State &state) {
     // add (ciphertext + plaintext)
-    const auto& evaluator = he_kit_->GetEvaluator();
+    const auto &evaluator = he_kit_->GetEvaluator();
     auto edr = he_kit_->GetEncoder<phe::PlainEncoder>(1);
     for (auto _ : state) {
       for (int i = 0; i < kTestSize; ++i) {
@@ -112,9 +112,9 @@ class PheBenchmarks {
     }
   }
 
-  void SubInt(benchmark::State& state) {
+  void SubInt(benchmark::State &state) {
     // add (ciphertext - plaintext)
-    const auto& evaluator = he_kit_->GetEvaluator();
+    const auto &evaluator = he_kit_->GetEvaluator();
     auto edr = he_kit_->GetEncoder<phe::PlainEncoder>(1);
     for (auto _ : state) {
       for (int i = 0; i < kTestSize; ++i) {
@@ -123,9 +123,9 @@ class PheBenchmarks {
     }
   }
 
-  void Multi(benchmark::State& state) {
+  void Multi(benchmark::State &state) {
     // mul (ciphertext * plaintext)
-    const auto& evaluator = he_kit_->GetEvaluator();
+    const auto &evaluator = he_kit_->GetEvaluator();
     auto edr = he_kit_->GetEncoder<phe::PlainEncoder>(1);
     auto ct = he_kit_->GetEncryptor()->Encrypt(edr.Encode(1));
     for (auto _ : state) {
@@ -135,9 +135,9 @@ class PheBenchmarks {
     }
   }
 
-  void Decrypt(benchmark::State& state) {
+  void Decrypt(benchmark::State &state) {
     // decrypt
-    const auto& decryptor = he_kit_->GetDecryptor();
+    const auto &decryptor = he_kit_->GetDecryptor();
     for (auto _ : state) {
       for (int i = 0; i < kTestSize; ++i) {
         decryptor->Decrypt(cts_[i], pts_ + i);
@@ -157,7 +157,7 @@ class PheBenchmarks {
 DEFINE_string(schema, ".+", "Run selected schemas, default to all.");
 DEFINE_int32(key_size, 2048, "Key size of phe schema.");
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   google::ParseCommandLineFlags(&argc, &argv, true);
   benchmark::Initialize(&argc, argv);
   benchmark::AddCustomContext("Run times",

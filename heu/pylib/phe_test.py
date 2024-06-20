@@ -244,6 +244,14 @@ class BasicCase(unittest.TestCase):
             (123 - 789, 456 - 101112),
         )
 
+    def test_ciphertext_serialize(self):
+        # client
+        ct1 = self.encryptor.encrypt_raw(123)
+        ct1_bytes = ct1.serialize()
+
+        ct2 = phe.Ciphertext.load_from(ct1_bytes)
+        self.assertEqual(self.decryptor.decrypt_raw(ct2), 123)
+
 
 class ServerClientCase(unittest.TestCase):
     def test_pickle(self):
@@ -268,6 +276,23 @@ class ServerClientCase(unittest.TestCase):
         client_he2 = phe.setup(pickle.loads(pk_buffer), pickle.loads(sk_buffer))
         ct_x = pickle.loads(ct3_buffer)
         self.assertEqual(client_he2.decryptor().decrypt_raw(ct_x), 123 - 456)
+
+    def test_sk_serialize(self):
+        # client
+        client_he1 = phe.setup(phe.SchemaType.ZPaillier, 2048)
+        sk1 = client_he1.secret_key()
+        pk1 = client_he1.public_key()
+        sk1_bytes = sk1.serialize()
+        pk1_bytes = pk1.serialize()
+
+        sk2 = phe.SecretKey.load_from(sk1_bytes)
+        pk2 = phe.PublicKey.load_from(pk1_bytes)
+
+        client_he2 = phe.setup(pk2, sk2)
+
+        ct1 = client_he1.encryptor().encrypt_raw(123)
+
+        self.assertEqual(client_he2.decryptor().decrypt_raw(ct1), 123)
 
 
 if __name__ == "__main__":

@@ -18,7 +18,7 @@
 
 namespace heu::lib::algorithms::paillier_clustar_fpga {
 
-CSecrKeyHelper::CSecrKeyHelper(SecretKey* secr_key, size_t key_len)
+CSecrKeyHelper::CSecrKeyHelper(SecretKey *secr_key, size_t key_len)
     : secr_key_(secr_key) {
   CreateBytesStore(key_len);
 }
@@ -89,7 +89,7 @@ void CSecrKeyHelper::TransformToBytes() const {
   ToBytes(secr_key_->hq_, hq_flag_, bytes_hq_.get());
 }
 
-char* CSecrKeyHelper::GetBytesP() const {
+char *CSecrKeyHelper::GetBytesP() const {
   if (!byte_p_flag_) {
     YACL_THROW("secret_key p not transformed to bytes yet");
   }
@@ -97,7 +97,7 @@ char* CSecrKeyHelper::GetBytesP() const {
   return bytes_p_.get();
 }
 
-char* CSecrKeyHelper::GetBytesQ() const {
+char *CSecrKeyHelper::GetBytesQ() const {
   if (!byte_q_flag_) {
     YACL_THROW("secret_key q not transformed to bytes yet");
   }
@@ -105,7 +105,7 @@ char* CSecrKeyHelper::GetBytesQ() const {
   return bytes_q_.get();
 }
 
-char* CSecrKeyHelper::GetBytesPSquare() const {
+char *CSecrKeyHelper::GetBytesPSquare() const {
   if (!byte_p_square_flag_) {
     YACL_THROW("secret_key p_square not transformed to bytes yet");
   }
@@ -113,7 +113,7 @@ char* CSecrKeyHelper::GetBytesPSquare() const {
   return bytes_p_square_.get();
 }
 
-char* CSecrKeyHelper::GetBytesQSquare() const {
+char *CSecrKeyHelper::GetBytesQSquare() const {
   if (!byte_q_square_flag_) {
     YACL_THROW("secret_key q_square not transformed to bytes yet");
   }
@@ -121,7 +121,7 @@ char* CSecrKeyHelper::GetBytesQSquare() const {
   return bytes_q_square_.get();
 }
 
-char* CSecrKeyHelper::GetBytesQInverse() const {
+char *CSecrKeyHelper::GetBytesQInverse() const {
   if (!byte_q_inverse_flag_) {
     YACL_THROW("secret_key q_inverse not transformed to bytes yet");
   }
@@ -129,7 +129,7 @@ char* CSecrKeyHelper::GetBytesQInverse() const {
   return bytes_q_inverse_.get();
 }
 
-char* CSecrKeyHelper::GetBytesHP() const {
+char *CSecrKeyHelper::GetBytesHP() const {
   if (!hp_flag_) {
     YACL_THROW("secret_key hp not transformed to bytes yet");
   }
@@ -137,7 +137,7 @@ char* CSecrKeyHelper::GetBytesHP() const {
   return bytes_hp_.get();
 }
 
-char* CSecrKeyHelper::GetBytesHQ() const {
+char *CSecrKeyHelper::GetBytesHQ() const {
   if (!hq_flag_) {
     YACL_THROW("secret_key hq not transformed to bytes yet");
   }
@@ -145,10 +145,10 @@ char* CSecrKeyHelper::GetBytesHQ() const {
   return bytes_hq_.get();
 }
 
-void CSecrKeyHelper::ToBytes(const MPInt& input, bool& exe_flag,
-                             char* result_arr) const {
+void CSecrKeyHelper::ToBytes(const MPInt &input, bool &exe_flag,
+                             char *result_arr) const {
   memset(result_arr, 0, cipher_byte_);
-  input.ToBytes(reinterpret_cast<unsigned char*>(result_arr), cipher_byte_,
+  input.ToBytes(reinterpret_cast<unsigned char *>(result_arr), cipher_byte_,
                 Endian::little);
   exe_flag = true;
 }

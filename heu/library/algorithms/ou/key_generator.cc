@@ -25,7 +25,7 @@ constexpr static size_t kPrimeFactorSize1024 = 160;
 constexpr static size_t kPrimeFactorSize2048 = 224;
 constexpr static size_t kPrimeFactorSize3072 = 256;
 
-void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(size_t key_size, SecretKey *sk, PublicKey *pk) {
   size_t secret_size = (key_size + 2) / 3;
 
   auto prime_factor_size = kPrimeFactorSize1024;
@@ -94,7 +94,7 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
   pk->Init();
 }
 
-void KeyGenerator::Generate(SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(SecretKey *sk, PublicKey *pk) {
   Generate(2048, sk, pk);
 }
 

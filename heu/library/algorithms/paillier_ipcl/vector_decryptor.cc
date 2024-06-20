@@ -1,11 +1,22 @@
 // Copyright (C) 2021 Intel Corporation
-// SPDX-License-Identifier: Apache-2.0
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #include "heu/library/algorithms/paillier_ipcl/vector_decryptor.h"
 
 namespace heu::lib::algorithms::paillier_ipcl {
 
-Decryptor::Decryptor(const PublicKey& pk, const SecretKey& sk) {
+Decryptor::Decryptor(const PublicKey &pk, const SecretKey &sk) {
   pk_ = pk.ipcl_pubkey_;
   sk_ = sk.ipcl_prikey_;
   half_n_.bn_ = *pk_.getN() / 2;

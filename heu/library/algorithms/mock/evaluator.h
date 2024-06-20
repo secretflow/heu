@@ -26,7 +26,7 @@ namespace heu::lib::algorithms::mock {
 class Evaluator {
  public:
   // [SPI: Critical]
-  explicit Evaluator(const PublicKey& pk) : pk_(pk), encryptor_(pk) {}
+  explicit Evaluator(const PublicKey &pk) : pk_(pk), encryptor_(pk) {}
 
 // To algorithm developers:
 // The Evaluator class supports two different interfaces:
@@ -36,55 +36,55 @@ class Evaluator {
 // Please see switch_spi.h for details.
 #ifdef IMPL_SCALAR_SPI
   // [SPI: Critical]
-  void Randomize(Ciphertext* ct) const;
+  void Randomize(Ciphertext *ct) const;
 
   // [SPI: Critical]
-  Ciphertext Add(const Ciphertext& a, const Ciphertext& b) const;
+  Ciphertext Add(const Ciphertext &a, const Ciphertext &b) const;
   // [SPI: Critical]
-  Ciphertext Add(const Ciphertext& a, const Plaintext& b) const;
+  Ciphertext Add(const Ciphertext &a, const Plaintext &b) const;
   // [SPI: Critical]
-  Ciphertext Add(const Plaintext& a, const Ciphertext& b) const;
+  Ciphertext Add(const Plaintext &a, const Ciphertext &b) const;
   // [SPI: Important]
-  Plaintext Add(const Plaintext& a, const Plaintext& b) const;
+  Plaintext Add(const Plaintext &a, const Plaintext &b) const;
 
   // [SPI: Critical]
-  void AddInplace(Ciphertext* a, const Ciphertext& b) const;
+  void AddInplace(Ciphertext *a, const Ciphertext &b) const;
   // [SPI: Critical]
-  void AddInplace(Ciphertext* a, const Plaintext& b) const;
+  void AddInplace(Ciphertext *a, const Plaintext &b) const;
   // [SPI: Important]
-  void AddInplace(Plaintext* a, const Plaintext& b) const;
+  void AddInplace(Plaintext *a, const Plaintext &b) const;
 
   // [SPI: Critical]
-  Ciphertext Sub(const Ciphertext& a, const Ciphertext& b) const;
+  Ciphertext Sub(const Ciphertext &a, const Ciphertext &b) const;
   // [SPI: Critical]
-  Ciphertext Sub(const Ciphertext& a, const Plaintext& b) const;
+  Ciphertext Sub(const Ciphertext &a, const Plaintext &b) const;
   // [SPI: Critical]
-  Ciphertext Sub(const Plaintext& a, const Ciphertext& b) const;
+  Ciphertext Sub(const Plaintext &a, const Ciphertext &b) const;
   // [SPI: Important]
-  Plaintext Sub(const Plaintext& a, const Plaintext& b) const;
+  Plaintext Sub(const Plaintext &a, const Plaintext &b) const;
 
   // [SPI: Critical]
-  void SubInplace(Ciphertext* a, const Ciphertext& b) const;
+  void SubInplace(Ciphertext *a, const Ciphertext &b) const;
   // [SPI: Critical]
-  void SubInplace(Ciphertext* a, const Plaintext& p) const;
+  void SubInplace(Ciphertext *a, const Plaintext &p) const;
   // [SPI: Important]
-  void SubInplace(Plaintext* a, const Plaintext& b) const;
+  void SubInplace(Plaintext *a, const Plaintext &b) const;
 
   // [SPI: Critical]
-  Ciphertext Mul(const Ciphertext& a, const Plaintext& b) const;
+  Ciphertext Mul(const Ciphertext &a, const Plaintext &b) const;
   // [SPI: Critical]
-  Ciphertext Mul(const Plaintext& a, const Ciphertext& b) const;
+  Ciphertext Mul(const Plaintext &a, const Ciphertext &b) const;
   // [SPI: Important]
-  Plaintext Mul(const Plaintext& a, const Plaintext& b) const;
+  Plaintext Mul(const Plaintext &a, const Plaintext &b) const;
 
   // [SPI: Critical]
-  void MulInplace(Ciphertext* a, const Plaintext& b) const;
+  void MulInplace(Ciphertext *a, const Plaintext &b) const;
   // [SPI: Important]
-  void MulInplace(Plaintext* a, const Plaintext& b) const;
+  void MulInplace(Plaintext *a, const Plaintext &b) const;
 
   // out = -a
-  Ciphertext Negate(const Ciphertext& a) const;  // [SPI: Critical]
-  void NegateInplace(Ciphertext* a) const;       // [SPI: Critical]
+  Ciphertext Negate(const Ciphertext &a) const;  // [SPI: Critical]
+  void NegateInplace(Ciphertext *a) const;       // [SPI: Critical]
 #endif
 
 #ifdef IMPL_VECTORIZED_SPI

@@ -322,9 +322,10 @@ TEST(PlaintextTest, ValCmp) {
   size_t cipher_size = 256;
   uint64_t pt2_val = 0x00000000000001C8;
   std::shared_ptr<unsigned char[]> pt2_sptr(new unsigned char[cipher_size]);
-  unsigned char* pt2_ptr = pt2_sptr.get();
+  unsigned char *pt2_ptr = pt2_sptr.get();
   memset(pt2_ptr, 0, cipher_size);
-  memcpy(pt2_ptr, reinterpret_cast<unsigned char*>(&pt2_val), sizeof(uint64_t));
+  memcpy(pt2_ptr, reinterpret_cast<unsigned char *>(&pt2_val),
+         sizeof(uint64_t));
 
   pt2.FromMagBytes({pt2_ptr, cipher_size}, Endian::little);
   // std::cout<<"pt2: "<<std::endl;
@@ -344,9 +345,10 @@ TEST(PlaintextTest, ValCmp) {
 
   uint64_t pt3_val = 0x0000000000000008;
   std::shared_ptr<unsigned char[]> pt3_sptr(new unsigned char[cipher_size]);
-  unsigned char* pt3_ptr = pt3_sptr.get();
+  unsigned char *pt3_ptr = pt3_sptr.get();
   memset(pt3_ptr, 0, cipher_size);
-  memcpy(pt3_ptr, reinterpret_cast<unsigned char*>(&pt3_val), sizeof(uint64_t));
+  memcpy(pt3_ptr, reinterpret_cast<unsigned char *>(&pt3_val),
+         sizeof(uint64_t));
   pt2.FromMagBytes({pt3_ptr, cipher_size}, Endian::little);
   // std::cout<<"=================="<<std::endl;
   // std::cout<<"After reload"<<std::endl;

@@ -22,12 +22,12 @@ namespace heu::lib::algorithms::paillier_z {
   HE_ASSERT(!(ct).c_.IsNegative() && (ct).c_ < pk_.n_square_, \
             "Evaluator: Invalid ciphertext")
 
-void Evaluator::Randomize(Ciphertext* ct) const {
+void Evaluator::Randomize(Ciphertext *ct) const {
   VALIDATE(*ct);
   pk_.m_space_->MulMod(ct->c_, encryptor_.GetRn(), &(ct->c_));
 }
 
-Ciphertext Evaluator::Add(const Ciphertext& a, const Ciphertext& b) const {
+Ciphertext Evaluator::Add(const Ciphertext &a, const Ciphertext &b) const {
   VALIDATE(a);
   VALIDATE(b);
 
@@ -36,14 +36,14 @@ Ciphertext Evaluator::Add(const Ciphertext& a, const Ciphertext& b) const {
   return out;
 }
 
-void Evaluator::AddInplace(Ciphertext* a, const Ciphertext& b) const {
+void Evaluator::AddInplace(Ciphertext *a, const Ciphertext &b) const {
   VALIDATE(*a);
   VALIDATE(b);
 
   pk_.m_space_->MulMod(a->c_, b.c_, &(a->c_));
 }
 
-Ciphertext Evaluator::Add(const Ciphertext& a, const MPInt& p) const {
+Ciphertext Evaluator::Add(const Ciphertext &a, const MPInt &p) const {
   VALIDATE(a);
   YACL_ENFORCE(p.CompareAbs(pk_.PlaintextBound()) <= 0,
                "plaintext out of range, message={}, max (abs)={}",
@@ -59,31 +59,31 @@ Ciphertext Evaluator::Add(const Ciphertext& a, const MPInt& p) const {
   return out;
 }
 
-void Evaluator::AddInplace(Ciphertext* a, const MPInt& p) const {
+void Evaluator::AddInplace(Ciphertext *a, const MPInt &p) const {
   *a = Add(*a, p);
 }
 
-Ciphertext Evaluator::Sub(const Ciphertext& a, const Ciphertext& b) const {
+Ciphertext Evaluator::Sub(const Ciphertext &a, const Ciphertext &b) const {
   return Add(a, Negate(b));
 }
 
-void Evaluator::SubInplace(Ciphertext* a, const Ciphertext& b) const {
+void Evaluator::SubInplace(Ciphertext *a, const Ciphertext &b) const {
   AddInplace(a, Negate(b));
 }
 
-Ciphertext Evaluator::Sub(const Ciphertext& a, const MPInt& p) const {
+Ciphertext Evaluator::Sub(const Ciphertext &a, const MPInt &p) const {
   return Add(a, -p);
 }
 
-void Evaluator::SubInplace(Ciphertext* a, const MPInt& p) const {
+void Evaluator::SubInplace(Ciphertext *a, const MPInt &p) const {
   AddInplace(a, -p);
 }
 
-Ciphertext Evaluator::Sub(const MPInt& p, const Ciphertext& a) const {
+Ciphertext Evaluator::Sub(const MPInt &p, const Ciphertext &a) const {
   return Add(Negate(a), p);
 }
 
-Ciphertext Evaluator::Negate(const Ciphertext& a) const {
+Ciphertext Evaluator::Negate(const Ciphertext &a) const {
   VALIDATE(a);
 
   MPInt tmp(a.c_);
@@ -94,9 +94,9 @@ Ciphertext Evaluator::Negate(const Ciphertext& a) const {
   return out;
 }
 
-void Evaluator::NegateInplace(Ciphertext* a) const { *a = Negate(*a); }
+void Evaluator::NegateInplace(Ciphertext *a) const { *a = Negate(*a); }
 
-Ciphertext Evaluator::Mul(const Ciphertext& a, const MPInt& p) const {
+Ciphertext Evaluator::Mul(const Ciphertext &a, const MPInt &p) const {
   // No need to check size of p because ciphertext overflow is allowed
   VALIDATE(a);
 
@@ -122,7 +122,7 @@ Ciphertext Evaluator::Mul(const Ciphertext& a, const MPInt& p) const {
   return out;
 }
 
-void Evaluator::MulInplace(Ciphertext* a, const MPInt& p) const {
+void Evaluator::MulInplace(Ciphertext *a, const MPInt &p) const {
   *a = Mul(*a, p);
 }
 

@@ -34,7 +34,7 @@ enum class MatrixSerializeFormat {
 // Check if T has a member function .Serialize()
 template <typename T>
 using kHasSerializeWithMetaMethod =
-    decltype(std::declval<T&>().Serialize(std::declval<bool&>()));
+    decltype(std::declval<T &>().Serialize(std::declval<bool &>()));
 
 // Vector is cheated as an n*1 matrix
 template <typename T>
@@ -53,23 +53,23 @@ class DenseMatrix {
     }
   }
 
-  explicit DenseMatrix(const Shape& s)
+  explicit DenseMatrix(const Shape &s)
       : DenseMatrix(s.RowsAlloc(), s.ColsAlloc(), s.Ndim()) {}
 
   explicit DenseMatrix(Eigen::Index rows) : m_(rows, 1), ndim_(1) {}
 
-  T& operator()(Eigen::Index rows, Eigen::Index cols) { return m_(rows, cols); }
+  T &operator()(Eigen::Index rows, Eigen::Index cols) { return m_(rows, cols); }
 
-  const T& operator()(Eigen::Index rows, Eigen::Index cols) const {
+  const T &operator()(Eigen::Index rows, Eigen::Index cols) const {
     return m_(rows, cols);
   }
 
-  T& operator()(Eigen::Index rows) {
+  T &operator()(Eigen::Index rows) {
     YACL_ENFORCE(ndim_ == 1, "tensor is {}-dim, but index is 1-dim", ndim_);
     return m_(rows, 0);
   }
 
-  const T& operator()(Eigen::Index rows) const {
+  const T &operator()(Eigen::Index rows) const {
     YACL_ENFORCE(ndim_ == 1, "tensor is {}-dim, but index is 1-dim", ndim_);
     return m_(rows, 0);
   }
@@ -77,11 +77,11 @@ class DenseMatrix {
   // squeeze: something like np.squeeze(), see below for detail
   // https://numpy.org/doc/stable/reference/generated/numpy.squeeze.html
   template <typename RowIndices, typename ColIndices>
-  DenseMatrix<T> GetItem(const RowIndices& row_indices,
-                         const ColIndices& col_indices,
+  DenseMatrix<T> GetItem(const RowIndices &row_indices,
+                         const ColIndices &col_indices,
                          bool squeeze_row = false,
                          bool squeeze_col = false) const {
-    const auto& view = m_(row_indices, col_indices);
+    const auto &view = m_(row_indices, col_indices);
 
     if (ndim_ == 1) {
       YACL_ENFORCE(
@@ -123,14 +123,14 @@ class DenseMatrix {
   }
 
   template <typename RowIndices, typename ColIndices>
-  auto SetItem(const RowIndices& rowIndices, const ColIndices& colIndices,
-               const DenseMatrix<T>& v, bool transpose = false) {
+  auto SetItem(const RowIndices &rowIndices, const ColIndices &colIndices,
+               const DenseMatrix<T> &v, bool transpose = false) {
     m_(rowIndices, colIndices) = (transpose ? v.m_.transpose() : v.m_);
   }
 
   template <typename RowIndices, typename ColIndices>
-  auto SetItem(const RowIndices& rowIndices, const ColIndices& colIndices,
-               const T& v) {
+  auto SetItem(const RowIndices &rowIndices, const ColIndices &colIndices,
+               const T &v) {
     m_(rowIndices, colIndices) = Eigen::Matrix<T, 1, 1>{v};
   }
 
@@ -148,20 +148,20 @@ class DenseMatrix {
     return Shape(res);
   }
 
-  T* data() { return m_.data(); }
+  T *data() { return m_.data(); }
 
-  const T* data() const { return m_.data(); }
+  const T *data() const { return m_.data(); }
 
   // if parallel = true, please make sure update() is thread safe
   void ForEach(
-      const std::function<void(int64_t row, int64_t col, T* element)>& update,
+      const std::function<void(int64_t row, int64_t col, T *element)> &update,
       bool parallel = true) {
     // Why doesn't use static_assert: m_.IsRowMajor is not a constexpr value
     // Why doesn't use assert: C++ assert do not support custom message
     YACL_ENFORCE(!m_.IsRowMajor,
                  "Internal bug: tensor must be stored in ColMajor way.");
 
-    T* buf = m_.data();
+    T *buf = m_.data();
     int64_t row = rows();
     auto func = [&](int64_t beg, int64_t end) {
       for (int64_t i = beg; i < end; ++i) {
@@ -178,12 +178,12 @@ class DenseMatrix {
 
   // if parallel = true, be make sure visit() is thread safe
   void ForEach(const std::function<void(int64_t row, int64_t col,
-                                        const T& element)>& visit,
+                                        const T &element)> &visit,
                bool parallel = true) const {
     YACL_ENFORCE(!m_.IsRowMajor,
                  "Internal bug: tensor must be stored in ColMajor way.");
 
-    const T* buf = m_.data();
+    const T *buf = m_.data();
     int64_t row = rows();
     auto func = [&](int64_t beg, int64_t end) {
       for (int64_t i = beg; i < end; ++i) {
@@ -212,11 +212,11 @@ class DenseMatrix {
     return ss.str();
   }
 
-  friend std::ostream& operator<<(std::ostream& os, const DenseMatrix& m) {
+  friend std::ostream &operator<<(std::ostream &os, const DenseMatrix &m) {
     return os << m.ToString();
   }
 
-  const auto& EigenMatrix() const { return m_; }
+  const auto &EigenMatrix() const { return m_; }
 
   [[nodiscard]] yacl::Buffer Serialize(
       MatrixSerializeFormat format = MatrixSerializeFormat::Best) const {
@@ -237,7 +237,7 @@ class DenseMatrix {
     o.pack(ndim);
     o.pack_array(this->size());
 
-    const T* buf = this->data();
+    const T *buf = this->data();
     if constexpr (std::experimental::is_detected_v<kHasSerializeWithMetaMethod,
                                                    T>) {
       std::vector<yacl::Buffer> tmp;
@@ -250,7 +250,7 @@ class DenseMatrix {
         }
       });
 
-      for (const auto& t : tmp) {
+      for (const auto &t : tmp) {
         o.pack(std::string_view(t));
       }
     } else {
@@ -260,18 +260,21 @@ class DenseMatrix {
     }
 
     auto sz = buffer.size();
-    return {buffer.release(), sz, [](void* ptr) { free(ptr); }};
+    return {buffer.release(), sz, [](void *ptr) { free(ptr); }};
   }
 
   static DenseMatrix<T> LoadFrom(
       yacl::ByteContainerView in,
-      MatrixSerializeFormat format = MatrixSerializeFormat::Best) {
+      MatrixSerializeFormat format = MatrixSerializeFormat::Best,
+      size_t *offset = nullptr) {
     if (format == MatrixSerializeFormat::Interconnection) {
       return LoadFromIc(in);
     }
 
-    auto msg =
-        msgpack::unpack(reinterpret_cast<const char*>(in.data()), in.size());
+    size_t zero = 0;
+    size_t *off = (offset == nullptr ? &zero : offset);
+    auto msg = msgpack::unpack(reinterpret_cast<const char *>(in.data()),
+                               in.size(), *off);
     msgpack::object o = msg.get();
 
     YACL_ENFORCE(o.type == msgpack::type::ARRAY && o.via.array.size == 4,
@@ -287,8 +290,8 @@ class DenseMatrix {
                      inner_obj.via.array.size == res.size(),
                  "Cannot parse inner_obj: buffer format error");
 
-    T* buf = res.data();
-    msgpack::object* p = inner_obj.via.array.ptr;
+    T *buf = res.data();
+    msgpack::object *p = inner_obj.via.array.ptr;
     if constexpr (std::experimental::is_detected_v<kHasSerializeWithMetaMethod,
                                                    T>) {
       buf[0].Deserialize((*p).as<std::string_view>());
@@ -332,7 +335,7 @@ class DenseMatrix {
 };
 
 template <typename T>
-inline auto format_as(const DenseMatrix<T>& i) {
+inline auto format_as(const DenseMatrix<T> &i) {
   return fmt::streamed(i);
 }
 

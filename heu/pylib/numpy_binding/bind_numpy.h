@@ -18,6 +18,6 @@
 
 namespace heu::pylib {
 
-void PyBindNumpy(pybind11::module& m);
+void PyBindNumpy(pybind11::module &m);
 
 }  // namespace heu::pylib

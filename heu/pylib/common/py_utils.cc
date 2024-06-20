@@ -28,7 +28,7 @@ const static auto kPyObjUint64Mask = py::reinterpret_steal<py::object>(
     PyLong_FromUnsignedLongLong(~uint64_t{0}));
 
 // NOT thread safe
-std::tuple<int128_t, bool> PyUtils::PyIntToCppInt128(const py::int_& p) {
+std::tuple<int128_t, bool> PyUtils::PyIntToCppInt128(const py::int_ &p) {
   // ref python c api: https://docs.python.org/3/c-api/long.html
   int is_overflow;
   int64_t n64 = PyLong_AsLongLongAndOverflow(p.ptr(), &is_overflow);
@@ -62,7 +62,7 @@ py::int_ PyUtils::CppInt128ToPyInt(int128_t num_128) {
 
 // NOT thread safe
 phe::Plaintext PyUtils::PyIntToPlaintext(phe::SchemaType schema,
-                                         const py::int_& p) {
+                                         const py::int_ &p) {
   auto [v, overflow] = PyIntToCppInt128(p);
   if (overflow) {
     phe::Plaintext pt(schema);
@@ -74,7 +74,7 @@ phe::Plaintext PyUtils::PyIntToPlaintext(phe::SchemaType schema,
 }
 
 // NOT thread safe
-py::int_ PyUtils::PlaintextToPyInt(const phe::Plaintext& mp) {
+py::int_ PyUtils::PlaintextToPyInt(const phe::Plaintext &mp) {
   if (mp.BitCount() < 64) {  // Up to 63bit regardless of sign bit
     return {mp.GetValue<int64_t>()};
   }
@@ -87,7 +87,7 @@ py::int_ PyUtils::PlaintextToPyInt(const phe::Plaintext& mp) {
       PyLong_FromString(mp.ToHexString().c_str(), nullptr, 16));
 }
 
-lib::algorithms::Endian PyUtils::PyEndianToCpp(const std::string& endian) {
+lib::algorithms::Endian PyUtils::PyEndianToCpp(const std::string &endian) {
   if (endian == "little") {
     return lib::algorithms::Endian::little;
   } else if (endian == "big") {

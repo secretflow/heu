@@ -27,9 +27,9 @@ namespace heu::pylib {
 
 // todo: place make sure this function is thread safe.
 template <typename T>
-T ExtensionFunctions<T>::SelectSum(const hnp::Evaluator& evaluator,
-                                   const hnp::DenseMatrix<T>& p_matrix,
-                                   const py::object& key) {
+T ExtensionFunctions<T>::SelectSum(const hnp::Evaluator &evaluator,
+                                   const hnp::DenseMatrix<T> &p_matrix,
+                                   const py::object &key) {
   if (py::isinstance<py::tuple>(key)) {
     auto idx_tuple = py::cast<py::tuple>(key);
 
@@ -64,9 +64,9 @@ namespace {
 //    '<lambda(int64_t, int64_t)>' declared with greater visibility than the
 //    type of its field '<lambda(int64_t, int64_t)>::<key capture>'
 template <typename T>
-hnp::DenseMatrix<T> DoBatchSelectSum(const hnp::Evaluator& evaluator,
-                                     const hnp::DenseMatrix<T>& p_matrix,
-                                     const std::vector<py::object>& key) {
+hnp::DenseMatrix<T> DoBatchSelectSum(const hnp::Evaluator &evaluator,
+                                     const hnp::DenseMatrix<T> &p_matrix,
+                                     const std::vector<py::object> &key) {
   auto res = hnp::DenseMatrix<T>(key.size());
   yacl::parallel_for(0, key.size(), 1, [&](int64_t beg, int64_t end) {
     for (int64_t x = beg; x < end; ++x) {
@@ -81,16 +81,16 @@ hnp::DenseMatrix<T> DoBatchSelectSum(const hnp::Evaluator& evaluator,
 
 template <typename T>
 hnp::DenseMatrix<T> ExtensionFunctions<T>::BatchSelectSum(
-    const hnp::Evaluator& evaluator, const hnp::DenseMatrix<T>& p_matrix,
-    const std::vector<py::object>& key) {
+    const hnp::Evaluator &evaluator, const hnp::DenseMatrix<T> &p_matrix,
+    const std::vector<py::object> &key) {
   return DoBatchSelectSum(evaluator, p_matrix, key);
 }
 
 template <typename T>
 lib::numpy::DenseMatrix<T> ExtensionFunctions<T>::FeatureWiseBucketSum(
-    const lib::numpy::Evaluator& e, const lib::numpy::DenseMatrix<T>& x,
-    const Eigen::Ref<RowVector>& subgroup_map,
-    const Eigen::Ref<RowMatrixXd>& order_map, int bucket_num, bool cumsum) {
+    const lib::numpy::Evaluator &e, const lib::numpy::DenseMatrix<T> &x,
+    const Eigen::Ref<RowVector> &subgroup_map,
+    const Eigen::Ref<RowMatrixXd> &order_map, int bucket_num, bool cumsum) {
   auto total_bucket_num = bucket_num * order_map.cols();
   auto res = hnp::DenseMatrix<T>(total_bucket_num, x.cols());
   std::vector<size_t> subgroup_indices;
@@ -109,9 +109,9 @@ lib::numpy::DenseMatrix<T> ExtensionFunctions<T>::FeatureWiseBucketSum(
 template <typename T>
 std::vector<lib::numpy::DenseMatrix<T>>
 ExtensionFunctions<T>::BatchFeatureWiseBucketSum(
-    const lib::numpy::Evaluator& e, const lib::numpy::DenseMatrix<T>& x,
-    const std::vector<Eigen::Ref<RowVector>>& subgroup_maps,
-    const Eigen::Ref<RowMatrixXd>& order_map, int bucket_num, bool cumsum) {
+    const lib::numpy::Evaluator &e, const lib::numpy::DenseMatrix<T> &x,
+    const std::vector<Eigen::Ref<RowVector>> &subgroup_maps,
+    const Eigen::Ref<RowMatrixXd> &order_map, int bucket_num, bool cumsum) {
   auto total_bucket_num = bucket_num * order_map.cols();
   auto group_number = subgroup_maps.size();
   auto res = std::vector<hnp::DenseMatrix<T>>(
@@ -155,8 +155,8 @@ template class ExtensionFunctions<lib::phe::Ciphertext>;
 
 RowMatrixXd PureNumpyExtensionFunctions::TreePredict(
     const Eigen::Ref<RowMatrixXdDouble> x,
-    const std::vector<int>& split_features,
-    const std::vector<double>& split_points) {
+    const std::vector<int> &split_features,
+    const std::vector<double> &split_points) {
   auto split_node_num = split_features.size();
   Eigen::Matrix<int8_t, -1, -1> res =
       Eigen::Matrix<int8_t, -1, -1>::Zero(x.rows(), split_node_num + 1);
@@ -195,9 +195,9 @@ typedef std::tuple<int, double> NodeContent;
 typedef std::unordered_map<int, NodeContent> SplitTree;
 
 namespace {
-SplitTree BuildTreeMap(const std::vector<int>& split_features,
-                       const std::vector<double>& split_points,
-                       const std::vector<int>& node_indices) {
+SplitTree BuildTreeMap(const std::vector<int> &split_features,
+                       const std::vector<double> &split_points,
+                       const std::vector<int> &node_indices) {
   YACL_ENFORCE_EQ(node_indices.size(), split_features.size(),
                   "node length must be well defined");
   YACL_ENFORCE_EQ(node_indices.size(), split_points.size(),
@@ -212,10 +212,10 @@ SplitTree BuildTreeMap(const std::vector<int>& split_features,
 
 RowMatrixXd PureNumpyExtensionFunctions::TreePredictWithIndices(
     const Eigen::Ref<RowMatrixXdDouble> x,
-    const std::vector<int>& split_features,
-    const std::vector<double>& split_points,
-    const std::vector<int>& node_indices,
-    const std::vector<int>& leaf_indices) {
+    const std::vector<int> &split_features,
+    const std::vector<double> &split_points,
+    const std::vector<int> &node_indices,
+    const std::vector<int> &leaf_indices) {
   auto split_node_num = split_features.size();
   YACL_ENFORCE_EQ(split_node_num + 1, leaf_indices.size(),
                   "leaf number must be well defined");
@@ -235,7 +235,7 @@ RowMatrixXd PureNumpyExtensionFunctions::TreePredictWithIndices(
         auto idx = idxs[0];
         idxs.pop_front();
         if (split_tree.count(idx) > 0) {
-          const NodeContent& node = split_tree[idx];
+          const NodeContent &node = split_tree[idx];
           int f = std::get<0>(node);
           double v = std::get<1>(node);
           if (f == -1) {

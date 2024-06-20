@@ -31,35 +31,35 @@ class Evaluator {
       : schema_type_(schema_type), evaluator_ptr_(std::move(evaluator)) {}
 
   // The performance of Randomize() is exactly the same as that of Encrypt().
-  void Randomize(Ciphertext* ct) const;
+  void Randomize(Ciphertext *ct) const;
 
   // out = a + b
   // Note: if a, b are in batch encoding form, then p must also be in batch
   // encoding form
-  Ciphertext Add(const Ciphertext& a, const Ciphertext& b) const;
-  Ciphertext Add(const Ciphertext& a, const Plaintext& p) const;
-  Ciphertext Add(const Plaintext& p, const Ciphertext& a) const;
+  Ciphertext Add(const Ciphertext &a, const Ciphertext &b) const;
+  Ciphertext Add(const Ciphertext &a, const Plaintext &p) const;
+  Ciphertext Add(const Plaintext &p, const Ciphertext &a) const;
 
-  Plaintext Add(const Plaintext& a, const Plaintext& b) const { return a + b; };
+  Plaintext Add(const Plaintext &a, const Plaintext &b) const { return a + b; };
 
-  void AddInplace(Ciphertext* a, const Ciphertext& b) const;
-  void AddInplace(Ciphertext* a, const Plaintext& p) const;
+  void AddInplace(Ciphertext *a, const Ciphertext &b) const;
+  void AddInplace(Ciphertext *a, const Plaintext &p) const;
 
-  void AddInplace(Plaintext* a, const Plaintext& b) const { *a += b; };
+  void AddInplace(Plaintext *a, const Plaintext &b) const { *a += b; };
 
   // out = a - b
   // Warning on batch encoding mode: Subtraction works only if every element in
   // plaintext/ciphertext is positive integer
-  Ciphertext Sub(const Ciphertext& a, const Ciphertext& b) const;
-  Ciphertext Sub(const Ciphertext& a, const Plaintext& p) const;
-  Ciphertext Sub(const Plaintext& p, const Ciphertext& a) const;
+  Ciphertext Sub(const Ciphertext &a, const Ciphertext &b) const;
+  Ciphertext Sub(const Ciphertext &a, const Plaintext &p) const;
+  Ciphertext Sub(const Plaintext &p, const Ciphertext &a) const;
 
-  Plaintext Sub(const Plaintext& a, const Plaintext& b) const { return a - b; };
+  Plaintext Sub(const Plaintext &a, const Plaintext &b) const { return a - b; };
 
-  void SubInplace(Ciphertext* a, const Ciphertext& b) const;
-  void SubInplace(Ciphertext* a, const Plaintext& p) const;
+  void SubInplace(Ciphertext *a, const Ciphertext &b) const;
+  void SubInplace(Ciphertext *a, const Plaintext &p) const;
 
-  void SubInplace(Plaintext* a, const Plaintext& b) const { *a -= b; };
+  void SubInplace(Plaintext *a, const Plaintext &b) const { *a -= b; };
 
   // out = a * p
   // Warning 1:
@@ -69,23 +69,23 @@ class Evaluator {
   // subsequent operations), Randomize can be omitted.
   // Warning 2:
   // Multiplication is not supported if a is in batch encoding form
-  Ciphertext Mul(const Ciphertext& a, const Plaintext& p) const;
-  Ciphertext Mul(const Plaintext& p, const Ciphertext& a) const;
+  Ciphertext Mul(const Ciphertext &a, const Plaintext &p) const;
+  Ciphertext Mul(const Plaintext &p, const Ciphertext &a) const;
 
-  Plaintext Mul(const Plaintext& a, const Plaintext& b) const { return a * b; };
+  Plaintext Mul(const Plaintext &a, const Plaintext &b) const { return a * b; };
 
-  void MulInplace(Ciphertext* a, const Plaintext& p) const;
+  void MulInplace(Ciphertext *a, const Plaintext &p) const;
 
-  void MulInplace(Plaintext* a, const Plaintext& b) const { *a *= b; };
+  void MulInplace(Plaintext *a, const Plaintext &b) const { *a *= b; };
 
   // out = -a
-  Ciphertext Negate(const Ciphertext& a) const;
+  Ciphertext Negate(const Ciphertext &a) const;
 
-  Plaintext Negate(const Plaintext& a) const { return -a; };
+  Plaintext Negate(const Plaintext &a) const { return -a; };
 
-  void NegateInplace(Ciphertext* a) const;
+  void NegateInplace(Ciphertext *a) const;
 
-  void NegateInplace(Plaintext* a) const { a->NegateInplace(); };
+  void NegateInplace(Plaintext *a) const { a->NegateInplace(); };
 
   SchemaType GetSchemaType() const;
 

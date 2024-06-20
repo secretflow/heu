@@ -17,11 +17,11 @@
 namespace heu::lib::algorithms::mock {
 
 #ifdef IMPL_SCALAR_SPI
-void Decryptor::Decrypt(const Ciphertext& ct, Plaintext* out) const {
+void Decryptor::Decrypt(const Ciphertext &ct, Plaintext *out) const {
   out->Set(ct.bn_);
 }
 
-Plaintext Decryptor::Decrypt(const Ciphertext& ct) const {
+Plaintext Decryptor::Decrypt(const Ciphertext &ct) const {
   Plaintext pt;
   pt.Set(ct.bn_);
   return pt;
@@ -32,7 +32,7 @@ Plaintext Decryptor::Decrypt(const Ciphertext& ct) const {
 std::vector<Plaintext> Decryptor::Decrypt(ConstSpan<Ciphertext> cts) const {
   std::vector<Plaintext> res;
   res.reserve(cts.size());
-  for (const auto& ct : cts) {
+  for (const auto &ct : cts) {
     res.emplace_back(ct->bn_);
   }
   return res;

@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-20 10:37+0800\n"
+"POT-Creation-Date: 2024-01-25 10:58+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.14.0\n"
 
 #: ../../references/numpy_api.rst:2
 msgid "Numpy 模块"
@@ -34,6 +34,10 @@ msgstr ""
 msgid "Get the number of cols"
 msgstr ""
 
+#: ../../docstring heu.numpy.PyCapsule.load_from:1 of
+msgid "deserialize matrix from bytes"
+msgstr ""
+
 #: ../../docstring heu.numpy.CiphertextArray.ndim:1
 #: heu.numpy.PlaintextArray.ndim:1 heu.numpy.StringArray.ndim:1 of
 msgid "The array's number of dimensions"
@@ -42,6 +46,10 @@ msgstr ""
 #: ../../docstring heu.numpy.CiphertextArray.rows:1
 #: heu.numpy.PlaintextArray.rows:1 heu.numpy.StringArray.rows:1 of
 msgid "Get the number of rows"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.serialize:1 of
+msgid "serialize matrix to bytes"
 msgstr ""
 
 #: ../../docstring heu.numpy.CiphertextArray.shape:1
@@ -617,6 +625,18 @@ msgstr ""
 msgid "Get decryptor"
 msgstr ""
 
+#: ../../docstring heu.numpy.MatrixSerializeFormat:1 of
+msgid "Members:"
+msgstr ""
+
+#: ../../docstring heu.numpy.MatrixSerializeFormat:3 of
+msgid "Best"
+msgstr ""
+
+#: ../../docstring heu.numpy.MatrixSerializeFormat:5 of
+msgid "Interconnection"
+msgstr ""
+
 #: ../../docstring heu.numpy.PyCapsule.to_bytes:1 of
 msgid "Construct Python bytes containing the raw data bytes in the array."
 msgstr ""
@@ -783,9 +803,7 @@ msgid ""
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.setup:3 of
-msgid ""
-"setup(schema_type: heu.phe.SchemaType = <SchemaType.ZPaillier: 3>, "
-"key_size: int = 2048) -> heu.numpy.HeKit"
+msgid "setup(schema_type: heu.phe.SchemaType, key_size: int) -> heu.numpy.HeKit"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.setup:5 of
@@ -793,9 +811,7 @@ msgid "Setup phe (numpy) environment by schema type and key size"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.setup:7 of
-msgid ""
-"setup(schema_string: str = 'z-paillier', key_size: int = 2048) -> "
-"heu.numpy.HeKit"
+msgid "setup(schema_string: str, key_size: int) -> heu.numpy.HeKit"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.setup:9 of
@@ -803,10 +819,28 @@ msgid "Setup phe (numpy) environment by schema string and key size"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.setup:11 of
-msgid "setup(public_key: heu.phe.PublicKey) -> heu.numpy.DestinationHeKit"
+msgid ""
+"setup(schema_type: heu.phe.SchemaType = <SchemaType.ZPaillier: 3>) -> "
+"heu.numpy.HeKit"
 msgstr ""
 
 #: ../../docstring heu.numpy.PyCapsule.setup:13 of
+msgid "Setup phe (numpy) environment by schema type"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.setup:15 of
+msgid "setup(schema_string: str = 'z-paillier') -> heu.numpy.HeKit"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.setup:17 of
+msgid "Setup phe (numpy) environment by schema string"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.setup:19 of
+msgid "setup(public_key: heu.phe.PublicKey) -> heu.numpy.DestinationHeKit"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.setup:21 of
 msgid "Setup phe (numpy) environment by an already generated public key"
 msgstr ""
 
