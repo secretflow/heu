@@ -1,0 +1,128 @@
+# Copyright 2024 Ant Group Co., Ltd
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+yacl_cc_library(
+    name = "he",
+    hdrs = ["he.h"],
+    deps = [
+        ":factory",
+        ":he_configs",
+        ":he_kit",
+        ":schema",
+    ],
+)
+
+yacl_cc_library(
+    name = "factory",
+    srcs = ["factory.cc"],
+    hdrs = ["factory.h"],
+    deps = [
+        "he_kit",
+    ],
+)
+
+yacl_cc_library(
+    name = "he_kit",
+    hdrs = ["he_kit.h"],
+    deps = [
+        ":decryptor",
+        ":encoder",
+        ":encryptor",
+        ":evaluator",
+        ":he_configs",
+        ":item_tool",
+        ":schema",
+    ],
+)
+
+yacl_cc_library(
+    name = "he_configs",
+    srcs = ["he_configs.cc"],
+    hdrs = ["he_configs.h"],
+    deps = [
+        "@yacl//yacl/utils/spi",
+    ],
+)
+
+yacl_cc_library(
+    name = "schema",
+    srcs = ["schema.cc"],
+    hdrs = ["schema.h"],
+    deps = [
+        "@yacl//yacl/base:exception",
+    ],
+)
+
+yacl_cc_library(
+    name = "item",
+    srcs = ["item.cc"],
+    hdrs = ["item.h"],
+    deps = [
+        "@yacl//yacl/utils/spi",
+    ],
+)
+
+yacl_cc_library(
+    name = "item_tool",
+    hdrs = ["item_tool.h"],
+    deps = [
+        ":item",
+    ],
+)
+
+yacl_cc_library(
+    name = "encryptor",
+    hdrs = ["encryptor.h"],
+    deps = [
+        ":item",
+    ],
+)
+
+yacl_cc_library(
+    name = "decryptor",
+    hdrs = ["decryptor.h"],
+    deps = [
+        ":item",
+    ],
+)
+
+yacl_cc_library(
+    name = "evaluator",
+    hdrs = [
+        "binary_evaluator.h",
+        "gate_evaluator.h",
+        "word_evaluator.h",
+    ],
+    deps = [
+        ":item",
+    ],
+)
+
+yacl_cc_library(
+    name = "encoder",
+    srcs = ["encoder.h"],
+    deps = [":item"],
+)
+
+yacl_cc_test(
+    name = "item_test",
+    srcs = ["item_test.cc"],
+    deps = [
+        ":item",
+    ],
+)

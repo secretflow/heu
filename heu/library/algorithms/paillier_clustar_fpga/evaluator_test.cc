@@ -38,22 +38,22 @@ class CEvaluatorTest : public ::testing::TestWithParam<size_t> {
 
   template <typename T>
   ConstSpan<Plaintext> CleartextToConstSpan(
-      std::vector<T>& input_vec, std::vector<Plaintext>& plain_vec,
-      std::vector<Plaintext*>& plain_ptrs);
+      std::vector<T> &input_vec, std::vector<Plaintext> &plain_vec,
+      std::vector<Plaintext *> &plain_ptrs);
 
   template <typename T>
-  Span<Plaintext> CleartextToSpan(std::vector<T>& input_vec,
-                                  std::vector<Plaintext>& plain_vec,
-                                  std::vector<Plaintext*>& plain_ptrs);
-
-  // T: Ciphertext/Plaintext
-  template <typename T>
-  ConstSpan<T> TextToConstSpan(std::vector<T>& input_vec,
-                               std::vector<T*>& text_ptrs);
+  Span<Plaintext> CleartextToSpan(std::vector<T> &input_vec,
+                                  std::vector<Plaintext> &plain_vec,
+                                  std::vector<Plaintext *> &plain_ptrs);
 
   // T: Ciphertext/Plaintext
   template <typename T>
-  Span<T> TextToSpan(std::vector<T>& input_vec, std::vector<T*>& text_ptrs);
+  ConstSpan<T> TextToConstSpan(std::vector<T> &input_vec,
+                               std::vector<T *> &text_ptrs);
+
+  // T: Ciphertext/Plaintext
+  template <typename T>
+  Span<T> TextToSpan(std::vector<T> &input_vec, std::vector<T *> &text_ptrs);
 
  protected:
   SecretKey sk_;
@@ -68,8 +68,8 @@ INSTANTIATE_TEST_SUITE_P(SubTest, CEvaluatorTest,
 
 template <typename T>
 ConstSpan<Plaintext> CEvaluatorTest::CleartextToConstSpan(
-    std::vector<T>& input_vec, std::vector<Plaintext>& plain_vec,
-    std::vector<Plaintext*>& plain_ptrs) {
+    std::vector<T> &input_vec, std::vector<Plaintext> &plain_vec,
+    std::vector<Plaintext *> &plain_ptrs) {
   size_t vec_size = input_vec.size();
   for (size_t i = 0; i < vec_size; i++) {
     plain_vec.push_back(Plaintext(input_vec[i]));
@@ -83,8 +83,8 @@ ConstSpan<Plaintext> CEvaluatorTest::CleartextToConstSpan(
 
 template <typename T>
 Span<Plaintext> CEvaluatorTest::CleartextToSpan(
-    std::vector<T>& input_vec, std::vector<Plaintext>& plain_vec,
-    std::vector<Plaintext*>& plain_ptrs) {
+    std::vector<T> &input_vec, std::vector<Plaintext> &plain_vec,
+    std::vector<Plaintext *> &plain_ptrs) {
   size_t vec_size = input_vec.size();
   for (size_t i = 0; i < vec_size; i++) {
     plain_vec.push_back(Plaintext(input_vec[i]));
@@ -97,16 +97,16 @@ Span<Plaintext> CEvaluatorTest::CleartextToSpan(
 }
 
 template <typename T>
-ConstSpan<T> CEvaluatorTest::TextToConstSpan(std::vector<T>& input_vec,
-                                             std::vector<T*>& text_ptrs) {
+ConstSpan<T> CEvaluatorTest::TextToConstSpan(std::vector<T> &input_vec,
+                                             std::vector<T *> &text_ptrs) {
   CMonoFacility::ValueVecToPtrVec(input_vec, text_ptrs);
   auto text_span = absl::MakeConstSpan(text_ptrs.data(), text_ptrs.size());
   return text_span;
 }
 
 template <typename T>
-Span<T> CEvaluatorTest::TextToSpan(std::vector<T>& input_vec,
-                                   std::vector<T*>& text_ptrs) {
+Span<T> CEvaluatorTest::TextToSpan(std::vector<T> &input_vec,
+                                   std::vector<T *> &text_ptrs) {
   CMonoFacility::ValueVecToPtrVec(input_vec, text_ptrs);
   auto text_span = absl::MakeSpan(text_ptrs.data(), text_ptrs.size());
   return text_span;
@@ -125,12 +125,12 @@ TEST_P(CEvaluatorTest, Randomize) {
   }
 
   // encrpt
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   CMonoFacility::ValueVecToPtrVec(a_plain_vec, a_plain_ptrs);
   auto a_plain_span = absl::MakeConstSpan(a_plain_ptrs.data(), vec_size);
   auto a_cipher_vec = encryptor_->Encrypt(a_plain_span);
 
-  std::vector<Ciphertext*> a_cipher_vec_ptrs;
+  std::vector<Ciphertext *> a_cipher_vec_ptrs;
   CMonoFacility::ValueVecToPtrVec(a_cipher_vec, a_cipher_vec_ptrs);
   auto a_cipher_span =
       absl::MakeSpan(a_cipher_vec_ptrs.data(), a_cipher_vec_ptrs.size());
@@ -166,20 +166,20 @@ TEST_P(CEvaluatorTest, CipherAddCipher) {
   // encrypt
   // encrypt a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
   auto a_cipher_vec = encryptor_->Encrypt(a_const_plain_span);
-  std::vector<Ciphertext*> a_ciphertext_ptrs;
+  std::vector<Ciphertext *> a_ciphertext_ptrs;
   auto a_const_cipher_span = TextToConstSpan(a_cipher_vec, a_ciphertext_ptrs);
 
   // encrypt b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
   auto b_cipher_vec = encryptor_->Encrypt(b_const_plain_span);
-  std::vector<Ciphertext*> b_ciphertext_ptrs;
+  std::vector<Ciphertext *> b_ciphertext_ptrs;
   auto b_cipher_span = TextToConstSpan(b_cipher_vec, b_ciphertext_ptrs);
 
   // add
@@ -187,7 +187,7 @@ TEST_P(CEvaluatorTest, CipherAddCipher) {
       evaluator_->Add(a_const_cipher_span, b_cipher_span);
 
   // decrypt
-  std::vector<Ciphertext*> res_ciphertext_ptrs;
+  std::vector<Ciphertext *> res_ciphertext_ptrs;
   auto res_cipher_span = TextToConstSpan(res_cipher, res_ciphertext_ptrs);
   std::vector<Plaintext> res_vec = decryptor_->Decrypt(res_cipher_span);
   EXPECT_EQ(res_vec.size(), vec_size);
@@ -212,16 +212,16 @@ TEST_P(CEvaluatorTest, CipherAddPlain) {
 
   // encrypt a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
   auto a_cipher_vec = encryptor_->Encrypt(a_const_plain_span);
-  std::vector<Ciphertext*> a_ciphertext_ptrs;
+  std::vector<Ciphertext *> a_ciphertext_ptrs;
   auto a_const_cipher_span = TextToConstSpan(a_cipher_vec, a_ciphertext_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -230,7 +230,7 @@ TEST_P(CEvaluatorTest, CipherAddPlain) {
       evaluator_->Add(a_const_cipher_span, b_const_plain_span);
 
   // decrypt
-  std::vector<Ciphertext*> res_ciphertext_ptrs;
+  std::vector<Ciphertext *> res_ciphertext_ptrs;
   auto res_cipher_span = TextToConstSpan(res_cipher, res_ciphertext_ptrs);
   std::vector<Plaintext> res_vec = decryptor_->Decrypt(res_cipher_span);
   EXPECT_EQ(res_vec.size(), vec_size);
@@ -255,17 +255,17 @@ TEST_P(CEvaluatorTest, PlainAddCipher) {
 
   // plaintex a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
 
   // encrypt b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
   auto b_cipher_vec = encryptor_->Encrypt(b_const_plain_span);
-  std::vector<Ciphertext*> b_ciphertext_ptrs;
+  std::vector<Ciphertext *> b_ciphertext_ptrs;
   auto b_const_cipher_span = TextToConstSpan(b_cipher_vec, b_ciphertext_ptrs);
 
   // add
@@ -273,7 +273,7 @@ TEST_P(CEvaluatorTest, PlainAddCipher) {
       evaluator_->Add(a_const_plain_span, b_const_cipher_span);
 
   // decrypt
-  std::vector<Ciphertext*> res_ciphertext_ptrs;
+  std::vector<Ciphertext *> res_ciphertext_ptrs;
   auto res_cipher_span = TextToConstSpan(res_cipher, res_ciphertext_ptrs);
   std::vector<Plaintext> res_vec = decryptor_->Decrypt(res_cipher_span);
   EXPECT_EQ(res_vec.size(), vec_size);
@@ -298,13 +298,13 @@ TEST_P(CEvaluatorTest, PlainAddPlain) {
 
   // plaintex a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -333,20 +333,20 @@ TEST_P(CEvaluatorTest, CipherInplaceAddCipher) {
   // encrypt
   // encrypt a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
   auto a_cipher_vec = encryptor_->Encrypt(a_const_plain_span);
-  std::vector<Ciphertext*> a_ciphertext_ptrs;
+  std::vector<Ciphertext *> a_ciphertext_ptrs;
   auto a_cipher_span = TextToSpan(a_cipher_vec, a_ciphertext_ptrs);
 
   // encrypt b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
   auto b_cipher_vec = encryptor_->Encrypt(b_const_plain_span);
-  std::vector<Ciphertext*> b_ciphertext_ptrs;
+  std::vector<Ciphertext *> b_ciphertext_ptrs;
   auto b_const_cipher_span = TextToConstSpan(b_cipher_vec, b_ciphertext_ptrs);
 
   // add in place
@@ -377,16 +377,16 @@ TEST_P(CEvaluatorTest, CipherInplaceAddPlain) {
   // encrypt
   // encrypt a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
   auto a_cipher_vec = encryptor_->Encrypt(a_const_plain_span);
-  std::vector<Ciphertext*> a_ciphertext_ptrs;
+  std::vector<Ciphertext *> a_ciphertext_ptrs;
   auto a_cipher_span = TextToSpan(a_cipher_vec, a_ciphertext_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -417,12 +417,12 @@ TEST_P(CEvaluatorTest, PlainInplaceAddPlain) {
 
   // plaintex a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_plain_span = CleartextToSpan(a_vec, a_plain_vec, a_plain_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -451,20 +451,20 @@ TEST_P(CEvaluatorTest, CipherSubCipher) {
   // encrypt
   // encrypt a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
   auto a_cipher_vec = encryptor_->Encrypt(a_const_plain_span);
-  std::vector<Ciphertext*> a_ciphertext_ptrs;
+  std::vector<Ciphertext *> a_ciphertext_ptrs;
   auto a_const_cipher_span = TextToConstSpan(a_cipher_vec, a_ciphertext_ptrs);
 
   // encrypt b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
   auto b_cipher_vec = encryptor_->Encrypt(b_const_plain_span);
-  std::vector<Ciphertext*> b_ciphertext_ptrs;
+  std::vector<Ciphertext *> b_ciphertext_ptrs;
   auto b_const_cipher_span = TextToConstSpan(b_cipher_vec, b_ciphertext_ptrs);
 
   // sub
@@ -472,7 +472,7 @@ TEST_P(CEvaluatorTest, CipherSubCipher) {
       evaluator_->Sub(a_const_cipher_span, b_const_cipher_span);
 
   // decrypt
-  std::vector<Ciphertext*> res_ciphertext_ptrs;
+  std::vector<Ciphertext *> res_ciphertext_ptrs;
   auto res_cipher_span = TextToConstSpan(res_cipher, res_ciphertext_ptrs);
   std::vector<Plaintext> res_vec = decryptor_->Decrypt(res_cipher_span);
   EXPECT_EQ(res_vec.size(), vec_size);
@@ -498,16 +498,16 @@ TEST_P(CEvaluatorTest, CipherSubPlain) {
 
   // encrypt a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
   auto a_cipher_vec = encryptor_->Encrypt(a_const_plain_span);
-  std::vector<Ciphertext*> a_ciphertext_ptrs;
+  std::vector<Ciphertext *> a_ciphertext_ptrs;
   auto a_const_cipher_span = TextToConstSpan(a_cipher_vec, a_ciphertext_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -516,7 +516,7 @@ TEST_P(CEvaluatorTest, CipherSubPlain) {
       evaluator_->Sub(a_const_cipher_span, b_const_plain_span);
 
   // decrypt
-  std::vector<Ciphertext*> res_ciphertext_ptrs;
+  std::vector<Ciphertext *> res_ciphertext_ptrs;
   auto res_cipher_span = TextToConstSpan(res_cipher, res_ciphertext_ptrs);
   std::vector<Plaintext> res_vec = decryptor_->Decrypt(res_cipher_span);
   EXPECT_EQ(res_vec.size(), vec_size);
@@ -542,17 +542,17 @@ TEST_P(CEvaluatorTest, PlainSubCipher) {
 
   // plaintex a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
 
   // encrypt b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
   auto b_cipher_vec = encryptor_->Encrypt(b_const_plain_span);
-  std::vector<Ciphertext*> b_ciphertext_ptrs;
+  std::vector<Ciphertext *> b_ciphertext_ptrs;
   auto b_const_cipher_span = TextToConstSpan(b_cipher_vec, b_ciphertext_ptrs);
 
   // sub
@@ -560,7 +560,7 @@ TEST_P(CEvaluatorTest, PlainSubCipher) {
       evaluator_->Sub(a_const_plain_span, b_const_cipher_span);
 
   // decrypt
-  std::vector<Ciphertext*> res_ciphertext_ptrs;
+  std::vector<Ciphertext *> res_ciphertext_ptrs;
   auto res_cipher_span = TextToConstSpan(res_cipher, res_ciphertext_ptrs);
   std::vector<Plaintext> res_vec = decryptor_->Decrypt(res_cipher_span);
   EXPECT_EQ(res_vec.size(), vec_size);
@@ -586,13 +586,13 @@ TEST_P(CEvaluatorTest, PlainSubPlain) {
 
   // plaintex a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -622,20 +622,20 @@ TEST_P(CEvaluatorTest, CipherInplaceSubCipher) {
   // encrypt
   // encrypt a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
   auto a_cipher_vec = encryptor_->Encrypt(a_const_plain_span);
-  std::vector<Ciphertext*> a_ciphertext_ptrs;
+  std::vector<Ciphertext *> a_ciphertext_ptrs;
   auto a_cipher_span = TextToSpan(a_cipher_vec, a_ciphertext_ptrs);
 
   // encrypt b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
   auto b_cipher_vec = encryptor_->Encrypt(b_const_plain_span);
-  std::vector<Ciphertext*> b_ciphertext_ptrs;
+  std::vector<Ciphertext *> b_ciphertext_ptrs;
   auto b_const_cipher_span = TextToConstSpan(b_cipher_vec, b_ciphertext_ptrs);
 
   // sub
@@ -666,16 +666,16 @@ TEST_P(CEvaluatorTest, CipherInplaceSubPlain) {
 
   // encrypt a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
   auto a_cipher_vec = encryptor_->Encrypt(a_const_plain_span);
-  std::vector<Ciphertext*> a_ciphertext_ptrs;
+  std::vector<Ciphertext *> a_ciphertext_ptrs;
   auto a_cipher_span = TextToSpan(a_cipher_vec, a_ciphertext_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -707,12 +707,12 @@ TEST_P(CEvaluatorTest, PlainInplaceSubPlain) {
 
   // plaintex a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_plain_span = CleartextToSpan(a_vec, a_plain_vec, a_plain_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -740,16 +740,16 @@ TEST_P(CEvaluatorTest, CipherMulPlain) {
 
   // encrypt a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
   auto a_cipher_vec = encryptor_->Encrypt(a_const_plain_span);
-  std::vector<Ciphertext*> a_ciphertext_ptrs;
+  std::vector<Ciphertext *> a_ciphertext_ptrs;
   auto a_const_cipher_span = TextToConstSpan(a_cipher_vec, a_ciphertext_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -758,7 +758,7 @@ TEST_P(CEvaluatorTest, CipherMulPlain) {
       evaluator_->Mul(a_const_cipher_span, b_const_plain_span);
 
   // decrypt
-  std::vector<Ciphertext*> res_ciphertext_ptrs;
+  std::vector<Ciphertext *> res_ciphertext_ptrs;
   auto res_cipher_span = TextToConstSpan(res_cipher, res_ciphertext_ptrs);
   std::vector<Plaintext> res_vec = decryptor_->Decrypt(res_cipher_span);
   EXPECT_EQ(res_vec.size(), vec_size);
@@ -783,16 +783,16 @@ TEST_P(CEvaluatorTest, CipherMulOnePlain) {
 
   // encrypt a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
   auto a_cipher_vec = encryptor_->Encrypt(a_const_plain_span);
-  std::vector<Ciphertext*> a_ciphertext_ptrs;
+  std::vector<Ciphertext *> a_ciphertext_ptrs;
   auto a_const_cipher_span = TextToConstSpan(a_cipher_vec, a_ciphertext_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -801,7 +801,7 @@ TEST_P(CEvaluatorTest, CipherMulOnePlain) {
       evaluator_->Mul(a_const_cipher_span, b_const_plain_span);
 
   // decrypt
-  std::vector<Ciphertext*> res_ciphertext_ptrs;
+  std::vector<Ciphertext *> res_ciphertext_ptrs;
   auto res_cipher_span = TextToConstSpan(res_cipher, res_ciphertext_ptrs);
   std::vector<Plaintext> res_vec = decryptor_->Decrypt(res_cipher_span);
   EXPECT_EQ(res_vec.size(), vec_size);
@@ -826,16 +826,16 @@ TEST_P(CEvaluatorTest, OneCipherMulPlain) {
 
   // encrypt a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
   auto a_cipher_vec = encryptor_->Encrypt(a_const_plain_span);
-  std::vector<Ciphertext*> a_ciphertext_ptrs;
+  std::vector<Ciphertext *> a_ciphertext_ptrs;
   auto a_const_cipher_span = TextToConstSpan(a_cipher_vec, a_ciphertext_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -844,7 +844,7 @@ TEST_P(CEvaluatorTest, OneCipherMulPlain) {
       evaluator_->Mul(a_const_cipher_span, b_const_plain_span);
 
   // decrypt
-  std::vector<Ciphertext*> res_ciphertext_ptrs;
+  std::vector<Ciphertext *> res_ciphertext_ptrs;
   auto res_cipher_span = TextToConstSpan(res_cipher, res_ciphertext_ptrs);
   std::vector<Plaintext> res_vec = decryptor_->Decrypt(res_cipher_span);
   EXPECT_EQ(res_vec.size(), vec_size);
@@ -870,17 +870,17 @@ TEST_P(CEvaluatorTest, PlainMulCipher) {
 
   // plaintex a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
 
   // encrypt b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
   auto b_cipher_vec = encryptor_->Encrypt(b_const_plain_span);
-  std::vector<Ciphertext*> b_ciphertext_ptrs;
+  std::vector<Ciphertext *> b_ciphertext_ptrs;
   auto b_const_cipher_span = TextToConstSpan(b_cipher_vec, b_ciphertext_ptrs);
 
   // mul
@@ -888,7 +888,7 @@ TEST_P(CEvaluatorTest, PlainMulCipher) {
       evaluator_->Mul(a_const_plain_span, b_const_cipher_span);
 
   // decrypt
-  std::vector<Ciphertext*> res_ciphertext_ptrs;
+  std::vector<Ciphertext *> res_ciphertext_ptrs;
   auto res_cipher_span = TextToConstSpan(res_cipher, res_ciphertext_ptrs);
   std::vector<Plaintext> res_vec = decryptor_->Decrypt(res_cipher_span);
   EXPECT_EQ(res_vec.size(), vec_size);
@@ -913,17 +913,17 @@ TEST_P(CEvaluatorTest, PlainMulOneCipher) {
 
   // plaintex a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
 
   // encrypt b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
   auto b_cipher_vec = encryptor_->Encrypt(b_const_plain_span);
-  std::vector<Ciphertext*> b_ciphertext_ptrs;
+  std::vector<Ciphertext *> b_ciphertext_ptrs;
   auto b_const_cipher_span = TextToConstSpan(b_cipher_vec, b_ciphertext_ptrs);
 
   // mul
@@ -931,7 +931,7 @@ TEST_P(CEvaluatorTest, PlainMulOneCipher) {
       evaluator_->Mul(a_const_plain_span, b_const_cipher_span);
 
   // decrypt
-  std::vector<Ciphertext*> res_ciphertext_ptrs;
+  std::vector<Ciphertext *> res_ciphertext_ptrs;
   auto res_cipher_span = TextToConstSpan(res_cipher, res_ciphertext_ptrs);
   std::vector<Plaintext> res_vec = decryptor_->Decrypt(res_cipher_span);
   EXPECT_EQ(res_vec.size(), vec_size);
@@ -956,17 +956,17 @@ TEST_P(CEvaluatorTest, OnePlainMulCipher) {
 
   // plaintex a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
 
   // encrypt b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
   auto b_cipher_vec = encryptor_->Encrypt(b_const_plain_span);
-  std::vector<Ciphertext*> b_ciphertext_ptrs;
+  std::vector<Ciphertext *> b_ciphertext_ptrs;
   auto b_const_cipher_span = TextToConstSpan(b_cipher_vec, b_ciphertext_ptrs);
 
   // mul
@@ -974,7 +974,7 @@ TEST_P(CEvaluatorTest, OnePlainMulCipher) {
       evaluator_->Mul(a_const_plain_span, b_const_cipher_span);
 
   // decrypt
-  std::vector<Ciphertext*> res_ciphertext_ptrs;
+  std::vector<Ciphertext *> res_ciphertext_ptrs;
   auto res_cipher_span = TextToConstSpan(res_cipher, res_ciphertext_ptrs);
   std::vector<Plaintext> res_vec = decryptor_->Decrypt(res_cipher_span);
   EXPECT_EQ(res_vec.size(), vec_size);
@@ -1000,13 +1000,13 @@ TEST_P(CEvaluatorTest, PlainMulPlain) {
 
   // plaintex a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -1034,13 +1034,13 @@ TEST_P(CEvaluatorTest, PlainMulOnePlain) {
 
   // plaintex a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -1068,13 +1068,13 @@ TEST_P(CEvaluatorTest, OnePlainMulPlain) {
 
   // plaintex a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -1103,16 +1103,16 @@ TEST_P(CEvaluatorTest, CipherInplaceMulPlain) {
 
   // encrypt a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
   auto a_cipher_vec = encryptor_->Encrypt(a_const_plain_span);
-  std::vector<Ciphertext*> a_ciphertext_ptrs;
+  std::vector<Ciphertext *> a_ciphertext_ptrs;
   auto a_cipher_span = TextToSpan(a_cipher_vec, a_ciphertext_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -1143,16 +1143,16 @@ TEST_P(CEvaluatorTest, CipherInplaceMulOnePlain) {
 
   // encrypt a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
   auto a_cipher_vec = encryptor_->Encrypt(a_const_plain_span);
-  std::vector<Ciphertext*> a_ciphertext_ptrs;
+  std::vector<Ciphertext *> a_ciphertext_ptrs;
   auto a_cipher_span = TextToSpan(a_cipher_vec, a_ciphertext_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -1184,12 +1184,12 @@ TEST_P(CEvaluatorTest, PlainInplaceMulPlain) {
 
   // plaintex a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_plain_span = CleartextToSpan(a_vec, a_plain_vec, a_plain_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -1217,12 +1217,12 @@ TEST_P(CEvaluatorTest, PlainInplaceMulOnePlain) {
 
   // plaintex a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_plain_span = CleartextToSpan(a_vec, a_plain_vec, a_plain_ptrs);
 
   // plaintex b_vec
   std::vector<Plaintext> b_plain_vec;
-  std::vector<Plaintext*> b_plain_ptrs;
+  std::vector<Plaintext *> b_plain_ptrs;
   auto b_const_plain_span =
       CleartextToConstSpan(b_vec, b_plain_vec, b_plain_ptrs);
 
@@ -1245,18 +1245,18 @@ TEST_P(CEvaluatorTest, Negate) {
 
   // encrypt a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
   auto a_cipher_vec = encryptor_->Encrypt(a_const_plain_span);
-  std::vector<Ciphertext*> a_ciphertext_ptrs;
+  std::vector<Ciphertext *> a_ciphertext_ptrs;
   auto a_const_cipher_span = TextToConstSpan(a_cipher_vec, a_ciphertext_ptrs);
 
   // negate
   std::vector<Ciphertext> res_cipher = evaluator_->Negate(a_const_cipher_span);
 
   // decrypt
-  std::vector<Ciphertext*> res_ciphertext_ptrs;
+  std::vector<Ciphertext *> res_ciphertext_ptrs;
   auto res_cipher_span = TextToConstSpan(res_cipher, res_ciphertext_ptrs);
   std::vector<Plaintext> res_vec = decryptor_->Decrypt(res_cipher_span);
   EXPECT_EQ(res_vec.size(), vec_size);
@@ -1276,11 +1276,11 @@ TEST_P(CEvaluatorTest, NegateInplace) {
 
   // encrypt a_vec
   std::vector<Plaintext> a_plain_vec;
-  std::vector<Plaintext*> a_plain_ptrs;
+  std::vector<Plaintext *> a_plain_ptrs;
   auto a_const_plain_span =
       CleartextToConstSpan(a_vec, a_plain_vec, a_plain_ptrs);
   auto a_cipher_vec = encryptor_->Encrypt(a_const_plain_span);
-  std::vector<Ciphertext*> a_ciphertext_ptrs;
+  std::vector<Ciphertext *> a_ciphertext_ptrs;
   auto a_cipher_span = TextToSpan(a_cipher_vec, a_ciphertext_ptrs);
 
   // negate
@@ -1300,18 +1300,18 @@ TEST_P(CEvaluatorTest, ReduceSum) {
   // prepare
   std::vector<int32_t> input_vec{-123, 456, -789, 0, -1, 10001, 0, -1002};
   int32_t expected_result = 0;
-  for (const auto& elem : input_vec) {
+  for (const auto &elem : input_vec) {
     expected_result += elem;
   }
 
   // encrypt input_vec
   std::vector<Plaintext> input_plain_vec;
-  std::vector<Plaintext*> input_plain_ptrs;
+  std::vector<Plaintext *> input_plain_ptrs;
   auto input_const_plain_span =
       CleartextToConstSpan(input_vec, input_plain_vec, input_plain_ptrs);
   auto input_cipher_vec = encryptor_->Encrypt(input_const_plain_span);
 
-  std::vector<Ciphertext*> input_ciphertext_ptrs;
+  std::vector<Ciphertext *> input_ciphertext_ptrs;
   auto input_const_cipher_span =
       TextToConstSpan(input_cipher_vec, input_ciphertext_ptrs);
 
@@ -1331,7 +1331,7 @@ TEST_P(CEvaluatorTest, PlaintextReduceSum) {
   std::vector<int32_t> input_vec{-123, 456, -789, 0, -1, 10001, 0, -1002};
   size_t input_size = input_vec.size();
   int32_t expected_result = 0;
-  for (const auto& elem : input_vec) {
+  for (const auto &elem : input_vec) {
     expected_result += elem;
   }
 
@@ -1342,7 +1342,7 @@ TEST_P(CEvaluatorTest, PlaintextReduceSum) {
     input_plain_vec.push_back(Plaintext(input_vec[i]));
   }
 
-  std::vector<Plaintext*> input_plain_ptrs;
+  std::vector<Plaintext *> input_plain_ptrs;
   CMonoFacility::ValueVecToPtrVec(input_plain_vec, input_plain_ptrs);
 
   // calc sum

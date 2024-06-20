@@ -67,7 +67,7 @@ void PolyEncoder::DoBackward(absl::Span<const T> vec, RLWEPt *out,
   size_t base_mod_bitlen = ms_helper_.base_mod_bitlen();
   T mask = static_cast<T>(-1);
   if (sizeof(T) * 8 < base_mod_bitlen) {
-    mask = (static_cast<T>(1) << base_mod_bitlen) - 1;
+    mask = (static_cast<T>(1) << base_mod_bitlen) - 1;  // FIXME: BAD_SHIFT
   }
   auto mempool = seal::MemoryManager::GetPool();
   auto backward = seal::util::allocate<T>(poly_deg_, mempool);

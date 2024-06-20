@@ -16,7 +16,7 @@
 
 namespace heu::lib::algorithms::paillier_clustar_fpga {
 
-SecretKey::SecretKey(const PublicKey& pub_key, const MPInt& p, const MPInt& q) {
+SecretKey::SecretKey(const PublicKey &pub_key, const MPInt &p, const MPInt &q) {
   YACL_ENFORCE(p * q == pub_key.GetN(),
                "given public key does not match the given p and q");
   YACL_ENFORCE(p != q, "p and q have to be different");
@@ -38,7 +38,7 @@ SecretKey::SecretKey(const PublicKey& pub_key, const MPInt& p, const MPInt& q) {
   HFunc(q_, q_square_, hq_);
 }
 
-void SecretKey::HFunc(const MPInt& x, const MPInt& x_square, MPInt& result) {
+void SecretKey::HFunc(const MPInt &x, const MPInt &x_square, MPInt &result) {
   // 1 powmod
   MPInt res_pow_mod;
   MPInt::PowMod(pub_key_.GetG(), x - MPInt::_1_, x_square, &res_pow_mod);
@@ -50,13 +50,13 @@ void SecretKey::HFunc(const MPInt& x, const MPInt& x_square, MPInt& result) {
   MPInt::InvertMod(res_l_func, x, &result);
 }
 
-bool SecretKey::operator==(const SecretKey& other) const {
+bool SecretKey::operator==(const SecretKey &other) const {
   return pub_key_ == other.pub_key_ && p_ == other.p_ && q_ == other.q_ &&
          p_square_ == other.p_square_ && q_square_ == other.q_square_ &&
          q_inverse_ == other.q_inverse_ && hp_ == other.hp_ && hq_ == other.hq_;
 }
 
-bool SecretKey::operator!=(const SecretKey& other) const {
+bool SecretKey::operator!=(const SecretKey &other) const {
   return !this->operator==(other);
 }
 
@@ -67,20 +67,20 @@ std::string SecretKey::ToString() const {
 }
 
 // Functions for unit test
-const MPInt& SecretKey::GetP() const { return p_; }
+const MPInt &SecretKey::GetP() const { return p_; }
 
-const MPInt& SecretKey::GetQ() const { return q_; }
+const MPInt &SecretKey::GetQ() const { return q_; }
 
-const MPInt& SecretKey::GetPSquare() const { return p_square_; }
+const MPInt &SecretKey::GetPSquare() const { return p_square_; }
 
-const MPInt& SecretKey::GetQSquare() const { return q_square_; }
+const MPInt &SecretKey::GetQSquare() const { return q_square_; }
 
-const MPInt& SecretKey::GetQInverse() const { return q_inverse_; }
+const MPInt &SecretKey::GetQInverse() const { return q_inverse_; }
 
-const MPInt& SecretKey::GetHP() const { return hp_; }
+const MPInt &SecretKey::GetHP() const { return hp_; }
 
-const MPInt& SecretKey::GetHQ() const { return hq_; }
+const MPInt &SecretKey::GetHQ() const { return hq_; }
 
-const PublicKey& SecretKey::GetPubKey() const { return pub_key_; }
+const PublicKey &SecretKey::GetPubKey() const { return pub_key_; }
 
 }  // namespace heu::lib::algorithms::paillier_clustar_fpga

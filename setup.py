@@ -28,8 +28,8 @@ import setuptools.command.build_ext
 
 logger = logging.getLogger(__name__)
 
-# 3.8 is the minimum python version we can support
-SUPPORTED_PYTHONS = [(3, 8), (3, 9), (3, 10), (3, 11)]
+# 3.9 is the minimum python version we can support
+SUPPORTED_PYTHONS = [(3, 9), (3, 10), (3, 11)]
 
 BAZEL_MAX_JOBS = os.getenv("BAZEL_MAX_JOBS")
 ROOT_DIR = os.path.dirname(__file__)
@@ -232,7 +232,6 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     url="https://github.com/secretflow/heu",
     classifiers=[
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",

@@ -28,8 +28,8 @@ void SecretKey::Init() {
   phi_q_square_ = (Plaintext)(q_ * (q_ - MPInt::_1_));  // q(q-1)
 }
 
-Plaintext SecretKey::PowModNSquareCrt(const MPInt& base,
-                                      const Plaintext& exp) const {
+Plaintext SecretKey::PowModNSquareCrt(const MPInt &base,
+                                      const Plaintext &exp) const {
   // smaller exponents: exp mod p(p-1), exp mod q(q-1)
   Plaintext pexp = (Plaintext)(exp % phi_p_square_);
   Plaintext qexp = (Plaintext)(exp % phi_q_square_);

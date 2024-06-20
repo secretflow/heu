@@ -22,26 +22,26 @@ namespace heu::lib::algorithms::paillier_clustar_fpga {
 
 class CSecrKeyHelper {
  public:
-  CSecrKeyHelper(SecretKey* secr_key, size_t key_len);
+  CSecrKeyHelper(SecretKey *secr_key, size_t key_len);
   ~CSecrKeyHelper();
 
   //
   // Not thread safe
   void TransformToBytes() const;
-  char* GetBytesP() const;
-  char* GetBytesQ() const;
-  char* GetBytesPSquare() const;
-  char* GetBytesQSquare() const;
-  char* GetBytesQInverse() const;
-  char* GetBytesHP() const;
-  char* GetBytesHQ() const;
+  char *GetBytesP() const;
+  char *GetBytesQ() const;
+  char *GetBytesPSquare() const;
+  char *GetBytesQSquare() const;
+  char *GetBytesQInverse() const;
+  char *GetBytesHP() const;
+  char *GetBytesHQ() const;
 
  private:
-  void ToBytes(const MPInt& input, bool& exe_flag, char* result_arr) const;
+  void ToBytes(const MPInt &input, bool &exe_flag, char *result_arr) const;
   void CreateBytesStore(size_t key_len);
 
  private:
-  SecretKey* secr_key_;
+  SecretKey *secr_key_;
 
   // Extra helpers
   mutable bool byte_p_flag_ = false;

@@ -23,14 +23,14 @@ namespace heu::expt::rlwe {
 
 // requires ciphertext.is_ntt_form() is `false`
 //          ciphertext.size() is `2`
-void RemoveCoefficientsInplace(RLWECt& ciphertext,
-                               const std::set<size_t>& to_remove);
+void RemoveCoefficientsInplace(RLWECt &ciphertext,
+                               const std::set<size_t> &to_remove);
 
-void KeepCoefficientsInplace(RLWECt& ciphertext,
-                             const std::set<size_t>& to_keep);
+void KeepCoefficientsInplace(RLWECt &ciphertext,
+                             const std::set<size_t> &to_keep);
 
 template <class SEALObj>
-yacl::Buffer EncodeSEALObject(const SEALObj& obj) {
+yacl::Buffer EncodeSEALObject(const SEALObj &obj) {
   size_t nbytes = obj.save_size();
   yacl::Buffer out;
   out.resize(nbytes);
@@ -40,8 +40,8 @@ yacl::Buffer EncodeSEALObject(const SEALObj& obj) {
 
 template <class SEALObj>
 std::vector<yacl::Buffer> EncodeSEALObjects(
-    const std::vector<SEALObj>& obj_array,
-    const std::vector<seal::SEALContext>& contexts) {
+    const std::vector<SEALObj> &obj_array,
+    const std::vector<seal::SEALContext> &contexts) {
   const size_t obj_count = obj_array.size();
   const size_t context_count = contexts.size();
   YACL_ENFORCE(obj_count > 0, fmt::format("empty object"));
@@ -57,8 +57,8 @@ std::vector<yacl::Buffer> EncodeSEALObjects(
 }
 
 template <class SEALObj>
-void DecodeSEALObject(const yacl::Buffer& buf_view,
-                      const seal::SEALContext& context, SEALObj* out,
+void DecodeSEALObject(const yacl::Buffer &buf_view,
+                      const seal::SEALContext &context, SEALObj *out,
                       bool skip_sanity_check = false) {
   yacl::CheckNotNull(out);
   auto bytes = buf_view.data<seal::seal_byte>();
@@ -70,9 +70,9 @@ void DecodeSEALObject(const yacl::Buffer& buf_view,
 }
 
 template <class SEALObj>
-void DecodeSEALObjects(const std::vector<yacl::Buffer>& buf_view,
-                       const std::vector<seal::SEALContext>& contexts,
-                       std::vector<SEALObj>* out,
+void DecodeSEALObjects(const std::vector<yacl::Buffer> &buf_view,
+                       const std::vector<seal::SEALContext> &contexts,
+                       std::vector<SEALObj> *out,
                        bool skip_sanity_check = false) {
   yacl::CheckNotNull(out);
   const size_t obj_count = buf_view.size();

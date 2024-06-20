@@ -22,12 +22,12 @@ namespace heu::lib::algorithms::your_algo {
 
 class Encryptor {
  public:
-  explicit Encryptor(const PublicKey& pk);
+  explicit Encryptor(const PublicKey &pk);
 
   Ciphertext EncryptZero() const;
-  Ciphertext Encrypt(const Plaintext& m) const;
+  Ciphertext Encrypt(const Plaintext &m) const;
 
-  std::pair<Ciphertext, std::string> EncryptWithAudit(const Plaintext& m) const;
+  std::pair<Ciphertext, std::string> EncryptWithAudit(const Plaintext &m) const;
 };
 
 }  // namespace heu::lib::algorithms::your_algo

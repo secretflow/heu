@@ -18,7 +18,7 @@ namespace heu::lib::algorithms::paillier_f::internal {
 
 const MPInt Codec::kBaseCache = MPInt(Codec::kBase);
 
-EncodedNumber Codec::Encode(const MPInt& scalar, int exponent) const {
+EncodedNumber Codec::Encode(const MPInt &scalar, int exponent) const {
   YACL_ENFORCE(scalar.CompareAbs(pk_.PlaintextBound()) <= 0,
                "integer scalar should in +/- {}, but get {}",
                pk_.PlaintextBound().ToHexString(), scalar.ToHexString());
@@ -74,7 +74,7 @@ EncodedNumber Codec::Encode(double scalar, absl::optional<float> precision,
 //   return true;
 // }
 
-MPInt Codec::GetMantissa(const EncodedNumber& encoded) const {
+MPInt Codec::GetMantissa(const EncodedNumber &encoded) const {
   YACL_ENFORCE(encoded.encoding < pk_.n_, "number corrupted");
 
   MPInt mantissa;
@@ -91,7 +91,7 @@ MPInt Codec::GetMantissa(const EncodedNumber& encoded) const {
   return mantissa;
 }
 
-void Codec::Decode(const EncodedNumber& in, double* x) const {
+void Codec::Decode(const EncodedNumber &in, double *x) const {
   MPInt mantissa = GetMantissa(in);
 
   if (in.exponent >= 0) {
@@ -109,7 +109,7 @@ void Codec::Decode(const EncodedNumber& in, double* x) const {
   }
 }
 
-void Codec::Decode(const EncodedNumber& in, MPInt* x) const {
+void Codec::Decode(const EncodedNumber &in, MPInt *x) const {
   MPInt mantissa = GetMantissa(in);
 
   if (in.exponent >= 0) {

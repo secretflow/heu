@@ -29,7 +29,7 @@ class PyUtils {
   // py::int_ -> int128_t
   // return value 1: the int128 value
   // return value 2: is overflow (p is larger than int128)
-  static std::tuple<int128_t, bool> PyIntToCppInt128(const pybind11::int_& p);
+  static std::tuple<int128_t, bool> PyIntToCppInt128(const pybind11::int_ &p);
 
   // int128_t -> py::int_
   static pybind11::int_ CppInt128ToPyInt(int128_t num_128);
@@ -37,11 +37,11 @@ class PyUtils {
   // py::int_ -> phe::Plaintext
   // no bit size limit
   static heu::lib::phe::Plaintext PyIntToPlaintext(lib::phe::SchemaType schema,
-                                                   const pybind11::int_& p);
+                                                   const pybind11::int_ &p);
 
   // phe::Plaintext -> py::int_
   // no bit size limit
-  static pybind11::int_ PlaintextToPyInt(const heu::lib::phe::Plaintext& mp);
+  static pybind11::int_ PlaintextToPyInt(const heu::lib::phe::Plaintext &mp);
 
   template <typename T>
   using kHasLoadFromMethod = decltype(T::LoadFrom(yacl::ByteContainerView()));
@@ -49,11 +49,11 @@ class PyUtils {
   template <typename T>
   static decltype(auto) PickleSupport() {
     return pybind11::pickle(
-        [](const T& obj) {  // __getstate__
+        [](const T &obj) {  // __getstate__
           auto buffer = obj.Serialize();
           return pybind11::bytes(buffer.template data<char>(), buffer.size());
         },
-        [](const pybind11::bytes& buffer) {  // __setstate__
+        [](const pybind11::bytes &buffer) {  // __setstate__
           if constexpr (std::experimental::is_detected_v<kHasLoadFromMethod,
                                                          T>) {
             // T has a static LoadFrom() function
@@ -66,7 +66,7 @@ class PyUtils {
         });
   }
 
-  static lib::algorithms::Endian PyEndianToCpp(const std::string& endian);
+  static lib::algorithms::Endian PyEndianToCpp(const std::string &endian);
 };
 
 }  // namespace heu::pylib

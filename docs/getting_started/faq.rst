@@ -22,7 +22,7 @@ Pip 找不到安装包
 
 HEU 是否支持其它的 Python 版本？
 """""""""""""""""""""""""""""""""
-支持。为了节约 Pypi 仓库存储空间，dev 版本仅发布基于 Python 3.8 的二进制包，beta 及以上的版本将会发布所有 Python 版本的二进制包。对于 dev 版本，您也可以自助 :doc:`从源码编译<./installation>` 所需的 Python 版本的二进制包
+支持。对于 dev 版本，您也可以自助 :doc:`从源码编译<./installation>` 所需的 Python 版本的二进制包
 
 
 

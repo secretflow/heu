@@ -27,7 +27,7 @@ msgid "环境准备"
 msgstr "Environment"
 
 #: ../../getting_started/installation.rst:7
-msgid "Python >= 3.8"
+msgid "Python >= 3.9"
 msgstr ""
 
 #: ../../getting_started/installation.rst:13
@@ -43,7 +43,7 @@ msgid "Ubuntu 18.04+"
 msgstr ""
 
 #: ../../getting_started/installation.rst:12
-msgid "macOS 11.1+ (macOS Big Sur+)"
+msgid "macOS 12.0+ (macOS Monterey+)"
 msgstr ""
 
 #: ../../getting_started/installation.rst:21

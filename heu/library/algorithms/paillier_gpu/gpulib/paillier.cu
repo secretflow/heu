@@ -18,7 +18,7 @@
 
 template <class params>
 __device__ __forceinline__ void paillier_t<params>::fixed_window_powm_odd(
-    bn_t& result, const bn_t& x, const bn_t& power, const bn_t& modulus) {
+    bn_t &result, const bn_t &x, const bn_t &power, const bn_t &modulus) {
   bn_t t;
   bn_local_t window[1 << window_bits];
   int32_t index, position, offset;
@@ -75,11 +75,11 @@ __device__ __forceinline__ void paillier_t<params>::fixed_window_powm_odd(
 
 // Sum the encrypted values by multiplying the ciphertexts
 template <class params>
-__global__ void kernel_paillier_enc(cgbn_error_report_t* report,
-                                    gpu_paillier_ciphertext_t* gpu_res,
-                                    gpu_paillier_pubkey_t* gpu_pub,
-                                    gpu_paillier_plaintext_t* gpu_pt,
-                                    gpu_paillier_random_t* rand,
+__global__ void kernel_paillier_enc(cgbn_error_report_t *report,
+                                    gpu_paillier_ciphertext_t *gpu_res,
+                                    gpu_paillier_pubkey_t *gpu_pub,
+                                    gpu_paillier_plaintext_t *gpu_pt,
+                                    gpu_paillier_random_t *rand,
                                     uint32_t count) {
   // decode an instance number from the blockIdx and threadIdx
   int32_t i;
@@ -120,11 +120,11 @@ __global__ void kernel_paillier_enc(cgbn_error_report_t* report,
 }
 
 template <class params>
-__global__ void kernel_paillier_dec(cgbn_error_report_t* report,
-                                    gpu_paillier_plaintext_t* gpu_res,
-                                    gpu_paillier_pubkey_t* gpu_pub,
-                                    gpu_paillier_prvkey_t* gpu_prv,
-                                    gpu_paillier_ciphertext_t* gpu_ct,
+__global__ void kernel_paillier_dec(cgbn_error_report_t *report,
+                                    gpu_paillier_plaintext_t *gpu_res,
+                                    gpu_paillier_pubkey_t *gpu_pub,
+                                    gpu_paillier_prvkey_t *gpu_prv,
+                                    gpu_paillier_ciphertext_t *gpu_ct,
                                     uint32_t count) {
   int32_t i;
   i = (blockIdx.x * blockDim.x + threadIdx.x) / params::TPI;
@@ -158,11 +158,11 @@ __global__ void kernel_paillier_dec(cgbn_error_report_t* report,
 
 // Sum the encrypted values by multiplying the ciphertexts
 template <class params>
-__global__ void kernel_paillier_e_add(cgbn_error_report_t* report,
-                                      gpu_paillier_ciphertext_t* gpu_res,
-                                      gpu_paillier_pubkey_t* gpu_pub,
-                                      gpu_paillier_ciphertext_t* gpu_ct0,
-                                      gpu_paillier_ciphertext_t* gpu_ct1,
+__global__ void kernel_paillier_e_add(cgbn_error_report_t *report,
+                                      gpu_paillier_ciphertext_t *gpu_res,
+                                      gpu_paillier_pubkey_t *gpu_pub,
+                                      gpu_paillier_ciphertext_t *gpu_ct0,
+                                      gpu_paillier_ciphertext_t *gpu_ct1,
                                       uint32_t count) {
   int32_t i;
   i = (blockIdx.x * blockDim.x + threadIdx.x) / params::TPI;
@@ -184,11 +184,11 @@ __global__ void kernel_paillier_e_add(cgbn_error_report_t* report,
 }
 
 template <class params>
-__global__ void kernel_paillier_e_sub(cgbn_error_report_t* report,
-                                      gpu_paillier_ciphertext_t* gpu_res,
-                                      gpu_paillier_pubkey_t* gpu_pub,
-                                      gpu_paillier_ciphertext_t* gpu_ct0,
-                                      gpu_paillier_ciphertext_t* gpu_ct1,
+__global__ void kernel_paillier_e_sub(cgbn_error_report_t *report,
+                                      gpu_paillier_ciphertext_t *gpu_res,
+                                      gpu_paillier_pubkey_t *gpu_pub,
+                                      gpu_paillier_ciphertext_t *gpu_ct0,
+                                      gpu_paillier_ciphertext_t *gpu_ct1,
                                       uint32_t count) {
   int32_t i;
   i = (blockIdx.x * blockDim.x + threadIdx.x) / params::TPI;
@@ -211,11 +211,11 @@ __global__ void kernel_paillier_e_sub(cgbn_error_report_t* report,
 }
 
 template <class params>
-__global__ void kernel_paillier_e_sub_ctpt(cgbn_error_report_t* report,
-                                           gpu_paillier_ciphertext_t* gpu_res,
-                                           gpu_paillier_pubkey_t* gpu_pub,
-                                           gpu_paillier_ciphertext_t* gpu_ct,
-                                           gpu_paillier_plaintext_t* gpu_pt,
+__global__ void kernel_paillier_e_sub_ctpt(cgbn_error_report_t *report,
+                                           gpu_paillier_ciphertext_t *gpu_res,
+                                           gpu_paillier_pubkey_t *gpu_pub,
+                                           gpu_paillier_ciphertext_t *gpu_ct,
+                                           gpu_paillier_plaintext_t *gpu_pt,
                                            uint32_t count) {
   int32_t i;
   i = (blockIdx.x * blockDim.x + threadIdx.x) / params::TPI;
@@ -242,11 +242,11 @@ __global__ void kernel_paillier_e_sub_ctpt(cgbn_error_report_t* report,
 }
 
 template <class params>
-__global__ void kernel_paillier_e_sub_ptct(cgbn_error_report_t* report,
-                                           gpu_paillier_ciphertext_t* gpu_res,
-                                           gpu_paillier_pubkey_t* gpu_pub,
-                                           gpu_paillier_plaintext_t* gpu_pt,
-                                           gpu_paillier_ciphertext_t* gpu_ct,
+__global__ void kernel_paillier_e_sub_ptct(cgbn_error_report_t *report,
+                                           gpu_paillier_ciphertext_t *gpu_res,
+                                           gpu_paillier_pubkey_t *gpu_pub,
+                                           gpu_paillier_plaintext_t *gpu_pt,
+                                           gpu_paillier_ciphertext_t *gpu_ct,
                                            uint32_t count) {
   int32_t i;
   i = (blockIdx.x * blockDim.x + threadIdx.x) / params::TPI;
@@ -272,10 +272,10 @@ __global__ void kernel_paillier_e_sub_ptct(cgbn_error_report_t* report,
 
 // inv
 template <class params>
-__global__ void kernel_paillier_inv(cgbn_error_report_t* report,
-                                    gpu_paillier_ciphertext_t* gpu_res,
-                                    gpu_paillier_pubkey_t* gpu_pub,
-                                    gpu_paillier_ciphertext_t* gpu_ctx,
+__global__ void kernel_paillier_inv(cgbn_error_report_t *report,
+                                    gpu_paillier_ciphertext_t *gpu_res,
+                                    gpu_paillier_pubkey_t *gpu_pub,
+                                    gpu_paillier_ciphertext_t *gpu_ctx,
                                     uint32_t count) {
   int32_t i;
   i = (blockIdx.x * blockDim.x + threadIdx.x) / params::TPI;
@@ -295,9 +295,9 @@ __global__ void kernel_paillier_inv(cgbn_error_report_t* report,
 
 // inv inplace , it can not work, because the memory is not managed by the GPU
 template <class params>
-__global__ void kernel_paillier_inv_inplace(cgbn_error_report_t* report,
-                                            gpu_paillier_pubkey_t* gpu_pub,
-                                            gpu_paillier_ciphertext_t* gpu_ctx,
+__global__ void kernel_paillier_inv_inplace(cgbn_error_report_t *report,
+                                            gpu_paillier_pubkey_t *gpu_pub,
+                                            gpu_paillier_ciphertext_t *gpu_ctx,
                                             uint32_t count) {
   int32_t i;
   i = (blockIdx.x * blockDim.x + threadIdx.x) / params::TPI;
@@ -315,11 +315,11 @@ __global__ void kernel_paillier_inv_inplace(cgbn_error_report_t* report,
 }
 
 template <class params>
-__global__ void kernel_paillier_e_add_const(cgbn_error_report_t* report,
-                                            gpu_paillier_ciphertext_t* gpu_res,
-                                            gpu_paillier_pubkey_t* gpu_pub,
-                                            gpu_paillier_ciphertext_t* gpu_ct,
-                                            gpu_paillier_plaintext_t* gpu_con,
+__global__ void kernel_paillier_e_add_const(cgbn_error_report_t *report,
+                                            gpu_paillier_ciphertext_t *gpu_res,
+                                            gpu_paillier_pubkey_t *gpu_pub,
+                                            gpu_paillier_ciphertext_t *gpu_ct,
+                                            gpu_paillier_plaintext_t *gpu_con,
                                             uint32_t count) {
   int32_t i;
   i = (blockIdx.x * blockDim.x + threadIdx.x) / params::TPI;
@@ -346,11 +346,11 @@ __global__ void kernel_paillier_e_add_const(cgbn_error_report_t* report,
 }
 
 template <class params>
-__global__ void kernel_paillier_e_mul_const(cgbn_error_report_t* report,
-                                            gpu_paillier_ciphertext_t* gpu_res,
-                                            gpu_paillier_pubkey_t* gpu_pub,
-                                            gpu_paillier_ciphertext_t* gpu_ct,
-                                            gpu_paillier_plaintext_t* gpu_con,
+__global__ void kernel_paillier_e_mul_const(cgbn_error_report_t *report,
+                                            gpu_paillier_ciphertext_t *gpu_res,
+                                            gpu_paillier_pubkey_t *gpu_pub,
+                                            gpu_paillier_ciphertext_t *gpu_ct,
+                                            gpu_paillier_plaintext_t *gpu_con,
                                             uint32_t count) {
   int32_t i;
   i = (blockIdx.x * blockDim.x + threadIdx.x) / params::TPI;
@@ -369,9 +369,9 @@ __global__ void kernel_paillier_e_mul_const(cgbn_error_report_t* report,
 }
 
 template <class params>
-__global__ void kernel_paillier_compare(cgbn_error_report_t* report,
-                                        gpu_paillier_plaintext_t* gpu_plain,
-                                        uint32_t* gpu_res, uint32_t count) {
+__global__ void kernel_paillier_compare(cgbn_error_report_t *report,
+                                        gpu_paillier_plaintext_t *gpu_plain,
+                                        uint32_t *gpu_res, uint32_t count) {
   int32_t i;
   i = (blockIdx.x * blockDim.x + threadIdx.x) / params::TPI;
   if (i >= count) return;
@@ -397,9 +397,9 @@ void cudainit() {
 }
 
 //*********************************************gpu
-//api*****************************************
-int gpu_paillier_enc_bk(h_paillier_ciphertext_t* res, h_paillier_pubkey_t* pub,
-                        h_paillier_plaintext_t* pt, h_paillier_random_t* rand,
+// api*****************************************
+int gpu_paillier_enc_bk(h_paillier_ciphertext_t *res, h_paillier_pubkey_t *pub,
+                        h_paillier_plaintext_t *pt, h_paillier_random_t *rand,
                         unsigned int count) {
   int32_t TPB = (params::TPB == 0)
                     ? 64
@@ -435,19 +435,19 @@ int gpu_paillier_enc_bk(h_paillier_ciphertext_t* res, h_paillier_pubkey_t* pub,
   }
 
   // malloc for each stream
-  gpu_paillier_ciphertext_t* gpu_result[sm_num];
-  gpu_paillier_pubkey_t* gpu_pub[sm_num];
-  gpu_paillier_plaintext_t* gpu_pt[sm_num];
-  gpu_paillier_random_t* gpu_random[sm_num];
-  cgbn_error_report_t* report[sm_num];
+  gpu_paillier_ciphertext_t *gpu_result[sm_num];
+  gpu_paillier_pubkey_t *gpu_pub[sm_num];
+  gpu_paillier_plaintext_t *gpu_pt[sm_num];
+  gpu_paillier_random_t *gpu_random[sm_num];
+  cgbn_error_report_t *report[sm_num];
   for (i = 0; i < sm_num; i++) {
-    CUDA_CHECK(cudaMalloc((void**)&gpu_result[i],
+    CUDA_CHECK(cudaMalloc((void **)&gpu_result[i],
                           sizeof(gpu_paillier_ciphertext_t) * ps));
-    CUDA_CHECK(cudaMalloc((void**)&gpu_pub[i], sizeof(gpu_paillier_pubkey_t)));
+    CUDA_CHECK(cudaMalloc((void **)&gpu_pub[i], sizeof(gpu_paillier_pubkey_t)));
     CUDA_CHECK(
-        cudaMalloc((void**)&gpu_pt[i], sizeof(gpu_paillier_plaintext_t) * ps));
-    CUDA_CHECK(
-        cudaMalloc((void**)&gpu_random[i], sizeof(gpu_paillier_random_t) * ps));
+        cudaMalloc((void **)&gpu_pt[i], sizeof(gpu_paillier_plaintext_t) * ps));
+    CUDA_CHECK(cudaMalloc((void **)&gpu_random[i],
+                          sizeof(gpu_paillier_random_t) * ps));
     CUDA_CHECK(cgbn_error_report_alloc(&report[i]));
   }
 
@@ -462,14 +462,14 @@ int gpu_paillier_enc_bk(h_paillier_ciphertext_t* res, h_paillier_pubkey_t* pub,
   for (i = 0; i < loop; i++)  // all it ps,the wave
   {
     for (j = 0; j < sm_num; j++) {
-      cudaMemcpyAsync((void*)(gpu_pt[j]),
+      cudaMemcpyAsync((void *)(gpu_pt[j]),
                       (pt + sm_num * i * ps * sizeof(gpu_paillier_plaintext_t) +
                        j * ps * sizeof(gpu_paillier_plaintext_t)),
                       sizeof(gpu_paillier_plaintext_t) * ps,
                       cudaMemcpyHostToDevice, stream[j]);
-      cudaMemcpyAsync((void*)gpu_pub[j], pub, sizeof(gpu_paillier_pubkey_t),
+      cudaMemcpyAsync((void *)gpu_pub[j], pub, sizeof(gpu_paillier_pubkey_t),
                       cudaMemcpyHostToDevice, stream[j]);
-      cudaMemcpyAsync((void*)(gpu_random[j]),
+      cudaMemcpyAsync((void *)(gpu_random[j]),
                       (rand + sm_num * i * ps * sizeof(gpu_paillier_random_t) +
                        j * ps * sizeof(gpu_paillier_random_t)),
                       sizeof(gpu_paillier_random_t) * ps,
@@ -480,8 +480,8 @@ int gpu_paillier_enc_bk(h_paillier_ciphertext_t* res, h_paillier_pubkey_t* pub,
           report[i], gpu_result[j], gpu_pub[j], gpu_pt[j], gpu_random[j], ps);
 
       cudaMemcpyAsync(
-          (void*)(res + sm_num * i * ps * sizeof(gpu_paillier_ciphertext_t) +
-                  j * ps * sizeof(gpu_paillier_ciphertext_t)),
+          (void *)(res + sm_num * i * ps * sizeof(gpu_paillier_ciphertext_t) +
+                   j * ps * sizeof(gpu_paillier_ciphertext_t)),
           (gpu_result[j]), sizeof(gpu_paillier_ciphertext_t) * ps,
           cudaMemcpyDeviceToHost, stream[j]);
       printf("loop!=0: %d,stream number:%d\n", i, j);
@@ -491,14 +491,14 @@ int gpu_paillier_enc_bk(h_paillier_ciphertext_t* res, h_paillier_pubkey_t* pub,
   i = loop;
   for (j = 0; j < sm_num; j++)  // the rem ,works well
   {
-    cudaMemcpyAsync((void*)(gpu_pt[j]),
+    cudaMemcpyAsync((void *)(gpu_pt[j]),
                     (pt + sm_num * i * ps * sizeof(gpu_paillier_plaintext_t) +
                      j * rem * sizeof(gpu_paillier_plaintext_t)),
                     sizeof(gpu_paillier_plaintext_t) * rem,
                     cudaMemcpyHostToDevice, stream[j]);
-    cudaMemcpyAsync((void*)gpu_pub[j], pub, sizeof(gpu_paillier_pubkey_t),
+    cudaMemcpyAsync((void *)gpu_pub[j], pub, sizeof(gpu_paillier_pubkey_t),
                     cudaMemcpyHostToDevice, stream[j]);
-    cudaMemcpyAsync((void*)(gpu_random[j]),
+    cudaMemcpyAsync((void *)(gpu_random[j]),
                     (rand + sm_num * i * ps * sizeof(gpu_paillier_random_t) +
                      j * rem * sizeof(gpu_paillier_random_t)),
                     sizeof(gpu_paillier_random_t) * rem, cudaMemcpyHostToDevice,
@@ -509,22 +509,22 @@ int gpu_paillier_enc_bk(h_paillier_ciphertext_t* res, h_paillier_pubkey_t* pub,
         report[i], gpu_result[j], gpu_pub[j], gpu_pt[j], gpu_random[j], rem);
 
     cudaMemcpyAsync(
-        (void*)(res + sm_num * i * ps * sizeof(gpu_paillier_ciphertext_t) +
-                j * rem * sizeof(gpu_paillier_ciphertext_t)),
+        (void *)(res + sm_num * i * ps * sizeof(gpu_paillier_ciphertext_t) +
+                 j * rem * sizeof(gpu_paillier_ciphertext_t)),
         (gpu_result[j]), sizeof(gpu_paillier_ciphertext_t) * rem,
         cudaMemcpyDeviceToHost, stream[j]);
     printf("loop=i: %d,stream number:%d\n", i, j);
   }
   j = 0;
   if (sm_count_tail > 0) {
-    cudaMemcpyAsync((void*)(gpu_pt[j]),
+    cudaMemcpyAsync((void *)(gpu_pt[j]),
                     (pt + sm_num * i * ps * sizeof(gpu_paillier_plaintext_t) +
                      sm_num * rem * sizeof(gpu_paillier_plaintext_t)),
                     sizeof(gpu_paillier_plaintext_t) * sm_count_tail,
                     cudaMemcpyHostToDevice, stream[j]);
-    cudaMemcpyAsync((void*)gpu_pub[j], pub, sizeof(gpu_paillier_pubkey_t),
+    cudaMemcpyAsync((void *)gpu_pub[j], pub, sizeof(gpu_paillier_pubkey_t),
                     cudaMemcpyHostToDevice, stream[j]);
-    cudaMemcpyAsync((void*)(gpu_random[j]),
+    cudaMemcpyAsync((void *)(gpu_random[j]),
                     (rand + sm_num * i * ps * sizeof(gpu_paillier_random_t) +
                      sm_num * rem * sizeof(gpu_paillier_random_t)),
                     sizeof(gpu_paillier_random_t) * sm_count_tail,
@@ -537,8 +537,8 @@ int gpu_paillier_enc_bk(h_paillier_ciphertext_t* res, h_paillier_pubkey_t* pub,
             sm_count_tail);
 
     cudaMemcpyAsync(
-        (void*)(res + sm_num * i * ps * sizeof(gpu_paillier_ciphertext_t) +
-                sm_num * rem * sizeof(gpu_paillier_ciphertext_t)),
+        (void *)(res + sm_num * i * ps * sizeof(gpu_paillier_ciphertext_t) +
+                 sm_num * rem * sizeof(gpu_paillier_ciphertext_t)),
         (gpu_result[j]), sizeof(gpu_paillier_ciphertext_t) * sm_count_tail,
         cudaMemcpyDeviceToHost, stream[j]);
     printf("sm_count_tail ,stream number:%d\n", j);
@@ -562,38 +562,38 @@ int gpu_paillier_enc_bk(h_paillier_ciphertext_t* res, h_paillier_pubkey_t* pub,
   return 0;
 }
 
-int gpu_paillier_enc(h_paillier_ciphertext_t* res, h_paillier_pubkey_t* pub,
-                     h_paillier_plaintext_t* pt, h_paillier_random_t* rand,
+int gpu_paillier_enc(h_paillier_ciphertext_t *res, h_paillier_pubkey_t *pub,
+                     h_paillier_plaintext_t *pt, h_paillier_random_t *rand,
                      unsigned int count) {
   int32_t TPB = (params::TPB == 0)
                     ? 64
                     : params::TPB;  // default threads per block to 128
   int32_t TPI = params::TPI, IPB = TPB / TPI;
 
-  gpu_paillier_ciphertext_t* gpu_result;
-  gpu_paillier_pubkey_t* gpu_pub;
-  gpu_paillier_plaintext_t* gpu_pt;
-  gpu_paillier_random_t* gpu_random;
-  cgbn_error_report_t* report;
+  gpu_paillier_ciphertext_t *gpu_result;
+  gpu_paillier_pubkey_t *gpu_pub;
+  gpu_paillier_plaintext_t *gpu_pt;
+  gpu_paillier_random_t *gpu_random;
+  cgbn_error_report_t *report;
 
   int32_t BPG = 256;
 
   CUDA_CHECK(cudaSetDevice(0));
-  CUDA_CHECK(cudaMalloc((void**)&gpu_result,
+  CUDA_CHECK(cudaMalloc((void **)&gpu_result,
                         sizeof(gpu_paillier_ciphertext_t) * count));
-  CUDA_CHECK(cudaMalloc((void**)&gpu_pub, sizeof(gpu_paillier_pubkey_t)));
+  CUDA_CHECK(cudaMalloc((void **)&gpu_pub, sizeof(gpu_paillier_pubkey_t)));
   CUDA_CHECK(
-      cudaMalloc((void**)&gpu_pt, sizeof(gpu_paillier_plaintext_t) * count));
+      cudaMalloc((void **)&gpu_pt, sizeof(gpu_paillier_plaintext_t) * count));
   CUDA_CHECK(
-      cudaMalloc((void**)&gpu_random, sizeof(gpu_paillier_random_t) * count));
+      cudaMalloc((void **)&gpu_random, sizeof(gpu_paillier_random_t) * count));
   CUDA_CHECK(cgbn_error_report_alloc(&report));
 
   CUDA_CHECK(cudaMemcpy(gpu_pub, pub, sizeof(gpu_paillier_pubkey_t),
                         cudaMemcpyHostToDevice));
-  CUDA_CHECK(cudaMemcpy(gpu_pt, (gpu_paillier_plaintext_t*)pt,
+  CUDA_CHECK(cudaMemcpy(gpu_pt, (gpu_paillier_plaintext_t *)pt,
                         sizeof(gpu_paillier_plaintext_t) * count,
                         cudaMemcpyHostToDevice));
-  CUDA_CHECK(cudaMemcpy(gpu_random, (gpu_paillier_random_t*)rand,
+  CUDA_CHECK(cudaMemcpy(gpu_random, (gpu_paillier_random_t *)rand,
                         sizeof(gpu_paillier_random_t) * count,
                         cudaMemcpyHostToDevice));
 
@@ -631,27 +631,27 @@ int gpu_paillier_enc(h_paillier_ciphertext_t* res, h_paillier_pubkey_t* pub,
   return 0;
 }
 
-int gpu_paillier_dec(h_paillier_plaintext_t* res, h_paillier_pubkey_t* pub,
-                     h_paillier_prvkey_t* prv, h_paillier_ciphertext_t* ct,
+int gpu_paillier_dec(h_paillier_plaintext_t *res, h_paillier_pubkey_t *pub,
+                     h_paillier_prvkey_t *prv, h_paillier_ciphertext_t *ct,
                      unsigned int count) {
   // unsigned int TPI, TPB, IPB;
   int32_t TPB = (params::TPB == 0)
                     ? 64
                     : params::TPB;  // default threads per block to 128
   int32_t TPI = params::TPI, IPB = TPB / TPI;
-  gpu_paillier_plaintext_t* gpu_result;
-  gpu_paillier_pubkey_t* gpu_pub;
-  gpu_paillier_prvkey_t* gpu_prv;
-  gpu_paillier_ciphertext_t* gpu_ct;
+  gpu_paillier_plaintext_t *gpu_result;
+  gpu_paillier_pubkey_t *gpu_pub;
+  gpu_paillier_prvkey_t *gpu_prv;
+  gpu_paillier_ciphertext_t *gpu_ct;
 
-  cgbn_error_report_t* report;
+  cgbn_error_report_t *report;
 
-  CUDA_CHECK(cudaMalloc((void**)&gpu_result,
+  CUDA_CHECK(cudaMalloc((void **)&gpu_result,
                         sizeof(gpu_paillier_plaintext_t) * count));
-  CUDA_CHECK(cudaMalloc((void**)&gpu_pub, sizeof(gpu_paillier_pubkey_t)));
-  CUDA_CHECK(cudaMalloc((void**)&gpu_prv, sizeof(gpu_paillier_prvkey_t)));
+  CUDA_CHECK(cudaMalloc((void **)&gpu_pub, sizeof(gpu_paillier_pubkey_t)));
+  CUDA_CHECK(cudaMalloc((void **)&gpu_prv, sizeof(gpu_paillier_prvkey_t)));
   CUDA_CHECK(
-      cudaMalloc((void**)&gpu_ct, sizeof(gpu_paillier_ciphertext_t) * count));
+      cudaMalloc((void **)&gpu_ct, sizeof(gpu_paillier_ciphertext_t) * count));
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
   CUDA_CHECK(cudaMemcpy(gpu_pub, pub, sizeof(gpu_paillier_pubkey_t),
@@ -678,28 +678,28 @@ int gpu_paillier_dec(h_paillier_plaintext_t* res, h_paillier_pubkey_t* pub,
   return 0;
 }
 
-int gpu_paillier_e_add(h_paillier_pubkey_t* pub, h_paillier_ciphertext_t* res,
-                       h_paillier_ciphertext_t* ct0,
-                       h_paillier_ciphertext_t* ct1, unsigned int count) {
+int gpu_paillier_e_add(h_paillier_pubkey_t *pub, h_paillier_ciphertext_t *res,
+                       h_paillier_ciphertext_t *ct0,
+                       h_paillier_ciphertext_t *ct1, unsigned int count) {
   // unsigned int TPI, TPB, IPB;
   int32_t TPB = (params::TPB == 0)
                     ? 64
                     : params::TPB;  // default threads per block to 128
   int32_t TPI = params::TPI, IPB = TPB / TPI;
-  gpu_paillier_ciphertext_t* gpu_result;
-  gpu_paillier_pubkey_t* gpu_pub;
-  gpu_paillier_ciphertext_t* gpu_ct0;
-  gpu_paillier_ciphertext_t* gpu_ct1;
+  gpu_paillier_ciphertext_t *gpu_result;
+  gpu_paillier_pubkey_t *gpu_pub;
+  gpu_paillier_ciphertext_t *gpu_ct0;
+  gpu_paillier_ciphertext_t *gpu_ct1;
 
-  cgbn_error_report_t* report;
+  cgbn_error_report_t *report;
 
-  CUDA_CHECK(cudaMalloc((void**)&gpu_result,
+  CUDA_CHECK(cudaMalloc((void **)&gpu_result,
                         sizeof(gpu_paillier_ciphertext_t) * count));
-  CUDA_CHECK(cudaMalloc((void**)&gpu_pub, sizeof(gpu_paillier_pubkey_t) * 1));
+  CUDA_CHECK(cudaMalloc((void **)&gpu_pub, sizeof(gpu_paillier_pubkey_t) * 1));
   CUDA_CHECK(
-      cudaMalloc((void**)&gpu_ct0, sizeof(gpu_paillier_ciphertext_t) * count));
+      cudaMalloc((void **)&gpu_ct0, sizeof(gpu_paillier_ciphertext_t) * count));
   CUDA_CHECK(
-      cudaMalloc((void**)&gpu_ct1, sizeof(gpu_paillier_ciphertext_t) * count));
+      cudaMalloc((void **)&gpu_ct1, sizeof(gpu_paillier_ciphertext_t) * count));
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
   CUDA_CHECK(cudaMemcpy(gpu_pub, pub, sizeof(gpu_paillier_pubkey_t) * 1,
@@ -726,25 +726,25 @@ int gpu_paillier_e_add(h_paillier_pubkey_t* pub, h_paillier_ciphertext_t* res,
   return 0;
 }
 
-int gpu_paillier_e_inverse(h_paillier_pubkey_t* pub,
-                           h_paillier_ciphertext_t* res,
-                           h_paillier_ciphertext_t* ct, unsigned int count) {
+int gpu_paillier_e_inverse(h_paillier_pubkey_t *pub,
+                           h_paillier_ciphertext_t *res,
+                           h_paillier_ciphertext_t *ct, unsigned int count) {
   // unsigned int TPI, TPB, IPB;
   int32_t TPB = (params::TPB == 0)
                     ? 64
                     : params::TPB;  // default threads per block to 128
   int32_t TPI = params::TPI, IPB = TPB / TPI;
-  gpu_paillier_ciphertext_t* gpu_result;
-  gpu_paillier_pubkey_t* gpu_pub;
-  gpu_paillier_ciphertext_t* gpu_ct;
+  gpu_paillier_ciphertext_t *gpu_result;
+  gpu_paillier_pubkey_t *gpu_pub;
+  gpu_paillier_ciphertext_t *gpu_ct;
 
-  cgbn_error_report_t* report;
+  cgbn_error_report_t *report;
 
-  CUDA_CHECK(cudaMalloc((void**)&gpu_result,
+  CUDA_CHECK(cudaMalloc((void **)&gpu_result,
                         sizeof(gpu_paillier_ciphertext_t) * count));
-  CUDA_CHECK(cudaMalloc((void**)&gpu_pub, sizeof(gpu_paillier_pubkey_t) * 1));
+  CUDA_CHECK(cudaMalloc((void **)&gpu_pub, sizeof(gpu_paillier_pubkey_t) * 1));
   CUDA_CHECK(
-      cudaMalloc((void**)&gpu_ct, sizeof(gpu_paillier_ciphertext_t) * count));
+      cudaMalloc((void **)&gpu_ct, sizeof(gpu_paillier_ciphertext_t) * count));
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
   CUDA_CHECK(cudaMemcpy(gpu_pub, pub, sizeof(gpu_paillier_pubkey_t) * 1,
@@ -768,31 +768,31 @@ int gpu_paillier_e_inverse(h_paillier_pubkey_t* pub,
   return 0;
 }
 
-int gpu_paillier_e_add_const(h_paillier_pubkey_t* pub,
-                             h_paillier_ciphertext_t* res,
-                             h_paillier_ciphertext_t* ct,
-                             h_paillier_plaintext_t* constant,
+int gpu_paillier_e_add_const(h_paillier_pubkey_t *pub,
+                             h_paillier_ciphertext_t *res,
+                             h_paillier_ciphertext_t *ct,
+                             h_paillier_plaintext_t *constant,
                              unsigned int count) {
   int32_t TPB = (params::TPB == 0)
                     ? 64
                     : params::TPB;  // default threads per block to 128
   int32_t TPI = params::TPI, IPB = TPB / TPI;
 
-  gpu_paillier_pubkey_t* gpu_pub;
-  gpu_paillier_ciphertext_t* gpu_result;
-  gpu_paillier_ciphertext_t* gpu_ct;
-  gpu_paillier_plaintext_t* gpu_constant;
+  gpu_paillier_pubkey_t *gpu_pub;
+  gpu_paillier_ciphertext_t *gpu_result;
+  gpu_paillier_ciphertext_t *gpu_ct;
+  gpu_paillier_plaintext_t *gpu_constant;
 
-  cgbn_error_report_t* report;
+  cgbn_error_report_t *report;
 
-  gpu_constant = (gpu_paillier_plaintext_t*)constant;
+  gpu_constant = (gpu_paillier_plaintext_t *)constant;
 
-  CUDA_CHECK(cudaMalloc((void**)&gpu_result,
+  CUDA_CHECK(cudaMalloc((void **)&gpu_result,
                         sizeof(gpu_paillier_ciphertext_t) * count));
-  CUDA_CHECK(cudaMalloc((void**)&gpu_pub, sizeof(gpu_paillier_pubkey_t)));
+  CUDA_CHECK(cudaMalloc((void **)&gpu_pub, sizeof(gpu_paillier_pubkey_t)));
   CUDA_CHECK(
-      cudaMalloc((void**)&gpu_ct, sizeof(gpu_paillier_ciphertext_t) * count));
-  CUDA_CHECK(cudaMalloc((void**)&gpu_constant,
+      cudaMalloc((void **)&gpu_ct, sizeof(gpu_paillier_ciphertext_t) * count));
+  CUDA_CHECK(cudaMalloc((void **)&gpu_constant,
                         sizeof(gpu_paillier_plaintext_t) * count));
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
@@ -822,28 +822,28 @@ int gpu_paillier_e_add_const(h_paillier_pubkey_t* pub,
   return 0;
 }
 
-int gpu_paillier_sub_ct(h_paillier_pubkey_t* pub, h_paillier_ciphertext_t* res,
-                        h_paillier_ciphertext_t* ct0,
-                        h_paillier_ciphertext_t* ct1, unsigned int count) {
+int gpu_paillier_sub_ct(h_paillier_pubkey_t *pub, h_paillier_ciphertext_t *res,
+                        h_paillier_ciphertext_t *ct0,
+                        h_paillier_ciphertext_t *ct1, unsigned int count) {
   // unsigned int TPI, TPB, IPB;
   int32_t TPB = (params::TPB == 0)
                     ? 64
                     : params::TPB;  // default threads per block to 128
   int32_t TPI = params::TPI, IPB = TPB / TPI;
-  gpu_paillier_ciphertext_t* gpu_result;
-  gpu_paillier_pubkey_t* gpu_pub;
-  gpu_paillier_ciphertext_t* gpu_ct0;
-  gpu_paillier_ciphertext_t* gpu_ct1;
+  gpu_paillier_ciphertext_t *gpu_result;
+  gpu_paillier_pubkey_t *gpu_pub;
+  gpu_paillier_ciphertext_t *gpu_ct0;
+  gpu_paillier_ciphertext_t *gpu_ct1;
 
-  cgbn_error_report_t* report;
+  cgbn_error_report_t *report;
 
-  CUDA_CHECK(cudaMalloc((void**)&gpu_result,
+  CUDA_CHECK(cudaMalloc((void **)&gpu_result,
                         sizeof(gpu_paillier_ciphertext_t) * count));
-  CUDA_CHECK(cudaMalloc((void**)&gpu_pub, sizeof(gpu_paillier_pubkey_t) * 1));
+  CUDA_CHECK(cudaMalloc((void **)&gpu_pub, sizeof(gpu_paillier_pubkey_t) * 1));
   CUDA_CHECK(
-      cudaMalloc((void**)&gpu_ct0, sizeof(gpu_paillier_ciphertext_t) * count));
+      cudaMalloc((void **)&gpu_ct0, sizeof(gpu_paillier_ciphertext_t) * count));
   CUDA_CHECK(
-      cudaMalloc((void**)&gpu_ct1, sizeof(gpu_paillier_ciphertext_t) * count));
+      cudaMalloc((void **)&gpu_ct1, sizeof(gpu_paillier_ciphertext_t) * count));
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
   CUDA_CHECK(cudaMemcpy(gpu_pub, pub, sizeof(gpu_paillier_pubkey_t) * 1,
@@ -870,29 +870,29 @@ int gpu_paillier_sub_ct(h_paillier_pubkey_t* pub, h_paillier_ciphertext_t* res,
   return 0;
 }
 
-int gpu_paillier_sub_ctpt(h_paillier_pubkey_t* pub,
-                          h_paillier_ciphertext_t* res,
-                          h_paillier_ciphertext_t* ct,
-                          h_paillier_plaintext_t* pt, unsigned int count) {
+int gpu_paillier_sub_ctpt(h_paillier_pubkey_t *pub,
+                          h_paillier_ciphertext_t *res,
+                          h_paillier_ciphertext_t *ct,
+                          h_paillier_plaintext_t *pt, unsigned int count) {
   // unsigned int TPI, TPB, IPB;
   int32_t TPB = (params::TPB == 0)
                     ? 64
                     : params::TPB;  // default threads per block to 128
   int32_t TPI = params::TPI, IPB = TPB / TPI;
-  gpu_paillier_ciphertext_t* gpu_result;
-  gpu_paillier_pubkey_t* gpu_pub;
-  gpu_paillier_ciphertext_t* gpu_ct;
-  gpu_paillier_plaintext_t* gpu_pt;
+  gpu_paillier_ciphertext_t *gpu_result;
+  gpu_paillier_pubkey_t *gpu_pub;
+  gpu_paillier_ciphertext_t *gpu_ct;
+  gpu_paillier_plaintext_t *gpu_pt;
 
-  cgbn_error_report_t* report;
+  cgbn_error_report_t *report;
 
-  CUDA_CHECK(cudaMalloc((void**)&gpu_result,
+  CUDA_CHECK(cudaMalloc((void **)&gpu_result,
                         sizeof(gpu_paillier_ciphertext_t) * count));
-  CUDA_CHECK(cudaMalloc((void**)&gpu_pub, sizeof(gpu_paillier_pubkey_t) * 1));
+  CUDA_CHECK(cudaMalloc((void **)&gpu_pub, sizeof(gpu_paillier_pubkey_t) * 1));
   CUDA_CHECK(
-      cudaMalloc((void**)&gpu_ct, sizeof(gpu_paillier_ciphertext_t) * count));
+      cudaMalloc((void **)&gpu_ct, sizeof(gpu_paillier_ciphertext_t) * count));
   CUDA_CHECK(
-      cudaMalloc((void**)&gpu_pt, sizeof(gpu_paillier_plaintext_t) * count));
+      cudaMalloc((void **)&gpu_pt, sizeof(gpu_paillier_plaintext_t) * count));
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
   CUDA_CHECK(cudaMemcpy(gpu_pub, pub, sizeof(gpu_paillier_pubkey_t) * 1,
@@ -919,29 +919,29 @@ int gpu_paillier_sub_ctpt(h_paillier_pubkey_t* pub,
   return 0;
 }
 
-int gpu_paillier_sub_ptct(h_paillier_pubkey_t* pub,
-                          h_paillier_ciphertext_t* res,
-                          h_paillier_plaintext_t* pt,
-                          h_paillier_ciphertext_t* ct, unsigned int count) {
+int gpu_paillier_sub_ptct(h_paillier_pubkey_t *pub,
+                          h_paillier_ciphertext_t *res,
+                          h_paillier_plaintext_t *pt,
+                          h_paillier_ciphertext_t *ct, unsigned int count) {
   // unsigned int TPI, TPB, IPB;
   int32_t TPB = (params::TPB == 0)
                     ? 64
                     : params::TPB;  // default threads per block to 128
   int32_t TPI = params::TPI, IPB = TPB / TPI;
-  gpu_paillier_ciphertext_t* gpu_result;
-  gpu_paillier_pubkey_t* gpu_pub;
-  gpu_paillier_ciphertext_t* gpu_ct;
-  gpu_paillier_plaintext_t* gpu_pt;
+  gpu_paillier_ciphertext_t *gpu_result;
+  gpu_paillier_pubkey_t *gpu_pub;
+  gpu_paillier_ciphertext_t *gpu_ct;
+  gpu_paillier_plaintext_t *gpu_pt;
 
-  cgbn_error_report_t* report;
+  cgbn_error_report_t *report;
 
-  CUDA_CHECK(cudaMalloc((void**)&gpu_result,
+  CUDA_CHECK(cudaMalloc((void **)&gpu_result,
                         sizeof(gpu_paillier_ciphertext_t) * count));
-  CUDA_CHECK(cudaMalloc((void**)&gpu_pub, sizeof(gpu_paillier_pubkey_t) * 1));
+  CUDA_CHECK(cudaMalloc((void **)&gpu_pub, sizeof(gpu_paillier_pubkey_t) * 1));
   CUDA_CHECK(
-      cudaMalloc((void**)&gpu_ct, sizeof(gpu_paillier_ciphertext_t) * count));
+      cudaMalloc((void **)&gpu_ct, sizeof(gpu_paillier_ciphertext_t) * count));
   CUDA_CHECK(
-      cudaMalloc((void**)&gpu_pt, sizeof(gpu_paillier_plaintext_t) * count));
+      cudaMalloc((void **)&gpu_pt, sizeof(gpu_paillier_plaintext_t) * count));
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
   CUDA_CHECK(cudaMemcpy(gpu_pub, pub, sizeof(gpu_paillier_pubkey_t) * 1,
@@ -968,35 +968,35 @@ int gpu_paillier_sub_ptct(h_paillier_pubkey_t* pub,
   return 0;
 }
 
-int gpu_paillier_e_mul_const(h_paillier_pubkey_t* pub,
-                             h_paillier_ciphertext_t* res,
-                             h_paillier_ciphertext_t* ct,
-                             h_paillier_plaintext_t* constant,
+int gpu_paillier_e_mul_const(h_paillier_pubkey_t *pub,
+                             h_paillier_ciphertext_t *res,
+                             h_paillier_ciphertext_t *ct,
+                             h_paillier_plaintext_t *constant,
                              unsigned int count) {
   int32_t TPB = (params::TPB == 0)
                     ? 64
                     : params::TPB;  // default threads per block to 128
   int32_t TPI = params::TPI, IPB = TPB / TPI;
-  gpu_paillier_ciphertext_t* gpu_result;
-  gpu_paillier_pubkey_t* gpu_pub;
-  gpu_paillier_ciphertext_t* gpu_ct;
-  gpu_paillier_plaintext_t* gpu_constant;
+  gpu_paillier_ciphertext_t *gpu_result;
+  gpu_paillier_pubkey_t *gpu_pub;
+  gpu_paillier_ciphertext_t *gpu_ct;
+  gpu_paillier_plaintext_t *gpu_constant;
 
-  cgbn_error_report_t* report;
+  cgbn_error_report_t *report;
 
-  gpu_constant = (gpu_paillier_plaintext_t*)constant;
-  CUDA_CHECK(cudaMalloc((void**)&gpu_result,
+  gpu_constant = (gpu_paillier_plaintext_t *)constant;
+  CUDA_CHECK(cudaMalloc((void **)&gpu_result,
                         sizeof(gpu_paillier_ciphertext_t) * count));
-  CUDA_CHECK(cudaMalloc((void**)&gpu_pub, sizeof(gpu_paillier_pubkey_t)));
+  CUDA_CHECK(cudaMalloc((void **)&gpu_pub, sizeof(gpu_paillier_pubkey_t)));
   CUDA_CHECK(
-      cudaMalloc((void**)&gpu_ct, sizeof(gpu_paillier_ciphertext_t) * count));
-  CUDA_CHECK(cudaMalloc((void**)&gpu_constant,
+      cudaMalloc((void **)&gpu_ct, sizeof(gpu_paillier_ciphertext_t) * count));
+  CUDA_CHECK(cudaMalloc((void **)&gpu_constant,
                         sizeof(gpu_paillier_plaintext_t) * count));
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
-  CUDA_CHECK(cudaMemcpy(gpu_pub, (gpu_paillier_pubkey_t*)pub,
+  CUDA_CHECK(cudaMemcpy(gpu_pub, (gpu_paillier_pubkey_t *)pub,
                         sizeof(gpu_paillier_pubkey_t), cudaMemcpyHostToDevice));
-  CUDA_CHECK(cudaMemcpy(gpu_ct, (gpu_paillier_ciphertext_t*)ct,
+  CUDA_CHECK(cudaMemcpy(gpu_ct, (gpu_paillier_ciphertext_t *)ct,
                         sizeof(gpu_paillier_ciphertext_t) * count,
                         cudaMemcpyHostToDevice));
   CUDA_CHECK(cudaMemcpy(gpu_constant, constant,
@@ -1020,21 +1020,21 @@ int gpu_paillier_e_mul_const(h_paillier_pubkey_t* pub,
   return 0;
 }
 
-int gpu_paillier_compare(h_paillier_plaintext_t* plain, unsigned int* res,
+int gpu_paillier_compare(h_paillier_plaintext_t *plain, unsigned int *res,
                          unsigned int count) {
   int32_t TPB = (params::TPB == 0)
                     ? 64
                     : params::TPB;  // default threads per block to 128
   int32_t TPI = params::TPI, IPB = TPB / TPI;  // IPB is instances per block
 
-  gpu_paillier_plaintext_t* gpu_plain;
-  unsigned int* gpu_res;
+  gpu_paillier_plaintext_t *gpu_plain;
+  unsigned int *gpu_res;
 
-  cgbn_error_report_t* report;
+  cgbn_error_report_t *report;
 
-  CUDA_CHECK(
-      cudaMalloc((void**)&gpu_plain, sizeof(gpu_paillier_plaintext_t) * count));
-  CUDA_CHECK(cudaMalloc((void**)&gpu_res, sizeof(unsigned int) * count));
+  CUDA_CHECK(cudaMalloc((void **)&gpu_plain,
+                        sizeof(gpu_paillier_plaintext_t) * count));
+  CUDA_CHECK(cudaMalloc((void **)&gpu_res, sizeof(unsigned int) * count));
 
   CUDA_CHECK(cgbn_error_report_alloc(&report));
   CUDA_CHECK(cudaMemcpy(gpu_plain, plain,

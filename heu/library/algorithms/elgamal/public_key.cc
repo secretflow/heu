@@ -18,14 +18,14 @@
 
 namespace heu::lib::algorithms::elgamal {
 
-bool PublicKey::operator==(const PublicKey& other) const {
+bool PublicKey::operator==(const PublicKey &other) const {
   return IsValid() && other.IsValid() &&
          curve_->GetCurveName() == other.curve_->GetCurveName() &&
          curve_->GetLibraryName() == other.curve_->GetLibraryName() &&
          curve_->PointEqual(h_, other.h_);
 }
 
-bool PublicKey::operator!=(const PublicKey& other) const {
+bool PublicKey::operator!=(const PublicKey &other) const {
   return !(*this == other);
 }
 
@@ -35,7 +35,7 @@ std::string PublicKey::ToString() const {
                      curve_->GetSecurityStrength());
 }
 
-const Plaintext& PublicKey::PlaintextBound() const& {
+const Plaintext &PublicKey::PlaintextBound() const & {
   return LookupTable::MaxSupportedValue();
 }
 
@@ -49,12 +49,12 @@ yacl::Buffer PublicKey::Serialize() const {
   o.pack(std::string_view(curve_->SerializePoint(h_)));
 
   auto sz = buffer.size();
-  return {buffer.release(), sz, [](void* ptr) { free(ptr); }};
+  return {buffer.release(), sz, [](void *ptr) { free(ptr); }};
 }
 
 void PublicKey::Deserialize(yacl::ByteContainerView in) {
   auto msg =
-      msgpack::unpack(reinterpret_cast<const char*>(in.data()), in.size());
+      msgpack::unpack(reinterpret_cast<const char *>(in.data()), in.size());
   msgpack::object object = msg.get();
 
   if (object.type != msgpack::type::ARRAY) {

@@ -17,7 +17,7 @@
 #include <utility>
 
 #include "yacl/base/byte_container_view.h"
-#include "yacl/crypto/base/ecc/ecc_spi.h"
+#include "yacl/crypto/ecc/ecc_spi.h"
 
 #include "heu/library/algorithms/elgamal/utils/lookup_table.h"
 #include "heu/library/algorithms/util/mp_int.h"

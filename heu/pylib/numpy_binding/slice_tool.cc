@@ -20,7 +20,7 @@ namespace heu::pylib {
 
 namespace slice_tool {
 
-int64_t ComputeInt(const py::handle& src, int64_t dim_len) {
+int64_t ComputeInt(const py::handle &src, int64_t dim_len) {
   auto idx = static_cast<int64_t>(py::cast<py::int_>(src));
   YACL_ENFORCE(idx < dim_len, "index {} is out of bounds [0, {})", idx,
                dim_len);
@@ -32,8 +32,8 @@ int64_t ComputeInt(const py::handle& src, int64_t dim_len) {
   return idx;
 }
 
-PySlice<std::vector<int64_t>> Parse(const pybind11::object& src,
-                                    ssize_t dim_len, bool* should_squeeze) {
+PySlice<std::vector<int64_t>> Parse(const pybind11::object &src,
+                                    ssize_t dim_len, bool *should_squeeze) {
   PySlice<std::vector<int64_t>> res;
   bool squeeze = false;
   if (py::isinstance<py::slice>(src)) {
@@ -60,7 +60,7 @@ PySlice<std::vector<int64_t>> Parse(const pybind11::object& src,
     auto l = py::cast<py::sequence>(src);
     res.items = l.size();
     res.indices.reserve(res.items);
-    for (const auto& item : l) {
+    for (const auto &item : l) {
       YACL_ENFORCE(
           py::isinstance<py::int_>(item),
           "indices array element must be integers, got {} with type {}",

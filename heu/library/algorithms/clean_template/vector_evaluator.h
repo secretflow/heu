@@ -23,7 +23,7 @@ namespace heu::lib::algorithms::your_algo {
 
 class Evaluator {
  public:
-  explicit Evaluator(const PublicKey& pk);
+  explicit Evaluator(const PublicKey &pk);
 
   void Randomize(Span<Ciphertext> ct) const;
 

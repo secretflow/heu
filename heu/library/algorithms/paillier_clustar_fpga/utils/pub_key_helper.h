@@ -22,24 +22,24 @@ namespace heu::lib::algorithms::paillier_clustar_fpga {
 
 class CPubKeyHelper {
  public:
-  CPubKeyHelper(PublicKey* pub_key);
+  CPubKeyHelper(PublicKey *pub_key);
   ~CPubKeyHelper();
 
   // Not thread safe
   void TransformToBytes() const;
 
-  char* GetBytesG() const;
-  char* GetBytesN() const;
-  char* GetBytesNSquare() const;
-  char* GetBytesMaxInt() const;
+  char *GetBytesG() const;
+  char *GetBytesN() const;
+  char *GetBytesNSquare() const;
+  char *GetBytesMaxInt() const;
 
  private:
   template <typename T>
-  void ToBytes(const T& input, bool& exe_flag, char* result_arr) const;
+  void ToBytes(const T &input, bool &exe_flag, char *result_arr) const;
   void CreateBytesStore(size_t key_len);
 
  private:
-  PublicKey* pub_key_ = nullptr;
+  PublicKey *pub_key_ = nullptr;
 
   // Extra helpers
   mutable bool byte_g_flag_ =
@@ -62,10 +62,10 @@ class CPubKeyHelper {
 };
 
 template <typename T>
-void CPubKeyHelper::ToBytes(const T& input, bool& exe_flag,
-                            char* result_arr) const {
+void CPubKeyHelper::ToBytes(const T &input, bool &exe_flag,
+                            char *result_arr) const {
   memset(result_arr, 0, cipher_byte_);
-  input.ToBytes(reinterpret_cast<unsigned char*>(result_arr), cipher_byte_,
+  input.ToBytes(reinterpret_cast<unsigned char *>(result_arr), cipher_byte_,
                 Endian::little);
   exe_flag = true;
 }

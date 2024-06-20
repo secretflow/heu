@@ -111,7 +111,7 @@ ZPaillier 中的 Z 与数学中表示整数的 :math:`\mathbb{Z}` 含义相同�
 
 实现基于的 Paper：
 
-- Jurik, M. (2003). Extensions to the paillier cryptosystem with applications to cryptological protocols. Brics, August. http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.4.2396&amp;rep=rep1&amp;type=pdf
+- Jurik, M. (2003). Extensions to the paillier cryptosystem with applications to cryptological protocols. Brics, August. https://www.brics.dk/DS/03/9/BRICS-DS-03-9.pdf
 
 算法实现: FPaillier
 ^^^^^^^^^^^^^^^^^^^^
@@ -269,7 +269,7 @@ OU 在实现时一般做了限制，不允许直接加密大于 p 的明文，�
 
 对于一些简单的场景，比如 Alice、Bob 两方计算，假设 Alice 有私钥，Bob 为恶意参与方，计算的过程为 Alice 将数据加密后发给 Bob 计算，Bob 把计算结果返回给 Alice，此时，即使 Bob 构造了恶意的密文 c，但是 Bob 拿不到 c 对应的解密结果，Bob 的攻击会造成计算错误，但是密钥不会泄露。
 
-在一些复杂的隐私计算场景中，下一轮的交互取决于上一轮交互的结果，CCA 场景成立也许是不可避免的，但并非说明 OU 就一定无法使用，如果 Alice 有有效的手段阻断攻击，OU 仍旧可以选用。让我们再来回顾一下攻击的过程：Bob 构造的密文 c 对应明文 m，Alice 解密后得到 :math:`m'=m \bmod p`，实际的问题是，:math:`m'` 有可能非常大，远超一般业务中使用的 int64 所能表达的范围，因为 Bob 想要构造一个 **略大于** p 的密文是非常困难的，p 一般非常大，key size 为 2048 时 p 大约为 682bits，Bob 盲猜一个数 m 满足 :math:`m' < 2^{64}`，其概率小于 :math:`2^{-(682-64)}`，即盲猜的 m 的高 618bits 与 p exactly same，这个概率是可以忽略不计的，因此可以认为 :math:`m'` 仍旧是一个大数，当 Alice 解密发现明文不在合理值域范围时，可以拒绝 Bob 的结果，从而阻止 Bob 的攻击。
+在一些复杂的隐私计算场景中，下一轮的交互取决于上一轮交互的结果，CCA 场景成立也许是不可避免的，但并非说明 OU 就一定无法使用，如果 Alice 有有效的手段阻断攻击，OU 仍旧可以选用。让我们再来回顾一下攻击的过程：Bob 构造的密文 c 对应明文 m，Alice 解密后得到 :math:`m'=m \bmod p`，实际的问题是，:math:`m'` 有可能非常大，远超一般业务中使用的 int64 所能表达的范围，因为 Bob 想要构造一个 **略大于** p 的密文是非常困难的，p 一般非常大，key size 为 2048 时 p 大约为 682 bits，Bob 盲猜一个数 m 满足 :math:`m' < 2^{64}`，其概率小于 :math:`2^{-(682-64)}`，即盲猜的 m 的高 618bits 与 p exactly same，这个概率是可以忽略不计的，因此可以认为 :math:`m'` 仍旧是一个大数，当 Alice 解密发现明文不在合理值域范围时，可以拒绝 Bob 的结果，从而阻止 Bob 的攻击。
 
 
 算法实现: OU
@@ -418,6 +418,3 @@ HEU 提供了一个 Benchmark 用以测试每个算法的性能，若要运行 B
    FPaillier,151187,230,150529,1692,150580
 
 再次提醒，即使算法的 Key size 相同，他们的安全强度未必一致，OU 的安全性可能弱于 Paillier，详见 `Okamoto-Uchiyama`_ 算法理论介绍章节。
-
-
-.. note:: 本页面的英文文档较为陈旧，您愿意翻译吗？感谢您对隐语社区做出的贡献！

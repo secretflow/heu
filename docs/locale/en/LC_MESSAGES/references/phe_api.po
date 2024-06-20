@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-20 10:37+0800\n"
+"POT-Creation-Date: 2024-01-25 10:58+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.14.0\n"
 
 #: ../../references/phe_api.rst:2
 msgid "PHE 模块"
@@ -344,8 +344,16 @@ msgid ""
 "byte order of the host system, use sys.byteorder as the byte order value."
 msgstr ""
 
+#: ../../docstring heu.phe.PyCapsule.load_from:1 of
+msgid "deserialize matrix from bytes"
+msgstr ""
+
 #: ../../docstring heu.phe.PyCapsule.plaintext_bound:1 of
-msgid "Get max_int, so valid plaintext range is (max_int, -max_int)"
+msgid "Get max_int, so valid plaintext range is [max_int_, -max_int_]"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.serialize:1 of
+msgid "serialize public key to bytes"
 msgstr ""
 
 #: ../../docstring heu.phe.SchemaType:1 of
@@ -373,7 +381,19 @@ msgid "FPaillier"
 msgstr ""
 
 #: ../../docstring heu.phe.SchemaType:13 of
+msgid "IcPaillier"
+msgstr ""
+
+#: ../../docstring heu.phe.SchemaType:15 of
 msgid "ElGamal"
+msgstr ""
+
+#: ../../docstring heu.phe.SchemaType:17 of
+msgid "DGK"
+msgstr ""
+
+#: ../../docstring heu.phe.SchemaType:19 of
+msgid "DJ"
 msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.parse_schema_type:1 of
@@ -381,9 +401,7 @@ msgid "Parse schema string. (string -> SchemaType)"
 msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.setup:3 of
-msgid ""
-"setup(schema_type: heu.phe.SchemaType = <SchemaType.ZPaillier: 3>, "
-"key_size: int = 2048) -> heu.phe.HeKit"
+msgid "setup(schema_type: heu.phe.SchemaType, key_size: int) -> heu.phe.HeKit"
 msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.setup:5 of
@@ -391,9 +409,7 @@ msgid "Setup phe environment by schema type and key size"
 msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.setup:7 of
-msgid ""
-"setup(schema_string: str = 'z-paillier', key_size: int = 2048) -> "
-"heu.phe.HeKit"
+msgid "setup(schema_string: str, key_size: int) -> heu.phe.HeKit"
 msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.setup:9 of
@@ -401,9 +417,27 @@ msgid "Setup phe environment by schema string and key size"
 msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.setup:11 of
-msgid "setup(public_key: heu.phe.PublicKey) -> heu.phe.DestinationHeKit"
+msgid ""
+"setup(schema_type: heu.phe.SchemaType = <SchemaType.ZPaillier: 3>) -> "
+"heu.phe.HeKit"
 msgstr ""
 
 #: ../../docstring heu.phe.PyCapsule.setup:13 of
+msgid "Setup phe environment by schema type"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.setup:15 of
+msgid "setup(schema_string: str = 'z-paillier') -> heu.phe.HeKit"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.setup:17 of
+msgid "Setup phe environment by schema string"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.setup:19 of
+msgid "setup(public_key: heu.phe.PublicKey) -> heu.phe.DestinationHeKit"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.setup:21 of
 msgid "Setup phe environment by an already generated public key"
 msgstr ""

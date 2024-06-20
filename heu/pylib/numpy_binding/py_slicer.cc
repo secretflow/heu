@@ -25,7 +25,7 @@ namespace heu::pylib {
 namespace {
 
 template <typename T>
-py::object CastMatrix(hnp::DenseMatrix<T>&& pm) {
+py::object CastMatrix(hnp::DenseMatrix<T> &&pm) {
   if (pm.ndim() == 0) {
     return py::cast(pm(0, 0));
   }
@@ -33,12 +33,12 @@ py::object CastMatrix(hnp::DenseMatrix<T>&& pm) {
 }
 
 template <typename T, typename ST_ROW, typename ST_COL>
-void MatrixAssign(lib::numpy::DenseMatrix<T>* pm,
-                  const slice_tool::PySlice<ST_ROW>& sr,
-                  const slice_tool::PySlice<ST_COL>& sc,
-                  const py::object& value) {
+void MatrixAssign(lib::numpy::DenseMatrix<T> *pm,
+                  const slice_tool::PySlice<ST_ROW> &sr,
+                  const slice_tool::PySlice<ST_COL> &sc,
+                  const py::object &value) {
   if (py::isinstance<hnp::DenseMatrix<T>>(value)) {
-    const auto& patch = py::cast<hnp::DenseMatrix<T>>(value);
+    const auto &patch = py::cast<hnp::DenseMatrix<T>>(value);
     pm->template SetItem(sr.indices, sc.indices, patch,
                          patch.ndim() == 1 && sr.items == 1 && sc.items > 1);
     return;
@@ -57,8 +57,8 @@ void MatrixAssign(lib::numpy::DenseMatrix<T>* pm,
 }  // namespace
 
 template <typename T>
-py::object PySlicer<T>::GetItem(const hnp::DenseMatrix<T>& p_matrix,
-                                const py::object& key) {
+py::object PySlicer<T>::GetItem(const hnp::DenseMatrix<T> &p_matrix,
+                                const py::object &key) {
   if (py::isinstance<py::tuple>(key)) {
     auto idx_tuple = py::cast<py::tuple>(key);
 
@@ -90,8 +90,8 @@ py::object PySlicer<T>::GetItem(const hnp::DenseMatrix<T>& p_matrix,
 }
 
 template <typename T>
-void PySlicer<T>::SetItem(hnp::DenseMatrix<T>* p_matrix, const py::object& key,
-                          const py::object& value) {
+void PySlicer<T>::SetItem(hnp::DenseMatrix<T> *p_matrix, const py::object &key,
+                          const py::object &value) {
   if (py::isinstance<py::tuple>(key)) {
     auto idx_tuple = py::cast<py::tuple>(key);
 

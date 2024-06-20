@@ -20,23 +20,23 @@ namespace heu::lib::algorithms::paillier_g {
 
 std::string Ciphertext::ToString() const {
   MPInt pt;
-  pt.FromMagBytes(yacl::ByteContainerView((uint8_t*)(ct_.c), 512),
+  pt.FromMagBytes(yacl::ByteContainerView((uint8_t *)(ct_.c), 512),
                   algorithms::Endian::little);
   return pt.ToString();
 }
 
 std::string Ciphertext::ToHexString() const {
   MPInt pt;
-  pt.FromMagBytes(yacl::ByteContainerView((uint8_t*)(ct_.c), 512),
+  pt.FromMagBytes(yacl::ByteContainerView((uint8_t *)(ct_.c), 512),
                   algorithms::Endian::little);
   return pt.ToHexString();
 }
 
-bool Ciphertext::operator==(const Ciphertext& other) const {
+bool Ciphertext::operator==(const Ciphertext &other) const {
   return std::equal(ct_.c, ct_.c + 512, other.ct_.c);
 }
 
-bool Ciphertext::operator!=(const Ciphertext& other) const {
+bool Ciphertext::operator!=(const Ciphertext &other) const {
   return !this->operator==(other);
 }
 

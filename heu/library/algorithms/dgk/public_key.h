@@ -21,15 +21,15 @@ namespace heu::lib::algorithms::dgk {
 
 class PublicKey : public HeObject<PublicKey> {
  public:
-  void Init(const MPInt& n, const MPInt& g, const MPInt& h, const MPInt& u);
+  void Init(const MPInt &n, const MPInt &g, const MPInt &h, const MPInt &u);
 
-  const MPInt& N() const { return n_; }
+  const MPInt &N() const { return n_; }
 
-  const MPInt& G() const { return g_; }
+  const MPInt &G() const { return g_; }
 
-  const MPInt& H() const { return h_; }
+  const MPInt &H() const { return h_; }
 
-  const MPInt& U() const { return u_; }
+  const MPInt &U() const { return u_; }
 
   MPInt PlainModule() const { return u_; }
 
@@ -37,8 +37,8 @@ class PublicKey : public HeObject<PublicKey> {
 
   MPInt CipherModule() const { return n_; }
 
-  bool operator==(const PublicKey&) const;
-  bool operator!=(const PublicKey&) const;
+  bool operator==(const PublicKey &) const;
+  bool operator!=(const PublicKey &) const;
   std::string ToString() const override;
 
   // ---Helper functions--- //
@@ -47,11 +47,11 @@ class PublicKey : public HeObject<PublicKey> {
   // Random element of form h^r mod n
   MPInt RandomHr() const;
   // Deterministic encryption
-  MPInt Encrypt(const MPInt&) const;
-  MPInt MapIntoMSpace(const MPInt&) const;
-  MPInt MapBackToZSpace(const MPInt&) const;
+  MPInt Encrypt(const MPInt &) const;
+  MPInt MapIntoMSpace(const MPInt &) const;
+  MPInt MapBackToZSpace(const MPInt &) const;
 
-  void MulMod(const MPInt& a, const MPInt& b, MPInt* dst) const {
+  void MulMod(const MPInt &a, const MPInt &b, MPInt *dst) const {
     lut_->m_space.MulMod(a, b, dst);
   }
 
@@ -59,7 +59,7 @@ class PublicKey : public HeObject<PublicKey> {
   MPInt n_, g_, h_, u_;
 
   struct LUT {
-    LUT(const PublicKey* pub);
+    LUT(const PublicKey *pub);
 
     MontgomerySpace m_space;  // m-space for mod n
     BaseTable g_pow;          // powers of g mod n

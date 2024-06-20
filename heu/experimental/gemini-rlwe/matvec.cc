@@ -23,7 +23,7 @@
 
 namespace heu::expt::rlwe {
 
-static std::array<size_t, 2> GetSubMatrixShape(const MatVecProtocol::Meta& meta,
+static std::array<size_t, 2> GetSubMatrixShape(const MatVecProtocol::Meta &meta,
                                                size_t poly_degree) {
   size_t ncols = meta.transposed ? meta.nrows : meta.ncols;
   size_t nrows = meta.transposed ? meta.ncols : meta.nrows;
@@ -41,8 +41,8 @@ inline static T CeilDiv(T a, T b) {
   return (a + b - 1) / b;
 }
 
-static void transform_to_ntt_inplace(RLWEPt& pt,
-                                     const seal::SEALContext& context) {
+static void transform_to_ntt_inplace(RLWEPt &pt,
+                                     const seal::SEALContext &context) {
   using namespace seal::util;
   auto cntxt_data = context.get_context_data(pt.parms_id());
   YACL_ENFORCE(cntxt_data != nullptr);
@@ -64,11 +64,11 @@ static void transform_to_ntt_inplace(RLWEPt& pt,
 /// `extents` are smaller than the given `submat_shape`
 template <typename T>
 static void ConcatSubMatrix(absl::Span<const T> mat_view,
-                            const MatVecProtocol::Meta& meta,
-                            const std::array<size_t, 2>& starts,
-                            const std::array<size_t, 2>& extents,
-                            const std::array<size_t, 2>& submat_shape,
-                            std::vector<T>* concat_submat) {
+                            const MatVecProtocol::Meta &meta,
+                            const std::array<size_t, 2> &starts,
+                            const std::array<size_t, 2> &extents,
+                            const std::array<size_t, 2> &submat_shape,
+                            std::vector<T> *concat_submat) {
   for (int i : {0, 1}) {
     YACL_ENFORCE(starts[i] < (i == 0 ? meta.nrows : meta.ncols),
                  fmt::format("invalid start[{}]={}", i, starts[i]));
@@ -89,22 +89,22 @@ static void ConcatSubMatrix(absl::Span<const T> mat_view,
   }
 }
 
-MatVecProtocol::MatVecProtocol(const seal::SEALContext& context,
-                               const ModulusSwitchHelper& ms_helper)
+MatVecProtocol::MatVecProtocol(const seal::SEALContext &context,
+                               const ModulusSwitchHelper &ms_helper)
     : poly_deg_(context.key_context_data()->parms().poly_modulus_degree()),
       encoder_(context, ms_helper),
       context_(context) {
   YACL_ENFORCE(context_.parameters_set());
 }
 
-bool MatVecProtocol::IsValidMeta(const Meta& meta) const {
+bool MatVecProtocol::IsValidMeta(const Meta &meta) const {
   return meta.nrows > 0 && meta.ncols > 0;
 }
 
 template <typename T>
-void MatVecProtocol::DoEncodeVector(const Meta& meta,
+void MatVecProtocol::DoEncodeVector(const Meta &meta,
                                     absl::Span<const T> vec_view,
-                                    std::vector<RLWEPt>* out) const {
+                                    std::vector<RLWEPt> *out) const {
   YACL_ENFORCE(IsValidMeta(meta));
   yacl::CheckNotNull(out);
   YACL_ENFORCE_EQ(vec_view.size(), GetVecSize(meta));
@@ -123,9 +123,9 @@ void MatVecProtocol::DoEncodeVector(const Meta& meta,
 }
 
 template <typename T>
-void MatVecProtocol::DoMatVec(const Meta& meta, absl::Span<const T> mat_view,
-                              const std::vector<RLWECt>& vec,
-                              std::vector<LWECt>* out) const {
+void MatVecProtocol::DoMatVec(const Meta &meta, absl::Span<const T> mat_view,
+                              const std::vector<RLWECt> &vec,
+                              std::vector<LWECt> *out) const {
   YACL_ENFORCE(IsValidMeta(meta));
   YACL_ENFORCE_EQ(seal::util::mul_safe(meta.nrows, meta.ncols),
                   mat_view.size());
@@ -151,7 +151,7 @@ void MatVecProtocol::DoMatVec(const Meta& meta, absl::Span<const T> mat_view,
                          &concat_submat);
 
       if (!std::any_of(concat_submat.begin(), concat_submat.end(),
-                       [](const T& x) { return x > 0; })) {
+                       [](const T &x) { return x > 0; })) {
         // submatrix of all-zero entries
         continue;
       }
@@ -185,42 +185,42 @@ void MatVecProtocol::DoMatVec(const Meta& meta, absl::Span<const T> mat_view,
   }
 }
 
-void MatVecProtocol::EncodeVector(const Meta& meta,
+void MatVecProtocol::EncodeVector(const Meta &meta,
                                   absl::Span<const uint32_t> vec_view,
-                                  std::vector<RLWEPt>* out) const {
+                                  std::vector<RLWEPt> *out) const {
   DoEncodeVector<uint32_t>(meta, vec_view, out);
 }
 
-void MatVecProtocol::EncodeVector(const Meta& meta,
+void MatVecProtocol::EncodeVector(const Meta &meta,
                                   absl::Span<const uint64_t> vec_view,
-                                  std::vector<RLWEPt>* out) const {
+                                  std::vector<RLWEPt> *out) const {
   DoEncodeVector<uint64_t>(meta, vec_view, out);
 }
 
-void MatVecProtocol::EncodeVector(const Meta& meta,
+void MatVecProtocol::EncodeVector(const Meta &meta,
                                   absl::Span<const uint128_t> vec_view,
-                                  std::vector<RLWEPt>* out) const {
+                                  std::vector<RLWEPt> *out) const {
   DoEncodeVector<uint128_t>(meta, vec_view, out);
 }
 
-void MatVecProtocol::MatVec(const Meta& meta,
+void MatVecProtocol::MatVec(const Meta &meta,
                             absl::Span<const uint32_t> mat_view,
-                            const std::vector<RLWECt>& vec,
-                            std::vector<LWECt>* out) const {
+                            const std::vector<RLWECt> &vec,
+                            std::vector<LWECt> *out) const {
   DoMatVec<uint32_t>(meta, mat_view, vec, out);
 }
 
-void MatVecProtocol::MatVec(const Meta& meta,
+void MatVecProtocol::MatVec(const Meta &meta,
                             absl::Span<const uint64_t> mat_view,
-                            const std::vector<RLWECt>& vec,
-                            std::vector<LWECt>* out) const {
+                            const std::vector<RLWECt> &vec,
+                            std::vector<LWECt> *out) const {
   DoMatVec<uint64_t>(meta, mat_view, vec, out);
 }
 
-void MatVecProtocol::MatVec(const Meta& meta,
+void MatVecProtocol::MatVec(const Meta &meta,
                             absl::Span<const uint128_t> mat_view,
-                            const std::vector<RLWECt>& vec,
-                            std::vector<LWECt>* out) const {
+                            const std::vector<RLWECt> &vec,
+                            std::vector<LWECt> *out) const {
   DoMatVec<uint128_t>(meta, mat_view, vec, out);
 }
 

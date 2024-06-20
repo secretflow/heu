@@ -38,18 +38,18 @@ class Codec {
  public:
   explicit Codec(PublicKey pk) : pk_(std::move(pk)) {}
 
-  EncodedNumber Encode(const MPInt& scalar, int exponent = 0) const;
+  EncodedNumber Encode(const MPInt &scalar, int exponent = 0) const;
 
   EncodedNumber Encode(double scalar,
                        absl::optional<float> precision = absl::nullopt,
                        absl::optional<int> max_exponent = absl::nullopt) const;
 
-  void Decode(const EncodedNumber& in, double* out) const;
+  void Decode(const EncodedNumber &in, double *out) const;
 
-  void Decode(const EncodedNumber& in, MPInt* out) const;
+  void Decode(const EncodedNumber &in, MPInt *out) const;
 
  private:
-  MPInt GetMantissa(const EncodedNumber& encoded) const;
+  MPInt GetMantissa(const EncodedNumber &encoded) const;
 
  private:
   PublicKey pk_;

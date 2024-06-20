@@ -29,7 +29,7 @@ Decryptor::Decryptor(PublicKey pk, SecretKey sk)
                pk_.n_);
 }
 
-void Decryptor::Decrypt(const Ciphertext& ct, MPInt* out) const {
+void Decryptor::Decrypt(const Ciphertext &ct, MPInt *out) const {
   VALIDATE(ct);
 
   MPInt c(ct.c_);
@@ -44,7 +44,7 @@ void Decryptor::Decrypt(const Ciphertext& ct, MPInt* out) const {
   }
 }
 
-MPInt Decryptor::Decrypt(const Ciphertext& ct) const {
+MPInt Decryptor::Decrypt(const Ciphertext &ct) const {
   MPInt mp;
   Decrypt(ct, &mp);
   return mp;

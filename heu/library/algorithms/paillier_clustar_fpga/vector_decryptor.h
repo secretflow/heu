@@ -29,14 +29,14 @@ namespace heu::lib::algorithms::paillier_clustar_fpga {
 
 class Decryptor {
  public:
-  explicit Decryptor(const PublicKey& pub_key, const SecretKey& pri_key);
+  explicit Decryptor(const PublicKey &pub_key, const SecretKey &pri_key);
 
   std::vector<Plaintext> Decrypt(ConstSpan<Ciphertext> cts) const;
   void Decrypt(ConstSpan<Ciphertext> in_cts, Span<Plaintext> out_pts) const;
 
-  std::vector<Plaintext> Decode(std::shared_ptr<char>& res_fpn,
-                                std::shared_ptr<char>& res_base,
-                                std::shared_ptr<char>& res_exp,
+  std::vector<Plaintext> Decode(std::shared_ptr<char> &res_fpn,
+                                std::shared_ptr<char> &res_base,
+                                std::shared_ptr<char> &res_exp,
                                 size_t cts_size) const;
 
  private:

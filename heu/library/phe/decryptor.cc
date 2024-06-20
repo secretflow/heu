@@ -19,26 +19,26 @@
 namespace heu::lib::phe {
 
 template <typename CLAZZ, typename TYPE1, typename TYPE2>
-using kHasScalarDecryptVoid = decltype(std::declval<const CLAZZ&>().Decrypt(
-    std::declval<TYPE1>(), std::declval<TYPE2*>()));
+using kHasScalarDecryptVoid = decltype(std::declval<const CLAZZ &>().Decrypt(
+    std::declval<TYPE1>(), std::declval<TYPE2 *>()));
 
 template <typename CLAZZ, typename TYPE1, typename TYPE2>
-auto DoCallDecrypt(const CLAZZ& sub_clazz, const TYPE1& in1, TYPE2* out2)
+auto DoCallDecrypt(const CLAZZ &sub_clazz, const TYPE1 &in1, TYPE2 *out2)
     -> std::enable_if_t<std::experimental::is_detected_v<kHasScalarDecryptVoid,
                                                          CLAZZ, TYPE1, TYPE2>> {
   (sub_clazz.Decrypt(in1, out2));
 }
 
 template <typename CLAZZ, typename TYPE1, typename TYPE2>
-auto DoCallDecrypt(const CLAZZ& sub_clazz, const TYPE1& in1, TYPE2* out2)
+auto DoCallDecrypt(const CLAZZ &sub_clazz, const TYPE1 &in1, TYPE2 *out2)
     -> std::enable_if_t<!std::experimental::is_detected_v<
         kHasScalarDecryptVoid, CLAZZ, TYPE1, TYPE2>> {
   (sub_clazz.Decrypt(absl::MakeConstSpan({&in1}), absl::MakeSpan(&out2, 1)));
 }
 
-void Decryptor::Decrypt(const Ciphertext& ct, Plaintext* out) const {
+void Decryptor::Decrypt(const Ciphertext &ct, Plaintext *out) const {
 #define FUNC(ns)                                                    \
-  [&](const ns::Decryptor& decryptor) {                             \
+  [&](const ns::Decryptor &decryptor) {                             \
     if (!out->IsHoldType<ns::Plaintext>()) {                        \
       ns::Plaintext inner_pt;                                       \
       DoCallDecrypt(decryptor, ct.As<ns::Ciphertext>(), &inner_pt); \
@@ -55,13 +55,13 @@ void Decryptor::Decrypt(const Ciphertext& ct, Plaintext* out) const {
 
 DEFINE_INVOKE_METHOD_RET_1(Plaintext, Decrypt);
 
-Plaintext Decryptor::Decrypt(const Ciphertext& ct) const {
+Plaintext Decryptor::Decrypt(const Ciphertext &ct) const {
   return std::visit(
       HE_DISPATCH(DO_INVOKE_METHOD_RET_1, Decryptor, Decrypt, Ciphertext, ct),
       decryptor_ptr_);
 }
 
-Plaintext Decryptor::DecryptInRange(const Ciphertext& ct,
+Plaintext Decryptor::DecryptInRange(const Ciphertext &ct,
                                     size_t range_bits) const {
   auto pt = Decrypt(ct);
   YACL_ENFORCE(

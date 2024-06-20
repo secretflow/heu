@@ -22,7 +22,7 @@ void HeKitPublicBase::Setup(std::shared_ptr<PublicKey> pk) {
   public_key_ = std::move(pk);
 
   int hit = 0;
-  for (const auto& schema : GetAllSchema()) {
+  for (const auto &schema : GetAllSchema()) {
     if (public_key_->IsCompatible(schema)) {
       schema_type_ = schema;
       ++hit;
@@ -44,7 +44,7 @@ void HeKitSecretBase::Setup(std::shared_ptr<PublicKey> pk,
 }
 
 #define GEN_KEY_AND_INIT(ns)                                                  \
-  [&](ns::PublicKey& pk) {                                                    \
+  [&](ns::PublicKey &pk) {                                                    \
     ns::SecretKey sk;                                                         \
     ns::KeyGenerator::Generate(key_size, &sk, &pk);                           \
                                                                               \
@@ -63,7 +63,7 @@ HeKit::HeKit(SchemaType schema_type, size_t key_size) {
 }
 
 #define GEN_KEY_AND_INIT_DEFAULT(ns)                                          \
-  [&](ns::PublicKey& pk) {                                                    \
+  [&](ns::PublicKey &pk) {                                                    \
     ns::SecretKey sk;                                                         \
     ns::KeyGenerator::Generate(&sk, &pk);                                     \
                                                                               \
@@ -82,7 +82,7 @@ HeKit::HeKit(SchemaType schema_type) {
 }
 
 #define HE_SPECIAL_SETUP_BY_PK(ns)                                     \
-  [&](const ns::PublicKey& pk1) {                                      \
+  [&](const ns::PublicKey &pk1) {                                      \
     evaluator_ =                                                       \
         std::make_shared<Evaluator>(schema_type_, ns::Evaluator(pk1)); \
     encryptor_ =                                                       \
@@ -90,7 +90,7 @@ HeKit::HeKit(SchemaType schema_type) {
   }
 
 #define HE_SPECIAL_SETUP_BY_SK(ns)                                           \
-  [&](const ns::SecretKey& sk1) {                                            \
+  [&](const ns::SecretKey &sk1) {                                            \
     decryptor_ = std::make_shared<Decryptor>(                                \
         schema_type_, ns::Decryptor(public_key_->As<ns::PublicKey>(), sk1)); \
   }

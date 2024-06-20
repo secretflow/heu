@@ -31,12 +31,12 @@ struct PySlice {
 // convert src from a python style index to a valid C++ array index
 // check src < dim_len
 // if src < 0, compute y such that y = dim_len - src
-int64_t ComputeInt(const py::handle& src, int64_t dim_len);
+int64_t ComputeInt(const py::handle &src, int64_t dim_len);
 
 // parse the python slice info into a PySlice struct.
-PySlice<std::vector<int64_t>> Parse(const pybind11::object& src,
+PySlice<std::vector<int64_t>> Parse(const pybind11::object &src,
                                     ssize_t dim_len,
-                                    bool* should_squeeze = nullptr);
+                                    bool *should_squeeze = nullptr);
 
 // express python slice [:] in PySlice struct.
 auto All(ssize_t dim_len) -> PySlice<decltype(Eigen::placeholders::all)>;

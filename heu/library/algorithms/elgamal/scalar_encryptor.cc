@@ -18,7 +18,7 @@
 
 namespace heu::lib::algorithms::elgamal {
 
-Encryptor::Encryptor(const PublicKey& pk) : pk_(pk) {
+Encryptor::Encryptor(const PublicKey &pk) : pk_(pk) {
   Ciphertext::EnableEcGroup(pk_.GetCurve());
 }
 
@@ -29,7 +29,7 @@ Ciphertext Encryptor::EncryptZero() const {
                     pk_.GetCurve()->Mul(pk_.GetH(), r));
 }
 
-Ciphertext Encryptor::Encrypt(const Plaintext& m) const {
+Ciphertext Encryptor::Encrypt(const Plaintext &m) const {
   YACL_ENFORCE(m.CompareAbs(pk_.PlaintextBound()) <= 0,
                "message number out of range, message={}, max (abs)={}", m,
                pk_.PlaintextBound());
@@ -41,7 +41,7 @@ Ciphertext Encryptor::Encrypt(const Plaintext& m) const {
 }
 
 std::pair<Ciphertext, std::string> Encryptor::EncryptWithAudit(
-    const Plaintext& m) const {
+    const Plaintext &m) const {
   YACL_ENFORCE(m.CompareAbs(pk_.PlaintextBound()) <= 0,
                "message number out of range, message={}, max (abs)={}", m,
                pk_.PlaintextBound());

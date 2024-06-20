@@ -49,11 +49,11 @@ yacl::Buffer DenseMatrix<T>::Serialize4Ic() const {
 
   auto v_ndarray = dep.mutable_v_ndarray();
   auto shape = this->shape();
-  for (const auto& s : shape) {
+  for (const auto &s : shape) {
     v_ndarray->add_shape(s);
   }
 
-  const T* buf = this->data();
+  const T *buf = this->data();
   auto pb_items = v_ndarray->mutable_items();
   pb_items->Reserve(size());
   for (int i = 0; i < size(); ++i) {
@@ -94,7 +94,7 @@ DenseMatrix<T> DenseMatrix<T>::LoadFromIc(yacl::ByteContainerView in) {
   DenseMatrix<T> res(s.size() > 0 ? s[0] : 1, s.size() > 1 ? s[1] : 1,
                      s.size());
 
-  T* buf = res.data();
+  T *buf = res.data();
   auto pb_items = v_ndarray.items();
   YACL_ENFORCE(pb_items.size() == res.size(), "Pb: shape and len not match");
   yacl::parallel_for(0, res.size(), 1, [&](int64_t beg, int64_t end) {

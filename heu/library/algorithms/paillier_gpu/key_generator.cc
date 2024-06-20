@@ -24,7 +24,7 @@ namespace {
 constexpr size_t kPQDifferenceBitLenSub = 2;  // >=1022-bit P-Q
 }
 
-void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(size_t key_size, SecretKey *sk, PublicKey *pk) {
   YACL_ENFORCE(key_size == 2048,
                "GPU Paillier only supports 2048 key_size now");
 
@@ -61,7 +61,7 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
   pk->Init();
 }
 
-void KeyGenerator::Generate(SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(SecretKey *sk, PublicKey *pk) {
   Generate(2048, sk, pk);
 }
 

@@ -12,8 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-# Install hooks to run automatically on git commit:
-#  >>    pre-commit install
+# Install hooks to run automatically on git commit: (Only needs to be run once)
+#  >>  pre-commit install
+#
+# If the pre-commit command does not exist, please run
+#  >>  pip install pre-commit
+# to install it.
 repos:
   # buildifier
   - repo: local

@@ -23,13 +23,13 @@ namespace heu::lib::algorithms::your_algo {
 
 class Encryptor {
  public:
-  explicit Encryptor(const PublicKey& pk) {}
+  explicit Encryptor(const PublicKey &pk) {}
 
   // Scalar SPI only
   Ciphertext EncryptZero() const { YACL_THROW("To be implemented"); }
 
   // Scalar SPI + Vectorized SPI
-  Ciphertext Encrypt(const Plaintext& m) const {
+  Ciphertext Encrypt(const Plaintext &m) const {
     YACL_THROW("To be implemented");
   }
 

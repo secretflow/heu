@@ -25,7 +25,7 @@ namespace {
 constexpr size_t kPQDifferenceBitLenSub = 2;  // >=1022-bit P-Q
 }
 
-void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(size_t key_size, SecretKey *sk, PublicKey *pk) {
   YACL_ENFORCE(key_size % 2 == 0, "Key size must be even");
 
   MPInt p, q, n, c;
@@ -61,7 +61,7 @@ void KeyGenerator::Generate(size_t key_size, SecretKey* sk, PublicKey* pk) {
   pk->Init();
 }
 
-void KeyGenerator::Generate(SecretKey* sk, PublicKey* pk) {
+void KeyGenerator::Generate(SecretKey *sk, PublicKey *pk) {
   Generate(2048, sk, pk);
 }
 

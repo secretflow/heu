@@ -1,12 +1,14 @@
 Implementation of Damgard Jurik Algorithm
 
 Setup:
+
 - Plaintext space: $\mathbb{Z}_{n^s}$
 - Ciphertext space: $\mathbb{Z}_{n^{s+1}}$
 
 KeyGen($1^k$):
 
-- Sample a $k$-bit semiprime $n = p \times q$ such that $\gcd(\lambda(n), n)=1$, where $\lambda(n) = \text{lcm}(p-1,q-1)$
+- Sample a $k$-bit semiprime $n = p \times q$ such that $\gcd(\lambda(n), n)=1$, where $\lambda(n) =
+  \text{lcm}(p-1,q-1)$
 - Sample $x \gets \mathbb{Z}_n^*$
 - Compute $h = -x^2 \bmod n$ and $h_s = h^{n^s} \bmod n^{s+1}$
 - The public key is $(n, h_s)$ and the private key is $\lambda$
@@ -19,10 +21,9 @@ Encryption(pk, m):
 Decryption(sk, c):
 
 - For each $j=1$ to $s$, do the following:
-  - Compute $l_j = L_j(c^\lambda \bmod n^{j+1})$, where $L_j(z) = \frac{z-1}{n}\bmod n^j$
-  - Compute $i_j=l_j-\sum_{k=2}^j{i_{j-1}\choose k}n^{k-1} \bmod n^k$
+    - Compute $l_j = L_j(c^\lambda \bmod n^{j+1})$, where $L_j(z) = \frac{z-1}{n}\bmod n^j$
+    - Compute $i_j=l_j-\sum_{k=2}^j{i_{j-1}\choose k}n^{k-1} \bmod n^k$
 - The plaintext is $m=\lambda^{-1}i_s \bmod n^s$
-
 
 Additive homomorphisms:
 
@@ -36,6 +37,12 @@ Multiplicative homomorphism:
 
 Reference:
 
-- [DJ01] Damgård, I. and Jurik, M., 2001. A generalisation, a simplification and some applications of Paillier's probabilistic public-key system. In Public Key Cryptography: 4th International Workshop on Practice and Theory in Public Key Cryptosystems, PKC 2001 Cheju Island, Korea, February 13–15, 2001 Proceedings 4 (pp. 119-136). Springer Berlin Heidelberg. https://www.brics.dk/RS/00/45/BRICS-RS-00-45.pdf
+- [DJ01] Damgård, I. and Jurik, M., 2001. A generalisation, a simplification and some applications
+  of Paillier's probabilistic public-key system. In Public Key Cryptography: 4th International
+  Workshop on Practice and Theory in Public Key Cryptosystems, PKC 2001 Cheju Island, Korea,
+  February 13–15, 2001 Proceedings 4 (pp. 119-136). Springer Berlin
+  Heidelberg. https://www.brics.dk/RS/00/45/BRICS-RS-00-45.pdf
 
-- [DJN10] Damgård, Ivan, Mads Jurik, and Jesper Buus Nielsen. 2010. “A Generalization of Paillier’s Public-Key System with Applications to Electronic Voting.” International Journal of Information Security 9 (6): 371–85. https://doi.org/10.1007/s10207-010-0119-9.
+- [DJN10] Damgård, Ivan, Mads Jurik, and Jesper Buus Nielsen. 2010. “A Generalization of Paillier’s
+  Public-Key System with Applications to Electronic Voting.” International Journal of Information
+  Security 9 (6): 371–85. https://doi.org/10.1007/s10207-010-0119-9.
