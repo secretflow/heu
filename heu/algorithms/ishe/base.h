@@ -77,9 +77,9 @@ class PublicKey : public spi::EmptyKeySketch<spi::HeKeyType::PublicKey> {
   [[nodiscard]] MPInt *messageSpace() { return M; }
 
   [[nodiscard]] std::map<std::string, std::string> ListParams() const override {
-    return {{"key_size", fmt::to_string(k_0)}
-    , {"random_number_size", fmt::to_string(k_r)}
-    , {"message_space_size", fmt::to_string(M[1])}};
+    return {{"key_size", fmt::to_string(k_0)},
+            {"random_number_size", fmt::to_string(k_r)},
+            {"message_space_size", fmt::to_string(M[1])}};
   }
 
   [[nodiscard]] MPInt getN() const { return N; }
