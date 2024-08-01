@@ -1,0 +1,96 @@
+# Copyright 2024 Ant Group Co., Ltd
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+test_suite(
+    name = "ishe_tests",
+)
+
+yacl_cc_library(
+    name = "ishe",
+    hdrs = ["ishe.h"],
+    deps = [
+        "base",
+        "decryptor",
+        "encryptor",
+        "evaluator",
+        "he_kit",
+    ],
+)
+
+yacl_cc_library(
+    name = "he_kit",
+    srcs = ["he_kit.cc"],
+    hdrs = ["he_kit.h"],
+    deps = [
+        ":decryptor",
+        ":encryptor",
+        ":evaluator",
+        "//heu/spi/utils:formater",
+        "@yacl//yacl/utils:serializer",
+    ],
+    alwayslink = 1,
+)
+
+yacl_cc_library(
+    name = "base",
+    srcs = ["base.cc"],
+    hdrs = ["base.h"],
+    deps = [
+        "//heu/spi/he/sketches/scalar/phe",
+        "//heu/spi/utils:formater",
+        "@com_github_msgpack_msgpack//:msgpack",
+        "@yacl//yacl/utils:serializer",
+    ],
+)
+
+yacl_cc_library(
+    name = "encryptor",
+    srcs = ["encryptor.cc"],
+    hdrs = ["encryptor.h"],
+    deps = [
+        ":base",
+        "//heu/spi/utils:formater",
+    ],
+)
+
+yacl_cc_library(
+    name = "decryptor",
+    srcs = ["decryptor.cc"],
+    hdrs = ["decryptor.h"],
+    deps = [
+        ":base",
+    ],
+)
+
+yacl_cc_library(
+    name = "evaluator",
+    srcs = ["evaluator.cc"],
+    hdrs = ["evaluator.h"],
+    deps = [
+        ":base",
+        ":encryptor",
+    ],
+)
+
+yacl_cc_test(
+    name = "ishe_test",
+    srcs = ["//heu/algorithms/ishe:ishe_test.cc"],
+    deps = [
+        ":ishe",
+    ],
+)
