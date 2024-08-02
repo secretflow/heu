@@ -137,7 +137,9 @@ TEST_P(ArithmeticTest, TestEncDecScalar) {
   enc_->EncryptWithAudit(pt, &ct, &audit);
   EXPECT_TRUE(ct.IsCiphertext());
   ASSERT_EQ(edr->DecodeScalarInt64(dec_->Decrypt(ct)), -1234);
-  // EXPECT_THAT(audit, testing::HasSubstr("-1234"));
+  EXPECT_THAT(audit,
+              AnyOf(testing::HasSubstr("-1234"), testing::HasSubstr("-4d2"),
+                    testing::HasSubstr("-4D2")));
 }
 
 TEST_P(ArithmeticTest, TestEncDecVector) {

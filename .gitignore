@@ -17,6 +17,8 @@ bazel-*
 *.pdb
 /.idea
 /.vscode
+cmake-build-debug-remote
+CMakeLists.txt
 
 # sphinx files
 /docs/*.mo
