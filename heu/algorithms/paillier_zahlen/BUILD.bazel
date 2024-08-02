@@ -17,24 +17,51 @@ load("@yacl//bazel:yacl.bzl", "yacl_cc_library")
 package(default_visibility = ["//visibility:public"])
 
 yacl_cc_library(
-    name = "common",
+    name = "paillier_zahlen",
+    srcs = ["he_kit.cc"],
+    hdrs = ["he_kit.h"],
     deps = [
-        ":he_assert",
-        ":type_alias",
+        ":decryptor",
+        ":encryptor",
+        ":evaluator",
+    ],
+    alwayslink = 1,
+)
+
+yacl_cc_library(
+    name = "base",
+    srcs = ["base.cc"],
+    hdrs = ["base.h"],
+    deps = [
+        "//heu/algorithms/common",
+        "//heu/spi/he/sketches/scalar/phe",
+        "@yacl//yacl/utils:serializer",
     ],
 )
 
 yacl_cc_library(
-    name = "type_alias",
-    hdrs = ["type_alias.h"],
+    name = "encryptor",
+    srcs = ["encryptor.cc"],
+    hdrs = ["encryptor.h"],
     deps = [
-        "@yacl//yacl/math/mpint",
-        "@yacl//yacl/math/mpint:montgomery_math",
+        ":base",
     ],
 )
 
 yacl_cc_library(
-    name = "he_assert",
-    hdrs = ["he_assert.h"],
-    deps = ["@yacl//yacl/base:exception"],
+    name = "decryptor",
+    srcs = ["decryptor.cc"],
+    hdrs = ["decryptor.h"],
+    deps = [
+        ":base",
+    ],
+)
+
+yacl_cc_library(
+    name = "evaluator",
+    srcs = ["evaluator.cc"],
+    hdrs = ["evaluator.h"],
+    deps = [
+        ":encryptor",
+    ],
 )

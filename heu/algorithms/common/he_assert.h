@@ -1,4 +1,4 @@
-// Copyright 2024 Ant Group Co., Ltd.
+// Copyright 20244 Ant Group Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,15 +14,10 @@
 
 #pragma once
 
-#include "yacl/math/mpint/montgomery_math.h"
-#include "yacl/math/mpint/mp_int.h"
+#include "yacl/base/exception.h"
 
-namespace heu::algos {
-
-using yacl::math::MPInt;
-using yacl::math::PrimeType;
-
-using yacl::math::BaseTable;
-using yacl::math::MontgomerySpace;
-
-}  // namespace heu::algos
+#ifdef NDEBUG
+#define HE_ASSERT(condition, ...) ((void)0)
+#else
+#define HE_ASSERT(condition, ...) YACL_ENFORCE(condition, __VA_ARGS__)
+#endif
