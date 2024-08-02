@@ -23,13 +23,15 @@ namespace heu::algos::ishe {
 
 class Decryptor : public spi::DecryptorScalarSketch<Plaintext, Ciphertext> {
  public:
-  std::shared_ptr<SecretKey> sk_;
-  std::shared_ptr<PublicKey> pk_;
   void Decrypt(const Ciphertext &ct, Plaintext *out) const override;
   [[nodiscard]] Plaintext Decrypt(const Ciphertext &ct) const override;
 
   Decryptor(std::shared_ptr<SecretKey> sk, std::shared_ptr<PublicKey> pk)
       : sk_(std::move(sk)), pk_(std::move(pk)) {}
+
+ private:
+  std::shared_ptr<SecretKey> sk_;
+  std::shared_ptr<PublicKey> pk_;
 };
 
 }  // namespace heu::algos::ishe

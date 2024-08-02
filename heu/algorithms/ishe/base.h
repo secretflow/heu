@@ -47,13 +47,16 @@ class Ciphertext {
   MPInt n_, d_;
 };
 
-class SecretKey : public spi::EmptyKeySketch<spi::HeKeyType::SecretKey> {
+class SecretKey : public spi::KeySketch<spi::HeKeyType::SecretKey> {
  private:
   MPInt s_, p_, L_;
 
  public:
   SecretKey(MPInt s, MPInt p, MPInt L);
-  SecretKey() = default;
+
+  SecretKey();
+
+  [[nodiscard]] std::map<std::string, std::string> ListParams() const override;
 
   MPInt getS() { return this->s_; }
 

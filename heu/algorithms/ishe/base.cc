@@ -29,12 +29,22 @@ SecretKey::SecretKey(MPInt s, MPInt p, MPInt L) {
   this->L_ = std::move(L);
 }
 
+SecretKey::SecretKey() = default;
+
 PublicKey::PublicKey(const int k_0, const int k_r, MPInt M[2], MPInt N) {
   this->k_0 = k_0;
   this->k_r = k_r;
   this->N = std::move(N);
   this->M[0] = M[0];
   this->M[1] = M[1];
+}
+
+std::map<std::string, std::string> SecretKey::ListParams() const {
+  return {
+      {"s", fmt::to_string(s_)},
+      {"p", fmt::to_string(p_)},
+      {"L", fmt::to_string(L_)},
+  };
 }
 
 size_t ItemTool::Serialize(const Plaintext &pt, uint8_t *buf,

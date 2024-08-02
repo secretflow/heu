@@ -35,6 +35,9 @@ TEST_F(iSHETest, HekitEvaluate) {
   std::unique_ptr<HeKit> hekit_test = HeKit::Create(spi::Schema::iSHE, params);
   EXPECT_EQ(hekit_test->getPk()->k_0, 1024);
   EXPECT_EQ(hekit_test->getPk()->k_r, 80);
+  EXPECT_EQ(secretkey_->ListParams()["p"], fmt::to_string(secretkey_->getP()));
+  EXPECT_EQ(secretkey_->ListParams()["L"], fmt::to_string(secretkey_->getL()));
+  EXPECT_EQ(secretkey_->ListParams()["s"], fmt::to_string(secretkey_->getS()));
 }
 
 TEST_F(iSHETest, ItomToolEvaluator) {
