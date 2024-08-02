@@ -19,7 +19,6 @@
 #include <memory>
 #include <string>
 
-#include "gtest/gtest.h"
 #include "yacl/utils/serializer.h"
 
 #include "heu/algorithms/ishe/decryptor.h"
