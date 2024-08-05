@@ -40,23 +40,28 @@ class Ciphertext {
     this->d_ = std::move(d);
   }
 
-  [[nodiscard]] std::string ToString() const { return n_.ToString(); }
+  [[nodiscard]] std::string ToString() const;
 
   bool operator==(const Ciphertext &other) const { return n_ == other.n_; }
 
+  MSGPACK_DEFINE(n_, d_);
   MPInt n_, d_;
 };
 
-class SecretKey : public spi::KeySketch<spi::HeKeyType::SecretKey> {
+class SecretKey : public spi::KeySketch<heu::spi::HeKeyType::SecretKey> {
  private:
   MPInt s_, p_, L_;
 
  public:
   SecretKey(MPInt s, MPInt p, MPInt L);
 
-  SecretKey();
+  SecretKey() = default;
 
-  [[nodiscard]] std::map<std::string, std::string> ListParams() const override;
+  [[nodiscard]] std::map<std::string, std::string> ListParams() const override {
+    return {{"s_", fmt::to_string(s_)},
+            {"p_", fmt::to_string(p_)},
+            {"L_", fmt::to_string(L_)}};
+  }
 
   MPInt getS() { return this->s_; }
 
@@ -65,7 +70,7 @@ class SecretKey : public spi::KeySketch<spi::HeKeyType::SecretKey> {
   MPInt getL() { return this->L_; }
 };
 
-class PublicKey : public spi::EmptyKeySketch<spi::HeKeyType::PublicKey> {
+class PublicKey : public spi::KeySketch<heu::spi::HeKeyType::PublicKey> {
  private:
   MPInt N, M[2];
 
@@ -98,11 +103,15 @@ class ItemTool : public spi::ItemToolScalarSketch<Plaintext, Ciphertext,
                    size_t buf_len) const override;
   size_t Serialize(const Ciphertext &ct, uint8_t *buf,
                    size_t buf_len) const override;
-
+  static yacl::Buffer Serialize(const Ciphertext &ct);
   [[nodiscard]] Plaintext DeserializePT(
       yacl::ByteContainerView buffer) const override;
   [[nodiscard]] Ciphertext DeserializeCT(
       yacl::ByteContainerView buffer) const override;
+
+  [[nodiscard]] std::string ToString(const spi::Item &item) const override {
+    return item.ToString();
+  }
 };
 
 }  // namespace heu::algos::ishe

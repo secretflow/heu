@@ -15,6 +15,8 @@
 
 #include "heu/algorithms/ishe/base.h"
 
+#include "yacl/utils/serializer.h"
+
 namespace heu::algos::ishe {
 
 Plaintext ItemTool::Clone(const Plaintext &pt) const { return pt; }
@@ -23,13 +25,15 @@ Ciphertext ItemTool::Clone(const Ciphertext &ct) const {
   return Ciphertext(ct.n_, ct.d_);
 }
 
+std::string Ciphertext::ToString() const {
+  return fmt::format("CT: ({},{})", n_, d_);
+}
+
 SecretKey::SecretKey(MPInt s, MPInt p, MPInt L) {
   this->s_ = std::move(s);
   this->p_ = std::move(p);
   this->L_ = std::move(L);
 }
-
-SecretKey::SecretKey() = default;
 
 PublicKey::PublicKey(const int k_0, const int k_r, MPInt M[2], MPInt N) {
   this->k_0 = k_0;
@@ -39,14 +43,6 @@ PublicKey::PublicKey(const int k_0, const int k_r, MPInt M[2], MPInt N) {
   this->M[1] = M[1];
 }
 
-std::map<std::string, std::string> SecretKey::ListParams() const {
-  return {
-      {"s", fmt::to_string(s_)},
-      {"p", fmt::to_string(p_)},
-      {"L", fmt::to_string(L_)},
-  };
-}
-
 size_t ItemTool::Serialize(const Plaintext &pt, uint8_t *buf,
                            const size_t buf_len) const {
   return pt.Serialize(buf, buf_len);
@@ -54,12 +50,11 @@ size_t ItemTool::Serialize(const Plaintext &pt, uint8_t *buf,
 
 size_t ItemTool::Serialize(const Ciphertext &ct, uint8_t *buf,
                            const size_t buf_len) const {
-  const size_t n_len = Serialize(ct.n_, buf, buf_len);
-  if (n_len == 0 || n_len >= buf_len) {
-    // serialize failed or can not contain more bits
-    return 0;  // return 0 as a symbol of failure
-  }
-  return n_len;
+  return yacl::SerializeVarsTo(buf, buf_len, ct.n_, ct.d_);
+}
+
+yacl::Buffer ItemTool::Serialize(const Ciphertext &ct) {
+  return yacl::SerializeVars(ct.n_, ct.d_);
 }
 
 Plaintext ItemTool::DeserializePT(const yacl::ByteContainerView buffer) const {
@@ -69,7 +64,9 @@ Plaintext ItemTool::DeserializePT(const yacl::ByteContainerView buffer) const {
 }
 
 Ciphertext ItemTool::DeserializeCT(yacl::ByteContainerView buffer) const {
-  return Ciphertext(DeserializePT(buffer));
+  Ciphertext ct;
+  DeserializeVarsTo(buffer, &ct.n_, &ct.d_);
+  return ct;
 }
 
 }  // namespace heu::algos::ishe
