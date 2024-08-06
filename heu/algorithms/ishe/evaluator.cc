@@ -27,7 +27,7 @@ void Evaluator::NegateInplace(Plaintext *a) const { a->NegateInplace(); }
 Ciphertext Evaluator::Negate(const Ciphertext &a) const {
   // [[-1]] * a
   Ciphertext neg;
-  neg = et_->Encrypt(MPInt(-1));
+  neg = et_->Encrypt(MPInt(-1), MPInt(0));
   MulInplace(&neg, a);
   return neg;
 }

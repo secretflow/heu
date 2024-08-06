@@ -53,7 +53,9 @@ class SecretKey : public spi::KeySketch<heu::spi::HeKeyType::SecretKey> {
   MPInt s_, p_, L_;
 
  public:
+  MSGPACK_DEFINE(s_, p_, L_);
   SecretKey(MPInt s, MPInt p, MPInt L);
+  explicit SecretKey(std::tuple<MPInt, MPInt, MPInt> in);
 
   SecretKey() = default;
 
@@ -75,10 +77,13 @@ class PublicKey : public spi::KeySketch<heu::spi::HeKeyType::PublicKey> {
   MPInt N, M[2];
 
  public:
-  int k_r = 80;
-  int k_0 = 1024;
+  long k_M = 64;
+  long k_r = 80;
+  long k_0 = 1024;
+  MSGPACK_DEFINE(k_0, k_r, k_M, N);
   PublicKey() = default;
-  explicit PublicKey(int k_0, int k_r, MPInt M[2], MPInt N);
+  PublicKey(long k_0, long k_r, long k_M, MPInt N);
+  explicit PublicKey(std::tuple<long, long, long, MPInt> in);
 
   [[nodiscard]] size_t Keysize() const { return 2 * k_0; }
 

@@ -30,7 +30,6 @@ class HeKit : public spi::PheHeKitSketch<Plaintext, SecretKey, PublicKey> {
   HeKit() = default;
   [[nodiscard]] std::string GetLibraryName() const override;
   [[nodiscard]] spi::Schema GetSchema() const override;
-
   [[nodiscard]] std::string ToString() const override;
 
   [[nodiscard]] size_t MaxPlaintextBits() const override {
@@ -51,6 +50,13 @@ class HeKit : public spi::PheHeKitSketch<Plaintext, SecretKey, PublicKey> {
   std::shared_ptr<SecretKey> getSk() { return this->sk_; }
 
   std::shared_ptr<PublicKey> getPk() { return this->pk_; }
+
+  MSGPACK_DEFINE(sk_, pk_);
+
+ protected:
+  [[nodiscard]] std::map<std::string, std::string> ListKeyParams(
+      heu::spi::HeKeyType key_type) const override;
+  [[nodiscard]] bool HasKey(heu::spi::HeKeyType key_type) const override;
 
  private:
   std::shared_ptr<SecretKey> sk_;

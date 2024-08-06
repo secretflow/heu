@@ -19,7 +19,7 @@
 namespace heu::algos::ishe {
 
 Ciphertext Encryptor::EncryptZeroT() const {
-  return Ciphertext({0_mp}, {1_mp});
+  return Encrypt(MPInt(0), MPInt(1));
 }
 
 Ciphertext Encryptor::Encrypt(const Plaintext &m, const MPInt &d) const {
@@ -32,7 +32,7 @@ Ciphertext Encryptor::Encrypt(const Plaintext &m, const MPInt &d) const {
   m1 *= (r * sk_->getL() + m);                    // m' = s*(rL+m)
   m1 = m1.MulMod((MPInt(1) + r1 * sk_->getP()), pk_->getN());
   // m' = s*(rL+m)*(1+r'p) mod N
-  return Ciphertext(m1, MPInt(1));
+  return Ciphertext(m1, d);
 }
 
 Ciphertext Encryptor::Encrypt(const Plaintext &m) const {

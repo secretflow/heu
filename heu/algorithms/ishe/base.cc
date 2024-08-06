@@ -35,12 +35,28 @@ SecretKey::SecretKey(MPInt s, MPInt p, MPInt L) {
   this->L_ = std::move(L);
 }
 
-PublicKey::PublicKey(const int k_0, const int k_r, MPInt M[2], MPInt N) {
+SecretKey::SecretKey(std::tuple<MPInt, MPInt, MPInt> in) {
+  this->s_ = std::move(std::get<0>(in));
+  this->p_ = std::move(std::get<1>(in));
+  this->L_ = std::move(std::get<2>(in));
+}
+
+PublicKey::PublicKey(const long k_0, const long k_r, const long k_M, MPInt N) {
   this->k_0 = k_0;
   this->k_r = k_r;
+  this->k_M = k_M;
   this->N = std::move(N);
-  this->M[0] = M[0];
-  this->M[1] = M[1];
+  MPInt::Pow(MPInt(2), k_M - 1, &this->M[1]);
+  this->M[0] = -this->M[1];
+}
+
+PublicKey::PublicKey(std::tuple<long, long, long, MPInt> in) {
+  this->k_0 = std::get<0>(in);
+  this->k_r = std::get<1>(in);
+  this->k_M = std::get<2>(in);
+  this->N = std::move(std::get<3>(in));
+  MPInt::Pow(MPInt(2), k_M - 1, &this->M[1]);
+  this->M[0] = -this->M[1];
 }
 
 size_t ItemTool::Serialize(const Plaintext &pt, uint8_t *buf,
