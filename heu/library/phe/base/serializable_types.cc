@@ -39,7 +39,7 @@ const std::variant<std::monostate, HE_PLAINTEXT_TYPES>
 
 template <typename... Types>
 SerializableVariant<Types...>::SerializableVariant(SchemaType schema_type) {
-  var_ = schema2ns_vtable_[static_cast<int>(schema_type)];
+  var_ = schema2ns_vtable_[Schema2NamespaceIdx(schema_type)];
 }
 
 template <typename T>
@@ -58,59 +58,65 @@ yacl::Buffer SerializableVariant<Types...>::Serialize(bool with_meta) const {
       }
     }
   });
-  size_t idx = var_.index();
+  uint8_t idx = GetAlignedIdx();
 
   // Append idx to the end of payload to reduce memory copying
   auto payload_sz = payload.size();
   payload.resize(static_cast<int64_t>(payload_sz + sizeof(idx)));
-  *reinterpret_cast<size_t *>(payload.data<uint8_t>() + payload_sz) = idx;
+  *reinterpret_cast<uint8_t *>(payload.data<uint8_t>() + payload_sz) = idx;
   return payload;
 }
 
-#define EMPLACE_CASE(n)                         \
-  case n:                                       \
-    if constexpr (max_idx >= (n)) {             \
-      var_.template emplace<n>();               \
-    } else {                                    \
-      YACL_THROW("Bug: illegal variant index"); \
-    }                                           \
-    break
+template <typename... Types>
+uint8_t SerializableVariant<Types...>::GetAlignedIdx() const {
+  // -1 for std::monostate
+  return static_cast<uint8_t>((NamespaceIdx2Schema(var_.index() - 1)));
+}
+
+template <>
+uint8_t SerializableVariant<HE_PLAINTEXT_TYPES>::GetAlignedIdx() const {
+  return var_.index();
+}
 
 template <typename... Types>
-void SerializableVariant<Types...>::EmplaceInstance(size_t idx) {
-  // total types: Types + monostate
-  constexpr size_t max_idx = sizeof...(Types);
-  static_assert(max_idx <= 14,
-                "For developer: please add more switch-case branches");
+void SerializableVariant<Types...>::EmplaceInstance(uint8_t aligned_idx) {
+  var_ = schema2ns_vtable_[Schema2NamespaceIdx(
+      static_cast<SchemaType>(aligned_idx))];
+}
 
-  switch (idx) {  // O(n)
-    EMPLACE_CASE(0);
-    EMPLACE_CASE(1);
-    EMPLACE_CASE(2);
-    EMPLACE_CASE(3);
-    EMPLACE_CASE(4);
-    EMPLACE_CASE(5);
-    EMPLACE_CASE(6);
-    EMPLACE_CASE(7);
-    EMPLACE_CASE(8);
-    EMPLACE_CASE(9);
-    EMPLACE_CASE(10);
-    EMPLACE_CASE(11);
-    EMPLACE_CASE(12);
-    EMPLACE_CASE(13);
-    EMPLACE_CASE(14);
-    default:
-      YACL_THROW("Bug: please contact developers to fix this problem");
+// for Plaintext type
+template <typename Variant, typename T, typename... Ts,
+          std::size_t current_index, std::size_t... indices>
+Variant NewVariantByIdx(std::size_t index,
+                        std::index_sequence<current_index, indices...>) {
+  if constexpr (sizeof...(Ts) == 0) {
+    return Variant{std::in_place_index<current_index>};
+  } else {
+    if (index == current_index) {
+      return Variant{std::in_place_index<current_index>};
+    }
+    return NewVariantByIdx<Variant, Ts...>(index,
+                                           std::index_sequence<indices...>());
   }
+}
+
+// for Plaintext type
+template <>
+void SerializableVariant<HE_PLAINTEXT_TYPES>::EmplaceInstance(
+    uint8_t aligned_idx) {
+  constexpr size_t max_idx = std::variant_size_v<decltype(var_)>;
+  var_ = NewVariantByIdx<decltype(var_), std::monostate, HE_PLAINTEXT_TYPES>(
+      aligned_idx, std::make_index_sequence<max_idx>());
 }
 
 template <typename... Types>
 void SerializableVariant<Types...>::Deserialize(yacl::ByteContainerView in) {
-  YACL_ENFORCE(in.size() > sizeof(size_t), "Illegal buffer size {}", in.size());
+  YACL_ENFORCE(in.size() > sizeof(uint8_t), "Illegal buffer size {}",
+               in.size());
 
-  size_t idx =
-      *reinterpret_cast<const size_t *>(in.data() + in.size() - sizeof(size_t));
-  yacl::ByteContainerView payload(in.data(), in.size() - sizeof(size_t));
+  uint8_t idx = *reinterpret_cast<const uint8_t *>(in.data() + in.size() -
+                                                   sizeof(uint8_t));
+  yacl::ByteContainerView payload(in.data(), in.size() - sizeof(uint8_t));
 
   EmplaceInstance(idx);
   Visit([&](auto &clazz) { FOR_EACH_TYPE(clazz) clazz.Deserialize(payload); });
@@ -119,7 +125,7 @@ void SerializableVariant<Types...>::Deserialize(yacl::ByteContainerView in) {
 template <typename... Types>
 bool SerializableVariant<Types...>::IsCompatible(SchemaType schema_type) const {
   return var_.index() ==
-         schema2ns_vtable_[static_cast<int>(schema_type)].index();
+         schema2ns_vtable_[Schema2NamespaceIdx(schema_type)].index();
 }
 
 template <typename... Types>

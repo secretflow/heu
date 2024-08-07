@@ -12,26 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#include "heu/algorithms/incubator/mock_phe/decryptor.h"
 
-#include <utility>
+namespace heu::algos::mock_phe {
 
-#include "heu/algorithms/mock_fhe/base.h"
-#include "heu/spi/he/sketches/scalar/decryptor.h"
+void Decryptor::Decrypt(const Ciphertext &ct, Plaintext *out) const {
+  *out = ct.bn_;
+}
 
-namespace heu::algos::mock_fhe {
+Plaintext Decryptor::Decrypt(const Ciphertext &ct) const { return ct.bn_; }
 
-class Decryptor : public spi::DecryptorScalarSketch<Plaintext, Ciphertext> {
- public:
-  Decryptor(const std::shared_ptr<PublicKey> &pk,
-            const std::shared_ptr<SecretKey> &sk);
-
-  void Decrypt(const Ciphertext &ct, Plaintext *out) const override;
-  Plaintext Decrypt(const Ciphertext &ct) const override;
-
- private:
-  std::shared_ptr<PublicKey> pk_;
-  std::shared_ptr<SecretKey> sk_;
-};
-
-}  // namespace heu::algos::mock_fhe
+}  // namespace heu::algos::mock_phe

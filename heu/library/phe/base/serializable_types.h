@@ -131,7 +131,8 @@ class SerializableVariant {
   }
 
  protected:
-  void EmplaceInstance(size_t idx);
+  void EmplaceInstance(uint8_t aligned_idx);
+  uint8_t GetAlignedIdx() const;
 
   std::variant<std::monostate, Types...> var_;
   const static std::variant<std::monostate, Types...> schema2ns_vtable_[];

@@ -17,7 +17,7 @@
 #include <cstdint>
 #include <memory>
 
-#include "heu/algorithms/mock_phe/base.h"
+#include "heu/algorithms/incubator/mock_phe/base.h"
 #include "heu/spi/he/sketches/scalar/phe/word_evaluator.h"
 
 namespace heu::algos::mock_phe {

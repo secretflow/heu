@@ -16,7 +16,7 @@
 
 #include <utility>
 
-#include "heu/algorithms/mock_phe/base.h"
+#include "heu/algorithms/incubator/mock_phe/base.h"
 #include "heu/spi/he/sketches/scalar/decryptor.h"
 
 namespace heu::algos::mock_phe {

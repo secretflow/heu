@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/algorithms/mock_phe/evaluator.h"
+#include "heu/algorithms/incubator/mock_phe/evaluator.h"
 
 #include <cstdint>
 
