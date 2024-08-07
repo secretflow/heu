@@ -42,7 +42,9 @@ class Ciphertext {
 
   [[nodiscard]] std::string ToString() const;
 
-  bool operator==(const Ciphertext &other) const { return n_ == other.n_; }
+  bool operator==(const Ciphertext &other) const {
+    return n_ == other.n_ && d_ == other.n_;
+  }
 
   MSGPACK_DEFINE(n_, d_);
   MPInt n_, d_;
