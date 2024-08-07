@@ -14,23 +14,22 @@
 
 #pragma once
 
-#include <memory>
 #include <string>
 
-#include "heu/algorithms/mock_fhe/base.h"
-#include "heu/spi/he/encoder.h"
+#include "heu/algorithms/incubator/mock_phe/base.h"
 #include "heu/spi/he/sketches/common/he_kit.h"
+#include "heu/spi/he/sketches/scalar/phe/he_kit.h"
 
-namespace heu::algos::mock_fhe {
+namespace heu::algos::mock_phe {
 
-class HeKit : public spi::HeKitSketch<SecretKey, PublicKey, RelinKeys,
-                                      GaloisKeys, BootstrapKey> {
+class HeKit : public spi::PheHeKitSketch<Plaintext, SecretKey, PublicKey> {
  public:
   std::string GetLibraryName() const override;
   spi::Schema GetSchema() const override;
-  spi::FeatureSet GetFeatureSet() const override;
 
   std::string ToString() const override;
+
+  size_t MaxPlaintextBits() const override { return pk_->KeySize(); }
 
   size_t Serialize(uint8_t *buf, size_t buf_len) const override;
   size_t Serialize(spi::HeKeyType key_type, uint8_t *buf,
@@ -40,17 +39,8 @@ class HeKit : public spi::HeKitSketch<SecretKey, PublicKey, RelinKeys,
                                             const spi::SpiArgs &args);
   static bool Check(spi::Schema schema, const spi::SpiArgs &);
 
- protected:
-  std::shared_ptr<spi::Encoder> CreateEncoder(
-      const yacl::SpiArgs &args) const override;
-
  private:
   void InitOperators();
-  void Deserialize(yacl::ByteContainerView in);
-
-  size_t poly_degree_;
-  spi::Schema schema_;
-  int64_t scale_;
 };
 
-}  // namespace heu::algos::mock_fhe
+}  // namespace heu::algos::mock_phe

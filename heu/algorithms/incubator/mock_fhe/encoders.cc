@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/algorithms/mock_fhe/encoders.h"
+#include "heu/algorithms/incubator/mock_fhe/encoders.h"
 
 namespace heu::algos::mock_fhe {
 

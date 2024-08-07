@@ -17,25 +17,27 @@
 #include <string>
 #include <utility>
 
-#include "heu/algorithms/mock_phe/base.h"
-#include "heu/spi/he/sketches/scalar/phe/encryptor.h"
+#include "heu/algorithms/incubator/mock_fhe/base.h"
+#include "heu/spi/he/sketches/scalar/encryptor.h"
 
-namespace heu::algos::mock_phe {
+namespace heu::algos::mock_fhe {
 
-class Encryptor : public spi::PheEncryptorScalarSketch<Plaintext, Ciphertext> {
+class Encryptor : public spi::EncryptorScalarSketch<Plaintext, Ciphertext> {
  public:
-  explicit Encryptor(const std::shared_ptr<PublicKey> &pk) : pk_(pk) {}
-
+  Encryptor(size_t poly_degree, const std::shared_ptr<PublicKey> &pk);
   [[nodiscard]] Ciphertext EncryptZeroT() const override;
 
   [[nodiscard]] Ciphertext Encrypt(const Plaintext &m) const override;
   void Encrypt(const Plaintext &plaintext, Ciphertext *out) const override;
 
+  Ciphertext SemiEncrypt(const Plaintext &plaintext) const override;
+
   void EncryptWithAudit(const Plaintext &plaintext, Ciphertext *ct_out,
                         std::string *audit_out) const override;
 
  private:
+  size_t poly_degree_;
   std::shared_ptr<PublicKey> pk_;
 };
 
-}  // namespace heu::algos::mock_phe
+}  // namespace heu::algos::mock_fhe

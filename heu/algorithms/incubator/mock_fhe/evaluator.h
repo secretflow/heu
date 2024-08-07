@@ -17,7 +17,7 @@
 #include <cstdint>
 #include <memory>
 
-#include "heu/algorithms/mock_fhe/base.h"
+#include "heu/algorithms/incubator/mock_fhe/base.h"
 #include "heu/spi/he/schema.h"
 #include "heu/spi/he/sketches/scalar/word_evaluator.h"
 

@@ -1,4 +1,3 @@
-
 // Copyright 2024 Ant Group Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,34 +12,50 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/algorithms/mock_phe/base.h"
+#include "heu/algorithms/incubator/mock_fhe/base.h"
 
-namespace heu::algos::mock_phe {
+#include <vector>
+
+#include "yacl/utils/serializer.h"
+
+#include "heu/spi/utils/formater.h"
+
+namespace heu::algos::mock_fhe {
+
+std::string Plaintext::ToString() const {
+  return fmt::format("PT({}, scale={})",
+                     spi::utils::ArrayToStringCompact<int64_t>(array_), scale_);
+}
+
+std::string Ciphertext::ToString() const {
+  return fmt::format("CT({}, scale={})",
+                     spi::utils::ArrayToStringCompact<int64_t>(array_), scale_);
+}
 
 Plaintext ItemTool::Clone(const Plaintext &pt) const { return pt; }
 
-Ciphertext ItemTool::Clone(const Ciphertext &ct) const {
-  return Ciphertext(ct.bn_);
-}
+Ciphertext ItemTool::Clone(const Ciphertext &ct) const { return ct; }
 
 size_t ItemTool::Serialize(const Plaintext &pt, uint8_t *buf,
                            size_t buf_len) const {
-  return pt.Serialize(buf, buf_len);
+  return yacl::SerializeVarsTo(buf, buf_len, pt.array_, pt.scale_);
 }
 
 size_t ItemTool::Serialize(const Ciphertext &ct, uint8_t *buf,
                            size_t buf_len) const {
-  return Serialize(ct.bn_, buf, buf_len);
+  return yacl::SerializeVarsTo(buf, buf_len, ct.array_, ct.scale_);
 }
 
 Plaintext ItemTool::DeserializePT(yacl::ByteContainerView buffer) const {
   Plaintext res;
-  res.Deserialize(buffer);
+  yacl::DeserializeVarsTo(buffer, &res.array_, &res.scale_);
   return res;
 }
 
 Ciphertext ItemTool::DeserializeCT(yacl::ByteContainerView buffer) const {
-  return Ciphertext(DeserializePT(buffer));
+  Ciphertext res;
+  yacl::DeserializeVarsTo(buffer, &res.array_, &res.scale_);
+  return res;
 }
 
-}  // namespace heu::algos::mock_phe
+}  // namespace heu::algos::mock_fhe

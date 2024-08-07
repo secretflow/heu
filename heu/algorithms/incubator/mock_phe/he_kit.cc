@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/algorithms/mock_phe/he_kit.h"
+#include "heu/algorithms/incubator/mock_phe/he_kit.h"
 
 #include <memory>
 #include <string>
 
 #include "yacl/utils/serializer.h"
 
-#include "heu/algorithms/mock_phe/decryptor.h"
-#include "heu/algorithms/mock_phe/encryptor.h"
-#include "heu/algorithms/mock_phe/evaluator.h"
+#include "heu/algorithms/incubator/mock_phe/decryptor.h"
+#include "heu/algorithms/incubator/mock_phe/encryptor.h"
+#include "heu/algorithms/incubator/mock_phe/evaluator.h"
 #include "heu/spi/he/he.h"
 
 namespace heu::algos::mock_phe {

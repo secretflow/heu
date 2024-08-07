@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/algorithms/mock_fhe/he_kit.h"
+#include "heu/algorithms/incubator/mock_fhe/he_kit.h"
 
 #include <memory>
 #include <string>
@@ -20,10 +20,10 @@
 #include "yacl/utils/serializer.h"
 
 #include "heu/algorithms/common/type_alias.h"
-#include "heu/algorithms/mock_fhe/decryptor.h"
-#include "heu/algorithms/mock_fhe/encoders.h"
-#include "heu/algorithms/mock_fhe/encryptor.h"
-#include "heu/algorithms/mock_fhe/evaluator.h"
+#include "heu/algorithms/incubator/mock_fhe/decryptor.h"
+#include "heu/algorithms/incubator/mock_fhe/encoders.h"
+#include "heu/algorithms/incubator/mock_fhe/encryptor.h"
+#include "heu/algorithms/incubator/mock_fhe/evaluator.h"
 #include "heu/spi/he/he.h"
 #include "heu/spi/utils/math_tool.h"
 

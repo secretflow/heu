@@ -36,7 +36,8 @@ namespace heu::lib::phe {
 // duplicated with other algorithms.
 // Aliases are case-sensitive.
 // 请给您的算法添加别名，别名区分大小写，注意别名必须唯一，不与其它算法重复
-static const std::map<SchemaType, std::vector<std::string>>
+static const std::map<SchemaType, std::vector<std::string>,
+                      std::less<SchemaType>>
     kSchemaTypeToString = {
         MAP_ITEM(true, Mock, "none", "mock", "plain"),
         MAP_ITEM(true, OU, "ou", "okamoto-uchiyama"),
@@ -62,11 +63,13 @@ static const std::map<SchemaType, std::vector<std::string>>
 };
 
 std::vector<SchemaType> GetAllSchema() {
-  std::vector<SchemaType> res;
-  res.reserve(kSchemaTypeToString.size());
-  for (const auto &item : kSchemaTypeToString) {
-    res.push_back(item.first);
-  }
+  const static std::vector<SchemaType> res = []() {
+    std::vector<SchemaType> tmp;
+    for (const auto &item : kSchemaTypeToString) {
+      tmp.push_back(item.first);
+    }
+    return tmp;
+  }();
   return res;
 }
 
@@ -108,6 +111,27 @@ std::vector<std::string> GetSchemaAliases(SchemaType schema_type) {
 
 std::ostream &operator<<(std::ostream &os, SchemaType st) {
   return os << SchemaToString(st);
+}
+
+SchemaType NamespaceIdx2Schema(uint8_t ns_idx) {
+  const static auto schema_list = GetAllSchema();
+  YACL_ENFORCE(ns_idx < schema_list.size(), "ns_idx overflow: {}, total {}",
+               ns_idx, schema_list.size());
+  return schema_list[ns_idx];
+}
+
+uint8_t Schema2NamespaceIdx(SchemaType schema) {
+  static auto schema_map = []() {
+    auto schema_list = GetAllSchema();
+    std::unordered_map<SchemaType, uint8_t> tmp;
+    for (uint8_t i = 0; i < schema_list.size(); ++i) {
+      tmp.insert({schema_list[i], i});
+    }
+    return tmp;
+  }();
+  YACL_ENFORCE(schema_map.count(schema) > 0,
+               "Schema {} not enabled or not supported.", schema);
+  return schema_map.at(schema);
 }
 
 std::string format_as(SchemaType i) { return SchemaToString(i); }

@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "heu/algorithms/mock_fhe/base.h"
+#include "heu/algorithms/incubator/mock_fhe/base.h"
 #include "heu/spi/he/sketches/common/batch_encoder.h"
 #include "heu/spi/he/sketches/common/plain_encoder.h"
 
