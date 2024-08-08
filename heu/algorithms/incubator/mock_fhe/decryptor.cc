@@ -12,17 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#include "heu/algorithms/incubator/mock_fhe/decryptor.h"
 
-#include "yacl/math/mpint/montgomery_math.h"
-#include "yacl/math/mpint/mp_int.h"
+namespace heu::algos::mock_fhe {
 
-namespace heu::algos {
+Decryptor::Decryptor(const std::shared_ptr<PublicKey> &pk,
+                     const std::shared_ptr<SecretKey> &sk)
+    : pk_(pk), sk_(sk) {}
 
-using yacl::math::MPInt;
-using yacl::math::PrimeType;
+void Decryptor::Decrypt(const Ciphertext &ct, Plaintext *out) const {
+  out->array_ = ct.array_;
+  out->scale_ = ct.scale_;
+}
 
-using yacl::math::BaseTable;
-using yacl::math::MontgomerySpace;
+Plaintext Decryptor::Decrypt(const Ciphertext &ct) const {
+  return Plaintext(ct.array_, ct.scale_);
+}
 
-}  // namespace heu::algos
+}  // namespace heu::algos::mock_fhe

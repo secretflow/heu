@@ -14,15 +14,22 @@
 
 #pragma once
 
-#include "yacl/math/mpint/montgomery_math.h"
-#include "yacl/math/mpint/mp_int.h"
+#include "heu/algorithms/ou/base.h"
+#include "heu/spi/he/sketches/scalar/decryptor.h"
 
-namespace heu::algos {
+namespace heu::algos::ou {
 
-using yacl::math::MPInt;
-using yacl::math::PrimeType;
+class Decryptor : public spi::DecryptorScalarSketch<Plaintext, Ciphertext> {
+ public:
+  explicit Decryptor(const std::shared_ptr<PublicKey> &pk,
+                     const std::shared_ptr<SecretKey> &sk);
 
-using yacl::math::BaseTable;
-using yacl::math::MontgomerySpace;
+  void Decrypt(const Ciphertext &ct, Plaintext *out) const override;
+  Plaintext Decrypt(const Ciphertext &ct) const override;
 
-}  // namespace heu::algos
+ private:
+  std::shared_ptr<PublicKey> pk_;
+  std::shared_ptr<SecretKey> sk_;
+};
+
+}  // namespace heu::algos::ou

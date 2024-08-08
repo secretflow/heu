@@ -34,44 +34,30 @@
 
 namespace heu::lib::phe {
 
-#define ECHO_true(str) str,
-#define ECHO_false(str)
-#define ENUM_ELEMENT_HELPER(enable, name) ECHO_##enable(name)
-#define ENUM_ELEMENT(enable, name) ENUM_ELEMENT_HELPER(enable, name)
+#define ECHO_true(str, idx) str = idx,
+#define ECHO_false(str, idx)
+#define ENUM_ELEMENT_HELPER(idx, enable, name) ECHO_##enable(name, idx)
+#define ENUM_ELEMENT(idx, enable, name) ENUM_ELEMENT_HELPER(idx, enable, name)
+
 
 // [SPI: Please register your algorithm here] || progress: (2 of 5)
 // If you add a new schema, change this !!
 // clang-format off
-enum class SchemaType {
-  ENUM_ELEMENT(true, Mock)  // Mock He
-  ENUM_ELEMENT(true, OU)
-  ENUM_ELEMENT(ENABLE_IPCL, IPCL)
-  ENUM_ELEMENT(ENABLE_GPAILLIER, GPaillier)
-  ENUM_ELEMENT(true, ZPaillier)  // Preferred
-  ENUM_ELEMENT(true, FPaillier)
-  ENUM_ELEMENT(true, IcPaillier) // Paillier03 for interconnection
-  ENUM_ELEMENT(ENABLE_CLUSTAR_FPGA, ClustarFPGA)
-  ENUM_ELEMENT(true, ElGamal)
-  ENUM_ELEMENT(true, DGK)
-  ENUM_ELEMENT(true, DJ)
+enum class SchemaType : uint8_t {
+  ENUM_ELEMENT(0,true, Mock)  // Mock He
+  ENUM_ELEMENT(1,true, OU)
+  ENUM_ELEMENT(2,ENABLE_IPCL, IPCL)
+  ENUM_ELEMENT(3, ENABLE_GPAILLIER, GPaillier)
+  ENUM_ELEMENT(4, true, ZPaillier)  // Preferred
+  ENUM_ELEMENT(5, true, FPaillier)
+  ENUM_ELEMENT(6, true, IcPaillier) // Paillier03 for interconnection
+  ENUM_ELEMENT(7, ENABLE_CLUSTAR_FPGA, ClustarFPGA)
+  ENUM_ELEMENT(8, true, ElGamal)
+  ENUM_ELEMENT(10, true, DGK)
+  ENUM_ELEMENT(11, true, DJ)
   // YOUR_ALGO
 };
 // clang-format on
-
-// SchemaType <-> String
-// If you add a new schema, change schema <-> string map in schema.cc !!
-std::vector<SchemaType> GetAllSchema();
-SchemaType ParseSchemaType(const std::string &schema_string);
-// Select schemas with pattern 'regex_pattern'
-// full_match: true - The whole schema string must match pattern
-//             false - Any substring matching pattern will be selected
-std::vector<SchemaType> SelectSchemas(const std::string &regex_pattern,
-                                      bool full_match = true);
-std::string SchemaToString(SchemaType schema_type);
-std::vector<std::string> GetSchemaAliases(SchemaType schema_type);
-std::ostream &operator<<(std::ostream &os, SchemaType st);
-// for fmt lib
-std::string format_as(SchemaType i);
 
 // Below are some helper macros
 #define INVOKE_true(func_or_macro, schema_ns, ...) \
@@ -118,6 +104,36 @@ std::string format_as(SchemaType i);
 #define HE_NAMESPACE_LIST(type) HE_FOR_EACH(HE_COMBINE_NS_TYPE, type)
 
 #define HE_PLAINTEXT_TYPES PLAINTEXT_FOR_EACH(HE_COMBINE_NS_TYPE)
+
+//** Below are some utility functions **//
+
+// 1. List and filter schema
+
+// If you add a new schema, change schema <-> string map in schema.cc !!
+std::vector<SchemaType> GetAllSchema();
+// Select schemas with pattern 'regex_pattern'
+// full_match: true - The whole schema string must match pattern
+//             false - Any substring matching pattern will be selected
+std::vector<SchemaType> SelectSchemas(const std::string &regex_pattern,
+                                      bool full_match = true);
+
+// 2. SchemaType <--> String converters
+std::string SchemaToString(SchemaType schema_type);
+// schema name or schema alias to SchemaType
+SchemaType ParseSchemaType(const std::string &schema_string);
+std::vector<std::string> GetSchemaAliases(SchemaType schema_type);
+std::ostream &operator<<(std::ostream &os, SchemaType st);
+
+// 3. For internal use: SchemaType index <--> HE_FOR_EACH index
+// For example: SchemaType{0=Mock, 1=OU, 2=IPCL, 3=GPaillier, 4=ZPaillier}
+// And now GPaillier is disabled, then Schema2NamespaceIdx(ZPaillier) returns 3
+// If IPCL and GPaillier are both disabled, then Schema2NamespaceIdx(ZPaillier)
+// returns 2
+SchemaType NamespaceIdx2Schema(uint8_t ns_idx);
+uint8_t Schema2NamespaceIdx(SchemaType schema);
+
+// for fmt lib
+std::string format_as(SchemaType i);
 
 }  // namespace heu::lib::phe
 

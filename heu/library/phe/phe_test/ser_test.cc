@@ -73,6 +73,7 @@ TEST_P(SerTest, VarSerialize) {
   auto buffer = plain.Serialize();
   Plaintext pt2;
   pt2.Deserialize(buffer);
+  EXPECT_TRUE(pt2.IsCompatible(he_kit_.GetSchemaType()));
   EXPECT_EQ(plain, pt2);
 
   // test serialize ciphertext
@@ -81,10 +82,11 @@ TEST_P(SerTest, VarSerialize) {
   EXPECT_NE(ct0, Ciphertext());
   EXPECT_NE(ct0, Ciphertext(he_kit_.GetSchemaType()));
   buffer = ct0.Serialize();
-  EXPECT_GT(buffer.size(), sizeof(size_t)) << buffer;
+  EXPECT_GT(buffer.size(), sizeof(uint8_t)) << buffer;
 
   Ciphertext ct1;
   ct1.Deserialize(buffer);
+  EXPECT_TRUE(ct1.IsCompatible(he_kit_.GetSchemaType()));
   EXPECT_EQ(ct0, ct1);
   EXPECT_EQ(he_kit_.GetDecryptor()->Decrypt(ct1), plain);
 

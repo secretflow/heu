@@ -14,15 +14,17 @@
 
 #pragma once
 
-#include "yacl/math/mpint/montgomery_math.h"
-#include "yacl/math/mpint/mp_int.h"
+#include <utility>
 
-namespace heu::algos {
+#include "heu/algorithms/incubator/mock_phe/base.h"
+#include "heu/spi/he/sketches/scalar/decryptor.h"
 
-using yacl::math::MPInt;
-using yacl::math::PrimeType;
+namespace heu::algos::mock_phe {
 
-using yacl::math::BaseTable;
-using yacl::math::MontgomerySpace;
+class Decryptor : public spi::DecryptorScalarSketch<Plaintext, Ciphertext> {
+ public:
+  void Decrypt(const Ciphertext &ct, Plaintext *out) const override;
+  Plaintext Decrypt(const Ciphertext &ct) const override;
+};
 
-}  // namespace heu::algos
+}  // namespace heu::algos::mock_phe

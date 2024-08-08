@@ -17,6 +17,7 @@
 #include "fmt/ranges.h"
 #include "gtest/gtest.h"
 
+#include "heu/library/phe/base/plaintext.h"
 #include "heu/library/phe/base/serializable_types.h"
 
 namespace heu::lib::phe::test {
@@ -25,6 +26,14 @@ class SchemaTest : public ::testing::Test {};
 
 // Test: Make sure `SchemaType` is in the same order as `HE_FOR_EACH`
 TEST_F(SchemaTest, SchemaEqualsMacro) {
+  // test schema is sorted
+  auto schema_list = GetAllSchema();
+  int val = -1;
+  for (const auto &s : schema_list) {
+    ASSERT_GT(static_cast<int>(s), val);
+    val = static_cast<int>(s);
+  }
+
   Ciphertext ciphertext0(SchemaType::Mock);
   ciphertext0.Visit([](auto obj) {
     EXPECT_TRUE((std::is_same_v<decltype(obj), algorithms::mock::Ciphertext>));
@@ -51,8 +60,11 @@ TEST_F(SchemaTest, SchemaEqualsMacro) {
 // This test cannot replace SchemaTest.SchemaEqualsMacro
 // Since the IsCompatible() method is based on HE_FOR_EACH macro too.
 TEST_F(SchemaTest, HeMacroWorks) {
-#define TEST_NAMESPACE_LIST(ns) \
-  Ciphertext(ns::Ciphertext()).IsCompatible(static_cast<SchemaType>(i++))
+  auto schema_list = GetAllSchema();
+
+#define TEST_NAMESPACE_LIST(ns)                              \
+  Plaintext(ns::Plaintext()).IsCompatible(schema_list[i]) && \
+      Ciphertext(ns::Ciphertext()).IsCompatible(schema_list[i++])
 
   int i = 0;
   std::vector<bool> res = {HE_FOR_EACH(TEST_NAMESPACE_LIST)};
