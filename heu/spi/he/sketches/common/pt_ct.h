@@ -26,7 +26,7 @@ namespace heu::spi {
 template <typename SUB_CLAZZ>
 class PtCtSketch {
  public:
-  PtCtSketch() = default;
+  virtual ~PtCtSketch() = default;
 
   virtual std::string ToString() const = 0;
 

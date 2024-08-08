@@ -39,13 +39,11 @@ class Ciphertext {
 
   bool operator==(const Ciphertext &rhs) const { return bn_ == rhs.bn_; }
 
-  virtual size_t Serialize(uint8_t *buf, size_t buf_len) const {
+  size_t Serialize(uint8_t *buf, size_t buf_len) const {
     return bn_.Serialize(buf, buf_len);
   }
 
-  virtual void Deserialize(yacl::ByteContainerView buffer) {
-    bn_.Deserialize(buffer);
-  }
+  void Deserialize(yacl::ByteContainerView buffer) { bn_.Deserialize(buffer); }
 
   MPInt bn_;
 };

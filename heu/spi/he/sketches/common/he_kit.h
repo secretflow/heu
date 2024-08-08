@@ -106,8 +106,8 @@ class HeKitSketch : public HeKit {
   }
 
   // default impl: call each key's Serialize()
-  virtual size_t Serialize(HeKeyType key_type, uint8_t *buf,
-                           size_t buf_len) const {
+  size_t Serialize(HeKeyType key_type, uint8_t *buf,
+                   size_t buf_len) const override {
     YACL_ENFORCE(HasKey(key_type),
                  "Key '{}' was not generated or is not supported. So cannot "
                  "serialize this key.",
