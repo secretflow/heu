@@ -1,6 +1,10 @@
-#include "ishe.h"
-
 #include "gtest/gtest.h"
+
+#include "heu/algorithms/incubator/ishe/base.h"
+#include "heu/algorithms/incubator/ishe/decryptor.h"
+#include "heu/algorithms/incubator/ishe/encryptor.h"
+#include "heu/algorithms/incubator/ishe/evaluator.h"
+#include "heu/algorithms/incubator/ishe/he_kit.h"
 
 namespace heu::algos::ishe::test {
 class iSHETest : public testing::Test {

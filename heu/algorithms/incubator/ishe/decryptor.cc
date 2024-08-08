@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/algorithms/ishe/decryptor.h"
+#include "heu/algorithms/incubator/ishe/decryptor.h"
 
 namespace heu::algos::ishe {
 

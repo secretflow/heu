@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/algorithms/ishe/encryptor.h"
+#include "heu/algorithms/incubator/ishe/encryptor.h"
 
 #include <string>
 
@@ -23,7 +23,7 @@ Ciphertext Encryptor::EncryptZeroT() const {
 }
 
 Ciphertext Encryptor::Encrypt(const Plaintext &m, const MPInt &d) const {
-  YACL_ENFORCE(m < pk_->messageSpace()[1] && m >= pk_->messageSpace()[0],
+  YACL_ENFORCE(m < pk_->MessageSpace()[1] && m >= pk_->MessageSpace()[0],
                "Plaintext {} is too large, cannot encrypt.", m.ToString());
   MPInt r, r1;
   MPInt::RandomExactBits(pk_->k_r, &r);           // r = {0,1}^k_r

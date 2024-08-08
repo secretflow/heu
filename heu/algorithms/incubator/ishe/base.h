@@ -18,6 +18,7 @@
 #include <string>
 #include <utility>
 
+#include "yacl/utils/serializer.h"
 #include "yacl/base/byte_container_view.h"
 #include "yacl/math/mpint/mp_int.h"
 
@@ -45,8 +46,6 @@ class Ciphertext {
   bool operator==(const Ciphertext &other) const {
     return n_ == other.n_ && d_ == other.n_;
   }
-
-  MSGPACK_DEFINE(n_, d_);
   MPInt n_, d_;
 };
 
@@ -55,23 +54,22 @@ class SecretKey : public spi::KeySketch<heu::spi::HeKeyType::SecretKey> {
   MPInt s_, p_, L_;
 
  public:
-  MSGPACK_DEFINE(s_, p_, L_);
   SecretKey(MPInt s, MPInt p, MPInt L);
   explicit SecretKey(std::tuple<MPInt, MPInt, MPInt> in);
 
   SecretKey() = default;
 
   [[nodiscard]] std::map<std::string, std::string> ListParams() const override {
-    return {{"s_", fmt::to_string(s_)},
-            {"p_", fmt::to_string(p_)},
-            {"L_", fmt::to_string(L_)}};
+    return {{"s_", s_.ToString()},
+            {"p_", p_.ToString()},
+            {"L_", L_.ToString()}};
   }
 
-  MPInt getS() { return this->s_; }
+  [[nodiscard]] MPInt getS() const { return this->s_; }
 
-  MPInt getP() { return this->p_; }
+  [[nodiscard]] MPInt getP() const { return this->p_; }
 
-  MPInt getL() { return this->L_; }
+  [[nodiscard]] MPInt getL() const { return this->L_; }
 };
 
 class PublicKey : public spi::KeySketch<heu::spi::HeKeyType::PublicKey> {
@@ -79,22 +77,21 @@ class PublicKey : public spi::KeySketch<heu::spi::HeKeyType::PublicKey> {
   MPInt N, M[2];
 
  public:
-  long k_M = 64;
-  long k_r = 80;
-  long k_0 = 1024;
-  MSGPACK_DEFINE(k_0, k_r, k_M, N);
+  int64_t k_M = 64;
+  int64_t k_r = 80;
+  int64_t k_0 = 1024;
   PublicKey() = default;
-  PublicKey(long k_0, long k_r, long k_M, MPInt N);
+  PublicKey(long k_0, long k_r, long k_M, const MPInt& N):PublicKey(std::make_tuple(k_0, k_r, k_M, N)){}
   explicit PublicKey(std::tuple<long, long, long, MPInt> in);
 
   [[nodiscard]] size_t Keysize() const { return 2 * k_0; }
 
-  [[nodiscard]] MPInt *messageSpace() { return M; }
+  [[nodiscard]] MPInt *MessageSpace() { return M; }
 
   [[nodiscard]] std::map<std::string, std::string> ListParams() const override {
     return {{"key_size", fmt::to_string(k_0)},
             {"random_number_size", fmt::to_string(k_r)},
-            {"message_space_size", fmt::to_string(M[1])}};
+            {"message_space_size", M[1].ToString()}};
   }
 
   [[nodiscard]] MPInt getN() const { return N; }
@@ -115,10 +112,6 @@ class ItemTool : public spi::ItemToolScalarSketch<Plaintext, Ciphertext,
       yacl::ByteContainerView buffer) const override;
   [[nodiscard]] Ciphertext DeserializeCT(
       yacl::ByteContainerView buffer) const override;
-
-  [[nodiscard]] std::string ToString(const spi::Item &item) const override {
-    return item.ToString();
-  }
 };
 
 }  // namespace heu::algos::ishe

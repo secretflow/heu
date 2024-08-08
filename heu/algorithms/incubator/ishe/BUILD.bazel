@@ -21,18 +21,6 @@ test_suite(
 )
 
 yacl_cc_library(
-    name = "ishe",
-    hdrs = ["ishe.h"],
-    deps = [
-        "base",
-        "decryptor",
-        "encryptor",
-        "evaluator",
-        "he_kit",
-    ],
-)
-
-yacl_cc_library(
     name = "he_kit",
     srcs = ["he_kit.cc"],
     hdrs = ["he_kit.h"],
@@ -53,7 +41,6 @@ yacl_cc_library(
     deps = [
         "//heu/spi/he/sketches/scalar/phe",
         "//heu/spi/utils:formater",
-        "@com_github_msgpack_msgpack//:msgpack",
         "@yacl//yacl/utils:serializer",
     ],
 )
@@ -89,8 +76,12 @@ yacl_cc_library(
 
 yacl_cc_test(
     name = "ishe_test",
-    srcs = ["//heu/algorithms/ishe:ishe_test.cc"],
+    srcs = ["ishe_test.cc"],
     deps = [
-        ":ishe",
+        ":base",
+        ":decryptor",
+        ":encryptor",
+        ":evaluator",
+        ":he_kit",
     ],
 )

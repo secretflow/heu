@@ -1,4 +1,3 @@
-
 // Copyright 2024 Ant Group Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,9 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/algorithms/ishe/base.h"
-
-#include "yacl/utils/serializer.h"
+#include "heu/algorithms/incubator/ishe/base.h"
 
 namespace heu::algos::ishe {
 
@@ -39,15 +36,6 @@ SecretKey::SecretKey(std::tuple<MPInt, MPInt, MPInt> in) {
   this->s_ = std::move(std::get<0>(in));
   this->p_ = std::move(std::get<1>(in));
   this->L_ = std::move(std::get<2>(in));
-}
-
-PublicKey::PublicKey(const long k_0, const long k_r, const long k_M, MPInt N) {
-  this->k_0 = k_0;
-  this->k_r = k_r;
-  this->k_M = k_M;
-  this->N = std::move(N);
-  MPInt::Pow(MPInt(2), k_M - 1, &this->M[1]);
-  this->M[0] = -this->M[1];
 }
 
 PublicKey::PublicKey(std::tuple<long, long, long, MPInt> in) {

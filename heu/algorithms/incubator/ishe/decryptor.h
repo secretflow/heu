@@ -16,7 +16,7 @@
 
 #include <utility>
 
-#include "heu/algorithms/ishe/base.h"
+#include "heu/algorithms/incubator/ishe/base.h"
 #include "heu/spi/he/sketches/scalar/decryptor.h"
 
 namespace heu::algos::ishe {

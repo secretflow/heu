@@ -17,8 +17,8 @@
 #include <cstdint>
 #include <memory>
 
-#include "heu/algorithms/ishe/base.h"
-#include "heu/algorithms/ishe/encryptor.h"
+#include "heu/algorithms/incubator/ishe/base.h"
+#include "heu/algorithms/incubator/ishe/encryptor.h"
 #include "heu/spi/he/sketches/scalar/phe/word_evaluator.h"
 
 namespace heu::algos::ishe {

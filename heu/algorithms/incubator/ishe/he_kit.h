@@ -16,7 +16,7 @@
 
 #include <string>
 
-#include "heu/algorithms/ishe/base.h"
+#include "heu/algorithms/incubator/ishe/base.h"
 #include "heu/spi/he/sketches/common/he_kit.h"
 #include "heu/spi/he/sketches/scalar/phe/he_kit.h"
 
@@ -51,16 +51,12 @@ class HeKit : public spi::PheHeKitSketch<Plaintext, SecretKey, PublicKey> {
 
   std::shared_ptr<PublicKey> getPk() { return this->pk_; }
 
-  MSGPACK_DEFINE(sk_, pk_);
-
  protected:
   [[nodiscard]] std::map<std::string, std::string> ListKeyParams(
       heu::spi::HeKeyType key_type) const override;
   [[nodiscard]] bool HasKey(heu::spi::HeKeyType key_type) const override;
 
  private:
-  std::shared_ptr<SecretKey> sk_;
-  std::shared_ptr<PublicKey> pk_;
   void InitOperators();
 };
 

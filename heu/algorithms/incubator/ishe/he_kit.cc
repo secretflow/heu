@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "heu/algorithms/ishe/he_kit.h"
+#include "heu/algorithms/incubator/ishe/he_kit.h"
 
 #include <fmt/format.h>
 
@@ -21,14 +21,14 @@
 
 #include "yacl/utils/serializer.h"
 
-#include "heu/algorithms/ishe/decryptor.h"
-#include "heu/algorithms/ishe/encryptor.h"
-#include "heu/algorithms/ishe/evaluator.h"
+#include "heu/algorithms/incubator/ishe/decryptor.h"
+#include "heu/algorithms/incubator/ishe/encryptor.h"
+#include "heu/algorithms/incubator/ishe/evaluator.h"
 #include "heu/spi/he/he.h"
 
 namespace heu::algos::ishe {
 
-static const std::string kLibName = "ishe";
+static const std::string kLibName = "iSHE";
 
 std::string HeKit::GetLibraryName() const { return kLibName; }
 
@@ -44,21 +44,6 @@ size_t HeKit::Serialize(uint8_t *buf, size_t buf_len) const {
 
 bool HeKit::Check(spi::Schema schema, const spi::SpiArgs &) {
   return schema == spi::Schema::iSHE;
-}
-
-std::map<std::string, std::string> HeKit::ListKeyParams(
-    heu::spi::HeKeyType key_type) const {
-  YACL_ENFORCE(HasKey(key_type),
-               "{} not exist in the current settings, cannot list params",
-               key_type);
-  switch (key_type) {
-    case spi::HeKeyType::SecretKey:
-      return sk_->ListParams();
-    case spi::HeKeyType::PublicKey:
-      return pk_->ListParams();
-    default:
-      YACL_THROW("Unsupported key type {}", key_type);
-  }
 }
 
 size_t HeKit::Serialize(spi::HeKeyType key_type, uint8_t *buf,
