@@ -19,6 +19,7 @@
 
 #include "yacl/base/byte_container_view.h"
 #include "yacl/math/mpint/mp_int.h"
+#include "yacl/utils/serializer.h"
 
 #include "heu/spi/he/sketches/common/keys.h"
 #include "heu/spi/he/sketches/scalar/item_tool.h"
@@ -38,6 +39,14 @@ class Ciphertext {
 
   bool operator==(const Ciphertext &rhs) const { return bn_ == rhs.bn_; }
 
+  virtual size_t Serialize(uint8_t *buf, size_t buf_len) const {
+    return bn_.Serialize(buf, buf_len);
+  }
+
+  virtual void Deserialize(yacl::ByteContainerView buffer) {
+    bn_.Deserialize(buffer);
+  }
+
   MPInt bn_;
 };
 
@@ -55,6 +64,10 @@ class PublicKey : public spi::KeySketch<spi::HeKeyType::PublicKey> {
     return {{"key_size", fmt::to_string(key_size_)}};
   }
 
+  size_t Serialize(uint8_t *buf, size_t buf_len) const {
+    return yacl::SerializeVarsTo(buf, buf_len, key_size_);
+  };
+
  private:
   const uint64_t key_size_;
 };
@@ -64,14 +77,6 @@ class ItemTool : public spi::ItemToolScalarSketch<Plaintext, Ciphertext,
  public:
   Plaintext Clone(const Plaintext &pt) const override;
   Ciphertext Clone(const Ciphertext &ct) const override;
-
-  size_t Serialize(const Plaintext &pt, uint8_t *buf,
-                   size_t buf_len) const override;
-  size_t Serialize(const Ciphertext &ct, uint8_t *buf,
-                   size_t buf_len) const override;
-
-  Plaintext DeserializePT(yacl::ByteContainerView buffer) const override;
-  Ciphertext DeserializeCT(yacl::ByteContainerView buffer) const override;
 };
 
 }  // namespace heu::algos::mock_phe

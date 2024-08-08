@@ -17,6 +17,8 @@
 #include <string>
 #include <vector>
 
+#include "yacl/utils/serializer.h"
+
 #include "heu/spi/he/sketches/common/keys.h"
 #include "heu/spi/he/sketches/scalar/item_tool.h"
 
@@ -38,6 +40,14 @@ class MockObj {
   bool operator==(const MockObj &rhs) const { return array_ == rhs.array_; }
 
   virtual std::string ToString() const = 0;
+
+  virtual size_t Serialize(uint8_t *buf, size_t buf_len) const {
+    return yacl::SerializeVarsTo(buf, buf_len, array_, scale_);
+  }
+
+  virtual void Deserialize(yacl::ByteContainerView buffer) {
+    yacl::DeserializeVarsTo(buffer, &array_, &scale_);
+  }
 
   std::vector<int64_t> array_;
   double scale_ = 1;  // only mock_ckks need scale
@@ -73,14 +83,6 @@ class ItemTool : public spi::ItemToolScalarSketch<Plaintext, Ciphertext,
  public:
   Plaintext Clone(const Plaintext &pt) const override;
   Ciphertext Clone(const Ciphertext &ct) const override;
-
-  size_t Serialize(const Plaintext &pt, uint8_t *buf,
-                   size_t buf_len) const override;
-  size_t Serialize(const Ciphertext &ct, uint8_t *buf,
-                   size_t buf_len) const override;
-
-  Plaintext DeserializePT(yacl::ByteContainerView buffer) const override;
-  Ciphertext DeserializeCT(yacl::ByteContainerView buffer) const override;
 };
 
 }  // namespace heu::algos::mock_fhe

@@ -33,8 +33,6 @@ class HeKit : public spi::HeKitSketch<SecretKey, PublicKey, RelinKeys,
   std::string ToString() const override;
 
   size_t Serialize(uint8_t *buf, size_t buf_len) const override;
-  size_t Serialize(spi::HeKeyType key_type, uint8_t *buf,
-                   size_t buf_len) const override;
 
   static std::unique_ptr<spi::HeKit> Create(spi::Schema schema,
                                             const spi::SpiArgs &args);

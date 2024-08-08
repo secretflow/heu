@@ -36,11 +36,20 @@
 namespace heu::spi {
 
 namespace internal {
+
 template <typename T>
 using kHasToStringMethod = decltype(std::declval<T>().ToString());
 
 template <typename T>
 using SupportsEqualsCompare = decltype(std::declval<T>() == std::declval<T>());
+
+template <typename T>
+using kHasSerMethod =
+    decltype(std::declval<T>().Serialize(std::declval<uint8_t *>(), size_t()));
+template <typename T>
+using kHasDeserMethod = decltype(std::declval<T>().Deserialize(
+    std::declval<yacl::ByteContainerView>()));
+
 }  // namespace internal
 
 template <typename PlaintextT, typename CiphertextT, typename SecretKeyT,
@@ -59,8 +68,9 @@ class ItemToolSketch : public ItemTool {
       return pt.ToString();
     } else {
       YACL_THROW(
-          "You must override the ToString() method in the subclass of "
-          "ItemTool. type_info={}",
+          "You must add a ToString() method to Plaintext type or override the "
+          "ToString(const PlaintextT &) method in the subclass of ItemTool. "
+          "type_info={}",
           typeid(pt).name());
     }
   }
@@ -72,8 +82,9 @@ class ItemToolSketch : public ItemTool {
       return fmt::format("[{}]", ct.ToString());
     } else {
       YACL_THROW(
-          "You must override the ToString() method in the subclass of "
-          "ItemTool. type_info={}",
+          "You must add a ToString() method to Ciphertext type or override the "
+          "ToString(const CiphertextT &) method in the subclass of ItemTool. "
+          "type_info={}",
           typeid(ct).name());
     }
   }
@@ -109,13 +120,88 @@ class ItemToolSketch : public ItemTool {
   // serialize plaintext/ciphertext to already allocated buffer.
   // if buf is nullptr, then calc serialize size only
   // @return: the actual size of serialized buffer
+  //
+  // 对于某些算法例如 EC-Elgamal 等，序列化 Plaintext 需要用到 HeKit
+  // 中的公共参数，因此不能直接在 PlaintextT 中定义 Serialize
+  // 方法，此时应该在子类中覆盖本方法
+  // For certain algorithms such as EC-Elgamal, serializing Plaintext requires
+  // using public parameters from HeKit. Therefore, the Serialize method cannot
+  // be directly defined in PlaintextT type. Instead, it should be overridden in
+  // the subclass of ItemToolSketch.
   virtual size_t Serialize(const PlaintextT &pt, uint8_t *buf,
-                           size_t buf_len) const = 0;
-  virtual size_t Serialize(const CiphertextT &ct, uint8_t *buf,
-                           size_t buf_len) const = 0;
+                           size_t buf_len) const {
+    if constexpr (std::experimental::is_detected_v<internal::kHasSerMethod,
+                                                   PlaintextT>) {
+      return pt.Serialize(buf, buf_len);
+    } else {
+      YACL_THROW(
+          "You must add a Serialize(uint8_t *, size_t) method to Plaintext "
+          "type or override the Serialize(const PlaintextT &, uint8_t *, "
+          "size_t) method in the subclass of ItemTool. type_info={}",
+          typeid(pt).name());
+    }
+  }
 
-  virtual PlaintextT DeserializePT(yacl::ByteContainerView buffer) const = 0;
-  virtual CiphertextT DeserializeCT(yacl::ByteContainerView buffer) const = 0;
+  // For certain algorithms such as EC-Elgamal, serializing Ciphertext requires
+  // using public parameters from HeKit. Therefore, the Serialize method cannot
+  // be directly defined in CiphertextT type. Instead, it should be overridden
+  // in the subclass of ItemToolSketch.
+  virtual size_t Serialize(const CiphertextT &ct, uint8_t *buf,
+                           size_t buf_len) const {
+    if constexpr (std::experimental::is_detected_v<internal::kHasSerMethod,
+                                                   CiphertextT>) {
+      return ct.Serialize(buf, buf_len);
+    } else {
+      YACL_THROW(
+          "You must add a Serialize(uint8_t *, size_t) method to Ciphertext "
+          "type or override the Serialize(const CiphertextT &, uint8_t *, "
+          "size_t) method in the subclass of ItemTool. type_info={}",
+          typeid(ct).name());
+    }
+  }
+
+  // 对于某些算法例如 EC-Elgamal 等，反序列化 Plaintext 需要用到 HeKit
+  // 中的公共参数，因此不能直接在 PlaintextT 中定义 Deserialize
+  // 方法，此时应该在子类中覆盖本方法
+  // For certain algorithms such as EC-Elgamal, deserializing Plaintext requires
+  // using public parameters from HeKit. Therefore, the Deserialize method
+  // cannot be directly defined in PlaintextT type. Instead, it should be
+  // overridden in the subclass of ItemToolSketch.
+  virtual PlaintextT DeserializePT(yacl::ByteContainerView buffer) const {
+    if constexpr (std::experimental::is_detected_v<internal::kHasDeserMethod,
+                                                   PlaintextT>) {
+      PlaintextT pt;
+      pt.Deserialize(buffer);
+      return pt;
+    } else {
+      YACL_THROW(
+          "You must add a Deserialize(yacl::ByteContainerView) method to "
+          "Plaintext type or override the "
+          "DeserializePT(yacl::ByteContainerView) method in the subclass of "
+          "ItemTool. type_info={}",
+          typeid(PlaintextT).name());
+    }
+  }
+
+  // For certain algorithms such as EC-Elgamal, deserializing Ciphertext
+  // requires using public parameters from HeKit. Therefore, the Deserialize
+  // method cannot be directly defined in CiphertextT type. Instead, it should
+  // be overridden in the subclass of ItemToolSketch.
+  virtual CiphertextT DeserializeCT(yacl::ByteContainerView buffer) const {
+    if constexpr (std::experimental::is_detected_v<internal::kHasDeserMethod,
+                                                   CiphertextT>) {
+      CiphertextT ct;
+      ct.Deserialize(buffer);
+      return ct;
+    } else {
+      YACL_THROW(
+          "You must add a Deserialize(yacl::ByteContainerView) method to "
+          "Ciphertext type or override the "
+          "DeserializeCT(yacl::ByteContainerView) method in the subclass of "
+          "ItemTool. type_info={}",
+          typeid(CiphertextT).name());
+    }
+  }
 
  protected:
 #define SWITCH_TYPE(item, method, ...)                          \

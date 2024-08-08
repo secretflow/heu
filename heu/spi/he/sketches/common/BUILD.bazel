@@ -24,6 +24,7 @@ yacl_cc_library(
         ":item_tool",
         ":keys",
         ":plain_encoder",
+        ":pt_ct",
     ],
 )
 
@@ -77,4 +78,9 @@ yacl_cc_library(
     name = "batch_encoder",
     hdrs = ["batch_encoder.h"],
     deps = [":encoder"],
+)
+
+yacl_cc_library(
+    name = "pt_ct",
+    hdrs = ["pt_ct.h"],
 )

@@ -36,6 +36,7 @@ std::shared_ptr<Encoder> TryGetEncoder(const std::shared_ptr<HeKit> &kit,
 class SerializeTest : public testing::TestWithParam<std::shared_ptr<HeKit>> {
   void SetUp() override {
     kit_ = GetParam();
+    // test ToString(). don't remove this line
     fmt::println("Testing {}", *kit_);
 
     itool_ = kit_->GetItemTool();
@@ -63,6 +64,9 @@ TEST_P(SerializeTest, PtCtWorks) {
   // get meta info
   EXPECT_NO_THROW(kit_->ListKeyParams(HeKeyType::PublicKey));
   EXPECT_NO_THROW(kit_->ListKeyParams(HeKeyType::SecretKey));
+  // test key ToString()
+  EXPECT_GT(itool_->ToString(kit_->GetPublicKey()).size(), 0);
+  EXPECT_GT(itool_->ToString(kit_->GetSecretKey()).size(), 0);
 
   auto edr = kit_->GetEncoder();
   std::vector<int64_t> pts_vec = {400, 700, 999, 0, 1,   -1,    2,
@@ -80,6 +84,9 @@ TEST_P(SerializeTest, PtCtWorks) {
 
   const auto cts = enc_->Encrypt(pts);
   ASSERT_TRUE(cts.IsCiphertext());
+  str = itool_->ToString(cts);
+  EXPECT_GT(str.size(), 0);
+
   auto cts_buf = kit_->GetItemTool()->Serialize(cts);
   ASSERT_EQ(cts_buf.size(), kit_->GetItemTool()->Serialize(cts, nullptr, 0));
   Item new_cts = kit_->GetItemTool()->Deserialize(cts_buf);

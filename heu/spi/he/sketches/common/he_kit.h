@@ -16,6 +16,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <experimental/type_traits>
 #include <map>
 #include <memory>
 #include <string>
@@ -34,6 +35,12 @@
 #endif
 
 namespace heu::spi {
+
+namespace internal {
+template <typename T>
+using kHasKeySerMethod =
+    decltype(std::declval<T>().Serialize(std::declval<uint8_t *>(), size_t()));
+}
 
 // A sketch class pre-process all keys
 // C++20: use concept to limit KeyT class
@@ -96,6 +103,58 @@ class HeKitSketch : public HeKit {
                  "Serialize {} fail, size not match, exp={}, real={}", key_type,
                  buf.size(), real);
     return buf;
+  }
+
+  // default impl: call each key's Serialize()
+  virtual size_t Serialize(HeKeyType key_type, uint8_t *buf,
+                           size_t buf_len) const {
+    YACL_ENFORCE(HasKey(key_type),
+                 "Key '{}' was not generated or is not supported. So cannot "
+                 "serialize this key.",
+                 key_type);
+
+    switch (key_type) {
+      case HeKeyType::SecretKey:
+        if constexpr (std::experimental::is_detected_v<
+                          internal::kHasKeySerMethod, SecretKeyT>) {
+          return sk_->Serialize(buf, buf_len);
+        }
+        break;
+      case HeKeyType::PublicKey:
+        if constexpr (std::experimental::is_detected_v<
+                          internal::kHasKeySerMethod, PublicKeyT>) {
+          return pk_->Serialize(buf, buf_len);
+        }
+        break;
+      case HeKeyType::RelinKeys:
+        if constexpr (std::experimental::is_detected_v<
+                          internal::kHasKeySerMethod, RelinKeyT>) {
+          return rlk_->Serialize(buf, buf_len);
+        }
+        break;
+      case HeKeyType::GaloisKeys:
+        if constexpr (std::experimental::is_detected_v<
+                          internal::kHasKeySerMethod, GaloisKeyT>) {
+          return glk_->Serialize(buf, buf_len);
+        }
+        break;
+      case HeKeyType::BootstrapKey:
+        if constexpr (std::experimental::is_detected_v<
+                          internal::kHasKeySerMethod, BootstrapKeyT>) {
+          return bsk_->Serialize(buf, buf_len);
+        }
+        break;
+      default:
+        YACL_THROW("Unsupported key type {}", key_type);
+    }
+
+    // Key 的序列化方法没有实现，以下方案二选一：
+    // 要么在子类中重写本方法，要么在 Key 的类中增加序列化方法
+    YACL_THROW(
+        "The serialization method for {} is not implemented. Choose one of "
+        "the following options: either override this method in the subclass, "
+        "or add a serialization method in the Key class.",
+        key_type);
   }
 
   //===  I/O for HeKit itself  ===//

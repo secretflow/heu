@@ -18,22 +18,31 @@
 
 #include "heu/algorithms/common/type_alias.h"
 #include "heu/spi/he/sketches/common/keys.h"
+#include "heu/spi/he/sketches/common/pt_ct.h"
 #include "heu/spi/he/sketches/scalar/item_tool.h"
 
 namespace heu::algos::paillier_z {
 
 using Plaintext = MPInt;
 
-class Ciphertext {
+class Ciphertext : spi::PtCtSketch<Ciphertext> {
  public:
   Ciphertext() = default;
 
   explicit Ciphertext(MPInt c) : c_(std::move(c)) {}
 
-  bool operator==(const Ciphertext &other) const { return c_ == other.c_; }
+  bool operator==(const Ciphertext &other) const override {
+    return c_ == other.c_;
+  }
 
-  bool operator!=(const Ciphertext &other) const {
-    return !this->operator==(other);
+  std::string ToString() const override { return c_.ToHexString(); }
+
+  size_t Serialize(uint8_t *buf, size_t buf_len) const override {
+    return c_.Serialize(buf, buf_len);
+  }
+
+  void Deserialize(yacl::ByteContainerView buffer) override {
+    c_.Deserialize(buffer);
   }
 
   MPInt c_;
@@ -125,14 +134,6 @@ class ItemTool : public spi::ItemToolScalarSketch<Plaintext, Ciphertext,
  public:
   Plaintext Clone(const Plaintext &pt) const override;
   Ciphertext Clone(const Ciphertext &ct) const override;
-
-  size_t Serialize(const Plaintext &pt, uint8_t *buf,
-                   size_t buf_len) const override;
-  size_t Serialize(const Ciphertext &ct, uint8_t *buf,
-                   size_t buf_len) const override;
-
-  Plaintext DeserializePT(yacl::ByteContainerView buffer) const override;
-  Ciphertext DeserializeCT(yacl::ByteContainerView buffer) const override;
 };
 
 }  // namespace heu::algos::paillier_z
