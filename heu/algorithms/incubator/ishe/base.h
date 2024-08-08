@@ -18,9 +18,9 @@
 #include <string>
 #include <utility>
 
-#include "yacl/utils/serializer.h"
 #include "yacl/base/byte_container_view.h"
 #include "yacl/math/mpint/mp_int.h"
+#include "yacl/utils/serializer.h"
 
 #include "heu/spi/he/sketches/common/keys.h"
 #include "heu/spi/he/sketches/scalar/item_tool.h"
@@ -46,6 +46,7 @@ class Ciphertext {
   bool operator==(const Ciphertext &other) const {
     return n_ == other.n_ && d_ == other.n_;
   }
+
   MPInt n_, d_;
 };
 
@@ -60,9 +61,8 @@ class SecretKey : public spi::KeySketch<heu::spi::HeKeyType::SecretKey> {
   SecretKey() = default;
 
   [[nodiscard]] std::map<std::string, std::string> ListParams() const override {
-    return {{"s_", s_.ToString()},
-            {"p_", p_.ToString()},
-            {"L_", L_.ToString()}};
+    return {
+        {"s_", s_.ToString()}, {"p_", p_.ToString()}, {"L_", L_.ToString()}};
   }
 
   [[nodiscard]] MPInt getS() const { return this->s_; }
@@ -81,7 +81,10 @@ class PublicKey : public spi::KeySketch<heu::spi::HeKeyType::PublicKey> {
   int64_t k_r = 80;
   int64_t k_0 = 1024;
   PublicKey() = default;
-  PublicKey(long k_0, long k_r, long k_M, const MPInt& N):PublicKey(std::make_tuple(k_0, k_r, k_M, N)){}
+
+  PublicKey(long k_0, long k_r, long k_M, const MPInt &N)
+      : PublicKey(std::make_tuple(k_0, k_r, k_M, N)) {}
+
   explicit PublicKey(std::tuple<long, long, long, MPInt> in);
 
   [[nodiscard]] size_t Keysize() const { return 2 * k_0; }
