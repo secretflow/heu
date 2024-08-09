@@ -36,6 +36,8 @@ enum class Schema {
 
   Paillier,
   OU,
+
+  iSHE,
   ElGamal,
   DJ,
   DGK,
@@ -51,6 +53,7 @@ inline const std::unordered_map<Schema, std::string> kSchema2String = {
     {Schema::MockBfv, "mock_bfv"},
     {Schema::MockCkks, "mock_ckks"},
 
+    {Schema::iSHE, "iSHE"},
     {Schema::Paillier, "paillier"},
     {Schema::OU, "okamoto–uchiyama"},
     {Schema::ElGamal, "elgamal"},
