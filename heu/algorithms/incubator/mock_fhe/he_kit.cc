@@ -61,8 +61,6 @@ void HeKit::Deserialize(yacl::ByteContainerView in) {
   schema_ = spi::String2Schema(schema_str);
 }
 
-size_t HeKit::Serialize(spi::HeKeyType, uint8_t *, size_t) const { return 0; }
-
 bool HeKit::Check(spi::Schema schema, const spi::SpiArgs &) {
   return schema == spi::Schema::MockBfv || schema == spi::Schema::MockCkks;
 }

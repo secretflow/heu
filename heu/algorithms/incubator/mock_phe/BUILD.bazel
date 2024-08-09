@@ -36,6 +36,7 @@ yacl_cc_library(
     deps = [
         "//heu/spi/he/sketches/scalar/phe",
         "@com_github_msgpack_msgpack//:msgpack",
+        "@yacl//yacl/utils:serializer",
     ],
 )
 

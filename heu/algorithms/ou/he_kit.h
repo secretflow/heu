@@ -30,8 +30,6 @@ class HeKit : public spi::PheHeKitSketch<Plaintext, SecretKey, PublicKey> {
   }
 
   size_t Serialize(uint8_t *buf, size_t buf_len) const override;
-  size_t Serialize(spi::HeKeyType key_type, uint8_t *buf,
-                   size_t buf_len) const override;
 
   static std::unique_ptr<spi::HeKit> Create(spi::Schema schema,
                                             const spi::SpiArgs &args);

@@ -40,12 +40,23 @@ class KeySketch {
   virtual std::string ToString() const {
     return internal::FormatKey(key_type, ListParams());
   }
+
+  // 我们非常推荐您在子类中实现以下函数，如果不实现，则需要在 HeKit 实现 Key
+  // 的序列化函数。
+  // We highly recommend that you implement the following functions
+  // in the subclass. If not, you will need to implement the Key serialization
+  // function in HeKit.
+  //
+  // size_t Serialize(uint8_t *buf, size_t buf_len) const;
 };
 
 template <HeKeyType key_type>
 class EmptyKeySketch : public KeySketch<key_type> {
  public:
   std::map<std::string, std::string> ListParams() const override { return {}; }
+
+  // nothing to serialize
+  size_t Serialize(uint8_t *, size_t) const { return 0; };
 };
 
 }  // namespace heu::spi

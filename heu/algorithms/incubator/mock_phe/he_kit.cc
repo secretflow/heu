@@ -42,18 +42,6 @@ size_t HeKit::Serialize(uint8_t *, size_t) const {
   return 0;
 }
 
-size_t HeKit::Serialize(spi::HeKeyType key_type, uint8_t *buf,
-                        size_t buf_len) const {
-  switch (key_type) {
-    case spi::HeKeyType::SecretKey:
-      return 0;  // nothing to serialize
-    case spi::HeKeyType::PublicKey:
-      return yacl::SerializeVarsTo(buf, buf_len, pk_->KeySize());
-    default:
-      YACL_THROW("Unknown key type {}", key_type);
-  }
-}
-
 bool HeKit::Check(spi::Schema schema, const spi::SpiArgs &) {
   return schema == spi::Schema::MockPhe;
 }
