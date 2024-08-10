@@ -34,10 +34,9 @@ enum class Schema {
   MockBfv,   // mock of FeatureSet::WordFHE
   MockCkks,  // mock of FeatureSet::ApproxFHE
 
+  iSHE,
   Paillier,
   OU,
-
-  iSHE,
   ElGamal,
   DJ,
   DGK,

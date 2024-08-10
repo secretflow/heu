@@ -35,7 +35,7 @@ class Ciphertext {
   // default constructor
   Ciphertext() = default;
 
-  explicit Ciphertext(const MPInt n) : n_(n) { d_ = MPInt(1); }
+  explicit Ciphertext(MPInt n) : n_(std::move(n)) { d_ = MPInt(1); }
 
   explicit Ciphertext(MPInt n, MPInt d) : n_(std::move(n)) {
     this->d_ = std::move(d);
@@ -44,7 +44,7 @@ class Ciphertext {
   [[nodiscard]] std::string ToString() const;
 
   bool operator==(const Ciphertext &other) const {
-    return n_ == other.n_ && d_ == other.n_;
+    return n_ == other.n_ && d_ == other.d_;
   }
 
   MPInt n_, d_;
@@ -80,12 +80,18 @@ class PublicKey : public spi::KeySketch<heu::spi::HeKeyType::PublicKey> {
   int64_t k_M = 64;
   int64_t k_r = 80;
   int64_t k_0 = 1024;
+  std::vector<MPInt> ADDONES;
+  std::vector<MPInt> ONES;
+  std::vector<MPInt> NEGS;
   PublicKey() = default;
 
-  PublicKey(long k_0, long k_r, long k_M, const MPInt &N)
+  PublicKey(long k_0, long k_r, long k_M, MPInt &N)
       : PublicKey(std::make_tuple(k_0, k_r, k_M, N)) {}
 
   explicit PublicKey(std::tuple<long, long, long, MPInt> in);
+  explicit PublicKey(std::tuple<long, long, long, MPInt, std::vector<MPInt>,
+                                std::vector<MPInt>, std::vector<MPInt>>
+                         in);
 
   [[nodiscard]] size_t Keysize() const { return 2 * k_0; }
 

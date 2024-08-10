@@ -17,6 +17,9 @@
 #include <string>
 
 #include "heu/algorithms/incubator/ishe/base.h"
+#include "heu/algorithms/incubator/ishe/decryptor.h"
+#include "heu/algorithms/incubator/ishe/encryptor.h"
+#include "heu/algorithms/incubator/ishe/evaluator.h"
 #include "heu/spi/he/sketches/common/he_kit.h"
 #include "heu/spi/he/sketches/scalar/phe/he_kit.h"
 
@@ -30,6 +33,7 @@ class HeKit : public spi::PheHeKitSketch<Plaintext, SecretKey, PublicKey> {
   HeKit() = default;
   [[nodiscard]] std::string GetLibraryName() const override;
   [[nodiscard]] spi::Schema GetSchema() const override;
+
   [[nodiscard]] std::string ToString() const override;
 
   [[nodiscard]] size_t MaxPlaintextBits() const override {
@@ -40,6 +44,7 @@ class HeKit : public spi::PheHeKitSketch<Plaintext, SecretKey, PublicKey> {
   size_t Serialize(spi::HeKeyType key_type, uint8_t *buf,
                    size_t buf_len) const override;
 
+  void GenPkSk(long k_0, long k_r, long k_M);
   static std::unique_ptr<HeKit> CreateParams(spi::Schema schema, long k_0,
                                              long k_r, long k_M);
   static std::unique_ptr<HeKit> Create(spi::Schema schema,
@@ -50,11 +55,6 @@ class HeKit : public spi::PheHeKitSketch<Plaintext, SecretKey, PublicKey> {
   std::shared_ptr<SecretKey> getSk() { return this->sk_; }
 
   std::shared_ptr<PublicKey> getPk() { return this->pk_; }
-
- protected:
-  [[nodiscard]] std::map<std::string, std::string> ListKeyParams(
-      heu::spi::HeKeyType key_type) const override;
-  [[nodiscard]] bool HasKey(heu::spi::HeKeyType key_type) const override;
 
  private:
   void InitOperators();

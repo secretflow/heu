@@ -18,7 +18,6 @@
 #include <memory>
 
 #include "heu/algorithms/incubator/ishe/base.h"
-#include "heu/algorithms/incubator/ishe/encryptor.h"
 #include "heu/spi/he/sketches/scalar/phe/word_evaluator.h"
 
 namespace heu::algos::ishe {
@@ -26,9 +25,7 @@ namespace heu::algos::ishe {
 class Evaluator
     : public spi::PheWordEvaluatorScalarSketch<Plaintext, Ciphertext> {
  public:
-  Evaluator(const std::shared_ptr<PublicKey> &pk,
-            const std::shared_ptr<Encryptor> &et)
-      : pk_(pk), et_(et) {}
+  explicit Evaluator(const std::shared_ptr<PublicKey> &pk) : pk_(pk) {}
 
   [[nodiscard]] Plaintext Negate(const Plaintext &a) const override;
   void NegateInplace(Plaintext *a) const override;
@@ -64,8 +61,6 @@ class Evaluator
 
  private:
   std::shared_ptr<PublicKey> pk_;
-  std::shared_ptr<Encryptor> et_;
-  Ciphertext ONE;
 };
 
 }  // namespace heu::algos::ishe

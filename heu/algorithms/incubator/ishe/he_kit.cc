@@ -21,9 +21,6 @@
 
 #include "yacl/utils/serializer.h"
 
-#include "heu/algorithms/incubator/ishe/decryptor.h"
-#include "heu/algorithms/incubator/ishe/encryptor.h"
-#include "heu/algorithms/incubator/ishe/evaluator.h"
 #include "heu/spi/he/he.h"
 
 namespace heu::algos::ishe {
@@ -38,8 +35,9 @@ std::string HeKit::ToString() const {
   return fmt::format("{} schema from {} lib", GetSchema(), GetLibraryName());
 }
 
-size_t HeKit::Serialize(uint8_t *buf, size_t buf_len) const {
-  return yacl::SerializeVarsTo(buf, buf_len, sk_, pk_);
+size_t HeKit::Serialize(uint8_t *, size_t) const {
+  // nothing to serialize
+  return 0;
 }
 
 bool HeKit::Check(spi::Schema schema, const spi::SpiArgs &) {
@@ -54,20 +52,10 @@ size_t HeKit::Serialize(spi::HeKeyType key_type, uint8_t *buf,
                                    sk_->getL());
     case spi::HeKeyType::PublicKey:
       return yacl::SerializeVarsTo(buf, buf_len, pk_->k_0, pk_->k_r, pk_->k_M,
-                                   pk_->getN());
+                                   pk_->getN(), pk_->ADDONES, pk_->ONES,
+                                   pk_->NEGS);
     default:
       YACL_THROW("Unknown key type {}", key_type);
-  }
-}
-
-bool HeKit::HasKey(heu::spi::HeKeyType key_type) const {
-  switch (key_type) {
-    case spi::HeKeyType::SecretKey:
-      return static_cast<bool>(sk_);
-    case spi::HeKeyType::PublicKey:
-      return static_cast<bool>(pk_);
-    default:
-      YACL_THROW("Unsupported key type {}", key_type);
   }
 }
 
@@ -78,18 +66,7 @@ std::unique_ptr<HeKit> HeKit::CreateParams(spi::Schema schema, const long k_0,
   YACL_ENFORCE(k_0 > k_r && k_r > k_M && k_M > 0,
                "do not obey the rule of params");
   auto kit = std::make_unique<HeKit>();
-  MPInt p, q, s, L;
-  // choose random prime p&q, k_0 bits
-  MPInt::RandPrimeOver(k_0, &p);
-  MPInt::RandPrimeOver(k_0, &q);
-  // N = p * q
-  const MPInt N = p * q;
-  // choose s mod N < N
-  MPInt::RandomLtN(N, &s);
-  MPInt::RandomExactBits(k_r, &L);
-  kit->sk_ = std::make_shared<SecretKey>(s, p, L);
-  kit->pk_ = std::make_shared<PublicKey>(k_0, k_r, k_M, N);
-  // init evaluator
+  kit->GenPkSk(k_0, k_r, k_M);
   kit->InitOperators();
   return kit;
 }
@@ -104,26 +81,17 @@ std::unique_ptr<HeKit> HeKit::Create(const spi::Schema schema,
 
   auto kit = std::make_unique<HeKit>();
   if (args.GetOptional(spi::ArgGenNewPkSk) == true) {
-    MPInt p, q, s, L, space[2];
     // choose random prime p&q, k_0 bits
     const auto k_0 = args.GetOrDefault(Argk0, 2048);
     const auto k_r = args.GetOrDefault(Argkr, 160);
     const auto k_M = args.GetOrDefault(ArgkM, 128);
-    MPInt::RandPrimeOver(k_0, &p);
-    MPInt::RandPrimeOver(k_0, &q);
-    // N = p * q
-    const MPInt N = p * q;
-    // choose s mod N < N
-    MPInt::RandomLtN(N, &s);
-    // choose random L , k_r bits
-    MPInt::RandomExactBits(k_r, &L);
-    // init key pairs
-    kit->sk_ = std::make_shared<SecretKey>(s, p, L);
-    kit->pk_ = std::make_shared<PublicKey>(k_0, k_r, k_M, N);
+    kit->GenPkSk(k_0, k_r, k_M);
   } else {
     kit->pk_ = std::make_shared<PublicKey>(
         yacl::DeserializeVars<decltype(pk_->k_0), decltype(pk_->k_r),
-                              decltype(pk_->k_M), decltype(pk_->getN())>(
+                              decltype(pk_->k_M), decltype(pk_->getN()),
+                              decltype(pk_->ADDONES), decltype(pk_->ONES),
+                              decltype(pk_->NEGS)>(
             args.GetRequired(spi::ArgPkFrom)));
     if (args.Exist(spi::ArgSkFrom)) {
       kit->sk_ = std::make_shared<SecretKey>(
@@ -136,14 +104,33 @@ std::unique_ptr<HeKit> HeKit::Create(const spi::Schema schema,
   return kit;
 }
 
+void HeKit::GenPkSk(long k_0, long k_r, long k_M) {
+  MPInt p, q, s, L, space[2];
+  std::vector<MPInt> ONES;
+  // choose random prime p&q, k_0 bits
+  MPInt::RandPrimeOver(k_0, &p);
+  MPInt::RandPrimeOver(k_0, &q);
+  // N = p * q
+  MPInt N = p * q;
+  // choose s mod N < N
+  MPInt::RandomLtN(N, &s);
+  // choose random L , k_r bits
+  MPInt::RandomExactBits(k_r, &L);
+  // init key pairs
+  sk_ = std::make_shared<SecretKey>(s, p, L);
+  pk_ = std::make_shared<PublicKey>(k_0, k_r, k_M, N);
+  encryptor_ = std::make_shared<Encryptor>(pk_, sk_);
+}
+
 void HeKit::InitOperators() {
   item_tool_ = std::make_shared<ItemTool>();
 
-  if (pk_ && sk_) {
-    encryptor_ = std::make_shared<Encryptor>(pk_, sk_);
-    word_evaluator_ =
-        std::make_shared<Evaluator>(pk_, std::make_shared<Encryptor>(pk_, sk_));
-    decryptor_ = std::make_shared<Decryptor>(sk_, pk_);
+  if (pk_) {
+    word_evaluator_ = std::make_shared<Evaluator>(pk_);
+    if (sk_) {
+      encryptor_ = std::make_shared<Encryptor>(pk_, sk_);
+      decryptor_ = std::make_shared<Decryptor>(sk_, pk_);
+    }
   }
 }
 

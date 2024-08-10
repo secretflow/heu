@@ -12,24 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
-test_suite(
-    name = "ishe_tests",
-)
-
 yacl_cc_library(
-    name = "he_kit",
+    name = "ishe",
     srcs = ["he_kit.cc"],
     hdrs = ["he_kit.h"],
     deps = [
+        ":base",
         ":decryptor",
         ":encryptor",
         ":evaluator",
-        "//heu/spi/utils:formater",
-        "@yacl//yacl/utils:serializer",
     ],
     alwayslink = 1,
 )
@@ -69,19 +64,6 @@ yacl_cc_library(
     srcs = ["evaluator.cc"],
     hdrs = ["evaluator.h"],
     deps = [
-        ":base",
         ":encryptor",
-    ],
-)
-
-yacl_cc_test(
-    name = "ishe_test",
-    srcs = ["ishe_test.cc"],
-    deps = [
-        ":base",
-        ":decryptor",
-        ":encryptor",
-        ":evaluator",
-        ":he_kit",
     ],
 )

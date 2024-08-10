@@ -47,6 +47,16 @@ PublicKey::PublicKey(std::tuple<long, long, long, MPInt> in) {
   this->M[0] = -this->M[1];
 }
 
+PublicKey::PublicKey(std::tuple<long, long, long, MPInt, std::vector<MPInt>,
+                                std::vector<MPInt>, std::vector<MPInt>>
+                         in)
+    : PublicKey(std::make_tuple(std::get<0>(in), std::get<1>(in),
+                                std::get<2>(in), std::get<3>(in))) {
+  this->ADDONES = std::get<4>(in);
+  this->ONES = std::get<5>(in);
+  this->NEGS = std::get<6>(in);
+}
+
 size_t ItemTool::Serialize(const Plaintext &pt, uint8_t *buf,
                            const size_t buf_len) const {
   return pt.Serialize(buf, buf_len);
