@@ -48,12 +48,9 @@ size_t HeKit::Serialize(spi::HeKeyType key_type, uint8_t *buf,
                         const size_t buf_len) const {
   switch (key_type) {
     case spi::HeKeyType::SecretKey:
-      return yacl::SerializeVarsTo(buf, buf_len, sk_->getS(), sk_->getP(),
-                                   sk_->getL());
+      return sk_->Serialize(buf, buf_len);
     case spi::HeKeyType::PublicKey:
-      return yacl::SerializeVarsTo(buf, buf_len, pk_->k_0, pk_->k_r, pk_->k_M,
-                                   pk_->getN(), pk_->ADDONES, pk_->ONES,
-                                   pk_->NEGS);
+      return pk_->Serialize(buf, buf_len);
     default:
       YACL_THROW("Unknown key type {}", key_type);
   }
@@ -87,17 +84,9 @@ std::unique_ptr<HeKit> HeKit::Create(const spi::Schema schema,
     const auto k_M = args.GetOrDefault(ArgkM, 128);
     kit->GenPkSk(k_0, k_r, k_M);
   } else {
-    kit->pk_ = std::make_shared<PublicKey>(
-        yacl::DeserializeVars<decltype(pk_->k_0), decltype(pk_->k_r),
-                              decltype(pk_->k_M), decltype(pk_->getN()),
-                              decltype(pk_->ADDONES), decltype(pk_->ONES),
-                              decltype(pk_->NEGS)>(
-            args.GetRequired(spi::ArgPkFrom)));
+    kit->pk_ = PublicParameters::LoadFrom(args.GetRequired(spi::ArgPkFrom));
     if (args.Exist(spi::ArgSkFrom)) {
-      kit->sk_ = std::make_shared<SecretKey>(
-          yacl::DeserializeVars<decltype(sk_->getS()), decltype(sk_->getP()),
-                                decltype(sk_->getL())>(
-              args.GetRequired(spi::ArgSkFrom)));
+      kit->sk_ = SecretKey::LoadFrom(args.GetRequired(spi::ArgSkFrom));
     }
   }
   kit->InitOperators();
@@ -105,8 +94,7 @@ std::unique_ptr<HeKit> HeKit::Create(const spi::Schema schema,
 }
 
 void HeKit::GenPkSk(long k_0, long k_r, long k_M) {
-  MPInt p, q, s, L, space[2];
-  std::vector<MPInt> ONES;
+  MPInt p, q, s, L;
   // choose random prime p&q, k_0 bits
   MPInt::RandPrimeOver(k_0, &p);
   MPInt::RandPrimeOver(k_0, &q);
@@ -118,7 +106,7 @@ void HeKit::GenPkSk(long k_0, long k_r, long k_M) {
   MPInt::RandomExactBits(k_r, &L);
   // init key pairs
   sk_ = std::make_shared<SecretKey>(s, p, L);
-  pk_ = std::make_shared<PublicKey>(k_0, k_r, k_M, N);
+  pk_ = std::make_shared<PublicParameters>(k_0, k_r, k_M, N);
   encryptor_ = std::make_shared<Encryptor>(pk_, sk_);
 }
 

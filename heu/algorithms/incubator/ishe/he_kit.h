@@ -28,7 +28,8 @@ DEFINE_ARG_int64(kr);
 DEFINE_ARG_int64(kM);
 
 namespace heu::algos::ishe {
-class HeKit : public spi::PheHeKitSketch<Plaintext, SecretKey, PublicKey> {
+class HeKit
+    : public spi::PheHeKitSketch<Plaintext, SecretKey, PublicParameters> {
  public:
   HeKit() = default;
   [[nodiscard]] std::string GetLibraryName() const override;
@@ -54,7 +55,7 @@ class HeKit : public spi::PheHeKitSketch<Plaintext, SecretKey, PublicKey> {
 
   std::shared_ptr<SecretKey> getSk() { return this->sk_; }
 
-  std::shared_ptr<PublicKey> getPk() { return this->pk_; }
+  std::shared_ptr<PublicParameters> getPk() { return this->pk_; }
 
  private:
   void InitOperators();

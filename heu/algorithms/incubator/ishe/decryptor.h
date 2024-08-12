@@ -26,12 +26,12 @@ class Decryptor : public spi::DecryptorScalarSketch<Plaintext, Ciphertext> {
   void Decrypt(const Ciphertext &ct, Plaintext *out) const override;
   [[nodiscard]] Plaintext Decrypt(const Ciphertext &ct) const override;
 
-  Decryptor(std::shared_ptr<SecretKey> sk, std::shared_ptr<PublicKey> pk)
+  Decryptor(std::shared_ptr<SecretKey> sk, std::shared_ptr<PublicParameters> pk)
       : sk_(std::move(sk)), pk_(std::move(pk)) {}
 
  private:
   std::shared_ptr<SecretKey> sk_;
-  std::shared_ptr<PublicKey> pk_;
+  std::shared_ptr<PublicParameters> pk_;
 };
 
 }  // namespace heu::algos::ishe

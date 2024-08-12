@@ -23,14 +23,14 @@ Ciphertext Encryptor::EncryptZeroT() const {
 }
 
 Ciphertext Encryptor::Encrypt(const Plaintext &m, const MPInt &d) const {
-  YACL_ENFORCE(m < pk_->MessageSpace()[1] && m >= pk_->MessageSpace()[0],
+  YACL_ENFORCE(m < pp_->MessageSpace()[1] && m >= pp_->MessageSpace()[0],
                "Plaintext {} is too large, cannot encrypt.", m.ToString());
   MPInt r, r1;
-  MPInt::RandomExactBits(pk_->k_r, &r);           // r = {0,1}^k_r
-  MPInt::RandomExactBits(pk_->k_0, &r1);          // r' ={0,1}^k_0
-  MPInt m1 = sk_->getS().PowMod(d, pk_->getN());  // m' = s^d
+  MPInt::RandomExactBits(pp_->k_r, &r);           // r = {0,1}^k_r
+  MPInt::RandomExactBits(pp_->k_0, &r1);          // r' ={0,1}^k_0
+  MPInt m1 = sk_->getS().PowMod(d, pp_->getN());  // m' = s^d
   m1 *= (r * sk_->getL() + m);                    // m' = s*(rL+m)
-  m1 = m1.MulMod((MPInt(1) + r1 * sk_->getP()), pk_->getN());
+  m1 = m1.MulMod((MPInt(1) + r1 * sk_->getP()), pp_->getN());
   // m' = s*(rL+m)*(1+r'p) mod N
   return Ciphertext(m1, d);
 }

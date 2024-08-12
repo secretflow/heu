@@ -41,6 +41,9 @@ class Ciphertext {
     this->d_ = std::move(d);
   }
 
+  size_t Serialize(uint8_t *buf, size_t buf_len) const;
+  [[nodiscard]] yacl::Buffer Serialize() const;
+  static Ciphertext Deserialize(yacl::ByteContainerView buffer);
   [[nodiscard]] std::string ToString() const;
 
   bool operator==(const Ciphertext &other) const {
@@ -50,15 +53,17 @@ class Ciphertext {
   MPInt n_, d_;
 };
 
-class SecretKey : public spi::KeySketch<heu::spi::HeKeyType::SecretKey> {
+class SecretKey : public spi::KeySketch<spi::HeKeyType::SecretKey> {
  private:
   MPInt s_, p_, L_;
 
  public:
   SecretKey(MPInt s, MPInt p, MPInt L);
-  explicit SecretKey(std::tuple<MPInt, MPInt, MPInt> in);
 
   SecretKey() = default;
+
+  [[nodiscard]] size_t Serialize(uint8_t *buf, size_t buf_len) const;
+  static std::shared_ptr<SecretKey> LoadFrom(yacl::ByteContainerView in);
 
   [[nodiscard]] std::map<std::string, std::string> ListParams() const override {
     return {
@@ -72,7 +77,7 @@ class SecretKey : public spi::KeySketch<heu::spi::HeKeyType::SecretKey> {
   [[nodiscard]] MPInt getL() const { return this->L_; }
 };
 
-class PublicKey : public spi::KeySketch<heu::spi::HeKeyType::PublicKey> {
+class PublicParameters : public spi::KeySketch<heu::spi::HeKeyType::PublicKey> {
  private:
   MPInt N, M[2];
 
@@ -83,15 +88,15 @@ class PublicKey : public spi::KeySketch<heu::spi::HeKeyType::PublicKey> {
   std::vector<MPInt> ADDONES;
   std::vector<MPInt> ONES;
   std::vector<MPInt> NEGS;
-  PublicKey() = default;
+  PublicParameters() = default;
 
-  PublicKey(long k_0, long k_r, long k_M, MPInt &N)
-      : PublicKey(std::make_tuple(k_0, k_r, k_M, N)) {}
+  PublicParameters(long k_0, long k_r, long k_M, MPInt &N);
 
-  explicit PublicKey(std::tuple<long, long, long, MPInt> in);
-  explicit PublicKey(std::tuple<long, long, long, MPInt, std::vector<MPInt>,
-                                std::vector<MPInt>, std::vector<MPInt>>
-                         in);
+  PublicParameters(long k_0, long k_r, long k_M, MPInt &N,
+                   std::vector<MPInt> &ADDONES, std::vector<MPInt> &ONES,
+                   std::vector<MPInt> &NEGS);
+  [[nodiscard]] size_t Serialize(uint8_t *buf, size_t buf_len) const;
+  static std::shared_ptr<PublicParameters> LoadFrom(yacl::ByteContainerView in);
 
   [[nodiscard]] size_t Keysize() const { return 2 * k_0; }
 
@@ -103,11 +108,13 @@ class PublicKey : public spi::KeySketch<heu::spi::HeKeyType::PublicKey> {
             {"message_space_size", M[1].ToString()}};
   }
 
+  void Init();
+
   [[nodiscard]] MPInt getN() const { return N; }
 };
 
 class ItemTool : public spi::ItemToolScalarSketch<Plaintext, Ciphertext,
-                                                  SecretKey, PublicKey> {
+                                                  SecretKey, PublicParameters> {
  public:
   [[nodiscard]] Plaintext Clone(const Plaintext &pt) const override;
   [[nodiscard]] Ciphertext Clone(const Ciphertext &ct) const override;

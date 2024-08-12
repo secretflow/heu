@@ -25,7 +25,7 @@ namespace heu::algos::ishe {
 class Evaluator
     : public spi::PheWordEvaluatorScalarSketch<Plaintext, Ciphertext> {
  public:
-  explicit Evaluator(const std::shared_ptr<PublicKey> &pk) : pk_(pk) {}
+  explicit Evaluator(const std::shared_ptr<PublicParameters> &pk) : pp_(pk) {}
 
   [[nodiscard]] Plaintext Negate(const Plaintext &a) const override;
   void NegateInplace(Plaintext *a) const override;
@@ -60,7 +60,7 @@ class Evaluator
   void Randomize(Ciphertext *ct) const override;
 
  private:
-  std::shared_ptr<PublicKey> pk_;
+  std::shared_ptr<PublicParameters> pp_;
 };
 
 }  // namespace heu::algos::ishe
