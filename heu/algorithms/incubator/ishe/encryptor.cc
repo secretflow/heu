@@ -46,7 +46,8 @@ void Encryptor::Encrypt(const Plaintext &m, Ciphertext *out) const {
 void Encryptor::EncryptWithAudit(const Plaintext &m, Ciphertext *ct_out,
                                  std::string *audit_out) const {
   Encrypt(m, ct_out);
-  audit_out->assign(fmt::format("ishe:{}", ct_out->n_.ToString()));
+  audit_out->assign(
+      fmt::format("pt:{}\n ct:{}", m.ToString(), ct_out->n_.ToString()));
 }
 
 }  // namespace heu::algos::ishe

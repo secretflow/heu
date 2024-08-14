@@ -82,9 +82,9 @@ class PublicParameters : public spi::KeySketch<heu::spi::HeKeyType::PublicKey> {
   MPInt N, M[2];
 
  public:
-  int64_t k_M = 64;
-  int64_t k_r = 80;
-  int64_t k_0 = 1024;
+  int64_t k_M = 128;
+  int64_t k_r = 160;
+  int64_t k_0 = 4096;
   std::vector<MPInt> ADDONES;
   std::vector<MPInt> ONES;
   std::vector<MPInt> NEGS;
@@ -98,7 +98,7 @@ class PublicParameters : public spi::KeySketch<heu::spi::HeKeyType::PublicKey> {
   [[nodiscard]] size_t Serialize(uint8_t *buf, size_t buf_len) const;
   static std::shared_ptr<PublicParameters> LoadFrom(yacl::ByteContainerView in);
 
-  [[nodiscard]] size_t Keysize() const { return 2 * k_0; }
+  [[nodiscard]] size_t Maxsize() const { return k_M - 1; }
 
   [[nodiscard]] MPInt *MessageSpace() { return M; }
 

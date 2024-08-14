@@ -56,8 +56,8 @@ size_t HeKit::Serialize(spi::HeKeyType key_type, uint8_t *buf,
   }
 }
 
-std::unique_ptr<HeKit> HeKit::CreateParams(spi::Schema schema, const long k_0,
-                                           const long k_r, const long k_M) {
+std::unique_ptr<HeKit> HeKit::CreateParams(spi::Schema schema, int64_t k_0,
+                                           int64_t k_r, int64_t k_M) {
   YACL_ENFORCE(schema == spi::Schema::iSHE, "Schema {} not supported by {}",
                schema, kLibName);
   YACL_ENFORCE(k_0 > k_r && k_r > k_M && k_M > 0,
@@ -79,10 +79,11 @@ std::unique_ptr<HeKit> HeKit::Create(const spi::Schema schema,
   auto kit = std::make_unique<HeKit>();
   if (args.GetOptional(spi::ArgGenNewPkSk) == true) {
     // choose random prime p&q, k_0 bits
-    const auto k_0 = args.GetOrDefault(Argk0, 2048);
+    const auto k_0 = args.GetOrDefault(Argk0, 4096);
     const auto k_r = args.GetOrDefault(Argkr, 160);
     const auto k_M = args.GetOrDefault(ArgkM, 128);
     kit->GenPkSk(k_0, k_r, k_M);
+
   } else {
     kit->pk_ = PublicParameters::LoadFrom(args.GetRequired(spi::ArgPkFrom));
     if (args.Exist(spi::ArgSkFrom)) {
@@ -93,7 +94,7 @@ std::unique_ptr<HeKit> HeKit::Create(const spi::Schema schema,
   return kit;
 }
 
-void HeKit::GenPkSk(long k_0, long k_r, long k_M) {
+void HeKit::GenPkSk(int64_t k_0, int64_t k_r, int64_t k_M) {
   MPInt p, q, s, L;
   // choose random prime p&q, k_0 bits
   MPInt::RandPrimeOver(k_0, &p);

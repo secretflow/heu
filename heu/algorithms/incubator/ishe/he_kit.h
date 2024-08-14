@@ -38,16 +38,16 @@ class HeKit
   [[nodiscard]] std::string ToString() const override;
 
   [[nodiscard]] size_t MaxPlaintextBits() const override {
-    return pk_->Keysize();
+    return pk_->Maxsize();
   }
 
   size_t Serialize(uint8_t *buf, size_t buf_len) const override;
   size_t Serialize(spi::HeKeyType key_type, uint8_t *buf,
                    size_t buf_len) const override;
 
-  void GenPkSk(long k_0, long k_r, long k_M);
-  static std::unique_ptr<HeKit> CreateParams(spi::Schema schema, long k_0,
-                                             long k_r, long k_M);
+  void GenPkSk(int64_t k_0, int64_t k_r, int64_t k_M);
+  static std::unique_ptr<HeKit> CreateParams(spi::Schema schema, int64_t k_0,
+                                             int64_t k_r, int64_t k_M);
   static std::unique_ptr<HeKit> Create(spi::Schema schema,
                                        const spi::SpiArgs &args);
 

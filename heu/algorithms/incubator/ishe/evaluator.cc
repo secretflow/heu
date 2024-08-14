@@ -116,12 +116,28 @@ Plaintext Evaluator::Square(const Plaintext &a) const { return Mul(a, a); }
 
 void Evaluator::SquareInplace(Plaintext *a) const { *a = Mul(*a, *a); }
 
+Ciphertext Evaluator::Square(const Ciphertext &ciphertext) const {
+  return Ciphertext(Square(ciphertext.n_), ciphertext.d_.Mul(2));
+}
+
+void Evaluator::SquareInplace(Ciphertext *ciphertext) const {
+  *ciphertext = Square(*ciphertext);
+}
+
 Plaintext Evaluator::Pow(const Plaintext &a, int64_t exponent) const {
   return a.Pow(exponent);
 }
 
 void Evaluator::PowInplace(Plaintext *a, int64_t exponent) const {
   a->PowInplace(exponent);
+}
+
+Ciphertext Evaluator::Pow(const Ciphertext &ciphertext, int64_t int64) const {
+  return Ciphertext(ciphertext.n_.Pow(int64), ciphertext.d_.Mul(int64));
+}
+
+void Evaluator::PowInplace(Ciphertext *ciphertext, int64_t int64) const {
+  *ciphertext = Pow(*ciphertext, int64);
 }
 
 void Evaluator::Randomize(Ciphertext *ct) const {

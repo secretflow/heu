@@ -52,10 +52,13 @@ class Evaluator
 
   [[nodiscard]] Plaintext Square(const Plaintext &a) const override;
   void SquareInplace(Plaintext *a) const override;
-
+  [[nodiscard]] Ciphertext Square(const Ciphertext &) const override;
+  void SquareInplace(Ciphertext *) const override;
   [[nodiscard]] Plaintext Pow(const Plaintext &a,
                               int64_t exponent) const override;
   void PowInplace(Plaintext *a, int64_t exponent) const override;
+  [[nodiscard]] Ciphertext Pow(const Ciphertext &, int64_t) const override;
+  void PowInplace(Ciphertext *, int64_t) const override;
 
   void Randomize(Ciphertext *ct) const override;
 
