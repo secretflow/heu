@@ -90,9 +90,9 @@ class PublicParameters : public spi::KeySketch<heu::spi::HeKeyType::PublicKey> {
   std::vector<MPInt> NEGS;
   PublicParameters() = default;
 
-  PublicParameters(long k_0, long k_r, long k_M, MPInt &N);
+  PublicParameters(int64_t k_0, int64_t k_r, int64_t k_M, MPInt &N);
 
-  PublicParameters(long k_0, long k_r, long k_M, MPInt &N,
+  PublicParameters(int64_t k_0, int64_t k_r, int64_t k_M, MPInt &N,
                    std::vector<MPInt> &ADDONES, std::vector<MPInt> &ONES,
                    std::vector<MPInt> &NEGS);
   [[nodiscard]] size_t Serialize(uint8_t *buf, size_t buf_len) const;

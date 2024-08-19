@@ -56,7 +56,7 @@ std::shared_ptr<SecretKey> SecretKey::LoadFrom(yacl::ByteContainerView in) {
   return sk;
 }
 
-PublicParameters::PublicParameters(long k_0, long k_r, long k_M, MPInt &N) {
+PublicParameters::PublicParameters(int64_t k_0, int64_t k_r, int64_t k_M, MPInt &N) {
   this->k_0 = k_0;
   this->k_r = k_r;
   this->k_M = k_M;
@@ -64,7 +64,7 @@ PublicParameters::PublicParameters(long k_0, long k_r, long k_M, MPInt &N) {
   this->N = N;
 }
 
-PublicParameters::PublicParameters(long k_0, long k_r, long k_M, MPInt &N,
+PublicParameters::PublicParameters(int64_t k_0, int64_t k_r, int64_t k_M, MPInt &N,
                                    std::vector<MPInt> &ADDONES,
                                    std::vector<MPInt> &ONES,
                                    std::vector<MPInt> &NEGS)
