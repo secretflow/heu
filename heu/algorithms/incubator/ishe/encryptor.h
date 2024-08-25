@@ -40,13 +40,13 @@ class Encryptor : public spi::PheEncryptorScalarSketch<Plaintext, Ciphertext> {
                         std::string *audit_out) const override;
 
   void InitOnes() const {
-    for (int i = 1; i <= 100; i++) {
+    for (int i = 1; i <= 100; ++i) {
       pp_->ADDONES.emplace_back(Encrypt(MPInt(1), MPInt(i)).n_);
     }
-    for (int i = 1; i <= 50; i++) {
+    for (int i = 1; i <= 50; ++i) {
       pp_->ONES.emplace_back(Encrypt(MPInt(1), MPInt(1)).n_);
     }
-    for (int i = 1; i <= 20; i++) {
+    for (int i = 1; i <= 20; ++i) {
       pp_->NEGS.emplace_back(Encrypt(MPInt(-1), MPInt(0)).n_);
     }
   }
