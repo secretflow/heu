@@ -74,7 +74,7 @@ PublicParameters::PublicParameters(int64_t k_0, int64_t k_r, int64_t k_M,
   this->NEGS = NEGS;
 }
 
-size_t PublicParameters::Serialize(uint8_t *buf, const size_t buf_len) const {
+size_t PublicParameters::Serialize(uint8_t *buf, size_t buf_len) const {
   return yacl::SerializeVarsTo(buf, buf_len, k_0, k_r, k_M, N, ADDONES, ONES,
                                NEGS);
 }
