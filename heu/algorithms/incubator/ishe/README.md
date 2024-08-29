@@ -9,19 +9,27 @@ iSHE(improved SHE)，是一种对主流的对称同态加密技术的改进的�
 
 ### Mul-1
 
+Ciphertext mul ciphertext:
+
 iSHE.Dec(sk,(⟦m1⟧·⟦m_2⟧) mod N, d) = m1· m2
 
 ### Mul-2
+
+Ciphertext mul plaintext:
 
 iSHE.Dec(sk,(⟦m1⟧·m2) mod N, d) = m1·m2
 
 ### Add-1
 
-iSHE.Dec(sk,(⟦m1⟧+ ⟦m2⟧) mod N, d) = m1+ m2
+Ciphertext add ciphertext:
+
+iSHE.Dec(sk,(⟦m1⟧+ ⟦m2⟧) mod N, d) = m1+m2
 
 ### Add-2
 
-iSHE.Dec(sk,(⟦m1⟧+ m2) mod N, d) = m1+ m2
+Ciphertext add plaintext:
+
+iSHE.Dec(sk,(⟦m1⟧+ m2) mod N, d) = m1+m2
 
 ## 相关文献
 
@@ -30,6 +38,8 @@ iSHE.Dec(sk,(⟦m1⟧+ m2) mod N, d) = m1+ m2
 https://ieeexplore.ieee.org/document/10517763
 
 Performance Enhanced Secure Spatial Keyword Similarity Query With Arbitrary Spatial Ranges (TIFS’24)
+
+section Ⅴ.A on page 5280
 
 ### AGCD攻击相关定义和理论：
 
