@@ -14,6 +14,8 @@
 
 #include "heu/algorithms/ou/base.h"
 
+#include <memory>
+
 namespace heu::algos::ou {
 
 namespace {
@@ -41,28 +43,6 @@ Plaintext ItemTool::Clone(const Plaintext &pt) const { return pt; }
 
 Ciphertext ItemTool::Clone(const Ciphertext &ct) const {
   return Ciphertext(ct.c_);
-}
-
-size_t ItemTool::Serialize(const Plaintext &pt, uint8_t *buf,
-                           size_t buf_len) const {
-  return pt.Serialize(buf, buf_len);
-}
-
-size_t ItemTool::Serialize(const Ciphertext &ct, uint8_t *buf,
-                           size_t buf_len) const {
-  return ct.c_.Serialize(buf, buf_len);
-}
-
-Plaintext ItemTool::DeserializePT(yacl::ByteContainerView buffer) const {
-  Plaintext pt;
-  pt.Deserialize(buffer);
-  return pt;
-}
-
-Ciphertext ItemTool::DeserializeCT(yacl::ByteContainerView buffer) const {
-  Ciphertext ct;
-  ct.c_.Deserialize(buffer);
-  return ct;
 }
 
 }  // namespace heu::algos::ou

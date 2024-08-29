@@ -36,26 +36,4 @@ Plaintext ItemTool::Clone(const Plaintext &pt) const { return pt; }
 
 Ciphertext ItemTool::Clone(const Ciphertext &ct) const { return ct; }
 
-size_t ItemTool::Serialize(const Plaintext &pt, uint8_t *buf,
-                           size_t buf_len) const {
-  return yacl::SerializeVarsTo(buf, buf_len, pt.array_, pt.scale_);
-}
-
-size_t ItemTool::Serialize(const Ciphertext &ct, uint8_t *buf,
-                           size_t buf_len) const {
-  return yacl::SerializeVarsTo(buf, buf_len, ct.array_, ct.scale_);
-}
-
-Plaintext ItemTool::DeserializePT(yacl::ByteContainerView buffer) const {
-  Plaintext res;
-  yacl::DeserializeVarsTo(buffer, &res.array_, &res.scale_);
-  return res;
-}
-
-Ciphertext ItemTool::DeserializeCT(yacl::ByteContainerView buffer) const {
-  Ciphertext res;
-  yacl::DeserializeVarsTo(buffer, &res.array_, &res.scale_);
-  return res;
-}
-
 }  // namespace heu::algos::mock_fhe
