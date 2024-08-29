@@ -1,4 +1,4 @@
-// Copyright 2024 Ant Group Co., Ltd.
+// Copyright 2024 CyberChangAn Group, Xidian University.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ Ciphertext ItemTool::Clone(const Ciphertext &ct) const {
   return Ciphertext(ct.n_, ct.d_);
 }
 
-size_t Ciphertext::Serialize(uint8_t *buf, const size_t buf_len) const {
+size_t Ciphertext::Serialize(uint8_t *buf, size_t buf_len) const {
   return yacl::SerializeVarsTo(buf, buf_len, n_, d_);
 }
 
@@ -30,10 +30,8 @@ yacl::Buffer Ciphertext::Serialize() const {
   return yacl::SerializeVars(n_, d_);
 }
 
-Ciphertext Ciphertext::Deserialize(const yacl::ByteContainerView buffer) {
-  auto ct = Ciphertext();
-  DeserializeVarsTo(buffer, &ct.n_, &ct.d_);
-  return ct;
+void Ciphertext::Deserialize(yacl::ByteContainerView buffer) {
+  DeserializeVarsTo(buffer, &n_, &d_);
 }
 
 std::string Ciphertext::ToString() const {
@@ -46,7 +44,7 @@ SecretKey::SecretKey(MPInt s, MPInt p, MPInt L) {
   this->L_ = std::move(L);
 }
 
-size_t SecretKey::Serialize(uint8_t *buf, const size_t buf_len) const {
+size_t SecretKey::Serialize(uint8_t *buf, size_t buf_len) const {
   return yacl::SerializeVarsTo(buf, buf_len, s_, p_, L_);
 }
 
@@ -93,30 +91,6 @@ std::shared_ptr<PublicParameters> PublicParameters::LoadFrom(
                     &pp->ONES, &pp->NEGS);
   pp->Init();
   return pp;
-}
-
-size_t ItemTool::Serialize(const Plaintext &pt, uint8_t *buf,
-                           const size_t buf_len) const {
-  return pt.Serialize(buf, buf_len);
-}
-
-size_t ItemTool::Serialize(const Ciphertext &ct, uint8_t *buf,
-                           const size_t buf_len) const {
-  return ct.Serialize(buf, buf_len);
-}
-
-yacl::Buffer ItemTool::Serialize(const Ciphertext &ct) {
-  return ct.Serialize();
-}
-
-Plaintext ItemTool::DeserializePT(const yacl::ByteContainerView buffer) const {
-  Plaintext res;
-  res.Deserialize(buffer);
-  return res;
-}
-
-Ciphertext ItemTool::DeserializeCT(const yacl::ByteContainerView buffer) const {
-  return Ciphertext::Deserialize(buffer);
 }
 
 }  // namespace heu::algos::ishe

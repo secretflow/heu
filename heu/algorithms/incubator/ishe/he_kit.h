@@ -1,4 +1,4 @@
-// Copyright 2024 Ant Group Co., Ltd.
+// Copyright 2024 CyberChangAn Group, Xidian University.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@
 #include "heu/spi/he/sketches/common/he_kit.h"
 #include "heu/spi/he/sketches/scalar/phe/he_kit.h"
 
-DEFINE_ARG_int64(k0);
-DEFINE_ARG_int64(kr);
-DEFINE_ARG_int64(kM);
+DECLARE_ARG_int64(k0);
+DECLARE_ARG_int64(kr);
+DECLARE_ARG_int64(kM);
 
 namespace heu::algos::ishe {
 class HeKit

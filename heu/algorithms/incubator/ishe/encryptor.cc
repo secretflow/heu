@@ -1,4 +1,4 @@
-// Copyright 2024 Ant Group Co., Ltd.
+// Copyright 2024 CyberChangAn Group, Xidian University.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,9 @@ Ciphertext Encryptor::EncryptZeroT() const {
   return Encrypt(MPInt(0), MPInt(1));
 }
 
-Ciphertext Encryptor::Encrypt(const Plaintext &m, const MPInt &d) const {
+template <bool audit>
+Ciphertext Encryptor::EncryptImpl(const Plaintext &m, const MPInt &d,
+                                  std::string *audit_out) const {
   YACL_ENFORCE(m < pp_->MessageSpace()[1] && m >= pp_->MessageSpace()[0],
                "Plaintext {} is too large, cannot encrypt.", m.ToString());
   MPInt r, r1;
@@ -32,7 +34,16 @@ Ciphertext Encryptor::Encrypt(const Plaintext &m, const MPInt &d) const {
   m1 *= (r * sk_->getL() + m);                    // m' = s*(rL+m)
   m1 = m1.MulMod((MPInt(1) + r1 * sk_->getP()), pp_->getN());
   // m' = s*(rL+m)*(1+r'p) mod N
+  if constexpr (audit) {
+    YACL_ENFORCE(audit_out != nullptr);
+    *audit_out =
+        fmt::format("r:{}\n r':{}\n", r.ToHexString(), r1.ToHexString());
+  }
   return Ciphertext(m1, d);
+}
+
+Ciphertext Encryptor::Encrypt(const Plaintext &m, const MPInt &d) const {
+  return EncryptImpl(m, d, nullptr);
 }
 
 Ciphertext Encryptor::Encrypt(const Plaintext &m) const {
@@ -45,7 +56,7 @@ void Encryptor::Encrypt(const Plaintext &m, Ciphertext *out) const {
 
 void Encryptor::EncryptWithAudit(const Plaintext &m, Ciphertext *ct_out,
                                  std::string *audit_out) const {
-  Encrypt(m, ct_out);
+  *ct_out = EncryptImpl<true>(m, 1_mp, audit_out);
   audit_out->assign(
       fmt::format("pt:{}\n ct:{}", m.ToString(), ct_out->n_.ToString()));
 }

@@ -1,4 +1,4 @@
-// Copyright 2024 Ant Group Co., Ltd.
+// Copyright 2024 CyberChangAn Group, Xidian University.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,6 +22,10 @@
 #include "yacl/utils/serializer.h"
 
 #include "heu/spi/he/he.h"
+
+DEFINE_ARG_int64(k0);
+DEFINE_ARG_int64(kr);
+DEFINE_ARG_int64(kM);
 
 namespace heu::algos::ishe {
 
@@ -108,7 +112,6 @@ void HeKit::GenPkSk(int64_t k_0, int64_t k_r, int64_t k_M) {
   // init key pairs
   sk_ = std::make_shared<SecretKey>(s, p, L);
   pk_ = std::make_shared<PublicParameters>(k_0, k_r, k_M, N);
-  encryptor_ = std::make_shared<Encryptor>(pk_, sk_);
 }
 
 void HeKit::InitOperators() {

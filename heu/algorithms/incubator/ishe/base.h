@@ -1,4 +1,4 @@
-// Copyright 2024 Ant Group Co., Ltd.
+// Copyright 2024 CyberChangAn Lab, Xidian University.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,13 +37,11 @@ class Ciphertext {
 
   explicit Ciphertext(MPInt n) : n_(std::move(n)) { d_ = MPInt(1); }
 
-  explicit Ciphertext(MPInt n, MPInt d) : n_(std::move(n)) {
-    this->d_ = std::move(d);
-  }
+  explicit Ciphertext(MPInt n, MPInt d) : n_(std::move(n)), d_(std::move(d)) {}
 
   size_t Serialize(uint8_t *buf, size_t buf_len) const;
   [[nodiscard]] yacl::Buffer Serialize() const;
-  static Ciphertext Deserialize(yacl::ByteContainerView buffer);
+  void Deserialize(yacl::ByteContainerView buffer);
   [[nodiscard]] std::string ToString() const;
 
   bool operator==(const Ciphertext &other) const {
@@ -119,16 +117,6 @@ class ItemTool : public spi::ItemToolScalarSketch<Plaintext, Ciphertext,
  public:
   [[nodiscard]] Plaintext Clone(const Plaintext &pt) const override;
   [[nodiscard]] Ciphertext Clone(const Ciphertext &ct) const override;
-
-  size_t Serialize(const Plaintext &pt, uint8_t *buf,
-                   size_t buf_len) const override;
-  size_t Serialize(const Ciphertext &ct, uint8_t *buf,
-                   size_t buf_len) const override;
-  static yacl::Buffer Serialize(const Ciphertext &ct);
-  [[nodiscard]] Plaintext DeserializePT(
-      yacl::ByteContainerView buffer) const override;
-  [[nodiscard]] Ciphertext DeserializeCT(
-      yacl::ByteContainerView buffer) const override;
 };
 
 }  // namespace heu::algos::ishe

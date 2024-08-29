@@ -1,4 +1,4 @@
-// Copyright 2024 Ant Group Co., Ltd.
+// Copyright 2024 CyberChangAn Group, Xidian University.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -52,6 +52,9 @@ class Encryptor : public spi::PheEncryptorScalarSketch<Plaintext, Ciphertext> {
   }
 
  private:
+  template <bool audit = false>
+  Ciphertext EncryptImpl(const Plaintext &m, const MPInt &d,
+                         std::string *audit_str) const;
   std::shared_ptr<PublicParameters> pp_;
   std::shared_ptr<SecretKey> sk_;
 };
