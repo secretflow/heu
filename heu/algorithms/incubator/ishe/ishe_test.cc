@@ -13,7 +13,8 @@
 // limitations under the License.
 
 #include "gtest/gtest.h"
-#include "he_kit.h"
+
+#include "heu/algorithms/incubator/ishe/he_kit.h"
 
 namespace heu::algos::ishe::test {
 class iSHETest : public testing::Test {
@@ -57,6 +58,63 @@ TEST_F(iSHETest, ItomToolEvaluator) {
   EXPECT_EQ(pt, pt1);
   Ciphertext ct2 = itemTool_->Clone(ct);
   EXPECT_EQ(ct, ct2);
+}
+
+TEST_F(iSHETest, serializeEvaluate) {
+  // Serialize publicparam
+  yacl::Buffer pk_buf = publickey_->Serialize2Buffer();
+  // Serialize secretKey
+  yacl::Buffer sk_buf = secretkey_->Serialize2Buffer();
+  // operation ct
+  Ciphertext ct_pos = encryptor_->Encrypt(MPInt(100000));
+  Ciphertext ct_zero = encryptor_->Encrypt(MPInt(0));
+  Ciphertext ct_neg = encryptor_->Encrypt(MPInt(-123456));
+  yacl::Buffer pos_buffer = ct_pos.Serialize();
+  yacl::Buffer zero_buffer = ct_zero.Serialize();
+  yacl::Buffer neg_buffer = ct_neg.Serialize();
+  // Deserialize
+  std::shared_ptr<PublicParameters> pp = PublicParameters::LoadFrom(pk_buf);
+  EXPECT_EQ(pp->getN(), publickey_->getN());
+  EXPECT_EQ(pp->k_0, publickey_->k_0);
+  EXPECT_EQ(pp->k_r, publickey_->k_r);
+  EXPECT_EQ(pp->k_M, publickey_->k_M);
+  EXPECT_EQ(pp->ONES, publickey_->ONES);
+  EXPECT_EQ(pp->ADDONES, publickey_->ADDONES);
+  EXPECT_EQ(pp->NEGS, publickey_->NEGS);
+
+  Ciphertext pos_from_buf, zero_from_buf, neg_from_buf;
+  pos_from_buf.Deserialize(pos_buffer);
+  zero_from_buf.Deserialize(zero_buffer);
+  neg_from_buf.Deserialize(neg_buffer);
+  // operations
+  Ciphertext o1, o2, o3, o4, o5;
+  o1 = evaluator_->Add(pos_from_buf, zero_from_buf);
+  o2 = evaluator_->Add(neg_from_buf, zero_from_buf);
+  o3 = evaluator_->Add(pos_from_buf, neg_from_buf);
+  o4 = evaluator_->Mul(pos_from_buf, zero_from_buf);
+  o5 = evaluator_->Mul(pos_from_buf, neg_from_buf);
+  // Serialize results
+  yacl::Buffer bo1 = o1.Serialize();
+  yacl::Buffer bo2 = o2.Serialize();
+  yacl::Buffer bo3 = o3.Serialize();
+  yacl::Buffer bo4 = o4.Serialize();
+  yacl::Buffer bo5 = o5.Serialize();
+  // Deserialize sk
+  std::shared_ptr<SecretKey> sk = SecretKey::LoadFrom(sk_buf);
+  EXPECT_EQ(sk->getS(), secretkey_->getS());
+  EXPECT_EQ(sk->getP(), secretkey_->getP());
+  EXPECT_EQ(sk->getL(), secretkey_->getL());
+  // Deserialize results
+  o1.Deserialize(bo1);
+  o2.Deserialize(bo2);
+  o3.Deserialize(bo3);
+  o4.Deserialize(bo4);
+  o5.Deserialize(bo5);
+  EXPECT_EQ(decryptor_->Decrypt(o1), MPInt(100000));
+  EXPECT_EQ(decryptor_->Decrypt(o2), MPInt(-123456));
+  EXPECT_EQ(decryptor_->Decrypt(o3), MPInt(-23456));
+  EXPECT_EQ(decryptor_->Decrypt(o4), MPInt(0));
+  EXPECT_EQ(decryptor_->Decrypt(o5), MPInt(-123456) * MPInt(100000));
 }
 
 TEST_F(iSHETest, OperationEvaluate) {
@@ -143,6 +201,15 @@ TEST_F(iSHETest, OperationEvaluate) {
   evaluator_->AddInplace(&ct0, ct1);
   decryptor_->Decrypt(ct0, &plain);
   EXPECT_EQ(plain, MPInt(20000 + 12345 + 20000));
+  // m < pp_->MessageSpace()[1] && m >= pp_->MessageSpace()[0]
+  Plaintext pt_min = Plaintext(publickey_->MessageSpace()[0]);
+  Plaintext pt_max = Plaintext(publickey_->MessageSpace()[1] - 1_mp);
+  Ciphertext ct_max = encryptor_->Encrypt(pt_max);
+  Ciphertext ct_min = encryptor_->Encrypt(pt_min);
+  Plaintext tmp = decryptor_->Decrypt(ct_min);
+  EXPECT_EQ(tmp, pt_min);
+  tmp = decryptor_->Decrypt(ct_max);
+  EXPECT_EQ(tmp, pt_max);
 }
 
 TEST_F(iSHETest, NegateEvalutate) {

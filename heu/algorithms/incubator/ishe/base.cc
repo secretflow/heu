@@ -44,6 +44,14 @@ SecretKey::SecretKey(MPInt s, MPInt p, MPInt L) {
   this->L_ = std::move(L);
 }
 
+yacl::Buffer SecretKey::Serialize2Buffer() const {
+  return yacl::SerializeVars(s_, p_, L_);
+}
+
+yacl::Buffer PublicParameters::Serialize2Buffer() const {
+  return yacl::SerializeVars(k_0, k_r, k_M, N, ADDONES, ONES, NEGS);
+}
+
 size_t SecretKey::Serialize(uint8_t *buf, size_t buf_len) const {
   return yacl::SerializeVarsTo(buf, buf_len, s_, p_, L_);
 }

@@ -60,6 +60,7 @@ class SecretKey : public spi::KeySketch<spi::HeKeyType::SecretKey> {
 
   SecretKey() = default;
 
+  [[nodiscard]] yacl::Buffer Serialize2Buffer() const;
   [[nodiscard]] size_t Serialize(uint8_t *buf, size_t buf_len) const;
   static std::shared_ptr<SecretKey> LoadFrom(yacl::ByteContainerView in);
 
@@ -94,6 +95,7 @@ class PublicParameters : public spi::KeySketch<heu::spi::HeKeyType::PublicKey> {
                    const std::vector<MPInt> &ADDONES,
                    const std::vector<MPInt> &ONES,
                    const std::vector<MPInt> &NEGS);
+  [[nodiscard]] yacl::Buffer Serialize2Buffer() const;
   [[nodiscard]] size_t Serialize(uint8_t *buf, size_t buf_len) const;
   static std::shared_ptr<PublicParameters> LoadFrom(yacl::ByteContainerView in);
 
