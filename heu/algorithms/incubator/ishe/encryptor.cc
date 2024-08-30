@@ -57,7 +57,7 @@ void Encryptor::Encrypt(const Plaintext &m, Ciphertext *out) const {
 void Encryptor::EncryptWithAudit(const Plaintext &m, Ciphertext *ct_out,
                                  std::string *audit_out) const {
   *ct_out = EncryptImpl<true>(m, 1_mp, audit_out);
-  audit_out->assign(
+  audit_out->append(
       fmt::format("pt:{}\n ct:{}", m.ToString(), ct_out->n_.ToString()));
 }
 
