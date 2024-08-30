@@ -25,9 +25,7 @@ class Encryptor : public spi::PheEncryptorScalarSketch<Plaintext, Ciphertext> {
  public:
   explicit Encryptor(const std::shared_ptr<PublicParameters> &pk,
                      const std::shared_ptr<SecretKey> &sk)
-      : pp_(pk), sk_(sk) {
-    InitOnes();
-  }
+      : pp_(pk), sk_(sk) {}
 
   [[nodiscard]] Ciphertext EncryptZeroT() const override;
 
@@ -38,18 +36,6 @@ class Encryptor : public spi::PheEncryptorScalarSketch<Plaintext, Ciphertext> {
 
   void EncryptWithAudit(const Plaintext &plaintext, Ciphertext *ct_out,
                         std::string *audit_out) const override;
-
-  void InitOnes() const {
-    for (int i = 1; i <= 100; ++i) {
-      pp_->ADDONES.emplace_back(Encrypt(MPInt(1), MPInt(i)).n_);
-    }
-    for (int i = 1; i <= 50; ++i) {
-      pp_->ONES.emplace_back(Encrypt(MPInt(1), MPInt(1)).n_);
-    }
-    for (int i = 1; i <= 20; ++i) {
-      pp_->NEGS.emplace_back(Encrypt(MPInt(-1), MPInt(0)).n_);
-    }
-  }
 
  private:
   template <bool audit = false>

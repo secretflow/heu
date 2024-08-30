@@ -59,6 +59,9 @@ class HeKit
 
  private:
   void InitOperators();
+  void InitOnes(int64_t k_0, int64_t k_r, int64_t k_M, const MPInt &N,
+                std::vector<MPInt> *ADDONES, std::vector<MPInt> *ONES,
+                std::vector<MPInt> *NEGS);
 };
 
 }  // namespace heu::algos::ishe

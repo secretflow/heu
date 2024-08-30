@@ -12,9 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@yacl//bazel:yacl.bzl", "yacl_cc_library")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
 
 package(default_visibility = ["//visibility:public"])
+
+test_suite(
+    name = "ishe_tests",
+)
 
 yacl_cc_library(
     name = "ishe",
@@ -65,5 +69,13 @@ yacl_cc_library(
     hdrs = ["evaluator.h"],
     deps = [
         ":encryptor",
+    ],
+)
+
+yacl_cc_test(
+    name = "ishe_test",
+    srcs = ["ishe_test.cc"],
+    deps = [
+        ":ishe",
     ],
 )

@@ -39,6 +39,23 @@ std::string HeKit::ToString() const {
   return fmt::format("{} schema from {} lib", GetSchema(), GetLibraryName());
 }
 
+void HeKit::InitOnes(int64_t k_0, int64_t k_r, int64_t k_M, const MPInt &N,
+                     std::vector<MPInt> *ADDONES, std::vector<MPInt> *ONES,
+                     std::vector<MPInt> *NEGS) {
+  std::shared_ptr<PublicParameters> tmp =
+      std::make_shared<PublicParameters>(k_0, k_r, k_M, N);
+  Encryptor et = Encryptor(tmp, sk_);
+  for (int i = 1; i <= 100; ++i) {
+    ADDONES->emplace_back(et.Encrypt(MPInt(1), MPInt(i)).n_);
+  }
+  for (int i = 1; i <= 50; ++i) {
+    ONES->emplace_back(et.Encrypt(MPInt(1), MPInt(1)).n_);
+  }
+  for (int i = 1; i <= 20; ++i) {
+    NEGS->emplace_back(et.Encrypt(MPInt(-1), MPInt(0)).n_);
+  }
+}
+
 size_t HeKit::Serialize(uint8_t *, size_t) const {
   // nothing to serialize
   return 0;
@@ -101,6 +118,7 @@ std::unique_ptr<HeKit> HeKit::Create(const spi::Schema schema,
 void HeKit::GenPkSk(int64_t k_0, int64_t k_r, int64_t k_M) {
   MPInt p, q, s, L;
   // choose random prime p&q, k_0 bits
+  std::vector<MPInt> ADDONES, ONES, NEGS;
   MPInt::RandPrimeOver(k_0, &p);
   MPInt::RandPrimeOver(k_0, &q);
   // N = p * q
@@ -111,7 +129,9 @@ void HeKit::GenPkSk(int64_t k_0, int64_t k_r, int64_t k_M) {
   MPInt::RandomExactBits(k_r, &L);
   // init key pairs
   sk_ = std::make_shared<SecretKey>(s, p, L);
-  pk_ = std::make_shared<PublicParameters>(k_0, k_r, k_M, N);
+  InitOnes(k_0, k_r, k_M, N, &ADDONES, &ONES, &NEGS);
+  pk_ =
+      std::make_shared<PublicParameters>(k_0, k_r, k_M, N, ADDONES, ONES, NEGS);
 }
 
 void HeKit::InitOperators() {
