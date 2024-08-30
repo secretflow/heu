@@ -72,7 +72,7 @@ TEST_F(iSHETest, serializeEvaluate) {
   yacl::Buffer pos_buffer = ct_pos.Serialize();
   yacl::Buffer zero_buffer = ct_zero.Serialize();
   yacl::Buffer neg_buffer = ct_neg.Serialize();
-  // Deserialize
+  // Deserialize and compare
   std::shared_ptr<PublicParameters> pp = PublicParameters::LoadFrom(pk_buf);
   EXPECT_EQ(pp->getN(), publickey_->getN());
   EXPECT_EQ(pp->k_0, publickey_->k_0);
@@ -81,7 +81,7 @@ TEST_F(iSHETest, serializeEvaluate) {
   EXPECT_EQ(pp->ONES, publickey_->ONES);
   EXPECT_EQ(pp->ADDONES, publickey_->ADDONES);
   EXPECT_EQ(pp->NEGS, publickey_->NEGS);
-
+  // deserialze cts
   Ciphertext pos_from_buf, zero_from_buf, neg_from_buf;
   pos_from_buf.Deserialize(pos_buffer);
   zero_from_buf.Deserialize(zero_buffer);
