@@ -33,7 +33,6 @@
 // #include "heu/library/algorithms/your_algo/algo.h"
 
 namespace heu::lib::phe {
-
 #define ECHO_true(str, idx) str = idx,
 #define ECHO_false(str, idx)
 #define ENUM_ELEMENT_HELPER(idx, enable, name) ECHO_##enable(name, idx)
@@ -43,11 +42,11 @@ namespace heu::lib::phe {
 // If you add a new schema, change this !!
 // clang-format off
 enum class SchemaType : uint8_t {
-  ENUM_ELEMENT(0,true, Mock)  // Mock He
-  ENUM_ELEMENT(1,true, OU)
-  ENUM_ELEMENT(2,ENABLE_IPCL, IPCL)
+  ENUM_ELEMENT(0, true, Mock) // Mock He
+  ENUM_ELEMENT(1, true, OU)
+  ENUM_ELEMENT(2, ENABLE_IPCL, IPCL)
   ENUM_ELEMENT(3, ENABLE_GPAILLIER, GPaillier)
-  ENUM_ELEMENT(4, true, ZPaillier)  // Preferred
+  ENUM_ELEMENT(4, true, ZPaillier) // Preferred
   ENUM_ELEMENT(5, true, FPaillier)
   ENUM_ELEMENT(6, true, IcPaillier) // Paillier03 for interconnection
   ENUM_ELEMENT(7, ENABLE_CLUSTAR_FPGA, ClustarFPGA)
@@ -133,7 +132,6 @@ uint8_t Schema2NamespaceIdx(SchemaType schema);
 
 // for fmt lib
 std::string format_as(SchemaType i);
-
-}  // namespace heu::lib::phe
+} // namespace heu::lib::phe
 
 MSGPACK_ADD_ENUM(heu::lib::phe::SchemaType);

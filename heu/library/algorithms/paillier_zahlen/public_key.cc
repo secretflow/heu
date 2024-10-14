@@ -15,10 +15,9 @@
 #include "heu/library/algorithms/paillier_zahlen/public_key.h"
 
 namespace heu::lib::algorithms::paillier_z {
-
 namespace {
 size_t kExpUnitBits = 10;
-}  // namespace
+} // namespace
 
 void SetCacheTableDensity(size_t density) {
   YACL_ENFORCE(density > 0, "density must > 0");
@@ -33,17 +32,20 @@ void PublicKey::Init() {
   m_space_ = std::make_shared<MontgomerySpace>(n_square_);
   hs_table_ = std::make_shared<BaseTable>();
   m_space_->MakeBaseTable(
-      h_s_, kExpUnitBits,
-      // make max_exp_bits divisible by MP_DIGIT_BIT
-      (key_size_ / 2 + MP_DIGIT_BIT - 1) / MP_DIGIT_BIT * MP_DIGIT_BIT,
-      hs_table_.get());
+    h_s_,
+    kExpUnitBits,
+    // make max_exp_bits divisible by MP_DIGIT_BIT
+    (key_size_ / 2 + MP_DIGIT_BIT - 1) / MP_DIGIT_BIT * MP_DIGIT_BIT,
+    hs_table_.get());
 }
 
 std::string PublicKey::ToString() const {
   return fmt::format(
-      "Z-paillier PK: n={}[{}bits], h_s={}, max_plaintext={}[~{}bits]",
-      n_.ToHexString(), n_.BitCount(), h_s_.ToHexString(),
-      PlaintextBound().ToHexString(), PlaintextBound().BitCount());
+    "Z-paillier PK: n={}[{}bits], h_s={}, max_plaintext={}[~{}bits]",
+    n_.ToHexString(),
+    n_.BitCount(),
+    h_s_.ToHexString(),
+    PlaintextBound().ToHexString(),
+    PlaintextBound().BitCount());
 }
-
-}  // namespace heu::lib::algorithms::paillier_z
+} // namespace heu::lib::algorithms::paillier_z
