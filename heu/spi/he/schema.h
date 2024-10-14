@@ -34,7 +34,6 @@ enum class Schema {
   MockBfv,   // mock of FeatureSet::WordFHE
   MockCkks,  // mock of FeatureSet::ApproxFHE
 
-  iSHE,
   Paillier,
   OU,
   ElGamal,
@@ -52,7 +51,6 @@ inline const std::unordered_map<Schema, std::string> kSchema2String = {
     {Schema::MockBfv, "mock_bfv"},
     {Schema::MockCkks, "mock_ckks"},
 
-    {Schema::iSHE, "iSHE"},
     {Schema::Paillier, "paillier"},
     {Schema::OU, "okamoto–uchiyama"},
     {Schema::ElGamal, "elgamal"},

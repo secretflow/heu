@@ -50,7 +50,7 @@ void Encryptor::EncryptWithAudit(const Plaintext &m, Ciphertext *ct_out,
                poly_degree_);
   ct_out->array_ = m.array_;
   ct_out->scale_ = m.scale_;
-  audit_out->assign(fmt::format("mock_fhe:{}", m.array_));
+  audit_out->assign(fmt::format("mock_fhe:{}", fmt::join(m.array_, ",")));
 }
 
 }  // namespace heu::algos::mock_fhe

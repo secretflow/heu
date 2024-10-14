@@ -16,6 +16,7 @@
 
 #include "fmt/format.h"
 #include "fmt/ostream.h"
+#include "fmt/ranges.h"
 #include "msgpack.hpp"
 
 namespace heu::lib::numpy {

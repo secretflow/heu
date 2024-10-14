@@ -25,9 +25,22 @@ namespace heu::lib::algorithms::paillier_ic {
 void Decryptor::Decrypt(const Ciphertext &ct, MPInt *out) const {
   VALIDATE(ct);
 
-  auto cl = sk_.PowModNSquareCrt(ct.c_, sk_.lambda_);
-  MPInt::MulMod(cl.DecrOne() / pk_.n_, sk_.mu_, pk_.n_, out);
-  // handle negative numbers
+  MPInt mp;
+  MPInt::PowMod(ct.c_, sk_.phi_p_, sk_.p_square_, &mp);
+  mp = mp.DecrOne() / sk_.p_;
+  MPInt::MulMod(mp, sk_.hp_, sk_.p_, &mp);
+
+  MPInt mq;
+  MPInt::PowMod(ct.c_, sk_.phi_q_, sk_.q_square_, &mq);
+  mq = mq.DecrOne() / sk_.q_;
+  MPInt::MulMod(mq, sk_.hq_, sk_.q_, &mq);
+
+  // Apply the CRT
+  MPInt::MulMod(mq - mp, sk_.p_inv_mod_q_, sk_.q_, out);
+  MPInt::Mul(*out, sk_.p_, out);
+  MPInt::Add(*out, mp, out);
+
+  // Handle negative numbers
   if (*out > pk_.n_half_) {
     *out -= pk_.n_;
   }

@@ -8,6 +8,9 @@
 
 ## [Unreleased]
 
+## [0.5.1]
+
+- [other] Update yacl version
 
 ## [0.5.0]
 
