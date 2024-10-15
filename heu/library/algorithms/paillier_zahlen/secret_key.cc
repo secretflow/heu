@@ -23,9 +23,24 @@ void SecretKey::Init() {
   MPInt q_square_inv;
   MPInt::InvertMod(q_square_, p_square_, &q_square_inv);
   q_square_inv_mul_q_square_ =
-      q_square_inv * q_square_;            // [(q^2)^{-1} mod p^2] * q^2
-  phi_p_square_ = p_ * (p_ - MPInt::_1_);  // p(p-1)
-  phi_q_square_ = q_ * (q_ - MPInt::_1_);  // q(q-1)
+      q_square_inv * q_square_;             // [(q^2)^{-1} mod p^2] * q^2
+  MPInt::InvertMod(p_, q_, &p_inv_mod_q_);  // p^{-1} mod q
+  phi_p_square_ = p_ * (p_ - MPInt::_1_);   // p(p-1)
+  phi_q_square_ = q_ * (q_ - MPInt::_1_);   // q(q-1)
+  phi_p_ = p_ - 1_mp;                       // p-1
+  phi_q_ = q_ - 1_mp;                       // q-1
+
+  // Precompute hp
+  MPInt n = p_ * q_;
+  MPInt g = n + 1_mp;
+  MPInt::PowMod(g, phi_p_, p_square_, &hp_);
+  hp_ = hp_.DecrOne() / p_;
+  MPInt::InvertMod(hp_, p_, &hp_);
+
+  // Precompute hq
+  MPInt::PowMod(g, phi_q_, q_square_, &hq_);
+  hq_ = hq_.DecrOne() / q_;
+  MPInt::InvertMod(hq_, q_, &hq_);
 }
 
 MPInt SecretKey::PowModNSquareCrt(const MPInt &base, const MPInt &exp) const {

@@ -19,6 +19,7 @@
 
 #include "absl/types/span.h"
 #include "fmt/format.h"
+#include "fmt/ranges.h"
 
 // for fmt lib
 namespace std {

@@ -39,14 +39,13 @@ namespace heu::lib::phe {
 #define ENUM_ELEMENT_HELPER(idx, enable, name) ECHO_##enable(name, idx)
 #define ENUM_ELEMENT(idx, enable, name) ENUM_ELEMENT_HELPER(idx, enable, name)
 
-
 // [SPI: Please register your algorithm here] || progress: (2 of 5)
 // If you add a new schema, change this !!
 // clang-format off
 enum class SchemaType : uint8_t {
-  ENUM_ELEMENT(0,true, Mock)  // Mock He
-  ENUM_ELEMENT(1,true, OU)
-  ENUM_ELEMENT(2,ENABLE_IPCL, IPCL)
+  ENUM_ELEMENT(0, true, Mock)  // Mock He
+  ENUM_ELEMENT(1, true, OU)
+  ENUM_ELEMENT(2, ENABLE_IPCL, IPCL)
   ENUM_ELEMENT(3, ENABLE_GPAILLIER, GPaillier)
   ENUM_ELEMENT(4, true, ZPaillier)  // Preferred
   ENUM_ELEMENT(5, true, FPaillier)

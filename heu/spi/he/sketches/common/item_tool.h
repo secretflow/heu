@@ -20,6 +20,7 @@
 #include <string>
 #include <vector>
 
+#include "fmt/ranges.h"
 #include "yacl/base/buffer.h"
 #include "yacl/base/byte_container_view.h"
 #include "yacl/utils/spi/sketch/scalar_tools.h"

@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
@@ -120,8 +119,8 @@ def _com_github_intel_ipp():
     maybe(
         http_archive,
         name = "com_github_intel_ipp",
-        sha256 = "1ecfa70328221748ceb694debffa0106b92e0f9bf6a484f8e8512c2730c7d730",
-        strip_prefix = "ipp-crypto-ippcp_2021.8",
+        sha256 = "d70f42832337775edb022ca8ac1ac418f272e791ec147778ef7942aede414cdc",
+        strip_prefix = "cryptography-primitives-ippcp_2021.8",
         build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:ipp.BUILD",
         patch_args = ["-p1"],
         patches = [
@@ -137,10 +136,10 @@ def _yacl():
         http_archive,
         name = "yacl",
         urls = [
-            "https://github.com/secretflow/yacl/archive/refs/tags/0.4.5b2.tar.gz",
+            "https://github.com/secretflow/yacl/archive/refs/tags/0.4.5b8_nightly_20241014.tar.gz",
         ],
-        strip_prefix = "yacl-0.4.5b2",
-        sha256 = "b3fb75d41a32b80145a3bb9d36b8c039a262191f1a2f037292c649344289b01b",
+        strip_prefix = "yacl-0.4.5b8_nightly_20241014",
+        sha256 = "9141792f07eba507ffd21c57ec3df2ad5fdf90ce605ffb7bc1b7b4e84a9c34fa",
     )
 
 def _rules_cuda():

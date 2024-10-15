@@ -14,7 +14,7 @@
 
 #include "heu/spi/he/sketches/common/keys.h"
 
-#include "fmt/format.h"
+#include "fmt/ranges.h"
 
 template <>
 struct fmt::formatter<std::map<std::string, std::string>::value_type> {

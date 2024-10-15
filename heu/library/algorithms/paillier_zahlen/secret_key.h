@@ -30,8 +30,13 @@ class SecretKey : public HeObject<SecretKey> {
   MPInt q_square_;                   // q^2
   MPInt n_square_;                   // n_ * n_
   MPInt q_square_inv_mul_q_square_;  // (q^2)^{-1} mod p^2 * q^2
+  MPInt p_inv_mod_q_;                // p^{-1} mod q
   MPInt phi_p_square_;               // p(p-1)
   MPInt phi_q_square_;               // q(q-1)
+  MPInt phi_p_;                      // p-1
+  MPInt phi_q_;                      // q-1
+  MPInt hp_;
+  MPInt hq_;
 
   void Init();
   // base^exp mod n^2, n = p * q
