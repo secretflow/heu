@@ -119,8 +119,8 @@ def _com_github_intel_ipp():
     maybe(
         http_archive,
         name = "com_github_intel_ipp",
-        sha256 = "1ecfa70328221748ceb694debffa0106b92e0f9bf6a484f8e8512c2730c7d730",
-        strip_prefix = "ipp-crypto-ippcp_2021.8",
+        sha256 = "d70f42832337775edb022ca8ac1ac418f272e791ec147778ef7942aede414cdc",
+        strip_prefix = "cryptography-primitives-ippcp_2021.8",
         build_file = "@com_alipay_sf_heu//third_party/bazel_cpp:ipp.BUILD",
         patch_args = ["-p1"],
         patches = [
