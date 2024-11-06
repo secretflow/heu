@@ -82,7 +82,7 @@ TEST_P(SerTest, VarSerialize) {
   EXPECT_NE(ct0, Ciphertext());
   EXPECT_NE(ct0, Ciphertext(he_kit_.GetSchemaType()));
   buffer = ct0.Serialize();
-  EXPECT_GT(buffer.size(), sizeof(uint8_t)) << buffer;
+  EXPECT_GT(buffer.size(), sizeof(size_t)) << buffer;
 
   Ciphertext ct1;
   ct1.Deserialize(buffer);
