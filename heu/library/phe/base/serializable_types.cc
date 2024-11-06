@@ -58,12 +58,13 @@ yacl::Buffer SerializableVariant<Types...>::Serialize(bool with_meta) const {
       }
     }
   });
-  uint8_t idx = GetAlignedIdx();
+  size_t idx = GetAlignedIdx();  // Cast `idx` to `size_t` for compatibility
+                                 // with older versions
 
   // Append idx to the end of payload to reduce memory copying
   auto payload_sz = payload.size();
   payload.resize(static_cast<int64_t>(payload_sz + sizeof(idx)));
-  *reinterpret_cast<uint8_t *>(payload.data<uint8_t>() + payload_sz) = idx;
+  *reinterpret_cast<size_t *>(payload.data<uint8_t>() + payload_sz) = idx;
   return payload;
 }
 
@@ -111,12 +112,11 @@ void SerializableVariant<HE_PLAINTEXT_TYPES>::EmplaceInstance(
 
 template <typename... Types>
 void SerializableVariant<Types...>::Deserialize(yacl::ByteContainerView in) {
-  YACL_ENFORCE(in.size() > sizeof(uint8_t), "Illegal buffer size {}",
-               in.size());
+  YACL_ENFORCE(in.size() > sizeof(size_t), "Illegal buffer size {}", in.size());
 
-  uint8_t idx = *reinterpret_cast<const uint8_t *>(in.data() + in.size() -
-                                                   sizeof(uint8_t));
-  yacl::ByteContainerView payload(in.data(), in.size() - sizeof(uint8_t));
+  uint8_t idx =
+      *reinterpret_cast<const size_t *>(in.data() + in.size() - sizeof(size_t));
+  yacl::ByteContainerView payload(in.data(), in.size() - sizeof(size_t));
 
   EmplaceInstance(idx);
   Visit([&](auto &clazz) { FOR_EACH_TYPE(clazz) clazz.Deserialize(payload); });

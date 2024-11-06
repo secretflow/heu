@@ -45,5 +45,4 @@ std::string PublicKey::ToString() const {
       n_.ToHexString(), n_.BitCount(), h_s_.ToHexString(),
       PlaintextBound().ToHexString(), PlaintextBound().BitCount());
 }
-
 }  // namespace heu::lib::algorithms::paillier_z
