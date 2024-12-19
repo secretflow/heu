@@ -797,9 +797,10 @@ int fpga_fedai_operator_accl(fpga_config *cfg, char *para, char *data1,
       }
       // Check whether data_size is supported
       unsigned long long max_task_memspace = 0;
-      max_task_memspace = memory_total_size[fpga_id] / taskid_counts[fpga_id] *
-                              1024 * 1024 * 1024 -
-                          16 * 1024;
+      max_task_memspace =
+          static_cast<unsigned long long>(memory_total_size[fpga_id]) /
+              taskid_counts[fpga_id] * 1024 * 1024 * 1024 -
+          16 * 1024;  // Updated by Ant Group
       // fprintf(stdout,"cmd_size %ld, para_size %ld, data_size %ld, total_size
       // %ld, max_task_space %ld\n",16*1024,cfg->para_data_size,
       // cfg->data1_size,16*1024+cfg->para_data_size+cfg->data1_size,max_task_memspace+16*1024);
