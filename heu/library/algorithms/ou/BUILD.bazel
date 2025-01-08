@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@yacl//bazel:yacl.bzl", "yacl_cc_binary", "yacl_cc_library", "yacl_cc_test")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -38,7 +38,7 @@ yacl_cc_library(
     hdrs = ["secret_key.h"],
     deps = [
         "//heu/library/algorithms/util",
-        "@com_github_msgpack_msgpack//:msgpack",
+        "@msgpack-c//:msgpack",
     ],
 )
 
@@ -48,7 +48,7 @@ yacl_cc_library(
     hdrs = ["public_key.h"],
     deps = [
         "//heu/library/algorithms/util",
-        "@com_github_msgpack_msgpack//:msgpack",
+        "@msgpack-c//:msgpack",
     ],
 )
 
@@ -57,7 +57,7 @@ yacl_cc_library(
     hdrs = ["ciphertext.h"],
     deps = [
         "//heu/library/algorithms/util",
-        "@com_github_msgpack_msgpack//:msgpack",
+        "@msgpack-c//:msgpack",
     ],
 )
 

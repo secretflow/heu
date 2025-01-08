@@ -1,4 +1,4 @@
-# Copyright 2024 Ant Group Co., Ltd.
+# Copyright 2024 Ant Group Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,23 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 
-package(default_visibility = ["//visibility:public"])
-
-filegroup(
-    name = "all",
-    srcs = glob(["**"]),
-)
-
-cmake(
-    name = "cereal",
-    cache_entries = {
-        "BUILD_DOC": "OFF",
-        "BUILD_TESTS": "OFF",
-        "BUILD_SANDBOX": "OFF",
-        "SKIP_PERFORMANCE_COMPARISON": "ON",
-    },
-    lib_source = ":all",
-    out_headers_only = True,
+compile_pip_requirements(
+    name = "requirements",
+    src = "requirements.txt",
+    requirements_txt = "requirements_lock.txt",
 )

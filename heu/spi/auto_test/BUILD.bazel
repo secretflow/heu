@@ -21,7 +21,7 @@ yacl_cc_library(
     deps = [
         "//heu/spi",
         "//heu/spi/utils:formater",
-        "@com_google_googletest//:gtest",
+        "@googletest//:gtest",
     ],
 )
 

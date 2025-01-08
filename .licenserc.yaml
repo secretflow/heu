@@ -2,7 +2,7 @@ header: # <1>
   license:
     spdx-id: Apache-2.0 # <2>
     copyright-owner: Ant Group Co., Ltd. # <3>
-    copyright-year: '2024' # <25>
+    copyright-year: "2024" # <25>
     software-name: secretflow # <4>
 
     pattern: | # <6>
@@ -19,31 +19,32 @@ header: # <1>
       limitations under the License.
 
   paths: # <7>
-    - '**'
+    - "**"
 
   paths-ignore: # <8>
-    - '.circleci'
-    - '.github'
-    - '**/*.md'
-    - '**/*.yaml'
-    - '**/*.yml'
-    - '**/*.txt'
-    - '**/*.po'
-    - '**/*.rst'
-    - '**/*.lds'
-    - '**/*.patch'
-    - '**/*.bat'
-    - 'LICENSE'
-    - 'NOTICE'
-    - '.bazelversion'
-    - '.bazelignore'
-    - '.clang-format'
-    - '.gitattributes'
-    - '.gitignore'
-    - '.gitmodules'
-    - 'pyproject.toml'
-    - 'third_party/bazel_rust/**/*.bazel' # Generated
-    - 'third_party/bazel_rust/**/*.bzl' # Generated
+    - ".circleci"
+    - ".github"
+    - "**/*.md"
+    - "**/*.yaml"
+    - "**/*.yml"
+    - "**/*.txt"
+    - "**/*.po"
+    - "**/*.rst"
+    - "**/*.lds"
+    - "**/*.patch"
+    - "**/*.bat"
+    - "LICENSE"
+    - "NOTICE"
+    - ".bazelversion"
+    - ".bazelignore"
+    - ".clang-format"
+    - ".gitattributes"
+    - ".gitignore"
+    - ".gitmodules"
+    - "pyproject.toml"
+    - "MODULE.bazel.lock"
+    - "third_party/bazel_rust/**/*.bazel" # Generated
+    - "third_party/bazel_rust/**/*.bzl" # Generated
 
   comment: never # <9>
 

@@ -12,6 +12,7 @@ Cargo.lock
 
 # Bazel files
 bazel-*
+MODULE.bazel.lock
 
 # Temp IDE files
 *.pdb

@@ -36,7 +36,7 @@ yacl_cc_library(
         ":lwe_util",
         ":modswitch",
         ":poly_encoder",
-        "@com_github_microsoft_seal//:seal",
+        "@seal",
     ],
 )
 
@@ -92,7 +92,7 @@ yacl_cc_library(
     ],
     deps = [
         ":modswitch",
-        "@com_github_microsoft_seal//:seal",
+        "@seal",
         "@yacl//yacl/base:buffer",
         "@yacl//yacl/base:byte_container_view",
     ],
@@ -103,7 +103,7 @@ yacl_cc_library(
     srcs = ["modswitch_helper.cc"],
     hdrs = ["modswitch_helper.h"],
     deps = [
-        "@com_github_microsoft_seal//:seal",
+        "@seal",
         "@yacl//yacl/base:exception",
         "@yacl//yacl/base:int128",
     ],
@@ -114,7 +114,7 @@ yacl_cc_test(
     srcs = ["modswitch_helper_test.cc"],
     deps = [
         ":modswitch",
-        "@com_google_googletest//:gtest",
+        "@googletest//:gtest",
     ],
 )
 

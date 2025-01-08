@@ -33,7 +33,7 @@ yacl_cc_library(
         "//heu/library/algorithms/paillier_clustar_fpga/fpga_engine/driver:fpga_driver",
         "//heu/library/algorithms/util",
         "//heu/library/algorithms/util:mp_int",
-        "@com_github_fmtlib_fmt//:fmtlib",
+        "@fmt",
         "@yacl//yacl/base:byte_container_view",
         "@yacl//yacl/base:exception",
     ],

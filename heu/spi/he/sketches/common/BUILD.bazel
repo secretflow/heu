@@ -49,7 +49,7 @@ yacl_cc_library(
     hdrs = ["keys.h"],
     deps = [
         "//heu/spi/he",
-        "@com_github_fmtlib_fmt//:fmtlib",
+        "@fmt",
     ],
 )
 

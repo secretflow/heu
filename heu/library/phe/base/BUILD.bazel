@@ -57,7 +57,7 @@ yacl_cc_library(
     deps = [
         ":schema",
         ":variant_helper",
-        "@com_github_msgpack_msgpack//:msgpack",
+        "@msgpack-c//:msgpack",
     ],
 )
 

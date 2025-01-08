@@ -40,8 +40,8 @@ yacl_cc_library(
     visibility = ["//visibility:public"],
     deps = [
         "//heu/library/algorithms/util",
-        "@com_github_msgpack_msgpack//:msgpack",
-        "@com_google_absl//absl/types:optional",
+        "@abseil-cpp//absl/types:optional",
+        "@msgpack-c//:msgpack",
     ],
 )
 
