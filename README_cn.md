@@ -45,7 +45,7 @@ https://www.secretflow.org.cn/docs/heu/
 │   └── spi            # 定义 HEU 软硬件接入层接口（SPI）
 │       ├── he         # 存放 HE SPI，以及相关的 Sketches
 │       └── poly       # 定义多项式接口，以及相关的 Sketches
-└── third_party        # 存放编译所需的第三方库链接，库本身会在编译时自动下载  
+└── third_party        # 存放编译所需的第三方库链接，库本身会在编译时自动下载
 ```
 
 目前 HEU 正在从老的 Dispatcher 架构切换成基于 SPI 的架构，两套架构主要的模块及其代码路径的映射关系如下：
