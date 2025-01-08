@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@yacl//bazel:yacl.bzl", "yacl_cc_binary", "yacl_cc_library", "yacl_cc_test")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -56,10 +56,10 @@ yacl_cc_library(
     ],
     deps = [
         "//heu/library/algorithms/util",
-        "@com_github_fmtlib_fmt//:fmtlib",
-        "@com_github_intel_ipcl//:ipcl",
-        "@com_github_msgpack_msgpack//:msgpack",
-        "@com_github_uscilab_cereal//:cereal",
+        "@cereal",
+        "@fmt",
+        "@msgpack-c//:msgpack",
+        "@pailliercryptolib//:ipcl",
         "@yacl//yacl/base:byte_container_view",
         "@yacl//yacl/base:int128",
     ],

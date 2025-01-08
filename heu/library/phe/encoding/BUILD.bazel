@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@yacl//bazel:yacl.bzl", "yacl_cc_binary", "yacl_cc_library", "yacl_cc_test")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -45,7 +45,7 @@ yacl_cc_test(
     srcs = ["plain_encoder_test.cc"],
     deps = [
         ":plain_encoder",
-        "@com_google_googletest//:gtest",
+        "@googletest//:gtest",
     ],
 )
 
@@ -64,7 +64,7 @@ yacl_cc_test(
     srcs = ["batch_encoder_test.cc"],
     deps = [
         ":batch_encoder",
-        "@com_google_googletest//:gtest",
+        "@googletest//:gtest",
     ],
 )
 

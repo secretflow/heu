@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -25,7 +25,7 @@ yacl_cc_library(
     name = "formater",
     hdrs = ["formater.h"],
     deps = [
-        "@com_github_fmtlib_fmt//:fmtlib",
-        "@com_google_absl//absl/types:span",
+        "@abseil-cpp//absl/types:span",
+        "@fmt",
     ],
 )

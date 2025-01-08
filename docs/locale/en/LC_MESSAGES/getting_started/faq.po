@@ -269,3 +269,4 @@ msgstr ""
 " on `HEU + SPU for LR (i.e., HESS-LR) "
 "<https://github.com/secretflow/secretflow/blob/main/secretflow/ml/linear/hess_sgd/model.py>`__,"
 " from which you can learn the usage of the HEU Device."
+

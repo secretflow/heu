@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake", "configure_make")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -31,7 +31,7 @@ cmake(
         "SEAL_THROW_ON_TRANSPARENT_CIPHERTEXT": "OFF",
         "CMAKE_INSTALL_LIBDIR": "lib",
     },
-    lib_source = "@com_github_microsoft_seal//:all",
+    lib_source = "@seal//:all",
     out_include_dir = "include/SEAL-3.6",
     out_static_libs = ["libseal-3.6.a"],
     deps = ["@zlib"],

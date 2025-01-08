@@ -93,7 +93,7 @@ yacl_cc_library(
     ],
     deps = [
         "//heu/library/algorithms/util",
-        "@com_github_msgpack_msgpack//:msgpack",
+        "@msgpack-c//:msgpack",
     ],
 )
 
@@ -107,7 +107,7 @@ yacl_cc_library(
     deps = [
         ":plaintext",
         "//heu/library/algorithms/util",
-        "@com_github_msgpack_msgpack//:msgpack",
+        "@msgpack-c//:msgpack",
     ],
 )
 
@@ -121,7 +121,7 @@ yacl_cc_library(
     deps = [
         ":plaintext",
         "//heu/library/algorithms/util",
-        "@com_github_msgpack_msgpack//:msgpack",
+        "@msgpack-c//:msgpack",
     ],
 )
 
@@ -136,7 +136,7 @@ yacl_cc_library(
         ":gpupaillier",
         ":plaintext",
         "//heu/library/algorithms/util",
-        "@com_github_msgpack_msgpack//:msgpack",
+        "@msgpack-c//:msgpack",
     ],
 )
 

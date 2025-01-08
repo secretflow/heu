@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake", "configure_make")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -37,12 +37,14 @@ cmake(
         "OPENSSL_ROOT_DIR": "$EXT_BUILD_DEPS/openssl",
         "CMAKE_BUILD_TYPE": "Release",
     },
+    generate_args = ["-G Ninja"],
     lib_source = "@com_github_intel_ipcl//:all",
     linkopts = ["-ldl"],
     out_static_libs = ["libipcl.a"],
     deps = [
-        "@com_github_intel_ipp//:ipp",
-        "@com_github_openssl_openssl//:openssl",
-        "@com_github_uscilab_cereal//:cereal",
+        "@cereal",
+        "@ippcp//:ipp",
+        "@openssl//:crypto",
+        "@openssl//:ssl",
     ],
 )

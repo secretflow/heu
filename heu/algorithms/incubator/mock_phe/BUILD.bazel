@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -35,7 +35,7 @@ yacl_cc_library(
     hdrs = ["base.h"],
     deps = [
         "//heu/spi/he/sketches/scalar/phe",
-        "@com_github_msgpack_msgpack//:msgpack",
+        "@msgpack-c//:msgpack",
         "@yacl//yacl/utils:serializer",
     ],
 )

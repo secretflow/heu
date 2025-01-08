@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@yacl//bazel:yacl.bzl", "yacl_cc_binary", "yacl_cc_library", "yacl_cc_test")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_library", "yacl_cc_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -70,7 +70,7 @@ yacl_cc_library(
         "//heu/library/algorithms/paillier_clustar_fpga/fpga_engine/paillier_operators:fpga_operators",
         "//heu/library/algorithms/util",
         "//heu/library/algorithms/util:mp_int",
-        "@com_github_msgpack_msgpack//:msgpack",
+        "@msgpack-c//:msgpack",
         "@yacl//yacl/base:byte_container_view",
     ],
 )

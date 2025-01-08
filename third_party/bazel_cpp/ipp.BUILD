@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@yacl//bazel:yacl.bzl", "yacl_cmake_external")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -21,7 +21,7 @@ filegroup(
     srcs = glob(["**"]),
 )
 
-yacl_cmake_external(
+cmake(
     name = "ipp",
     cache_entries = {
         "ARCH": "intel64",
@@ -30,12 +30,13 @@ yacl_cmake_external(
         "OPENSSL_ROOT_DIR": "$EXT_BUILD_DEPS/openssl",
         "CMAKE_BUILD_TYPE": "Release",
     },
+    generate_args = ["-G Ninja"],
     lib_source = ":all_srcs",
     out_static_libs = [
         "intel64/libippcp.a",
         "intel64/libcrypto_mb.a",
     ],
     deps = [
-        "@com_github_openssl_openssl//:openssl",
+        "@openssl//:crypto",
     ],
 )

@@ -130,3 +130,4 @@ msgstr "If you encounter a compilation error, please pass in the schema paramete
 "For example, if this line causes a compilation error: ``phe.BigintEncoder()``, "
 "you should change it to ``phe.BigintEncoder(kit.get_schema())``. For more details, refer to the previous section on **API Changes**."
 
+

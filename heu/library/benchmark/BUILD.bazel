@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@yacl//bazel:yacl.bzl", "yacl_cc_binary", "yacl_cc_library")
+load("@yacl//bazel:yacl.bzl", "yacl_cc_binary")
 
 yacl_cc_binary(
     name = "phe",
     srcs = ["phe_bench.cc"],
     deps = [
         "//heu/library/phe",
-        "@com_github_fmtlib_fmt//:fmtlib",
-        "@com_github_gflags_gflags//:gflags",
-        "@com_github_google_benchmark//:benchmark",
+        "@fmt",
+        "@gflags",
+        "@google_benchmark//:benchmark",
     ],
 )
 
@@ -30,8 +30,8 @@ yacl_cc_binary(
     srcs = ["np_bench.cc"],
     deps = [
         "//heu/library/numpy",
-        "@com_github_fmtlib_fmt//:fmtlib",
-        "@com_github_gflags_gflags//:gflags",
-        "@com_github_google_benchmark//:benchmark",
+        "@fmt",
+        "@gflags",
+        "@google_benchmark//:benchmark",
     ],
 )
