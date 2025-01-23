@@ -45,6 +45,7 @@ header: # <1>
     - "MODULE.bazel.lock"
     - "third_party/bazel_rust/**/*.bazel" # Generated
     - "third_party/bazel_rust/**/*.bzl" # Generated
+    - ".bcr"
 
   comment: never # <9>
 
