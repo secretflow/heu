@@ -4,7 +4,7 @@
 环境准备
 --------------
 
-Python >= 3.9
+Python 3.9 - 3.11
 
 OS：
  - Centos 7
@@ -34,14 +34,15 @@ HEU 安装包已经发布到了 PyPi，您可以通过 pip 工具安装 HEU
 如果您需要使用最新测试版本，可以从 `源码 <https://github.com/secretflow/heu>`_ 编译安装。
 
 依赖工具：
- - `Bazel <https://docs.bazel.build/versions/main/install.html>`_
+ - `Bazelisk <https://github.com/bazelbuild/bazelisk?tab=readme-ov-file#installation>`_
+ - nasm(x86 架构) 
  - GCC >= 11
 
 编译和安装：
 
 .. code-block:: bash
 
-  git clone --recursive git@github.com:secretflow/heu.git
+  git clone --recursive https://github.com/secretflow/heu.git
   cd heu
   sh build_wheel_entrypoint.sh
 

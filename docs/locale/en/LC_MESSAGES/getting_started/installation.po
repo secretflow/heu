@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-26 20:08+0800\n"
+"POT-Creation-Date: 2025-03-13 13:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.16.0\n"
 
 #: ../../getting_started/installation.rst:2
 #: ../../getting_started/installation.rst:16
@@ -27,10 +27,10 @@ msgid "环境准备"
 msgstr "Environment"
 
 #: ../../getting_started/installation.rst:7
-msgid "Python >= 3.9"
+msgid "Python 3.9 - 3.11"
 msgstr ""
 
-#: ../../getting_started/installation.rst:13
+#: ../../getting_started/installation.rst:9
 msgid "OS："
 msgstr ""
 
@@ -68,31 +68,37 @@ msgstr ""
 "<https://github.com/secretflow/heu>`_. Please clone the repo first and "
 "then installing from local source."
 
-#: ../../getting_started/installation.rst:38
+#: ../../getting_started/installation.rst:36
 msgid "依赖工具："
 msgstr "Dependency:"
 
 #: ../../getting_started/installation.rst:37
-msgid "`Bazel <https://docs.bazel.build/versions/main/install.html>`_"
+msgid ""
+"`Bazelisk <https://github.com/bazelbuild/bazelisk?tab=readme-ov-"
+"file#installation>`_"
 msgstr ""
 
 #: ../../getting_started/installation.rst:38
+msgid "nasm(x86 架构)"
+msgstr "nasm (x86 architecture)"
+
+#: ../../getting_started/installation.rst:39
 msgid "GCC >= 11"
 msgstr ""
 
-#: ../../getting_started/installation.rst:40
+#: ../../getting_started/installation.rst:41
 msgid "编译和安装："
 msgstr "Compile and install:"
 
-#: ../../getting_started/installation.rst:50
+#: ../../getting_started/installation.rst:51
 msgid "测试运行"
 msgstr "Test running"
 
-#: ../../getting_started/installation.rst:52
+#: ../../getting_started/installation.rst:53
 msgid "安装完成后，建议执行以下命令检查 HEU 是否工作正常"
 msgstr "After installation, it is a good idea to test HEU using:"
 
-#: ../../getting_started/installation.rst:58
+#: ../../getting_started/installation.rst:59
 msgid ""
 "上述命令，如果没有任何输出，则说明安装成功；反之如果报错，则说明安装未成功，请参考 :doc:`FAQ "
 "</getting_started/faq>`"
@@ -100,3 +106,4 @@ msgstr ""
 "For the above command, if there is no output, the installation is "
 "successful; otherwise, if an error is reported, the installation is "
 "unsuccessful. Please refer to :doc:`FAQ </getting_started/faq>`"
+
