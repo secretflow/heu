@@ -107,12 +107,3 @@ msgstr ""
 "successful; otherwise, if an error is reported, the installation is "
 "unsuccessful. Please refer to :doc:`FAQ </getting_started/faq>`"
 
-#~ msgid "Python >= 3.9"
-#~ msgstr ""
-
-#~ msgid "`Bazel <https://docs.bazel.build/versions/main/install.html>`_"
-#~ msgstr ""
-
-#~ msgid "`Bazel 7.4.1 <https://docs.bazel.build/versions/main/install.html>`_"
-#~ msgstr ""
-
