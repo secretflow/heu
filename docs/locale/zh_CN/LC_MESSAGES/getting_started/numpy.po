@@ -1,0 +1,194 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022-2024 Ant Group Co., Ltd
+# This file is distributed under the same license as the HEU package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: HEU \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-14 20:31+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.11.0\n"
+
+#: ../../getting_started/numpy.rst:2
+msgid "矩阵运算"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:4
+msgid "HEU 提供了矩阵化运算接口，其功能主要位于 ``heu.numpy`` 模块。"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:6
+msgid "``heu.numpy`` 大部分接口都使用并行计算的方式实现，其性能比纯 Python 实现的矩阵运算库高得多"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:10
+msgid "初始化"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:13
+msgid "运行本文示例代码之前请先通过以下方式 import 相关模块"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:21
+msgid "``heu.numpy`` 环境初始化的方法与 ``heu.phe`` 类似："
+msgstr ""
+
+#: ../../getting_started/numpy.rst:31
+msgid ""
+"另外，由于 ``heu.numpy`` 模块仅仅是 ``heu.phe`` 模块的装饰器，如果您已经有 phe kit 对象，则可以通过 phe "
+"kit 对象快速构造 hnp kit 对象，此时同态加密的密钥不会重新生成："
+msgstr ""
+
+#: ../../getting_started/numpy.rst:40
+msgid ""
+"在典型的使用场景下，HEU 的使用方由 **sk_keeper** 和 **evaluator** 组成，**sk_keeper** 生成 key"
+" pair 后会把公钥传给 **evaluator**，以便 **evaluator** 执行后续运算。"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:42
+msgid "以下是一段多方场景下的环境初始化示例："
+msgstr ""
+
+#: ../../getting_started/numpy.rst:61
+msgid "I/O"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:63
+msgid ""
+"环境准备好之后，下面介绍 heu.numpy 如何处理 Python 中的数据。矩阵在 Python 中有多种表示方式，例如嵌套的 "
+"List，嵌套的 Tuple 以及 numpy.ndarray，HEU 把所有 Python 中原始的数据类型称为 "
+"Cleartext（原文）。参考 :doc:`快速入门 <./quick_start>`，而 HEU 内部仅有 "
+"hnp.PlaintextArray 和 hnp.CiphertextArray 两种类型，分别存储明文矩阵和密文矩阵，Python "
+"中的原始数据类型需要先转换为 hnp.PlaintextArray 后才能被 hnp.numpy 模块进一步处理。"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:65
+msgid "本节介绍如何使用 ``heu.numpy`` 模块将数据在原文（cleartext）与明文（plaintext）之间做转换。"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:69
+msgid "输入"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:71
+msgid ""
+"与 ``heu.phe`` 一样，原文（cleartext）到明文（plaintext）之间的转换依赖编码器，``heu.numpy`` 与 "
+"``heu.phe`` 共用相同的编码器。同时，``heu.numpy`` 模块提供了 ``.array()`` 接口用于识别并转换 "
+"Cleartext 矩阵。"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:96
+msgid ""
+"**phe.IntegerEncoder**、**phe.FloatEncoder**、**phe.BatchIntegerEncoder** 和"
+" **phe.BatchFloatEncoder** 默认并行编码原文矩阵，而 **phe.BigintEncoder** "
+"受限于全局解释器锁（GIL）的存在尚不支持并行编码。"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:98
+msgid ""
+"**phe.IntegerEncoder**、**phe.FloatEncoder** 本质上就是把原始数据乘了一个 "
+"scale，如果我自己把原文乘上一个 scale 再转换成 hnp.PlaintextArray 行吗？"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:100
+msgid ""
+"答案是可以，但性能会低一些。HEU 会尽可能地做并行化，而自己在 Python 端做 scale "
+"的话一定是串行的。另外，受限于形式，**hnp.array()** 必须要指定一个 encoder，如果原文本来就是整数或者您已经做了 "
+"scale，您可以向 **hnp.array()** 传入一个 scale=1 的 encoder，或者直接使用默认的 "
+"``BigintEncoder``"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:116
+msgid "辅助函数"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:118
+msgid "HEU 提供了一些辅助函数用以快速创建 hnp.PlaintextArray 对象。"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:132
+msgid "输出"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:134
+msgid "**hnp.PlaintextArray** 提供了 **to_numpy()** 接口用于将明文转换成原文，同理，转换的过程依赖编码器。"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:136
+msgid ""
+"编码器同时拥有编码和解码功能，一般来说， **to_numpy()** 需要传入与 **hnp.array()** "
+"相同的编码器对象，否则可能导致解码后的原文不正确"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:147
+msgid "与 **hnp.array()** 一样，如果 **to_numpy()** 不指定编码器，则默认使用 ``BigintEncoder``。"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:151
+msgid "加解密和运算"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:154
+msgid "基本操作"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:156
+msgid ""
+"**encryptor** 和 **decryptor** 分别提供了加密和解密接口，**evaluator** "
+"提供了明文、密文运算的能力，用法如下："
+msgstr ""
+
+#: ../../getting_started/numpy.rst:172
+msgid ""
+"同态加密的密文无法做 truncation，因此如果 plaintext/ciphertext 是经过 scale 的，则乘法会导致 scale "
+"变成两倍，这时可以用以下两种方式解决："
+msgstr ""
+
+#: ../../getting_started/numpy.rst:174
+msgid "保证乘法的其中一个乘数的 scale 为 1"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:182
+msgid "在结果转为明文或原文后手动除以 scale"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:195
+msgid "切片"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:197
+msgid "**hnp.PlaintextArray** 和 **hnp.CiphertextArray** 支持切片，示例如下："
+msgstr ""
+
+#: ../../getting_started/numpy.rst:228
+msgid ""
+"hnp 的切片 key 支持 scalar，sequence，slice 类型，其中 sequence 是 list，tuple "
+"等类型的统称。如果 key 是 scalar，则切片在该维度上降维，如果 key 是 sequence 和 slice，则切片保留维度，举例来说："
+msgstr ""
+
+#: ../../getting_started/numpy.rst:230
+msgid "harr[sequence/slice, sequence/slice]: 结果为 matrix"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:231
+msgid "harr[sequence/slice, scalar] or harr[scalar, sequence/slice]: 结果为 vector"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:232
+msgid "harr[scalar, scalar]: 结果为 scalar"
+msgstr ""
+
+#: ../../getting_started/numpy.rst:235
+msgid "hnp 切片的用法与 numpy 类似，但并不完全一样，以下是结果不一致的地方"
+msgstr ""
+

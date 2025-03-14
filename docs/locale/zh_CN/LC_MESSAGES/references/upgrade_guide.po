@@ -1,0 +1,109 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022-2024 Ant Group Co., Ltd
+# This file is distributed under the same license as the HEU package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: HEU \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-14 20:31+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.11.0\n"
+
+#: ../../references/upgrade_guide.rst:2
+msgid "升级指南"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:16
+msgid "HEU 0.3.x → 0.4.x"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:19 ../../references/upgrade_guide.rst:59
+msgid "API 变更"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:21
+msgid ""
+"HEU 0.4 版本将 ``phe.BatchEncoder`` 拆分成了2个：``phe.BatchIntegerEncoder`` 和 "
+"``phe.BatchFloatEncoder``。"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:23
+msgid ""
+"HEU 0.3 中的 ``phe.BatchEncoder`` 并不支持编码浮点数，为了让 BatchEncoder 支持浮点数编码，HEU "
+"0.4 新增了 ``phe.BatchFloatEncoder``，同时为了命名上的清晰性，我们将老旧的 ``phe.BatchEncoder``"
+" 改名成了 ``phe.BatchIntegerEncoder``"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:26 ../../references/upgrade_guide.rst:109
+msgid "用户代码怎么改"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:28
+msgid "您可以将老代码中的 BatchEncoder 查找替换为 BatchIntegerEncoder 即可，两者功能等价。"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:32
+msgid "HEU 0.2.x → 0.3.x"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:35
+msgid "背景解释"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:37
+msgid ""
+"HEU 0.2 版本与大整数运算库 Libtommath 强绑定，要求所有算法算法必须基于 Libtommath "
+"开发，这就限制了算法的发展空间，为了支持更多种类的算法，HEU 0.3 版本对底层架构做了较大升级，将 Libtommath 与 HE "
+"算法完全解耦，不再约定算法底层的实现细节，从而使得算法开发者有更大的发挥空间。"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:39
+msgid ":red:`Before`：0.2.x 的加解密流程"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:41
+msgid ""
+"Encoder 先把原始数据类型转换成 LibTommath 中的 MPInt 对象（即 Plaintext），再由不同 HE 算法将 MPInt"
+" Plaintext 转换成相应的 Ciphertext。"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:46
+msgid ":blue:`After`：0.3.x 的加解密流程"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:48
+msgid "Encoder 直接把原始数据类型转换成算法对应的 Plaintext，不同算法定义的 Plaintext 底层允许有完全不同的数据结构。"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:53
+msgid "Encoder 为了生成正确的 Plaintext，需要额外引入 Schema 信息："
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:61
+msgid "主要变化在于创建 Plaintext 需要传入 Schema 信息"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:63
+msgid "Scalar 操作"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:85
+msgid "矩阵操作"
+msgstr ""
+
+#: ../../references/upgrade_guide.rst:111
+msgid ""
+"如果编译报错，请将 schema 参数传入即可，例如这一行编译报错：``phe.BigintEncoder()``，改为 "
+"``phe.BigintEncoder(kit.get_schema())`` 即可，具体参考上一节 **API 变更** 内容。"
+msgstr ""
+

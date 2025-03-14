@@ -1,0 +1,230 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022-2024 Ant Group Co., Ltd
+# This file is distributed under the same license as the HEU package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: HEU \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-14 20:31+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.11.0\n"
+
+#: ../../getting_started/quick_start.rst:2
+msgid "快速入门"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:4
+msgid ""
+"HEU 当前仅可作为加法同态加密 Library 使用，使用前请先参考 :doc:`安装说明 <./installation>` 安装 HEU "
+"Python 包。"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:6
+msgid "本文所讲的内容全部位于 heu.phe 模块中"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:9
+msgid "加解密"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:11
+msgid "HEU 的操作对象有3种："
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:13
+msgid "HEU 操作对象"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:1
+msgid "对象"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:1
+msgid "数据类型"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:1
+msgid "描述"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:1
+msgid "Cleartext（原文）"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:1
+msgid "python 原生数据类型"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:1
+msgid "Python 原生的整数、浮点数"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:1
+msgid "Plaintext（明文）"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:1
+msgid "phe.Plaintext"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:1
+msgid "编码后的原文，一定为整数"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:1
+msgid "Ciphertext（密文）"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:1
+msgid "phe.Ciphertext"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:1
+msgid "密文"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:20
+msgid "三种对象之间的转换方法如下："
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:-1
+msgid "HEU 对象转换关系图示"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:27
+msgid "HEU 基本使用展示"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:45
+msgid ""
+"``encrypt_raw`` 和 ``decrypt_raw`` "
+"支持高精度，其精度与同态加密算法本身支持的值域范围相同，具体值域因算法而异，但一般都 **远大于** C++ int128 表达范围。"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:49
+msgid "编码"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:51
+msgid "当前 HEU 提供了五种 ``Encoder``："
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:53
+msgid "``phe.IntegerEncoder``: 编码 128bits 以内的整数"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:54
+msgid "``phe.FloatEncoder``: 编码双精度浮点数"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:55
+msgid "``phe.BigintEncoder``: 编码高精度整数，支持任意精度"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:56
+msgid "``phe.BatchIntegerEncoder``: 将两个整数原文编码到一个明文中"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:57
+msgid "``phe.BatchFloatEncoder``: 将两个浮点数原文编码到一个明文中"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:59
+msgid "创建 Encoder 的方法（以``phe.IntegerEncoder``为例）"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:61
+msgid "方法一："
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:67
+msgid "方法二："
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:74
+msgid "方法三："
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:83
+msgid "IntegerEncoder 和 FloatEncoder"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:85
+msgid ""
+"``phe.IntegerEncoder`` 和 ``FloatEncoder`` 原理类似，都是将原文乘上一个 scale 后转换成明文，因此 "
+"scale 大小决定了计算的精度。如果创建 ``IntegerEncoder/FloatEncoder`` 对象时不提供参数，则使用默认的 "
+"scale ``1e6``"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:87
+msgid "``phe.IntegerEncoder`` 有数值大小上限，请确保编码后的明文小于 128 比特"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:89
+msgid "``phe.FloatEncoder`` 有数值大小上限，请确保编码后的明文大小在双精度浮点数（double）表示范围内"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:108
+msgid "BigintEncoder"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:110
+msgid ""
+"``BigintEncoder`` 类似于 "
+"``IntegerEncoder(scale=1)``，但不受精度限制，支持编码任意精度的整数，为了方便用户使用，BigintEncoder "
+"是隐式的，如果用户没有指定 encoder，都默认使用该 encoder。"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:112
+msgid "``BigintEncoder`` 编码 int128 原文性能非常高，但是超过 128bits 后性能会有显著降低"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:126
+msgid "BatchIntegerEncoder 和 BatchFloatEncoder"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:128
+msgid ""
+"BatchIntegerEncoder 和 BatchFloatEncoder 是上述 IntegerEncoder、FloatEncoder 的"
+" batch 版本，功能类似，但是 BatchEncoder "
+"支持将两个原文（Cleartext，int64整数）打包加密到一个明文（Plaintext）中，实现 SIMD 功能。"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:134
+msgid "``phe.BatchIntegerEncoder`` 有数值大小上限，每个原文不大于 64 比特"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:136
+msgid ""
+"BatchIntegerEncoder、BatchFloatEncoder "
+"并不完全兼容密态减法，仅当密文中所有元素都是正整数时才可以使用，如果您无法确定元素数值范围，应当避免使用密态减法。"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:162
+msgid "BatchEncoder 当前一次仅支持打包2个原文，如果您有打包更多数字的需求，欢迎提 Issue 或者直接参与共建。"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:166
+msgid "持久化"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:168
+msgid "实际场景中，隐私计算往往涉及多个参与方，这就涉及到对象的序列化和反序列化，HEU 的对象持久化功能依赖 Pickle。"
+msgstr ""
+
+#: ../../getting_started/quick_start.rst:170
+msgid ""
+"在一个典型的使用场景中，Client 是数据提供方，Server 是算力提供方，Client 并不信任 Server，因此 Client "
+"可以把数据加密发送给 Server，Server 在密文数据上做计算，并把结果返回给 Client。"
+msgstr ""
+

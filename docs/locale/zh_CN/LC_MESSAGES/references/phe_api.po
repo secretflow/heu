@@ -1,0 +1,560 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022-2024 Ant Group Co., Ltd
+# This file is distributed under the same license as the HEU package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: HEU \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-14 20:32+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.11.0\n"
+
+#: ../../references/phe_api.rst:2
+msgid "PHE 模块"
+msgstr ""
+
+#: ../../references/phe_api.rst:4
+msgid "请使用 ``from heu import phe`` 引入 phe 模块"
+msgstr ""
+
+#: ../../docstring heu.phe:1 of
+msgid "A high-performance partial homomorphic encryption library"
+msgstr "一个高性能的部分同态加密库"
+
+#: ../../docstring heu.phe.BatchFloatEncoder:1 of
+msgid "BatchFloatEncoder can encode two floating number into one plaintext"
+msgstr "BatchFloatEncoder 可以将两个浮点数编码为一个明文"
+
+#: ../../docstring heu.phe.BatchFloatEncoder:3 of
+# 注释fuzzy , fuzzy
+msgid "Create a BatchFloatEncoder"
+msgstr "创建 BatchFloatEncoder 实例"
+
+#: ../../docstring heu.phe.BatchFloatEncoder of
+msgid "参数"
+msgstr ""
+
+#: ../../docstring heu.phe.BatchFloatEncoder:5 of
+msgid ""
+"Homomorphic encryption only supports integers internally, so floating-"
+"point numbers will be converted to integers by multiplied a scale. Please"
+" note that the encoded number cannot exceed 64 bits, otherwise it will "
+"overflow."
+msgstr ""
+"同态加密仅在内部支持整数，因此浮点数将通过乘以一个比例转换为整数。请注意，编码的数字不能超过 64 位，否则会溢出"
+
+#: ../../docstring heu.phe.BatchFloatEncoder:7 of
+msgid ""
+"The gap between two numbers, if the gap is too small, the low bit number "
+"will pollute the high bit number, resulting in wrong results."
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.decode:1 of
+msgid "Decode plaintext and return two cleartexts"
+msgstr "解码明文（plaintext: 输入加密函数前的信息）并返回两个明码（cleartext: 传输或保存时未经处理的信息）"
+
+#: ../../docstring heu.phe.PyCapsule.encode:1 of
+msgid "Batch encode two cleartexts into one plaintext"
+msgstr "批量编码两个明码为一个明文"
+
+#: ../../docstring heu.phe.BatchFloatEncoderParams:1 of
+msgid "Store parameters for BatchFloatEncoder"
+msgstr "存储 BatchFloatEncoder 的参数"
+
+#: ../../docstring heu.phe.BatchFloatEncoderParams:3 of
+msgid "Init PyBatchFloatEncoderParams"
+msgstr "初始化 PyBatchFloatEncoderParams"
+
+#: ../../docstring heu.phe.PyCapsule.instance:1 of
+msgid "Create BatchFloatEncoder instance"
+msgstr "创建 BatchFloatEncoder 实例"
+
+#: ../../docstring heu.phe.BatchIntegerEncoder:1 of
+msgid "BatchIntegerEncoder can encode two integers into one plaintext"
+msgstr "BatchIntegerEncoder 可以将两个整数编码为一个明文"
+
+#: ../../docstring heu.phe.PyCapsule.encode:1 of
+msgid "Encode two int64 cleartexts into one plaintext"
+msgstr "将两个 int64 明码编码为一个明文"
+
+#: ../../docstring heu.phe.BatchIntegerEncoderParams:1 of
+msgid "Store parameters for BatchIntegerEncoder"
+msgstr "存储 BatchIntegerEncoder 的参数"
+
+#: ../../docstring heu.phe.BatchIntegerEncoderParams:3 of
+msgid "Init BatchIntegerEncoderParams"
+msgstr "初始化 BatchIntegerEncoderParams"
+
+#: ../../docstring heu.phe.PyCapsule.instance:1 of
+msgid "Create BatchIntegerEncoder instance"
+msgstr "创建 BatchIntegerEncoder 实例"
+
+#: ../../docstring heu.phe.BigintDecoder:1 of
+msgid "BigintDecoder is used to decode plaintext into Python integers."
+msgstr "BigintDecoder 用于将明文解码为 Python 整数"
+
+#: ../../docstring heu.phe.BigintDecoder:3 of
+msgid ""
+"BigintEncoder is the most commonly used Encoder type. Creating an "
+"BigintEncoder instance depends on schema info, however, schema info is "
+"only needed for encoding, that is, decoding does not depend on schema. To"
+" make the BigintEncoder implicitly usable when decoding, we split out the"
+" decoding part called BigintDecoder, which does not rely on any "
+"initialization parameters and can create instances anywhere, making it "
+"easier to use"
+msgstr ""
+"BigintEncoder 是最常用的编码器类型。创建 BigintEncoder "
+"实例取决于模式信息，但是，模式信息仅在编码时需要，也就是说，解码不依赖于模式。为了使 BigintEncoder "
+"在解码时隐式可用，我们将解码部分拆分为 BigintDecoder，它不依赖于任何初始化参数，可以在任何地方创建实例，使其更易于使用"
+
+#: ../../docstring heu.phe.BigintDecoder:5 of
+#注释fuzzy , fuzzy
+msgid "create BigintDecoder instance"
+msgstr "创建 BigintEncoder 实例"
+
+#: ../../docstring heu.phe.PyCapsule.decode:1 of
+msgid "Decode plaintext to python int number"
+msgstr "将明文解码为 Python int 整数"
+
+#: ../../docstring heu.phe.BigintEncoder:1 heu.phe.FloatEncoder:1
+#: heu.phe.IntegerEncoder:1 of
+msgid "Encode cleartext into plaintext."
+msgstr "将明码编码为明文"
+
+#: ../../docstring heu.phe.BigintEncoder:3 of
+msgid "BigintEncoder supports arbitrary precision integers"
+msgstr "BigintEncoder 支持任意精度整数"
+
+#: ../../docstring heu.phe.BigintEncoder:5 of
+#注释fuzzy , fuzzy
+msgid "Create a bigint encoder"
+msgstr "创建 BigintEncoder 实例"
+
+#: ../../docstring heu.phe.PyCapsule.encode:1 of
+msgid "Encode python int number into plaintext"
+msgstr "将 Python int 整数编码为明文"
+
+#: ../../docstring heu.phe.BigintEncoderParams:1 of
+#注释fuzzy , fuzzy
+msgid "parameters for BigintEncoder"
+msgstr "BatchIntegerEncoder 的参数"
+
+#: ../../docstring heu.phe.PyCapsule.instance:1 of
+msgid "Create BigintEncoder instance"
+msgstr "创建 BigintEncoder 实例"
+
+#: ../../docstring heu.phe.PyCapsule.decrypt:1 of
+msgid "Decrypt ciphertext to plaintext"
+msgstr "将密文解密为明文"
+
+#: ../../docstring heu.phe.PyCapsule.decrypt_in_range:1 of
+msgid ""
+"Decrypt ciphertext and make sure plaintext is in range (-2^range_bits, "
+"2^range_bits). Range checking is used to block OU plaintext overflow "
+"attack, see HEU documentation for details. throws an exception if "
+"plaintext is out of range."
+msgstr ""
+"解密密文并确保明文在范围 (-2^range_bits, 2^range_bits) 内。范围检查用于阻止 OU 明文溢出攻击，详细信息请参阅 "
+"HEU 文档。如果明文超出范围，则抛出异常"
+
+#: ../../docstring heu.phe.PyCapsule.decrypt_raw:1 of
+msgid "Decrypt and decoding. The decoding behavior is similar to BigintEncoder"
+msgstr "解密和解码。解码行为类似于 BigintEncoder"
+
+#: ../../docstring heu.phe.PyCapsule.encryptor:1 of
+msgid "Get encryptor"
+msgstr "获取加密器"
+
+#: ../../docstring heu.phe.PyCapsule.evaluator:1 of
+msgid "Get evaluator"
+msgstr "获取评估器"
+
+#: ../../docstring heu.phe.PyCapsule.encrypt:1 of
+msgid "Encrypt plaintext to ciphertext"
+msgstr "将明文加密为密文"
+
+#: ../../docstring heu.phe.PyCapsule.encrypt_raw:1 of
+msgid ""
+"Encode and encrypt an integer cleartext. The encoding behavior is similar"
+" to BigintEncoder"
+msgstr "编码并加密整数明文。编码行为类似于 BigintEncoder"
+
+#: ../../docstring heu.phe.PyCapsule.encrypt_with_audit:1 of
+msgid "Encrypt and build audit string including plaintext/random/ciphertext"
+msgstr "加密并构建包括明文/随机数/密文的审计字符串"
+
+#: ../../docstring heu.phe.FloatEncoder:5 heu.phe.IntegerEncoder:5
+#: heu.phe.PyCapsule.add:1 heu.phe.PyCapsule.add_inplace:1
+#: heu.phe.PyCapsule.encode:1 heu.phe.PyCapsule.mul:1 heu.phe.PyCapsule.setup:1
+#: heu.phe.PyCapsule.sub:1 heu.phe.PyCapsule.sub_inplace:1 of
+msgid "Overloaded function."
+msgstr "重载函数"
+
+#: ../../docstring heu.phe.PyCapsule.add:3 of
+msgid ""
+"add(self: heu.phe.Evaluator, arg0: heu.phe.Ciphertext, arg1: "
+"heu.phe.Plaintext) -> heu.phe.Ciphertext"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.add:5 of
+msgid ""
+"add(self: heu.phe.Evaluator, arg0: heu.phe.Plaintext, arg1: "
+"heu.phe.Ciphertext) -> heu.phe.Ciphertext"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.add:7 of
+msgid ""
+"add(self: heu.phe.Evaluator, arg0: heu.phe.Ciphertext, arg1: "
+"heu.phe.Ciphertext) -> heu.phe.Ciphertext"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.add_inplace:3 of
+msgid ""
+"add_inplace(self: heu.phe.Evaluator, arg0: heu.phe.Ciphertext, arg1: "
+"heu.phe.Plaintext) -> None"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.add_inplace:5 of
+msgid ""
+"add_inplace(self: heu.phe.Evaluator, arg0: heu.phe.Ciphertext, arg1: "
+"heu.phe.Ciphertext) -> None"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.mul:3 of
+msgid ""
+"mul(self: heu.phe.Evaluator, ciphertext: heu.phe.Ciphertext, times: int) "
+"-> heu.phe.Ciphertext"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.mul:5 of
+msgid ""
+"mul(self: heu.phe.Evaluator, ciphertext: int, times: heu.phe.Ciphertext) "
+"-> heu.phe.Ciphertext"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.sub:3 of
+msgid ""
+"sub(self: heu.phe.Evaluator, arg0: heu.phe.Ciphertext, arg1: "
+"heu.phe.Plaintext) -> heu.phe.Ciphertext"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.sub:5 of
+msgid ""
+"sub(self: heu.phe.Evaluator, arg0: heu.phe.Plaintext, arg1: "
+"heu.phe.Ciphertext) -> heu.phe.Ciphertext"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.sub:7 of
+msgid ""
+"sub(self: heu.phe.Evaluator, arg0: heu.phe.Ciphertext, arg1: "
+"heu.phe.Ciphertext) -> heu.phe.Ciphertext"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.sub_inplace:3 of
+msgid ""
+"sub_inplace(self: heu.phe.Evaluator, arg0: heu.phe.Ciphertext, arg1: "
+"heu.phe.Plaintext) -> None"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.sub_inplace:5 of
+msgid ""
+"sub_inplace(self: heu.phe.Evaluator, arg0: heu.phe.Ciphertext, arg1: "
+"heu.phe.Ciphertext) -> None"
+msgstr ""
+
+#: ../../docstring heu.phe.FloatEncoder:3 of
+msgid "The cleartext can be a floating point number"
+msgstr "明码可以是浮点数"
+
+#: ../../docstring heu.phe.FloatEncoder:7 of
+msgid ""
+"__init__(self: heu.phe.FloatEncoder, schema: heu.phe.SchemaType, scale: "
+"int) -> None"
+msgstr ""
+
+#: ../../docstring heu.phe.FloatEncoder:9 of
+msgid ""
+"__init__(self: heu.phe.FloatEncoder, schema_type: heu.phe.SchemaType) -> "
+"None"
+msgstr ""
+
+#: ../../docstring heu.phe.FloatEncoder:11 heu.phe.IntegerEncoder:11 of
+#注释fuzzy , fuzzy
+msgid "Create an integer encoder using default scale"
+msgstr "使用默认比例创建 IntegerEncoder 实例"
+
+#: ../../docstring heu.phe.PyCapsule.decode:1 of
+msgid "Decode plaintext to float number"
+msgstr "将明文解码为浮点数"
+
+#: ../../docstring heu.phe.PyCapsule.encode:3 of
+msgid "encode(self: heu.phe.FloatEncoder, cleartext: float) -> heu.phe.Plaintext"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.encode:5 of
+msgid "Encode a float number into plaintext"
+msgstr "将浮点数编码为明文"
+
+#: ../../docstring heu.phe.PyCapsule.encode:7 of
+msgid "encode(self: heu.phe.FloatEncoder, cleartext: int) -> heu.phe.Plaintext"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.encode:5 heu.phe.PyCapsule.encode:9 of
+msgid "Encode an int128 number into plaintext"
+msgstr "将 int128 数编码为明文"
+
+#: ../../docstring heu.phe.FloatEncoderParams:1 of
+#注释fuzzy , fuzzy
+msgid "parameters for FloatEncoder"
+msgstr "BatchFloatEncoder 的参数"
+
+#: ../../docstring heu.phe.PyCapsule.instance:1 of
+msgid "Create FloatEncoder instance"
+msgstr "创建 FloatEncoder 实例"
+
+#: ../../docstring heu.phe.PyCapsule.decryptor:1 of
+msgid "Get decryptor"
+msgstr "获取解密器"
+
+#: ../../docstring heu.phe.PyCapsule.batch_float_encoder:1 of
+msgid ""
+"Get an instance of BatchIntegerEncoder, equal to "
+"`phe.BatchFloatEncoder(schema, scale, padding_size)`"
+msgstr ""
+"获取 BatchIntegerEncoder 实例，等同于 `phe.BatchFloatEncoder(schema, scale, "
+"padding_size)`"
+
+#: ../../docstring heu.phe.PyCapsule.batch_integer_encoder:1 of
+msgid ""
+"Get an instance of BatchIntegerEncoder, equal to "
+"`phe.BatchIntegerEncoder(schema, scale, padding_size)`"
+msgstr ""
+"获取 BatchIntegerEncoder 实例，等同于 `phe.BatchIntegerEncoder(schema, scale, "
+"padding_size)`"
+
+#: ../../docstring heu.phe.PyCapsule.bigint_encoder:1 of
+msgid "Get an instance of BigintEncoder, equal to `phe.BigintEncoder(schema)`"
+msgstr "获取 BigintEncoder 实例，等同于 `phe.BigintEncoder(schema)`"
+
+#: ../../docstring heu.phe.PyCapsule.float_encoder:1 of
+msgid ""
+"Get an instance of FloatEncoder, equal to `phe.FloatEncoder(schema, "
+"scale)`"
+msgstr "获取 FloatEncoder 实例，等同于 `phe.FloatEncoder(schema, scale)`"
+
+#: ../../docstring heu.phe.PyCapsule.get_schema:1 of
+msgid "Get schema type"
+msgstr "获取模式类型"
+
+#: ../../docstring heu.phe.PyCapsule.integer_encoder:1 of
+msgid ""
+"Get an instance of IntegerEncoder, equal to `phe.IntegerEncoder(schema, "
+"scale)`"
+msgstr "获取 IntegerEncoder 实例，等同于 `phe.IntegerEncoder(schema, scale)`"
+
+#: ../../docstring heu.phe.PyCapsule.plaintext:1 of
+msgid ""
+"Create a plaintext from int without bit size limit, equal to "
+"heu.phe.Plaintext(schema, int_num)"
+msgstr "从 int 创建一个没有位大小限制的明文，等同于 heu.phe.Plaintext(schema, int_num)"
+
+#: ../../docstring heu.phe.PyCapsule.public_key:1 of
+msgid "Get public key"
+msgstr "获取公钥"
+
+#: ../../docstring heu.phe.PyCapsule.secret_key:1 of
+msgid "Get secret key"
+msgstr "获取私钥"
+
+#: ../../docstring heu.phe.IntegerEncoder:3 of
+msgid ""
+"The cleartext must be an integer. If the cleartext is a floating-point "
+"number, the fractional part will be discarded."
+msgstr "明码必须是整数。如果明码是浮点数，则会丢弃小数部分"
+
+#: ../../docstring heu.phe.IntegerEncoder:7 of
+msgid ""
+"__init__(self: heu.phe.IntegerEncoder, schema: heu.phe.SchemaType, scale:"
+" int) -> None"
+msgstr ""
+
+#: ../../docstring heu.phe.IntegerEncoder:9 of
+msgid ""
+"__init__(self: heu.phe.IntegerEncoder, schema_type: heu.phe.SchemaType) "
+"-> None"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.decode:1 of
+msgid "Decode plaintext to int128 number"
+msgstr "将明文解码为 int128 数"
+
+#: ../../docstring heu.phe.PyCapsule.encode:3 of
+msgid "encode(self: heu.phe.IntegerEncoder, cleartext: int) -> heu.phe.Plaintext"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.encode:7 of
+msgid "encode(self: heu.phe.IntegerEncoder, arg0: float) -> heu.phe.Plaintext"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.encode:9 of
+msgid ""
+"Encode the integer part of a floating point number. (discarding the "
+"fractional part)"
+msgstr "编码浮点数的整数部分（丢弃小数部分）"
+
+#: ../../docstring heu.phe.IntegerEncoderParams:1 of
+#注释fuzzy , fuzzy
+msgid "parameters for IntegerEncoder"
+msgstr "BatchIntegerEncoder 的参数"
+
+#: ../../docstring heu.phe.PyCapsule.instance:1 of
+msgid "Create IntegerEncoder instance"
+msgstr "创建 IntegerEncoder 实例"
+
+#: ../../docstring heu.phe.Plaintext:1 of
+#注释fuzzy , fuzzy
+msgid "Create a plaintext from int without bit size limit"
+msgstr "从 int 创建一个没有位大小限制的明文"
+
+#: ../../docstring heu.phe.PyCapsule.bit_count:1 of
+msgid "Bit size of this plaintext"
+msgstr "此明文的位大小"
+
+#: ../../docstring heu.phe.PyCapsule.is_compatible:1 of
+msgid "Is this plaintext compatible with schema type 'x'"
+msgstr "此明文是否与模式类型 'x' 兼容"
+
+#: ../../docstring heu.phe.PyCapsule.to_bytes:1 of
+msgid "Return an array of bytes representing an integer."
+msgstr "返回表示整数的字节数组"
+
+#: ../../docstring heu.phe.PyCapsule.to_bytes:3 of
+msgid ""
+"The byteorder argument determines the byte order used to represent the "
+"integer. If byteorder is \"big\", the most significant byte is at the "
+"beginning of the byte array. If byteorder is \"little\", the most "
+"significant byte is at the end of the byte array. To request the native "
+"byte order of the host system, use sys.byteorder as the byte order value."
+msgstr ""
+"byteorder 参数确定用于表示整数的字节顺序。如果 byteorder 是 \"big\"，则最高有效字节位于字节数组的开头。如果 "
+"byteorder 是 \"little\"，则最高有效字节位于字节数组的末尾。要请求主机系统的本机字节顺序，请使用 sys.byteorder "
+"作为字节顺序值"
+
+#: ../../docstring heu.phe.PyCapsule.load_from:1 of
+msgid "deserialize matrix from bytes"
+msgstr "从字节反序列化矩阵"
+
+#: ../../docstring heu.phe.PyCapsule.plaintext_bound:1 of
+msgid "Get max_int, so valid plaintext range is [max_int_, -max_int_]"
+msgstr "获取 max_int，因此有效明文范围是 [max_int_, -max_int_]"
+
+#: ../../docstring heu.phe.PyCapsule.serialize:1 of
+msgid "serialize public key to bytes"
+msgstr "将公钥序列化为字节"
+
+#: ../../docstring heu.phe.SchemaType:1 of
+msgid "Members:"
+msgstr "成员:"
+
+#: ../../docstring heu.phe.SchemaType:3 of
+msgid "Mock"
+msgstr ""
+
+#: ../../docstring heu.phe.SchemaType:5 of
+msgid "OU"
+msgstr ""
+
+#: ../../docstring heu.phe.SchemaType:7 of
+msgid "IPCL"
+msgstr ""
+
+#: ../../docstring heu.phe.SchemaType:9 of
+msgid "ZPaillier"
+msgstr ""
+
+#: ../../docstring heu.phe.SchemaType:11 of
+msgid "FPaillier"
+msgstr ""
+
+#: ../../docstring heu.phe.SchemaType:13 of
+msgid "IcPaillier"
+msgstr ""
+
+#: ../../docstring heu.phe.SchemaType:15 of
+msgid "ElGamal"
+msgstr ""
+
+#: ../../docstring heu.phe.SchemaType:17 of
+msgid "DGK"
+msgstr ""
+
+#: ../../docstring heu.phe.SchemaType:19 of
+msgid "DJ"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.parse_schema_type:1 of
+msgid "Parse schema string. (string -> SchemaType)"
+msgstr "解析模式字符串（string -> SchemaType）"
+
+#: ../../docstring heu.phe.PyCapsule.setup:3 of
+msgid "setup(schema_type: heu.phe.SchemaType, key_size: int) -> heu.phe.HeKit"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.setup:5 of
+msgid "Setup phe environment by schema type and key size"
+msgstr "通过模式类型和密钥大小设置 phe 环境"
+
+#: ../../docstring heu.phe.PyCapsule.setup:7 of
+msgid "setup(schema_string: str, key_size: int) -> heu.phe.HeKit"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.setup:9 of
+msgid "Setup phe environment by schema string and key size"
+msgstr "通过模式字符串和密钥大小设置 phe 环境"
+
+#: ../../docstring heu.phe.PyCapsule.setup:11 of
+msgid ""
+"setup(schema_type: heu.phe.SchemaType = <SchemaType.ZPaillier: 3>) -> "
+"heu.phe.HeKit"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.setup:13 of
+msgid "Setup phe environment by schema type"
+msgstr "通过模式类型设置 phe 环境"
+
+#: ../../docstring heu.phe.PyCapsule.setup:15 of
+msgid "setup(schema_string: str = 'z-paillier') -> heu.phe.HeKit"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.setup:17 of
+msgid "Setup phe environment by schema string"
+msgstr "通过模式字符串设置 phe 环境"
+
+#: ../../docstring heu.phe.PyCapsule.setup:19 of
+msgid ""
+"setup(public_key: heu.phe.PublicKey, secret_key: heu.phe.SecretKey) -> "
+"heu.phe.HeKit"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.setup:21 of
+msgid "Setup phe environment by pre-generated pk and sk"
+msgstr "通过预生成的 pk 和 sk 设置 phe 环境"
+
+#: ../../docstring heu.phe.PyCapsule.setup:23 of
+msgid "setup(public_key: heu.phe.PublicKey) -> heu.phe.DestinationHeKit"
+msgstr ""
+
+#: ../../docstring heu.phe.PyCapsule.setup:25 of
+msgid "Setup phe environment by an already generated public key"
+msgstr "通过已生成的公钥设置 phe 环境"
+
