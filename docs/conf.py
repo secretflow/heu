@@ -46,6 +46,7 @@ author = 'HEU authors'
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
 language = 'zh_CN'
+autoclass_content='both'
 
 locale_dirs = ['locale/']
 gettext_compact = False  # optional.

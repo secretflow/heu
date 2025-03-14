@@ -1,0 +1,41 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022-2024 Ant Group Co., Ltd
+# This file is distributed under the same license as the HEU package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: HEU \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-14 20:31+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.11.0\n"
+
+#: ../../references/index.rst:2
+msgid "API 手册"
+msgstr ""
+
+#: ../../references/index.rst:4
+msgid "当前 HEU 提供了两大模块："
+msgstr ""
+
+#: ../../references/index.rst:6
+msgid "``heu.phe``: 实现了多种 PHE 算法"
+msgstr ""
+
+#: ../../references/index.rst:7
+msgid "``heu.numpy``: phe 模块的装饰器，提供了 PHE 矩阵运算接口，支持并行计算"
+msgstr ""
+
+#: ../../references/index.rst:10
+msgid "模块列表"
+msgstr ""
+
