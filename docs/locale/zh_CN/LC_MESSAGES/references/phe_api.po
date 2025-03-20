@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-14 20:32+0800\n"
+"POT-Creation-Date: 2025-03-20 17:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_CN\n"
@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.11.0\n"
+"Generated-By: Babel 2.17.0\n"
 
 #: ../../references/phe_api.rst:2
 msgid "PHE 模块"
@@ -36,11 +36,11 @@ msgid "BatchFloatEncoder can encode two floating number into one plaintext"
 msgstr "BatchFloatEncoder 可以将两个浮点数编码为一个明文"
 
 #: ../../docstring heu.phe.BatchFloatEncoder:3 of
-# 注释fuzzy , fuzzy
+#注释fuzzy, fuzzy
 msgid "Create a BatchFloatEncoder"
 msgstr "创建 BatchFloatEncoder 实例"
 
-#: ../../docstring heu.phe.BatchFloatEncoder of
+#: ../../references/phe_api.rst
 msgid "参数"
 msgstr ""
 
@@ -50,14 +50,13 @@ msgid ""
 "point numbers will be converted to integers by multiplied a scale. Please"
 " note that the encoded number cannot exceed 64 bits, otherwise it will "
 "overflow."
-msgstr ""
-"同态加密仅在内部支持整数，因此浮点数将通过乘以一个比例转换为整数。请注意，编码的数字不能超过 64 位，否则会溢出"
+msgstr "同态加密在内部仅支持整数，因此浮点数将通过乘以一个比例转换为整数。请注意，编码的数字不能超过 64 位，否则会溢出"
 
 #: ../../docstring heu.phe.BatchFloatEncoder:7 of
 msgid ""
 "The gap between two numbers, if the gap is too small, the low bit number "
 "will pollute the high bit number, resulting in wrong results."
-msgstr ""
+msgstr "两个数字之间的间隙，如果间隙太小，低位数字将污染高位数字，导致错误的结果"
 
 #: ../../docstring heu.phe.PyCapsule.decode:1 of
 msgid "Decode plaintext and return two cleartexts"
@@ -93,7 +92,7 @@ msgstr "存储 BatchIntegerEncoder 的参数"
 
 #: ../../docstring heu.phe.BatchIntegerEncoderParams:3 of
 msgid "Init BatchIntegerEncoderParams"
-msgstr "初始化 BatchIntegerEncoderParams"
+msgstr "初始化 BatchIntegerEncoderParams" 
 
 #: ../../docstring heu.phe.PyCapsule.instance:1 of
 msgid "Create BatchIntegerEncoder instance"
@@ -118,9 +117,9 @@ msgstr ""
 "在解码时隐式可用，我们将解码部分拆分为 BigintDecoder，它不依赖于任何初始化参数，可以在任何地方创建实例，使其更易于使用"
 
 #: ../../docstring heu.phe.BigintDecoder:5 of
-#注释fuzzy , fuzzy
+#注释fuzzy, fuzzy
 msgid "create BigintDecoder instance"
-msgstr "创建 BigintEncoder 实例"
+msgstr "创建 BigintDecoder 实例"
 
 #: ../../docstring heu.phe.PyCapsule.decode:1 of
 msgid "Decode plaintext to python int number"
@@ -136,7 +135,7 @@ msgid "BigintEncoder supports arbitrary precision integers"
 msgstr "BigintEncoder 支持任意精度整数"
 
 #: ../../docstring heu.phe.BigintEncoder:5 of
-#注释fuzzy , fuzzy
+#注释fuzzy, fuzzy
 msgid "Create a bigint encoder"
 msgstr "创建 BigintEncoder 实例"
 
@@ -145,13 +144,23 @@ msgid "Encode python int number into plaintext"
 msgstr "将 Python int 整数编码为明文"
 
 #: ../../docstring heu.phe.BigintEncoderParams:1 of
-#注释fuzzy , fuzzy
+#注释fuzzy, fuzzy
 msgid "parameters for BigintEncoder"
-msgstr "BatchIntegerEncoder 的参数"
+msgstr "BigintEncoder 的参数"
 
 #: ../../docstring heu.phe.PyCapsule.instance:1 of
 msgid "Create BigintEncoder instance"
 msgstr "创建 BigintEncoder 实例"
+
+#: ../../docstring heu.phe.PyCapsule.load_from:1 of
+#注释fuzzy, fuzzy
+msgid "deserialize ciphertext from bytes"
+msgstr "从字节反序列化密文"
+
+#: ../../docstring heu.phe.PyCapsule.serialize:1 of
+#注释fuzzy, fuzzy
+msgid "serialize ciphertext to bytes"
+msgstr "将密文序列化为字节"
 
 #: ../../docstring heu.phe.PyCapsule.decrypt:1 of
 msgid "Decrypt ciphertext to plaintext"
@@ -289,7 +298,7 @@ msgid ""
 msgstr ""
 
 #: ../../docstring heu.phe.FloatEncoder:11 heu.phe.IntegerEncoder:11 of
-#注释fuzzy , fuzzy
+#注释fuzzy, fuzzy
 msgid "Create an integer encoder using default scale"
 msgstr "使用默认比例创建 IntegerEncoder 实例"
 
@@ -314,9 +323,9 @@ msgid "Encode an int128 number into plaintext"
 msgstr "将 int128 数编码为明文"
 
 #: ../../docstring heu.phe.FloatEncoderParams:1 of
-#注释fuzzy , fuzzy
+#注释fuzzy, fuzzy
 msgid "parameters for FloatEncoder"
-msgstr "BatchFloatEncoder 的参数"
+msgstr "FloatEncoder 的参数"
 
 #: ../../docstring heu.phe.PyCapsule.instance:1 of
 msgid "Create FloatEncoder instance"
@@ -413,16 +422,16 @@ msgid ""
 msgstr "编码浮点数的整数部分（丢弃小数部分）"
 
 #: ../../docstring heu.phe.IntegerEncoderParams:1 of
-#注释fuzzy , fuzzy
+#注释fuzzy, fuzzy
 msgid "parameters for IntegerEncoder"
-msgstr "BatchIntegerEncoder 的参数"
+msgstr "IntegerEncoder 的参数"
 
 #: ../../docstring heu.phe.PyCapsule.instance:1 of
 msgid "Create IntegerEncoder instance"
 msgstr "创建 IntegerEncoder 实例"
 
 #: ../../docstring heu.phe.Plaintext:1 of
-#注释fuzzy , fuzzy
+#注释fuzzy, fuzzy
 msgid "Create a plaintext from int without bit size limit"
 msgstr "从 int 创建一个没有位大小限制的明文"
 
@@ -451,8 +460,9 @@ msgstr ""
 "作为字节顺序值"
 
 #: ../../docstring heu.phe.PyCapsule.load_from:1 of
-msgid "deserialize matrix from bytes"
-msgstr "从字节反序列化矩阵"
+#注释fuzzy, fuzzy
+msgid "deserialize public key from bytes"
+msgstr "从字节反序列化公钥"
 
 #: ../../docstring heu.phe.PyCapsule.plaintext_bound:1 of
 msgid "Get max_int, so valid plaintext range is [max_int_, -max_int_]"
@@ -502,6 +512,16 @@ msgstr ""
 msgid "DJ"
 msgstr ""
 
+#: ../../docstring heu.phe.PyCapsule.load_from:1 of
+#注释fuzzy, fuzzy
+msgid "deserialize secret key from bytes"
+msgstr "从字节反序列化私钥"
+
+#: ../../docstring heu.phe.PyCapsule.serialize:1 of
+#注释fuzzy, fuzzy
+msgid "serialize secret key to bytes"
+msgstr "将私钥序列化为字节"
+
 #: ../../docstring heu.phe.PyCapsule.parse_schema_type:1 of
 msgid "Parse schema string. (string -> SchemaType)"
 msgstr "解析模式字符串（string -> SchemaType）"
@@ -524,7 +544,7 @@ msgstr "通过模式字符串和密钥大小设置 phe 环境"
 
 #: ../../docstring heu.phe.PyCapsule.setup:11 of
 msgid ""
-"setup(schema_type: heu.phe.SchemaType = <SchemaType.ZPaillier: 3>) -> "
+"setup(schema_type: heu.phe.SchemaType = <SchemaType.ZPaillier: 4>) -> "
 "heu.phe.HeKit"
 msgstr ""
 
@@ -557,4 +577,86 @@ msgstr ""
 #: ../../docstring heu.phe.PyCapsule.setup:25 of
 msgid "Setup phe environment by an already generated public key"
 msgstr "通过已生成的公钥设置 phe 环境"
+
+# 注释fuzzy , fuzzy
+#~ msgid "Create a BatchFloatEncoder"
+#~ msgstr "创建 BatchFloatEncoder 实例"
+
+#~ msgid "参数"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Homomorphic encryption only supports integers"
+#~ " internally, so floating-point numbers "
+#~ "will be converted to integers by "
+#~ "multiplied a scale. Please note that "
+#~ "the encoded number cannot exceed 64 "
+#~ "bits, otherwise it will overflow."
+#~ msgstr "同态加密在内部仅支持整数，因此浮点数将通过乘以一个比例转换为整数。请注意，编码的数字不能超过 64 位，否则会溢出"
+
+#~ msgid ""
+#~ "The gap between two numbers, if "
+#~ "the gap is too small, the low "
+#~ "bit number will pollute the high "
+#~ "bit number, resulting in wrong results."
+#~ msgstr "两个数字之间的间隙，如果间隙太小，低位数字将污染高位数字，导致错误的结果"
+
+#~ msgid "Init PyBatchFloatEncoderParams"
+#~ msgstr "初始化 PyBatchFloatEncoderParams"
+
+#~ msgid "Init BatchIntegerEncoderParams"
+#~ msgstr "初始化 BatchIntegerEncoderParams"
+
+# 注释fuzzy , fuzzy
+#~ msgid "create BigintDecoder instance"
+#~ msgstr "创建 BigintDecoder 实例"
+
+# 注释fuzzy , fuzzy
+#~ msgid "Create a bigint encoder"
+#~ msgstr "创建 BigintEncoder 实例"
+
+# 注释fuzzy , fuzzy
+#~ msgid "parameters for BigintEncoder"
+#~ msgstr "BigintEncoder 的参数"
+
+#~ msgid ""
+#~ "__init__(self: heu.phe.FloatEncoder, schema: "
+#~ "heu.phe.SchemaType, scale: int) -> None"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "__init__(self: heu.phe.FloatEncoder, schema_type: "
+#~ "heu.phe.SchemaType) -> None"
+#~ msgstr ""
+
+# 注释fuzzy , fuzzy
+#~ msgid "Create an integer encoder using default scale"
+#~ msgstr "使用默认比例创建 IntegerEncoder 实例"
+
+# 注释fuzzy , fuzzy
+#~ msgid "parameters for FloatEncoder"
+#~ msgstr "FloatEncoder 的参数"
+
+#~ msgid ""
+#~ "__init__(self: heu.phe.IntegerEncoder, schema: "
+#~ "heu.phe.SchemaType, scale: int) -> None"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "__init__(self: heu.phe.IntegerEncoder, schema_type: "
+#~ "heu.phe.SchemaType) -> None"
+#~ msgstr ""
+
+# 注释fuzzy , fuzzy
+#~ msgid "parameters for IntegerEncoder"
+#~ msgstr "IntegerEncoder 的参数"
+
+# 注释fuzzy , fuzzy
+#~ msgid "Create a plaintext from int without bit size limit"
+#~ msgstr "从 int 创建一个没有位大小限制的明文"
+
+#~ msgid ""
+#~ "setup(schema_type: heu.phe.SchemaType = "
+#~ "<SchemaType.ZPaillier: 3>) -> heu.phe.HeKit"
+#~ msgstr ""
 
