@@ -19,11 +19,11 @@
 namespace heu::lib::numpy::test {
 
 auto CountValue(const PMatrix &m) {
-  std::unordered_map<int, int> res;
+  std::unordered_map<int, int> ret;
   m.ForEach([&](int64_t, int64_t,
-                const phe::Plaintext &pt) { res[pt.GetValue<int>()]++; },
+                const phe::Plaintext &pt) { ret[pt.GetValue<int>()]++; },
             false);
-  return res;
+  return ret;
 }
 
 TEST(NumpyRandom, RandIntWorks) {
