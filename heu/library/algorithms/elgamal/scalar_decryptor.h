@@ -25,7 +25,7 @@ namespace heu::lib::algorithms::elgamal {
 
 class Decryptor {
  public:
-  Decryptor(const PublicKey &pk, const SecretKey &sk) : pk_(pk), sk_(sk){};
+  Decryptor(const PublicKey &pk, const SecretKey &sk) : pk_(pk), sk_(sk) {};
 
   void Decrypt(const Ciphertext &ct, Plaintext *out) const;
   Plaintext Decrypt(const Ciphertext &ct) const;

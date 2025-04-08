@@ -25,7 +25,8 @@ namespace heu::lib::phe {
     SchemaType::enum_item, { #enum_item, ##__VA_ARGS__ } \
   }
 #define MAP_ITEM_false(...) \
-  {}
+  {                         \
+  }
 #define MAP_ITEM_HELPER(enable, enum_item, ...) \
   MAP_ITEM_##enable(enum_item, ##__VA_ARGS__)
 #define MAP_ITEM(enable, enum_item, ...) \
