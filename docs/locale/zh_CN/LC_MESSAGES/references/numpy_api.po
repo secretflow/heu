@@ -1,0 +1,975 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022 Ant Group Co., Ltd
+# This file is distributed under the same license as the HEU package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: HEU \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-25 10:58+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.14.0\n"
+
+#: ../../references/numpy_api.rst:2
+msgid "Numpy 模块"
+msgstr ""
+
+#: ../../references/numpy_api.rst:4
+msgid "请使用 ``from heu import numpy as hnp`` 引入 phe 模块"
+msgstr ""
+
+#: ../../docstring heu.numpy:1 of
+msgid "a numpy adapter for phe module which provides numpy-like api"
+msgstr "一个用于 phe 模块的 numpy 适配器，提供类似 numpy 的 API"
+
+#: ../../docstring heu.numpy.CiphertextArray.cols:1
+#: heu.numpy.PlaintextArray.cols:1 heu.numpy.StringArray.cols:1 of
+msgid "Get the number of cols"
+msgstr "获取列数"
+
+#: ../../docstring heu.numpy.PyCapsule.load_from:1 of
+msgid "deserialize matrix from bytes"
+msgstr "从字节流中恢复出原始的矩阵结构"
+
+#: ../../docstring heu.numpy.CiphertextArray.ndim:1
+#: heu.numpy.PlaintextArray.ndim:1 heu.numpy.StringArray.ndim:1 of
+msgid "The array's number of dimensions"
+msgstr "数组的维数"
+
+#: ../../docstring heu.numpy.CiphertextArray.rows:1
+#: heu.numpy.PlaintextArray.rows:1 heu.numpy.StringArray.rows:1 of
+msgid "Get the number of rows"
+msgstr "获取行数"
+
+#: ../../docstring heu.numpy.PyCapsule.serialize:1 of
+msgid "serialize matrix to bytes"
+msgstr "将矩阵序列化为字节"
+
+#: ../../docstring heu.numpy.CiphertextArray.shape:1
+#: heu.numpy.PlaintextArray.shape:1 heu.numpy.StringArray.shape:1 of
+msgid "The array's shape"
+msgstr "数组的形状"
+
+#: ../../docstring heu.numpy.CiphertextArray.size:1
+#: heu.numpy.PlaintextArray.size:1 heu.numpy.StringArray.size:1 of
+msgid "Number of elements in the array"
+msgstr "数组中元素的数量"
+
+#: ../../docstring heu.numpy.PyCapsule.transpose:1 of
+msgid "Transpose the array"
+msgstr "转置数组"
+
+#: ../../docstring heu.numpy.PyCapsule.add:1 heu.numpy.PyCapsule.array:1
+#: heu.numpy.PyCapsule.batch_feature_wise_bucket_sum:1
+#: heu.numpy.PyCapsule.batch_select_sum:1 heu.numpy.PyCapsule.decrypt:1
+#: heu.numpy.PyCapsule.decrypt_in_range:1 heu.numpy.PyCapsule.encrypt:1
+#: heu.numpy.PyCapsule.feature_wise_bucket_sum:1 heu.numpy.PyCapsule.matmul:1
+#: heu.numpy.PyCapsule.mul:1 heu.numpy.PyCapsule.select_sum:1
+#: heu.numpy.PyCapsule.setup:1 heu.numpy.PyCapsule.sub:1
+#: heu.numpy.PyCapsule.sum:1 heu.numpy.PyCapsule.to_numpy:1 of
+msgid "Overloaded function."
+msgstr "重载函数"
+
+#: ../../docstring heu.numpy.PyCapsule.decrypt:3 of
+msgid ""
+"decrypt(self: heu.numpy.Decryptor, ciphertext: heu.phe.Ciphertext) -> "
+"heu.phe.Plaintext"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.decrypt:5 of
+msgid "Decrypt ciphertext (scalar) to plaintext (scalar)"
+msgstr "将密文（标量）解密为明文（标量）"
+
+#: ../../docstring heu.numpy.PyCapsule.decrypt:7 of
+msgid ""
+"decrypt(self: heu.numpy.Decryptor, ciphertext_array: "
+"heu.numpy.CiphertextArray) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.decrypt:9 of
+msgid "Decrypt ciphertext array to plaintext array"
+msgstr "将密文数组解密为明文数组"
+
+#: ../../docstring heu.numpy.PyCapsule.decrypt_in_range:3 of
+msgid ""
+"decrypt_in_range(self: heu.numpy.Decryptor, ciphertext: "
+"heu.phe.Ciphertext, range_bits: int = 128) -> heu.phe.Plaintext"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.decrypt_in_range:5 of
+msgid ""
+"Decrypt ciphertext (scalar) and make sure plaintext is in range "
+"(-2^range_bits, 2^range_bits). Range checking is used to block OU "
+"plaintext overflow attack, see HEU documentation for details. throws an "
+"exception if plaintext is out of range."
+msgstr ""
+"解密密文（标量）并确保明文在范围内（-2^range_bits, 2^range_bits）。"
+"范围检查用于阻止溢出攻击，详见 HEU 文档。"
+"如果明文超出范围，则抛出异常。"
+
+#: ../../docstring heu.numpy.PyCapsule.decrypt_in_range:8 of
+msgid ""
+"decrypt_in_range(self: heu.numpy.Decryptor, CMatrix: "
+"heu.numpy.CiphertextArray, range_bits: int = 128) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.decrypt_in_range:10 of
+msgid ""
+"Decrypt ciphertext array and make sure each plaintext is in range "
+"(-2^range_bits, 2^range_bits). Range checking is used to block OU "
+"plaintext overflow attack, see HEU documentation for details. throws an "
+"exception if plaintext is out of range."
+msgstr ""
+"解密密文数组并确保每个明文都在范围内（-2^range_bits, 2^range_bits）。"
+"范围检查用于阻止 OU 明文溢出攻击，详见 HEU 文档。"
+"如果明文超出范围，则抛出异常。"
+
+#: ../../docstring heu.numpy.PyCapsule.array:3 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, "
+"encoder_params: heu.phe.BigintEncoderParams = BigintEncoderParams()) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:5 of
+msgid "Create and encode an array using heu::pylib::PyBigintEncoderParams"
+msgstr "使用 heu::pylib::PyBigintEncoderParams 创建并编码一个数组"
+
+#: ../../docstring heu.numpy.PyCapsule.array:7 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, object: object, encoder_params: "
+"heu.phe.BigintEncoderParams = BigintEncoderParams()) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:9 of
+msgid "Encode a numpy ndarray using heu::pylib::PyBigintEncoderParams"
+msgstr "使用 heu::pylib::PyBigintEncoderParams 编码 numpy ndarray"
+
+#: ../../docstring heu.numpy.PyCapsule.array:11 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, encoder: "
+"heu.phe.BigintEncoder) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:13 of
+msgid ""
+"Create and encode an array using heu::pylib::PyBigintEncoder, same with "
+"hnp.array()"
+msgstr ""
+"使用 heu::pylib::PyBigintEncoder 创建并编码一个数组，与 hnp.array() 相同"
+
+#: ../../docstring heu.numpy.PyCapsule.array:15 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, object: object, encoder: "
+"heu.phe.BigintEncoder) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:17 of
+msgid ""
+"Encode a numpy ndarray using heu::pylib::PyBigintEncoder, same with "
+"hnp.array()"
+msgstr ""
+"使用 heu::pylib::PyBigintEncoder 编码 numpy ndarray, 与 hnp.array() 相同"
+
+#: ../../docstring heu.numpy.PyCapsule.array:19 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, "
+"encoder_params: heu.phe.IntegerEncoderParams) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:21 of
+msgid "Create and encode an array using heu::pylib::PyIntegerEncoderParams"
+msgstr "使用 heu::pylib::PyIntegerEncoderParams 创建并编码一个数组"
+
+#: ../../docstring heu.numpy.PyCapsule.array:23 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, object: object, encoder_params: "
+"heu.phe.IntegerEncoderParams) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:25 of
+msgid "Encode a numpy ndarray using heu::pylib::PyIntegerEncoderParams"
+msgstr "使用 heu::pylib::PyIntegerEncoderParams 编码 numpy ndarray"
+
+#: ../../docstring heu.numpy.PyCapsule.array:27 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, encoder: "
+"heu.phe.IntegerEncoder) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:29 of
+msgid ""
+"Create and encode an array using heu::pylib::PyIntegerEncoder, same with "
+"hnp.array()"
+msgstr ""
+"使用 heu::pylib::PyIntegerEncoder 创建并编码一个数组，与 hnp.array() 相同"
+
+#: ../../docstring heu.numpy.PyCapsule.array:31 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, object: object, encoder: "
+"heu.phe.IntegerEncoder) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:33 of
+msgid ""
+"Encode a numpy ndarray using heu::pylib::PyIntegerEncoder, same with "
+"hnp.array()"
+msgstr ""
+"使用 heu::pylib::PyIntegerEncoder 编码 numpy ndarray, 与 hnp.array() 相同"
+
+#: ../../docstring heu.numpy.PyCapsule.array:35 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, "
+"encoder_params: heu.phe.FloatEncoderParams) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:37 of
+msgid "Create and encode an array using heu::pylib::PyFloatEncoderParams"
+msgstr "使用 heu::pylib::PyFloatEncoderParams 创建并编码一个数组"
+
+#: ../../docstring heu.numpy.PyCapsule.array:39 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, object: object, encoder_params: "
+"heu.phe.FloatEncoderParams) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:41 of
+msgid "Encode a numpy ndarray using heu::pylib::PyFloatEncoderParams"
+msgstr "使用 heu::pylib::PyFloatEncoderParams 编码 numpy ndarray"
+
+#: ../../docstring heu.numpy.PyCapsule.array:43 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, encoder: "
+"heu.phe.FloatEncoder) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:45 of
+msgid ""
+"Create and encode an array using heu::pylib::PyFloatEncoder, same with "
+"hnp.array()"
+msgstr ""
+"使用 heu::pylib::PyFloatEncoder 创建并编码一个数组，与 hnp.array() 相同"
+
+#: ../../docstring heu.numpy.PyCapsule.array:47 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, object: object, encoder: "
+"heu.phe.FloatEncoder) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:49 of
+msgid ""
+"Encode a numpy ndarray using heu::pylib::PyFloatEncoder, same with "
+"hnp.array()"
+msgstr ""
+"使用 heu::pylib::PyFloatEncoder 编码 numpy ndarray, 与 hnp.array() 相同"
+
+#: ../../docstring heu.numpy.PyCapsule.array:51 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, "
+"encoder_params: heu.phe.BatchIntegerEncoderParams) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:53 of
+msgid "Create and encode an array using heu::pylib::PyBatchIntegerEncoderParams"
+msgstr "使用 heu::pylib::PyBatchIntegerEncoderParams 创建并编码一个数组"
+
+#: ../../docstring heu.numpy.PyCapsule.array:55 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, object: object, encoder_params: "
+"heu.phe.BatchIntegerEncoderParams) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:57 of
+msgid "Encode a numpy ndarray using heu::pylib::PyBatchIntegerEncoderParams"
+msgstr "使用 heu::pylib::PyBatchIntegerEncoderParams 编码 numpy ndarray"
+
+#: ../../docstring heu.numpy.PyCapsule.array:59 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, encoder: "
+"heu.phe.BatchIntegerEncoder) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:61 of
+msgid ""
+"Create and encode an array using heu::pylib::PyBatchIntegerEncoder, same "
+"with hnp.array()"
+msgstr ""
+"使用 heu::pylib::PyBatchIntegerEncoder 创建并编码一个数组，与 hnp.array() 相同"
+
+#: ../../docstring heu.numpy.PyCapsule.array:63 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, object: object, encoder: "
+"heu.phe.BatchIntegerEncoder) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:65 of
+msgid ""
+"Encode a numpy ndarray using heu::pylib::PyBatchIntegerEncoder, same with"
+" hnp.array()"
+msgstr ""
+"使用 heu::pylib::PyBatchIntegerEncoder 编码 numpy ndarray, 与 hnp.array() 相同"
+
+#: ../../docstring heu.numpy.PyCapsule.array:67 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, "
+"encoder_params: heu.phe.BatchFloatEncoderParams) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:69 of
+msgid "Create and encode an array using heu::pylib::PyBatchFloatEncoderParams"
+msgstr "使用 heu::pylib::PyBatchFloatEncoderParams 创建并编码一个数组"
+
+#: ../../docstring heu.numpy.PyCapsule.array:71 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, object: object, encoder_params: "
+"heu.phe.BatchFloatEncoderParams) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:73 of
+msgid "Encode a numpy ndarray using heu::pylib::PyBatchFloatEncoderParams"
+msgstr "使用 heu::pylib::PyBatchFloatEncoderParams 编码 numpy ndarray"
+
+#: ../../docstring heu.numpy.PyCapsule.array:75 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, ndarray: numpy.ndarray, encoder: "
+"heu.phe.BatchFloatEncoder) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:77 of
+msgid ""
+"Create and encode an array using heu::pylib::PyBatchFloatEncoder, same "
+"with hnp.array()"
+msgstr ""
+"使用 heu::pylib::PyBatchFloatEncoder 创建并编码一个数组，与 hnp.array() 相同"
+
+#: ../../docstring heu.numpy.PyCapsule.array:79 of
+msgid ""
+"array(self: heu.phe.HeKitPublicBase, object: object, encoder: "
+"heu.phe.BatchFloatEncoder) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:81 of
+msgid ""
+"Encode a numpy ndarray using heu::pylib::PyBatchFloatEncoder, same with "
+"hnp.array()"
+msgstr ""
+"使用 heu::pylib::PyBatchFloatEncoder 编码 numpy ndarray, 与 hnp.array() 相同"
+
+#: ../../docstring heu.numpy.PyCapsule.encryptor:1 of
+msgid "Get encryptor"
+msgstr "获取加密器"
+
+#: ../../docstring heu.numpy.PyCapsule.evaluator:1 of
+msgid "Get evaluator"
+msgstr "获取评估器"
+
+#: ../../docstring heu.numpy.PyCapsule.encrypt:3 of
+msgid ""
+"encrypt(self: heu.numpy.Encryptor, plaintext: heu.phe.Plaintext) -> "
+"heu.phe.Ciphertext"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.encrypt:5 of
+msgid "Encrypt plaintext (scalar) to ciphertext (scalar)"
+msgstr "加密明文（标量）为密文（标量）"
+
+#: ../../docstring heu.numpy.PyCapsule.encrypt:7 of
+msgid ""
+"encrypt(self: heu.numpy.Encryptor, plaintext_array: "
+"heu.numpy.PlaintextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.encrypt:9 of
+msgid "Encrypt plaintext array to ciphertext array"
+msgstr "加密明文数组为密文数组"
+
+#: ../../docstring heu.numpy.PyCapsule.encrypt_with_audit:1 of
+msgid "Encrypt and build audit string including plaintext/random/ciphertext info"
+msgstr "加密并构建包含明文/随机/密文信息的审计字符串"
+
+#: ../../docstring heu.numpy.Encryptor.phe:1 of
+msgid "Get the instance of phe.Encryptor for scalar encryption"
+msgstr "获取用于标量加密的 phe.Encryptor 实例"
+
+#: ../../docstring heu.numpy.PyCapsule.add:3 of
+msgid ""
+"add(self: heu.numpy.Evaluator, arg0: heu.numpy.CiphertextArray, arg1: "
+"heu.numpy.CiphertextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.add:5 of
+msgid ""
+"add(self: heu.numpy.Evaluator, arg0: heu.numpy.CiphertextArray, arg1: "
+"heu.numpy.PlaintextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.add:7 of
+msgid ""
+"add(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, arg1: "
+"heu.numpy.CiphertextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.add:9 of
+msgid ""
+"add(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, arg1: "
+"heu.numpy.PlaintextArray) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.batch_feature_wise_bucket_sum:3 of
+msgid ""
+"batch_feature_wise_bucket_sum(self: heu.numpy.Evaluator, arg0: "
+"heu.numpy.PlaintextArray, arg1: List[numpy.ndarray[numpy.int8[1, n]]], "
+"arg2: numpy.ndarray[numpy.int8[m, n], flags.c_contiguous], arg3: int, "
+"arg4: bool) -> List[heu.numpy.PlaintextArray]"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.batch_feature_wise_bucket_sum:5 of
+msgid ""
+"Take elements in x according to order_map to caculate the row sum at each"
+" bin for each subgroup (Plaintext) e heu numpy evaluator x dense matrix, "
+"rows are elements of bin sum subgroup_map a list of 1d py np ndarray "
+"(vector) acts as filters. Its length should be equal to x.rows(), "
+"elements should be 0 or 1, with 1 indicates in this subgroup. order_map a"
+" 2d py ndarray. It has shape x.rows() * number of features.order_map(i, "
+"j) = k means row i feature j should be in bin k of feature j. bucket_num "
+"int. The number of buckets for each bin. cumsum bool. If apply cumulative"
+" sum to buckets for each feature. return list of dense matrix<T>, the row"
+" bin sum results. Each element has shape (bucket_num * feature_num, "
+"x.cols())."
+msgstr ""
+"根据 order_map 提取 x 中的元素，使用 heu numpy 评估器处理 x 的稠密矩阵，计算每个"
+"子组（Plaintext）的行分箱和。subgroup_map 是一个由一维 py np 数组（向量）组成的列"
+"表，作为过滤器使用。其长度必须等于 x 的行数，元素为 0 或 1，其中 1 表示属于该子组。"
+"order_map 是一个二维 py 数组，形状为  x.rows() * number of features.order_map(i, j) = k 表示"
+"第 i 行第 j 列的特征应位于特征 j 的第 k 个分箱中。bucket_num int，表示每个分箱的"
+"桶数。cumsum bool，表示是否对每个特征的桶应用累积和。返回一个稠密矩阵列表，每个"
+"元素的形状为 (bucket_num * feature_num,  x.cols())，表示行分箱和的结果。"
+
+#: ../../docstring heu.numpy.PyCapsule.batch_feature_wise_bucket_sum:22 of
+msgid ""
+"batch_feature_wise_bucket_sum(self: heu.numpy.Evaluator, arg0: "
+"heu.numpy.CiphertextArray, arg1: List[numpy.ndarray[numpy.int8[1, n]]], "
+"arg2: numpy.ndarray[numpy.int8[m, n], flags.c_contiguous], arg3: int, "
+"arg4: bool) -> List[heu.numpy.CiphertextArray]"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.batch_feature_wise_bucket_sum:24 of
+msgid ""
+"Take elements in x according to order_map to caculate the row sum at each"
+" bin for each subgroup (Ciphertext) e heu numpy evaluator x dense matrix,"
+" rows are elements of bin sum subgroup_map a list of 1d py np ndarray "
+"(vector) acts as filters. Its length should be equal to x.rows(), "
+"elements should be 0 or 1, with 1 indicates in this subgroup. order_map a"
+" 2d py ndarray. It has shape x.rows() * number of features.order_map(i, "
+"j) = k means row i feature j should be in bin k of feature j. bucket_num "
+"int. The number of buckets for each bin. cumsum bool. If apply cumulative"
+" sum to buckets for each feature. return list of dense matrix<T>, the row"
+" bin sum results. Each element has shape (bucket_num * feature_num, "
+"x.cols())."
+msgstr ""
+"根据 order_map 提取 x 中的元素，使用 heu numpy 评估器处理 x 的稠密矩阵，"
+"计算每个子组（Ciphertext）的行分箱和。subgroup_map 是由一维 py np "
+"数组（向量）组成的列表，作为过滤器使用。其长度必须等于 x 的行数，元素为 0 "
+"或 1，其中 1 表示属于该子组。order_map 是二维 py 数组，形状为 x.rows() * "
+"number of features.order_map(i, j) = k 表示第 i 行第 j 列的特征应位于特征 j 的第 k 个分箱中。"
+"bucket_num int，表示每个分箱的桶数。cumsum bool，表示是否对每个特征的桶应用"
+"累积和。返回一个稠密矩阵列表，每个元素的形状为 (bucket_num * feature_num, x.cols())，表示行分箱和的结果。"
+
+#: ../../docstring heu.numpy.PyCapsule.batch_select_sum:3 of
+msgid ""
+"batch_select_sum(self: heu.numpy.Evaluator, arg0: "
+"heu.numpy.PlaintextArray, arg1: List[object]) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.batch_select_sum:5 of
+msgid ""
+"Compute an array of sum of selected elements (Plaintext), equivalent to "
+"[x[indices].sum() for indices in indices_list] but faster."
+msgstr ""
+"计算选定元素的明文求和数组，功能等效于 [x[indices].sum() for indices in indices_list]，但实现效率更高"
+
+#: ../../docstring heu.numpy.PyCapsule.batch_select_sum:9 of
+msgid ""
+"batch_select_sum(self: heu.numpy.Evaluator, arg0: "
+"heu.numpy.CiphertextArray, arg1: List[object]) -> "
+"heu.numpy.CiphertextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.batch_select_sum:11 of
+msgid ""
+"Compute an array of sum of selected elements (Ciphertext), equivalent to "
+"[x[indices].sum() for indices in indices_list] but faster."
+msgstr ""
+"计算选定元素的密文求和数组，功能等效于 [x[indices].sum() for indices in indices_list]，但实现效率更高"
+
+#: ../../docstring heu.numpy.PyCapsule.feature_wise_bucket_sum:3 of
+msgid ""
+"feature_wise_bucket_sum(self: heu.numpy.Evaluator, arg0: "
+"heu.numpy.PlaintextArray, arg1: numpy.ndarray[numpy.int8[1, n]], arg2: "
+"numpy.ndarray[numpy.int8[m, n], flags.c_contiguous], arg3: int, arg4: "
+"bool) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.feature_wise_bucket_sum:5 of
+msgid ""
+"Take elements in x according to order_map to caculate the row sum at each"
+" bin. (Plaintext) e heu numpy evaluator x dense matrix, rows are elements"
+" of bin sum subgroup_map a 1d py np ndarray (vector) acts as a filter. "
+"Its length should be equal to x.rows(), elements should be 0 or 1, with 1"
+" indicates in this subgroup. order_map a 2d py ndarray. It has shape "
+"x.rows() * number of features.order_map(i, j) = k means row i feature j "
+"should be in bin k of feature j. bucket_num int. The number of buckets "
+"for each bin. cumsum bool. If apply cumulative sum to buckets for each "
+"feature. return dense matrix<T>, the row bin sum result. It has shape "
+"(bucket_num * feature_num, x.cols())."
+msgstr ""
+"根据 order_map 提取 x 中的元素，使用 heu numpy 评估器处理 x 的稠密矩阵，计算"
+"每个分箱的行和。subgroup_map 是一维 py np 数组（向量），作为过滤器使用。"
+"其长度必须等于 x 的行数，元素为 0 或 1，其中 1 表示属于该子组。order_map 是"
+"二维 py 数组，形状为 x.rows() * number of features.order_map(i, j) = k 表示第 i 行"
+"第 j 列的特征应位于特征 j 的第 k 个分箱中。bucket_num int，表示每个分箱的"
+"桶数。cumsum bool，表示是否对每个特征的桶应用累积和。返回一个稠密矩阵，"
+"形状为 (bucket_num * feature_num, x.cols())，表示行分箱和的结果。"
+
+#: ../../docstring heu.numpy.PyCapsule.feature_wise_bucket_sum:21 of
+msgid ""
+"feature_wise_bucket_sum(self: heu.numpy.Evaluator, arg0: "
+"heu.numpy.CiphertextArray, arg1: numpy.ndarray[numpy.int8[1, n]], arg2: "
+"numpy.ndarray[numpy.int8[m, n], flags.c_contiguous], arg3: int, arg4: "
+"bool) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.feature_wise_bucket_sum:23 of
+msgid ""
+"Take elements in x according to order_map to caculate the row sum at each"
+" bin. (Ciphertext) e heu numpy evaluator x dense matrix, rows are "
+"elements of bin sum subgroup_map a 1d py np ndarray (vector) acts as a "
+"filter. Its length should be equal to x.rows(), elements should be 0 or "
+"1, with 1 indicates in this subgroup. order_map a 2d py ndarray. It has "
+"shape x.rows() * number of features.order_map(i, j) = k means row i "
+"feature j should be in bin k of feature j. bucket_num int. The number of "
+"buckets for each bin. cumsum bool. If apply cumulative sum to buckets for"
+" each feature. return dense matrix<T>, the row bin sum result. It has "
+"shape (bucket_num * feature_num, x.cols())."
+msgstr ""
+"根据 order_map 提取 x 中的元素，使用 heu numpy 评估器处理 x 的稠密矩阵，计算每个"
+"分箱的行和。subgroup_map 是一维 py np 数组（向量），作为过滤器使用。其长度必"
+"须等于 x 的行数，元素为 0 或 1，其中 1 表示属于该子组。order_map 是二维 py 数"
+"组，形状为 x.rows() * number of features.order_map(i, j) = k 表示第 i 行第 j 列的特征应位于"
+"特征 j 的第 k 个分箱中。bucket_num int，表示每个分箱的桶数。cumsum bool，表"
+"示是否对每个特征的桶应用累积和。返回一个稠密矩阵，形状为 (bucket_num * feature_num, x.cols())，表示行分箱和的结果。"
+
+#: ../../docstring heu.numpy.PyCapsule.matmul:3 of
+msgid ""
+"matmul(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, arg1: "
+"heu.numpy.PlaintextArray) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.matmul:5 of
+msgid ""
+"matmul(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, arg1: "
+"heu.numpy.CiphertextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.matmul:7 of
+msgid ""
+"matmul(self: heu.numpy.Evaluator, arg0: heu.numpy.CiphertextArray, arg1: "
+"heu.numpy.PlaintextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.mul:3 of
+msgid ""
+"mul(self: heu.numpy.Evaluator, arg0: heu.numpy.CiphertextArray, arg1: "
+"heu.numpy.PlaintextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.mul:5 of
+msgid ""
+"mul(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, arg1: "
+"heu.numpy.CiphertextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.mul:7 of
+msgid ""
+"mul(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, arg1: "
+"heu.numpy.PlaintextArray) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.select_sum:3 of
+msgid ""
+"select_sum(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, "
+"arg1: object) -> heu.phe.Plaintext"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.select_sum:5 of
+msgid ""
+"Compute the sum of selected elements (Plaintext), equivalent to "
+"x[indices].sum() but faster."
+msgstr ""
+"计算选定元素的明文(Plaintext)求和，功能等效于 x[indices].sum()，但实现效率更高。"
+
+#: ../../docstring heu.numpy.PyCapsule.select_sum:9 of
+msgid ""
+"select_sum(self: heu.numpy.Evaluator, arg0: heu.numpy.CiphertextArray, "
+"arg1: object) -> heu.phe.Ciphertext"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.select_sum:11 of
+msgid ""
+"Compute the sum of selected elements (Ciphertext), equivalent to "
+"x[indices].sum() but faster."
+msgstr ""
+"计算选定元素的密文(Ciphertext)求和，功能等效于 x[indices].sum()，但实现效率更高。"
+
+#: ../../docstring heu.numpy.PyCapsule.sub:3 of
+msgid ""
+"sub(self: heu.numpy.Evaluator, arg0: heu.numpy.CiphertextArray, arg1: "
+"heu.numpy.CiphertextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.sub:5 of
+msgid ""
+"sub(self: heu.numpy.Evaluator, arg0: heu.numpy.CiphertextArray, arg1: "
+"heu.numpy.PlaintextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.sub:7 of
+msgid ""
+"sub(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, arg1: "
+"heu.numpy.CiphertextArray) -> heu.numpy.CiphertextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.sub:9 of
+msgid ""
+"sub(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray, arg1: "
+"heu.numpy.PlaintextArray) -> heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.sum:3 of
+msgid ""
+"sum(self: heu.numpy.Evaluator, arg0: heu.numpy.PlaintextArray) -> "
+"heu.phe.Plaintext"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.sum:5 of
+msgid ""
+"sum(self: heu.numpy.Evaluator, arg0: heu.numpy.CiphertextArray) -> "
+"heu.phe.Ciphertext"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.decryptor:1 of
+msgid "Get decryptor"
+msgstr "获取解密器"
+
+#: ../../docstring heu.numpy.MatrixSerializeFormat:1 of
+msgid "Members:"
+msgstr "成员："
+
+#: ../../docstring heu.numpy.MatrixSerializeFormat:3 of
+msgid "Best"
+msgstr ""
+
+#: ../../docstring heu.numpy.MatrixSerializeFormat:5 of
+msgid "Interconnection"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.to_bytes:1 of
+msgid "Construct Python bytes containing the raw data bytes in the array."
+msgstr "构建包含数组中原始数据字节的 Python 字节对象。"
+
+#: ../../docstring heu.numpy.PyCapsule.to_bytes:3 of
+msgid ""
+"The endian argument determines the byte order used to represent an "
+"integer. To request the native byte order of the host system, use "
+"sys.byteorder as the byte order value."
+msgstr ""
+"endian 参数决定了表示整数时使用的字节顺序。"
+"要请求主机系统的本地字节顺序，请使用 sys.byteorder 作为字节顺序值。"
+
+#: ../../docstring heu.numpy.PyCapsule.to_numpy:3 of
+msgid ""
+"to_numpy(self: heu.numpy.PlaintextArray, encoder: heu.phe.BigintDecoder ="
+" BigintDecoder()) -> numpy.ndarray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.to_numpy:5 of
+msgid "Decode plaintext array to numpy ndarray with type 'object'"
+msgstr "将明文数组解码为类型为 'object' 的 numpy ndarray"
+
+#: ../../docstring heu.numpy.PyCapsule.to_numpy:7 of
+msgid ""
+"to_numpy(self: heu.numpy.PlaintextArray, encoder: heu.phe.IntegerEncoder)"
+" -> numpy.ndarray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.to_numpy:9
+#: heu.numpy.PyCapsule.to_numpy:17 of
+msgid "Decode plaintext array to numpy ndarray with type 'int64'"
+msgstr "将明文数组解码为类型为 'int64' 的 numpy ndarray"
+
+#: ../../docstring heu.numpy.PyCapsule.to_numpy:11 of
+msgid ""
+"to_numpy(self: heu.numpy.PlaintextArray, encoder: heu.phe.FloatEncoder) "
+"-> numpy.ndarray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.to_numpy:13
+#: heu.numpy.PyCapsule.to_numpy:21 of
+msgid "Decode plaintext array to numpy ndarray with type 'float64'"
+msgstr "将明文数组解码为类型为 'float64' 的 numpy ndarray"
+
+#: ../../docstring heu.numpy.PyCapsule.to_numpy:15 of
+msgid ""
+"to_numpy(self: heu.numpy.PlaintextArray, encoder: "
+"heu.phe.BatchIntegerEncoder) -> numpy.ndarray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.to_numpy:19 of
+msgid ""
+"to_numpy(self: heu.numpy.PlaintextArray, encoder: "
+"heu.phe.BatchFloatEncoder) -> numpy.ndarray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:3 of
+msgid ""
+"array(ndarray: numpy.ndarray, encoder: heu.phe.BigintEncoder) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:5 of
+msgid "Create and encode an array using heu::pylib::PyBigintEncoder"
+msgstr "使用 heu::pylib::PyBigintEncoder 创建并编码一个数组"
+
+#: ../../docstring heu.numpy.PyCapsule.array:7 of
+msgid ""
+"array(object: object, encoder: heu.phe.BigintEncoder) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:9 of
+msgid "Encode a numpy ndarray using heu::pylib::PyBigintEncoder"
+msgstr "使用 heu::pylib::PyBigintEncoder 编码 numpy ndarray"
+
+#: ../../docstring heu.numpy.PyCapsule.array:11 of
+msgid ""
+"array(ndarray: numpy.ndarray, encoder: heu.phe.IntegerEncoder) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:13 of
+msgid "Create and encode an array using heu::pylib::PyIntegerEncoder"
+msgstr "使用 heu::pylib::PyIntegerEncoder 创建并编码一个数组"
+
+#: ../../docstring heu.numpy.PyCapsule.array:15 of
+msgid ""
+"array(object: object, encoder: heu.phe.IntegerEncoder) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:17 of
+msgid "Encode a numpy ndarray using heu::pylib::PyIntegerEncoder"
+msgstr "使用 heu::pylib::PyIntegerEncoder 编码 numpy ndarray"
+
+#: ../../docstring heu.numpy.PyCapsule.array:19 of
+msgid ""
+"array(ndarray: numpy.ndarray, encoder: heu.phe.FloatEncoder) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:21 of
+msgid "Create and encode an array using heu::pylib::PyFloatEncoder"
+msgstr "使用 heu::pylib::PyFloatEncoder 创建并编码一个数组"
+
+#: ../../docstring heu.numpy.PyCapsule.array:23 of
+msgid ""
+"array(object: object, encoder: heu.phe.FloatEncoder) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:25 of
+msgid "Encode a numpy ndarray using heu::pylib::PyFloatEncoder"
+msgstr "使用 heu::pylib::PyFloatEncoder 编码 numpy ndarray"
+
+#: ../../docstring heu.numpy.PyCapsule.array:27 of
+msgid ""
+"array(ndarray: numpy.ndarray, encoder: heu.phe.BatchIntegerEncoder) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:29 of
+msgid "Create and encode an array using heu::pylib::PyBatchIntegerEncoder"
+msgstr "使用 heu::pylib::PyBatchIntegerEncoder 创建并编码一个数组"
+
+#: ../../docstring heu.numpy.PyCapsule.array:31 of
+msgid ""
+"array(object: object, encoder: heu.phe.BatchIntegerEncoder) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:33 of
+msgid "Encode a numpy ndarray using heu::pylib::PyBatchIntegerEncoder"
+msgstr "使用 heu::pylib::PyBatchIntegerEncoder 编码 numpy ndarray"
+
+#: ../../docstring heu.numpy.PyCapsule.array:35 of
+msgid ""
+"array(ndarray: numpy.ndarray, encoder: heu.phe.BatchFloatEncoder) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:37 of
+msgid "Create and encode an array using heu::pylib::PyBatchFloatEncoder"
+msgstr "使用 heu::pylib::PyBatchFloatEncoder 创建并编码一个数组"
+
+#: ../../docstring heu.numpy.PyCapsule.array:39 of
+msgid ""
+"array(object: object, encoder: heu.phe.BatchFloatEncoder) -> "
+"heu.numpy.PlaintextArray"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.array:41 of
+msgid "Encode a numpy ndarray using heu::pylib::PyBatchFloatEncoder"
+msgstr "使用 heu::pylib::PyBatchFloatEncoder 编码 numpy ndarray"
+
+#: ../../docstring heu.numpy.PyCapsule.randbits:1 of
+msgid "Return a random integer array where each element is 'bits' bits long"
+msgstr "返回一个随机整数数组，其中每个元素都是 'bits' 位长"
+
+#: ../../docstring heu.numpy.PyCapsule.randint:1 of
+msgid ""
+"Return a random integer array from the “discrete uniform” distribution in"
+" interval [min, max)"
+msgstr ""
+"从区间 [min, max) 的“离散均匀”分布中返回一个随机整数数组"
+
+#: ../../docstring heu.numpy.PyCapsule.setup:3 of
+msgid "setup(schema_type: heu.phe.SchemaType, key_size: int) -> heu.numpy.HeKit"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.setup:5 of
+msgid "Setup phe (numpy) environment by schema type and key size"
+msgstr "通过模式类型和密钥大小设置 phe (numpy) 环境"
+
+#: ../../docstring heu.numpy.PyCapsule.setup:7 of
+msgid "setup(schema_string: str, key_size: int) -> heu.numpy.HeKit"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.setup:9 of
+msgid "Setup phe (numpy) environment by schema string and key size"
+msgstr "通过模式字符串和密钥大小设置 phe (numpy) 环境"
+
+#: ../../docstring heu.numpy.PyCapsule.setup:11 of
+msgid ""
+"setup(schema_type: heu.phe.SchemaType = <SchemaType.ZPaillier: 3>) -> "
+"heu.numpy.HeKit"
+msgstr ""
+
+
+#: ../../docstring heu.numpy.PyCapsule.setup:13 of
+msgid "Setup phe (numpy) environment by schema type"
+msgstr "通过模式类型设置 phe (numpy) 环境"
+
+#: ../../docstring heu.numpy.PyCapsule.setup:15 of
+msgid "setup(schema_string: str = 'z-paillier') -> heu.numpy.HeKit"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.setup:17 of
+msgid "Setup phe (numpy) environment by schema string"
+msgstr "通过模式字符串设置 phe (numpy) 环境"
+
+#: ../../docstring heu.numpy.PyCapsule.setup:19 of
+msgid "setup(public_key: heu.phe.PublicKey) -> heu.numpy.DestinationHeKit"
+msgstr ""
+
+#: ../../docstring heu.numpy.PyCapsule.setup:21 of
+msgid "Setup phe (numpy) environment by an already generated public key"
+msgstr "通过已生成的公钥设置 phe (numpy) 环境"
+
+#: ../../docstring heu.numpy.PyCapsule.tree_predict:1 of
+msgid ""
+"Compute tree predict based on split features and points, the tree is "
+"complete."
+msgstr ""
+"基于分割特征和点计算树预测，该树是完整的。"
+
+#: ../../docstring heu.numpy.PyCapsule.tree_predict_with_indices:1 of
+msgid ""
+"Compute tree predict based on split features and points, the tree may be "
+"unbalanced."
+msgstr ""
+"基于分割特征和点计算树预测，该树可能是不平衡的。"
