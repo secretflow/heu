@@ -80,7 +80,7 @@ Scalar 操作
    # Create plaintext object directly
    # Before: phe.Plaintext(123)
    # Now:
-   phe.Plaintext(kit.get_schema(), c)
+   phe.Plaintext(kit.get_schema(), 123)
 
 矩阵操作
 
