@@ -55,7 +55,7 @@ jobs:
           name: "build package and publish"
           command: |
             conda install -c conda-forge gmp -y
-            cp $CONDA_PREFIX/include/gmp.h $CONDA_PREFIX/include/gmpxx.h /usr/local/include/
+            sudo cp $CONDA_PREFIX/include/gmp.h $CONDA_PREFIX/include/gmpxx.h /usr/local/include/
             export CPLUS_INCLUDE_PATH=/usr/local/include
             export ENABLE_GMP=TRUE
 
