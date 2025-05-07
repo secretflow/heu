@@ -14,28 +14,28 @@
 
 #pragma once
 
+#include "heu/library/algorithms/util/big_int.h"
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::dgk {
 
 class PublicKey : public HeObject<PublicKey> {
  public:
-  void Init(const MPInt &n, const MPInt &g, const MPInt &h, const MPInt &u);
+  void Init(const BigInt &n, const BigInt &g, const BigInt &h, const BigInt &u);
 
-  const MPInt &N() const { return n_; }
+  const BigInt &N() const { return n_; }
 
-  const MPInt &G() const { return g_; }
+  const BigInt &G() const { return g_; }
 
-  const MPInt &H() const { return h_; }
+  const BigInt &H() const { return h_; }
 
-  const MPInt &U() const { return u_; }
+  const BigInt &U() const { return u_; }
 
-  MPInt PlainModule() const { return u_; }
+  BigInt PlainModule() const { return u_; }
 
-  MPInt PlaintextBound() const { return u_ / MPInt::_2_; }
+  BigInt PlaintextBound() const { return u_ / 2; }
 
-  MPInt CipherModule() const { return n_; }
+  BigInt CipherModule() const { return n_; }
 
   bool operator==(const PublicKey &) const;
   bool operator!=(const PublicKey &) const;
@@ -45,25 +45,25 @@ class PublicKey : public HeObject<PublicKey> {
   // Warning: DO NOT USE THE FOLLOWING FUNCTIONS DIRECTLY
  public:
   // Random element of form h^r mod n
-  MPInt RandomHr() const;
+  BigInt RandomHr() const;
   // Deterministic encryption
-  MPInt Encrypt(const MPInt &) const;
-  MPInt MapIntoMSpace(const MPInt &) const;
-  MPInt MapBackToZSpace(const MPInt &) const;
+  BigInt Encrypt(const BigInt &) const;
+  BigInt MapIntoMSpace(const BigInt &) const;
+  BigInt MapBackToZSpace(const BigInt &) const;
 
-  void MulMod(const MPInt &a, const MPInt &b, MPInt *dst) const {
-    lut_->m_space.MulMod(a, b, dst);
+  void MulMod(const BigInt &a, const BigInt &b, BigInt *dst) const {
+    *dst = lut_->m_space->MulMod(a, b);
   }
 
  private:
-  MPInt n_, g_, h_, u_;
+  BigInt n_, g_, h_, u_;
 
   struct LUT {
     LUT(const PublicKey *pub);
 
-    MontgomerySpace m_space;  // m-space for mod n
-    BaseTable g_pow;          // powers of g mod n
-    BaseTable h_pow;          // powers of h mod n
+    std::shared_ptr<MontgomerySpace> m_space;  // m-space for mod n
+    BaseTable g_pow;                           // powers of g mod n
+    BaseTable h_pow;                           // powers of h mod n
   };
 
   std::shared_ptr<LUT> lut_;
@@ -99,10 +99,10 @@ struct convert<heu::lib::algorithms::dgk::PublicKey> {
     if (object.via.array.size != 4) { throw msgpack::type_error(); }
 
     // The order here corresponds to the packer above
-    auto n = object.via.array.ptr[0].as<heu::lib::algorithms::MPInt>();
-    auto g = object.via.array.ptr[1].as<heu::lib::algorithms::MPInt>();
-    auto h = object.via.array.ptr[2].as<heu::lib::algorithms::MPInt>();
-    auto u = object.via.array.ptr[3].as<heu::lib::algorithms::MPInt>();
+    auto n = object.via.array.ptr[0].as<heu::lib::algorithms::BigInt>();
+    auto g = object.via.array.ptr[1].as<heu::lib::algorithms::BigInt>();
+    auto h = object.via.array.ptr[2].as<heu::lib::algorithms::BigInt>();
+    auto u = object.via.array.ptr[3].as<heu::lib::algorithms::BigInt>();
     pk.Init(n, g, h, u);
     return object;
   }

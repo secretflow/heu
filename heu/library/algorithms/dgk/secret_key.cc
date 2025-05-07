@@ -16,8 +16,8 @@
 
 namespace heu::lib::algorithms::dgk {
 
-void SecretKey::Init(const MPInt &p, const MPInt &q, const MPInt &vp,
-                     const MPInt &vq, const MPInt &u, const MPInt &g) {
+void SecretKey::Init(const BigInt &p, const BigInt &q, const BigInt &vp,
+                     const BigInt &vq, const BigInt &u, const BigInt &g) {
   p_ = p;
   q_ = q;
   vp_ = vp;
@@ -25,10 +25,10 @@ void SecretKey::Init(const MPInt &p, const MPInt &q, const MPInt &vp,
   u_ = u;
   g_ = g;
   log_table_ =
-      std::make_shared<std::unordered_map<MPInt, MPInt>>(u.Get<size_t>());
-  MPInt qm{g.PowMod(vp, p)}, ct{1};
-  log_table_->emplace(ct, MPInt{0});
-  for (MPInt i{1}; i < u; i.IncrOne()) {
+      std::make_shared<std::unordered_map<BigInt, BigInt>>(u.Get<size_t>());
+  BigInt qm{g.PowMod(vp, p)}, ct{1};
+  log_table_->emplace(ct, BigInt{0});
+  for (BigInt i{1}; i < u; ++i) {
     ct = ct.MulMod(qm, p);
     log_table_->emplace(ct, i);
   }
@@ -50,7 +50,7 @@ std::string SecretKey::ToString() const {
       u_.ToHexString(), g_.ToHexString());
 }
 
-MPInt SecretKey::Decrypt(const MPInt &ct) const {
+BigInt SecretKey::Decrypt(const BigInt &ct) const {
   auto it = log_table_->find((ct % p_).PowMod(vp_, p_));
   YACL_ENFORCE(it != log_table_->end(), "SecretKey: Invalid ciphertext");
   return it->second;

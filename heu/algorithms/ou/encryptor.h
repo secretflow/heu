@@ -32,16 +32,16 @@ class Encryptor : public spi::PheEncryptorScalarSketch<Plaintext, Ciphertext> {
   void EncryptWithAudit(const Plaintext &m, Ciphertext *ct_out,
                         std::string *audit_out) const override;
 
-  MPInt GetHr() const;
+  BigInt GetHr() const;
 
   void SetEnableCache(bool enable_cache) { enable_cache_ = enable_cache; }
 
  private:
   template <bool audit = false>
-  Ciphertext EncryptImpl(const MPInt &m,
+  Ciphertext EncryptImpl(const BigInt &m,
                          std::string *audit_str = nullptr) const;
 
-  std::shared_ptr<MPInt> GetHrUsingCache() const;
+  std::shared_ptr<BigInt> GetHrUsingCache() const;
 
   std::shared_ptr<PublicKey> pk_;
 
@@ -49,8 +49,8 @@ class Encryptor : public spi::PheEncryptorScalarSketch<Plaintext, Ciphertext> {
   size_t random_bits_;
 
   mutable std::mutex hr_mutex_;
-  mutable std::shared_ptr<MPInt> cache_r_;
-  mutable std::shared_ptr<MPInt> cache_hr_;  // h^(cache_r_)
+  mutable std::shared_ptr<BigInt> cache_r_;
+  mutable std::shared_ptr<BigInt> cache_hr_;  // h^(cache_r_)
 };
 
 }  // namespace heu::algos::ou

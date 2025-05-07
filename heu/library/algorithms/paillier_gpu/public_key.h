@@ -15,8 +15,8 @@
 #pragma once
 
 #include "heu/library/algorithms/paillier_gpu/plaintext.h"
+#include "heu/library/algorithms/util/big_int.h"
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::paillier_g {
 
@@ -27,11 +27,11 @@ void SetCacheTableDensity(size_t density);
 
 class PublicKey : public HeObject<PublicKey> {
  public:
-  MPInt n_;         // public modulus n = p * q
-  MPInt n_square_;  // n_ * n_
-  MPInt n_half_;    // n_ / 2
-  MPInt h_s_;       // h^n mod n^2
-  MPInt n_plus_;    // add for GPU
+  BigInt n_;         // public modulus n = p * q
+  BigInt n_square_;  // n_ * n_
+  BigInt n_half_;    // n_ / 2
+  BigInt h_s_;       // h^n mod n^2
+  BigInt n_plus_;    // add for GPU
 
   size_t key_size_;
 

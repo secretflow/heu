@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "heu/library/algorithms/paillier_zahlen//public_key.h"
-#include "heu/library/algorithms/paillier_zahlen//secret_key.h"
+#include "heu/library/algorithms/paillier_zahlen/public_key.h"
+#include "heu/library/algorithms/paillier_zahlen/secret_key.h"
 
 namespace heu::lib::algorithms::paillier_z {
 

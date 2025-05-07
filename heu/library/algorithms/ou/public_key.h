@@ -18,8 +18,8 @@
 
 #include "fmt/format.h"
 
+#include "heu/library/algorithms/util/big_int.h"
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::ou {
 
@@ -89,12 +89,12 @@ void SetCacheTableDensity(size_t density);
 
 class PublicKey : public HeObject<PublicKey> {
  public:
-  MPInt n_;          // n = p^2 * q
-  MPInt capital_g_;  // G = g^u mod n for some random g \in [0, n)
-  MPInt capital_h_;  // H = g'^{n*u} mod n for some random g' \in [0, n)
+  BigInt n_;          // n = p^2 * q
+  BigInt capital_g_;  // G = g^u mod n for some random g \in [0, n)
+  BigInt capital_h_;  // H = g'^{n*u} mod n for some random g' \in [0, n)
 
-  MPInt capital_g_inv_;  // G^{-1} mod n
-  MPInt max_plaintext_;  // always power of 2, e.g. max_plaintext_ == 2^681
+  BigInt capital_g_inv_;  // G^{-1} mod n
+  BigInt max_plaintext_;  // always power of 2, e.g. max_plaintext_ == 2^681
 
   std::shared_ptr<MontgomerySpace> m_space_;
   // Cache table of bases (底数缓存表).
@@ -118,7 +118,9 @@ class PublicKey : public HeObject<PublicKey> {
   }
 
   // Valid plaintext range: [max_plaintext_, -max_plaintext_]
-  [[nodiscard]] const MPInt &PlaintextBound() const & { return max_plaintext_; }
+  [[nodiscard]] const BigInt &PlaintextBound() const & {
+    return max_plaintext_;
+  }
 };
 
 }  // namespace heu::lib::algorithms::ou
@@ -151,11 +153,11 @@ struct convert<heu::lib::algorithms::ou::PublicKey> {
     if (object.via.array.size != 4) { throw msgpack::type_error(); }
 
     // The order here corresponds to the packer above
-    pk.n_ = object.via.array.ptr[0].as<heu::lib::algorithms::MPInt>();
-    pk.capital_g_ = object.via.array.ptr[1].as<heu::lib::algorithms::MPInt>();
-    pk.capital_h_ = object.via.array.ptr[2].as<heu::lib::algorithms::MPInt>();
+    pk.n_ = object.via.array.ptr[0].as<heu::lib::algorithms::BigInt>();
+    pk.capital_g_ = object.via.array.ptr[1].as<heu::lib::algorithms::BigInt>();
+    pk.capital_h_ = object.via.array.ptr[2].as<heu::lib::algorithms::BigInt>();
     pk.max_plaintext_ =
-        heu::lib::algorithms::MPInt(1) << object.via.array.ptr[3].as<size_t>();
+        heu::lib::algorithms::BigInt(1) << object.via.array.ptr[3].as<size_t>();
     pk.Init();
     return object;
   }

@@ -46,34 +46,34 @@ TEST_F(DJTest, CiphertextEvaluate) {
 
   res = evaluator_->Add(ct0, ct0);
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-12345 * 2));
+  EXPECT_EQ(plain, -12345 * 2);
   res = evaluator_->Mul(ct0, Plaintext(2));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-12345 * 2));
+  EXPECT_EQ(plain, -12345 * 2);
 
   evaluator_->Randomize(&res);
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-12345 * 2));
+  EXPECT_EQ(plain, -12345 * 2);
 
   Plaintext m1(123);
   Ciphertext ct1 = encryptor_->Encrypt(m1);
 
   res = evaluator_->Add(ct1, ct1);
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(123 * 2));
+  EXPECT_EQ(plain, 123 * 2);
   res = evaluator_->Mul(ct1, Plaintext(2));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(123 * 2));
+  EXPECT_EQ(plain, 123 * 2);
 
   res = evaluator_->Add(ct0, ct1);
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-12345 + 123));
+  EXPECT_EQ(plain, -12345 + 123);
 
   // mul
   ct1 = encryptor_->Encrypt(m1);
   res = evaluator_->Mul(ct1, Plaintext(1));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(123));
+  EXPECT_EQ(plain, 123);
 
   ct1 = encryptor_->Encrypt(m1);
   res = evaluator_->Mul(ct1, Plaintext(0));
@@ -87,23 +87,23 @@ TEST_F(DJTest, CiphertextEvaluate) {
   ct1 = encryptor_->Encrypt(m1);
   res = evaluator_->Mul(ct1, Plaintext(-1));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-123));
+  EXPECT_EQ(plain, -123);
 
   ct1 = encryptor_->Encrypt(m1);
   res = evaluator_->Mul(ct1, Plaintext(-2));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-123 * 2));
+  EXPECT_EQ(plain, -123 * 2);
 }
 
 TEST_F(DJTest, MinMaxDecrypt) {
   Plaintext plain = pk_.PlainModule();
   EXPECT_THROW(encryptor_->Encrypt(plain), std::exception);  // too many bits
 
-  plain = pk_.PlaintextBound() + 1_mp;
+  plain = pk_.PlaintextBound() + 1;
   EXPECT_THROW(encryptor_->Encrypt(plain), std::exception);  // too many bits
 
   Plaintext plain2;
-  plain.DecrOne();  // max
+  --plain;  // max
   Ciphertext ct0 = encryptor_->Encrypt(plain);
   decryptor_->Decrypt(ct0, &plain2);
   EXPECT_EQ(plain, plain2);
@@ -113,7 +113,7 @@ TEST_F(DJTest, MinMaxDecrypt) {
   decryptor_->Decrypt(ct0, &plain2);
   EXPECT_EQ(plain, plain2);
 
-  plain.DecrOne();
+  --plain;
   EXPECT_THROW(encryptor_->Encrypt(plain),
                std::exception);  // too many bits
 }
@@ -127,19 +127,19 @@ TEST_F(DJTest, PlaintextEvaluate1) {
   Plaintext plain;
   res = evaluator_->Add(ct0, Plaintext(23));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(123 + 23));
+  EXPECT_EQ(plain, 123 + 23);
 
   res = evaluator_->Add(ct0, Plaintext(6543212));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(123 + 6543212));
+  EXPECT_EQ(plain, 123 + 6543212);
 
   res = evaluator_->Add(ct0, Plaintext(-123));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(0));
+  EXPECT_EQ(plain, 0);
 
   res = evaluator_->Add(ct0, Plaintext(-456));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(123 - 456));
+  EXPECT_EQ(plain, 123 - 456);
 }
 
 TEST_F(DJTest, PlaintextEvaluate2) {
@@ -150,25 +150,25 @@ TEST_F(DJTest, PlaintextEvaluate2) {
   Plaintext plain;
   Ciphertext res = evaluator_->Add(ct0, Plaintext(23));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-123 + 23));
+  EXPECT_EQ(plain, -123 + 23);
 
   res = evaluator_->Add(ct0, Plaintext(std::numeric_limits<int64_t>::max()));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-123 + std::numeric_limits<int64_t>::max()));
+  EXPECT_EQ(plain, -123 + std::numeric_limits<int64_t>::max());
 
   res = evaluator_->Add(ct0, Plaintext(-123));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-123 * 2));
+  EXPECT_EQ(plain, -123 * 2);
 
   res = evaluator_->Add(ct0, Plaintext(-456));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-123 - 456));
+  EXPECT_EQ(plain, -123 - 456);
 
   // test big number
   ct0 = encryptor_->Encrypt(Plaintext(std::numeric_limits<int64_t>::lowest()));
   res = evaluator_->Add(ct0, Plaintext(std::numeric_limits<int64_t>::max()));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-1));
+  EXPECT_EQ(plain, -1);
 
   res = evaluator_->Add(ct0, Plaintext(-1));
   decryptor_->Decrypt(res, &plain);

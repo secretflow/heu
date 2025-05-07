@@ -138,7 +138,6 @@ class SerializableVariant {
   const static std::variant<std::monostate, Types...> schema2ns_vtable_[];
 };
 
-using MPInt = algorithms::MPInt;
 using Ciphertext = SerializableVariant<HE_NAMESPACE_LIST(Ciphertext)>;
 
 template <typename... Types>

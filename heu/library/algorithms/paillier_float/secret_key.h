@@ -19,8 +19,8 @@
 #include "msgpack.hpp"
 
 #include "heu/library/algorithms/paillier_float/public_key.h"
+#include "heu/library/algorithms/util/big_int.h"
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::paillier_f {
 // Forward declaration
@@ -29,11 +29,11 @@ class Decryptor;
 class SecretKey : public HeObject<SecretKey> {
  public:
   SecretKey() = default;
-  SecretKey(PublicKey pk, MPInt p, MPInt q);
+  SecretKey(PublicKey pk, BigInt p, BigInt q);
 
  private:
-  MPInt x_;
-  MPInt lambda_;
+  BigInt x_;
+  BigInt lambda_;
   PublicKey pk_;
 
  public:

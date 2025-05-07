@@ -14,12 +14,11 @@
 
 #pragma once
 
-#include "yacl/math/mpint/montgomery_math.h"
-#include "yacl/math/mpint/mp_int.h"
+#include "yacl/math/bigint/bigint.h"
 
 namespace heu::algos {
 
-using yacl::math::MPInt;
+using yacl::math::BigInt;
 using yacl::math::PrimeType;
 
 using yacl::math::BaseTable;

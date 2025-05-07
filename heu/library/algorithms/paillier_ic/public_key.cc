@@ -26,7 +26,7 @@ namespace heu::lib::algorithms::paillier_ic {
 
 void PublicKey::Init() {
   n_square_ = n_ * n_;
-  n_half_ = n_ / MPInt::_2_;
+  n_half_ = n_ / 2;
   key_size_ = n_.BitCount();
 }
 
@@ -48,8 +48,8 @@ bool PublicKey::operator!=(const PublicKey &other) const {
 
 yacl::Buffer PublicKey::Serialize() const {
   pb_ns::PaillierPublicKey pk_pb;
-  *pk_pb.mutable_n() = MPInt2Bigint(n_);
-  *pk_pb.mutable_hs() = MPInt2Bigint(h_s_);
+  *pk_pb.mutable_n() = BigInt2PbBigint(n_);
+  *pk_pb.mutable_hs() = BigInt2PbBigint(h_s_);
 
   yacl::Buffer buffer(pk_pb.ByteSizeLong());
   YACL_ENFORCE(pk_pb.SerializeToArray(buffer.data<uint8_t>(), buffer.size()),
@@ -62,8 +62,8 @@ void PublicKey::Deserialize(yacl::ByteContainerView in) {
   YACL_ENFORCE(pk_pb.ParseFromArray(in.data(), in.size()),
                "deserialize public key fail");
 
-  n_ = Bigint2MPint(pk_pb.n());
-  h_s_ = Bigint2MPint(pk_pb.hs());
+  PbBigint2BigInt(pk_pb.n(), n_);
+  PbBigint2BigInt(pk_pb.hs(), h_s_);
   Init();
 }
 

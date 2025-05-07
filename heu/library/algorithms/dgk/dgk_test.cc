@@ -44,7 +44,7 @@ TEST_F(DGKTest, KeySerialization) {
   pk.Deserialize(pk_serialization);
   SecretKey sk;
   sk.Deserialize(sk_serialization);
-  EXPECT_EQ(sk.Decrypt(pk.MapBackToZSpace(pk.Encrypt(MPInt{123}))), MPInt{123});
+  EXPECT_EQ(sk.Decrypt(pk.MapBackToZSpace(pk.Encrypt(BigInt{123}))), 123);
 }
 
 TEST_F(DGKTest, CiphertextEvaluate) {
@@ -56,34 +56,34 @@ TEST_F(DGKTest, CiphertextEvaluate) {
 
   res = evaluator_->Add(ct0, ct0);
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-12345 * 2));
+  EXPECT_EQ(plain, -12345 * 2);
   res = evaluator_->Mul(ct0, Plaintext(2));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-12345 * 2));
+  EXPECT_EQ(plain, -12345 * 2);
 
   evaluator_->Randomize(&res);
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-12345 * 2));
+  EXPECT_EQ(plain, -12345 * 2);
 
   Plaintext m1(123);
   Ciphertext ct1 = encryptor_->Encrypt(m1);
 
   res = evaluator_->Add(ct1, ct1);
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(123 * 2));
+  EXPECT_EQ(plain, 123 * 2);
   res = evaluator_->Mul(ct1, Plaintext(2));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(123 * 2));
+  EXPECT_EQ(plain, 123 * 2);
 
   res = evaluator_->Add(ct0, ct1);
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-12345 + 123));
+  EXPECT_EQ(plain, -12345 + 123);
 
   // mul
   ct1 = encryptor_->Encrypt(m1);
   res = evaluator_->Mul(ct1, Plaintext(1));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(123));
+  EXPECT_EQ(plain, 123);
 
   ct1 = encryptor_->Encrypt(m1);
   res = evaluator_->Mul(ct1, Plaintext(0));
@@ -97,23 +97,23 @@ TEST_F(DGKTest, CiphertextEvaluate) {
   ct1 = encryptor_->Encrypt(m1);
   res = evaluator_->Mul(ct1, Plaintext(-1));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-123));
+  EXPECT_EQ(plain, -123);
 
   ct1 = encryptor_->Encrypt(m1);
   res = evaluator_->Mul(ct1, Plaintext(-2));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(-123 * 2));
+  EXPECT_EQ(plain, -123 * 2);
 }
 
 TEST_F(DGKTest, MinMaxDecrypt) {
   Plaintext plain = pk_.PlainModule();
   EXPECT_THROW(encryptor_->Encrypt(plain), std::exception);  // too many bits
 
-  plain = pk_.PlaintextBound() + 1_mp;
+  plain = pk_.PlaintextBound() + 1;
   EXPECT_THROW(encryptor_->Encrypt(plain), std::exception);  // too many bits
 
   Plaintext plain2;
-  plain.DecrOne();  // max
+  --plain;  // max
   Ciphertext ct0 = encryptor_->Encrypt(plain);
   decryptor_->Decrypt(ct0, &plain2);
   EXPECT_EQ(plain, plain2);
@@ -123,7 +123,7 @@ TEST_F(DGKTest, MinMaxDecrypt) {
   decryptor_->Decrypt(ct0, &plain2);
   EXPECT_EQ(plain, plain2);
 
-  plain.DecrOne();
+  --plain;
   EXPECT_THROW(encryptor_->Encrypt(plain),
                std::exception);  // too many bits
 }
@@ -137,19 +137,19 @@ TEST_F(DGKTest, PlaintextEvaluate) {
   Plaintext plain;
   res = evaluator_->Add(ct0, Plaintext(23));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(123 + 23));
+  EXPECT_EQ(plain, 123 + 23);
 
   res = evaluator_->Add(ct0, Plaintext(654));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(123 + 654));
+  EXPECT_EQ(plain, 123 + 654);
 
   res = evaluator_->Add(ct0, Plaintext(-123));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(0));
+  EXPECT_EQ(plain, 0);
 
   res = evaluator_->Add(ct0, Plaintext(-456));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, Plaintext(123 - 456));
+  EXPECT_EQ(plain, 123 - 456);
 }
 
 }  // namespace heu::lib::algorithms::dgk::test

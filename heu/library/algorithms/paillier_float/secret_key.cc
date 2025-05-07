@@ -16,13 +16,12 @@
 
 namespace heu::lib::algorithms::paillier_f {
 
-SecretKey::SecretKey(PublicKey pk, MPInt p, MPInt q) : pk_(std::move(pk)) {
-  MPInt::Lcm(p.DecrOne(), q.DecrOne(), &lambda_);  // lambda_ = lcm(p-1, q-1)
+SecretKey::SecretKey(PublicKey pk, BigInt p, BigInt q) : pk_(std::move(pk)) {
+  lambda_ = (p - 1).Lcm(q - 1);  // lambda_ = lcm(p-1, q-1)
 
-  MPInt::PowMod(pk_.g_, lambda_, pk_.n_square_, &x_);
-  x_.DecrOne();
-  MPInt::Div(x_, pk_.n_, &x_, nullptr);
-  MPInt::InvertMod(x_, pk_.n_, &x_);
+  x_ = pk_.g_.PowMod(lambda_, pk_.n_square_);
+  x_ = (x_ - 1) / pk_.n_;
+  x_ = x_.InvMod(pk_.n_);
 }
 
 std::string SecretKey::ToString() const {

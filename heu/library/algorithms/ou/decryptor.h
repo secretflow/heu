@@ -26,8 +26,8 @@ class Decryptor {
  public:
   explicit Decryptor(PublicKey pk, SecretKey sk);
 
-  void Decrypt(const Ciphertext &ct, MPInt *out) const;
-  [[nodiscard]] MPInt Decrypt(const Ciphertext &ct) const;
+  void Decrypt(const Ciphertext &ct, BigInt *out) const;
+  [[nodiscard]] BigInt Decrypt(const Ciphertext &ct) const;
 
  private:
   PublicKey pk_;

@@ -1,4 +1,4 @@
-// Copyright 2023 Ant Group Co., Ltd.
+// Copyright 2024 Ant Group Co., Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,15 +14,13 @@
 
 #pragma once
 
-#include "heu/library/algorithms/util/big_int.h"
+#include "yacl/math/bigint/bigint.h"
 
-#include "interconnection/runtime/phe.pb.h"
+namespace heu::lib::algorithms {
 
-namespace heu::lib::algorithms::paillier_ic {
+using yacl::math::BaseTable;
+using yacl::math::BigInt;
+using yacl::math::MontgomerySpace;
+using yacl::math::PrimeType;
 
-namespace pb_ns = ::org::interconnection::v2::runtime;
-
-pb_ns::Bigint BigInt2PbBigint(const BigInt &bi);
-void PbBigint2BigInt(const pb_ns::Bigint &pb_bi, BigInt &bigint);
-
-}  // namespace heu::lib::algorithms::paillier_ic
+}  // namespace heu::lib::algorithms

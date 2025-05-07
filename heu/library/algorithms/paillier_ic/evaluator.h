@@ -66,7 +66,7 @@ class Evaluator {
   // subsequent operations), Randomize can be omitted.
   // Warning 2:
   // Multiplication is not supported if a is in batch encoding form
-  Ciphertext Mul(const Ciphertext &a, const MPInt &p) const;
+  Ciphertext Mul(const Ciphertext &a, const Plaintext &p) const;
 
   Plaintext Mul(const Plaintext &a, const Plaintext &b) const { return a * b; };
 
@@ -74,7 +74,7 @@ class Evaluator {
     return Mul(b, a);
   }
 
-  void MulInplace(Ciphertext *a, const MPInt &p) const;
+  void MulInplace(Ciphertext *a, const Plaintext &p) const;
 
   void MulInplace(Plaintext *a, const Plaintext &b) const { *a *= b; };
 

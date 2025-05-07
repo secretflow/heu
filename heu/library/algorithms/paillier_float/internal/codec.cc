@@ -16,9 +16,9 @@
 
 namespace heu::lib::algorithms::paillier_f::internal {
 
-const MPInt Codec::kBaseCache = MPInt(Codec::kBase);
+const BigInt Codec::kBaseCache = BigInt(Codec::kBase);
 
-EncodedNumber Codec::Encode(const MPInt &scalar, int exponent) const {
+EncodedNumber Codec::Encode(const BigInt &scalar, int exponent) const {
   YACL_ENFORCE(scalar.CompareAbs(pk_.PlaintextBound()) <= 0,
                "integer scalar should in +/- {}, but get {}",
                pk_.PlaintextBound().ToHexString(), scalar.ToHexString());
@@ -26,7 +26,7 @@ EncodedNumber Codec::Encode(const MPInt &scalar, int exponent) const {
   EncodedNumber out;
 
   // wrap negative numbers by adding n_
-  MPInt::Mod(scalar, pk_.n_, &out.encoding);
+  out.encoding = scalar % pk_.n_;
   out.exponent = exponent;
 
   return out;
@@ -52,7 +52,7 @@ EncodedNumber Codec::Encode(double scalar, absl::optional<float> precision,
   // FIXME: avoid overflow
   int64_t int_rep = llround(scalar * pow(kBase, -precision_exp));
 
-  MPInt mp_int_rep(int_rep);
+  BigInt mp_int_rep(int_rep);
 
   return Encode(mp_int_rep, precision_exp);
 }
@@ -74,10 +74,10 @@ EncodedNumber Codec::Encode(double scalar, absl::optional<float> precision,
 //   return true;
 // }
 
-MPInt Codec::GetMantissa(const EncodedNumber &encoded) const {
+BigInt Codec::GetMantissa(const EncodedNumber &encoded) const {
   YACL_ENFORCE(encoded.encoding < pk_.n_, "number corrupted");
 
-  MPInt mantissa;
+  BigInt mantissa;
 
   if (encoded.encoding <= pk_.max_int_) {
     // positive
@@ -92,34 +92,30 @@ MPInt Codec::GetMantissa(const EncodedNumber &encoded) const {
 }
 
 void Codec::Decode(const EncodedNumber &in, double *x) const {
-  MPInt mantissa = GetMantissa(in);
+  BigInt mantissa = GetMantissa(in);
 
   if (in.exponent >= 0) {
-    MPInt value;
-    MPInt factor;
-    MPInt::Pow(kBaseCache, in.exponent, &factor);
-    MPInt::Mul(mantissa, factor, &value);
+    BigInt factor = kBaseCache.Pow(in.exponent);
+    BigInt value = mantissa * factor;
 
     *x = value.Get<double>();
   } else {
-    MPInt divisor;
-    MPInt::Pow(kBaseCache, -in.exponent, &divisor);
+    BigInt divisor = kBaseCache.Pow(-in.exponent);
 
     *x = mantissa.Get<double>() / divisor.Get<double>();
   }
 }
 
-void Codec::Decode(const EncodedNumber &in, MPInt *x) const {
-  MPInt mantissa = GetMantissa(in);
+void Codec::Decode(const EncodedNumber &in, BigInt *x) const {
+  BigInt mantissa = GetMantissa(in);
 
   if (in.exponent >= 0) {
-    MPInt factor;
-    MPInt::Pow(kBaseCache, in.exponent, &factor);
-    MPInt::Mul(mantissa, factor, x);
+    BigInt factor = kBaseCache.Pow(in.exponent);
+    *x = mantissa * factor;
   } else {
-    MPInt divisor;
-    MPInt::Pow(kBaseCache, -in.exponent, &divisor);
-    MPInt::Div(mantissa, divisor, x, nullptr);
+    BigInt divisor = kBaseCache.Pow(-in.exponent);
+    divisor = kBaseCache.Pow(-in.exponent);
+    *x = mantissa / divisor;
   }
 }
 

@@ -23,9 +23,8 @@ Encryptor::Encryptor(PublicKey pk) : pk_(std::move(pk)) {}
 
 Encryptor::Encryptor(const Encryptor &from) : Encryptor(from.pk_) {}
 
-MPInt Encryptor::GetRn() const {
-  MPInt r;
-  MPInt::RandomExactBits(pk_.key_size_ / 2, &r);
+BigInt Encryptor::GetRn() const {
+  BigInt r = BigInt::RandomExactBits(pk_.key_size_ / 2);
   // (h_s_)^r
   return pk_.h_s_.PowMod(r, pk_.n_square_);
 }
@@ -33,7 +32,7 @@ MPInt Encryptor::GetRn() const {
 Ciphertext Encryptor::EncryptZero() const { return Ciphertext(GetRn()); }
 
 template <bool audit>
-Ciphertext Encryptor::EncryptImpl(const MPInt &m,
+Ciphertext Encryptor::EncryptImpl(const BigInt &m,
                                   std::string *audit_str) const {
   YACL_ENFORCE(m.CompareAbs(pk_.PlaintextBound()) <= 0,
                "message number out of range, message={}, max (abs)={}", m,
@@ -41,11 +40,11 @@ Ciphertext Encryptor::EncryptImpl(const MPInt &m,
 
   // Note: g^m = (1 + n)^m = (1 + n*m) mod n^2
   // It is also correct when m is negative
-  MPInt gm = (pk_.n_ * m).IncrOne();  // no need mod
+  BigInt gm = pk_.n_ * m + 1;  // no need mod
 
   Ciphertext ct;
   auto rn = GetRn();
-  MPInt::MulMod(gm, rn, pk_.n_square_, &ct.c_);
+  ct.c_ = gm.MulMod(rn, pk_.n_square_);
   if constexpr (audit) {
     YACL_ENFORCE(audit_str != nullptr);
     *audit_str = fmt::format(FMT_COMPILE("p:{},rn:{},c:{}"), m.ToHexString(),
@@ -54,10 +53,10 @@ Ciphertext Encryptor::EncryptImpl(const MPInt &m,
   return ct;
 }
 
-Ciphertext Encryptor::Encrypt(const MPInt &m) const { return EncryptImpl(m); }
+Ciphertext Encryptor::Encrypt(const BigInt &m) const { return EncryptImpl(m); }
 
 std::pair<Ciphertext, std::string> Encryptor::EncryptWithAudit(
-    const MPInt &m) const {
+    const BigInt &m) const {
   std::string audit_str;
   auto c = EncryptImpl<true>(m, &audit_str);
   return {c, audit_str};

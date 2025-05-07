@@ -18,20 +18,22 @@
 
 namespace heu::lib::phe::test {
 
+using algorithms::BigInt;
+
 TEST(PlaintextTest, AsTypeWorks) {
   Plaintext pt(SchemaType::ZPaillier);
   pt.SetValue(100);
-  // The underlying type of ZPaillier is MPInt
-  EXPECT_EQ(pt.As<MPInt>(), MPInt(100));
+  // The underlying type of ZPaillier is BigInt
+  EXPECT_EQ(pt.As<BigInt>(), 100);
 
-  pt.As<MPInt>() = MPInt(200);
+  pt.As<BigInt>() = 200;
   EXPECT_EQ(pt.GetValue<uint128_t>(), 200);
 
-  MPInt var;
-  pt.AsTypeLike(var) = MPInt(300);
+  BigInt var;
+  pt.AsTypeLike(var) = BigInt(300);
   EXPECT_EQ(pt.GetValue<int64_t>(), 300);
 
-  MPInt *varp = nullptr;
+  BigInt *varp = nullptr;
   pt.AsTypeLike(varp)->Set<int16_t>(400);
   EXPECT_EQ(pt.GetValue<uint16_t>(), 400);
 
@@ -40,7 +42,7 @@ TEST(PlaintextTest, AsTypeWorks) {
   EXPECT_TRUE(cpt.As<algorithms::mock::Plaintext>() ==
               cpt.AsTypeLike(algorithms::mock::Plaintext()));
 
-  MPInt mp3(Plaintext(SchemaType::ZPaillier, 33).As<MPInt>());
+  BigInt mp3(Plaintext(SchemaType::ZPaillier, 33).As<BigInt>());
   EXPECT_EQ(mp3.Get<uint8_t>(), 33);
 
   auto i64max = std::numeric_limits<int64_t>::max();
@@ -63,7 +65,8 @@ TEST(PlaintextTest, EqWorks) {
   EXPECT_TRUE(Plaintext() != Plaintext(SchemaType::FPaillier));
   EXPECT_TRUE(Plaintext() != Plaintext(SchemaType::Mock));
   EXPECT_TRUE(Plaintext(SchemaType::Mock) != Plaintext(SchemaType::ZPaillier));
-  // compatible plaintexts are equal since the underlying types are same (MPInt)
+  // compatible plaintexts are equal since the underlying types are same
+  // (BigInt)
   EXPECT_TRUE(Plaintext(SchemaType::FPaillier) ==
               Plaintext(SchemaType::ZPaillier));
 

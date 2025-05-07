@@ -162,7 +162,6 @@ class BasicCase(unittest.TestCase):
             123456 - 987654,
         )
         cta = self.encryptor.encrypt_with_audit(pt1)
-        print(cta[1])
         self.assertEqual(edr.decode(self.decryptor.decrypt(cta[0])), 123456)
 
         # float case

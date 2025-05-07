@@ -14,38 +14,38 @@
 
 #pragma once
 
+#include "heu/library/algorithms/util/big_int.h"
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::dgk {
 
 class SecretKey : public HeObject<SecretKey> {
  public:
-  void Init(const MPInt &p, const MPInt &q, const MPInt &vp, const MPInt &vq,
-            const MPInt &u, const MPInt &g);
+  void Init(const BigInt &p, const BigInt &q, const BigInt &vp,
+            const BigInt &vq, const BigInt &u, const BigInt &g);
 
-  const MPInt &P() const { return p_; }
+  const BigInt &P() const { return p_; }
 
-  const MPInt &Q() const { return q_; }
+  const BigInt &Q() const { return q_; }
 
-  const MPInt &Vp() const { return vp_; }
+  const BigInt &Vp() const { return vp_; }
 
-  const MPInt &Vq() const { return vq_; }
+  const BigInt &Vq() const { return vq_; }
 
-  const MPInt &U() const { return u_; }
+  const BigInt &U() const { return u_; }
 
-  const MPInt &G() const { return g_; }
+  const BigInt &G() const { return g_; }
 
   bool operator==(const SecretKey &) const;
   bool operator!=(const SecretKey &) const;
   std::string ToString() const override;
 
-  MPInt Decrypt(const MPInt &ct) const;
+  BigInt Decrypt(const BigInt &ct) const;
 
  private:
-  MPInt p_, q_, vp_, vq_, u_, g_;
+  BigInt p_, q_, vp_, vq_, u_, g_;
 
-  std::shared_ptr<std::unordered_map<MPInt, MPInt>> log_table_;
+  std::shared_ptr<std::unordered_map<BigInt, BigInt>> log_table_;
 };
 
 }  // namespace heu::lib::algorithms::dgk
@@ -80,12 +80,12 @@ struct convert<heu::lib::algorithms::dgk::SecretKey> {
     if (object.via.array.size != 6) { throw msgpack::type_error(); }
 
     // The order here corresponds to the packer above
-    auto p = object.via.array.ptr[0].as<heu::lib::algorithms::MPInt>();
-    auto q = object.via.array.ptr[1].as<heu::lib::algorithms::MPInt>();
-    auto vp = object.via.array.ptr[2].as<heu::lib::algorithms::MPInt>();
-    auto vq = object.via.array.ptr[3].as<heu::lib::algorithms::MPInt>();
-    auto u = object.via.array.ptr[4].as<heu::lib::algorithms::MPInt>();
-    auto g = object.via.array.ptr[5].as<heu::lib::algorithms::MPInt>();
+    auto p = object.via.array.ptr[0].as<heu::lib::algorithms::BigInt>();
+    auto q = object.via.array.ptr[1].as<heu::lib::algorithms::BigInt>();
+    auto vp = object.via.array.ptr[2].as<heu::lib::algorithms::BigInt>();
+    auto vq = object.via.array.ptr[3].as<heu::lib::algorithms::BigInt>();
+    auto u = object.via.array.ptr[4].as<heu::lib::algorithms::BigInt>();
+    auto g = object.via.array.ptr[5].as<heu::lib::algorithms::BigInt>();
     sk.Init(p, q, vp, vq, u, g);
     return object;
   }

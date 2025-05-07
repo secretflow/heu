@@ -14,17 +14,17 @@
 
 #pragma once
 
+#include "heu/library/algorithms/util/big_int.h"
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::paillier_ic {
 
 class PublicKey {
  public:
-  MPInt n_;         // public modulus n = p * q
-  MPInt n_square_;  // n_ * n_
-  MPInt n_half_;    // n_ / 2
-  MPInt h_s_;       // h^n mod n^2
+  BigInt n_;         // public modulus n = p * q
+  BigInt n_square_;  // n_ * n_
+  BigInt n_half_;    // n_ / 2
+  BigInt h_s_;       // h^n mod n^2
 
   size_t key_size_;
 
@@ -36,7 +36,9 @@ class PublicKey {
   bool operator!=(const PublicKey &other) const;
 
   // Valid plaintext range: [n_half_, -n_half]
-  [[nodiscard]] inline const MPInt &PlaintextBound() const & { return n_half_; }
+  [[nodiscard]] inline const BigInt &PlaintextBound() const & {
+    return n_half_;
+  }
 
   [[nodiscard]] yacl::Buffer Serialize() const;
   void Deserialize(yacl::ByteContainerView in);

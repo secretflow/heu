@@ -64,14 +64,11 @@ Encryptor::Encryptor(PublicKey pk) : pk_(std::move(pk)) {}
 
 Encryptor::Encryptor(const Encryptor &from) : Encryptor(from.pk_) {}
 
-MPInt Encryptor::GetRn() const {
-  MPInt r;
-  MPInt::RandomExactBits(pk_.key_size_ / 2, &r);
+BigInt Encryptor::GetRn() const {
+  BigInt r = BigInt::RandomExactBits(pk_.key_size_ / 2);
 
   // (h_s_)^r
-  MPInt out;
-  pk_.m_space_->PowMod(*pk_.hs_table_, r, &out);
-  return out;
+  return pk_.m_space_->PowMod(*pk_.hs_table_, r);
 }
 
 std::vector<Ciphertext> Encryptor::EncryptZero(int64_t size) const {
@@ -121,12 +118,11 @@ std::vector<Ciphertext> Encryptor::EncryptImpl(
     GetRdrand((unsigned char *)((unsigned char *)&scalar[i]),
               pk_.key_size_ / 2 / 8);  // key_size/2->get bytes need divide 8
     if constexpr (audit) {
-      Plaintext randr = Plaintext(0, 512);  // init with 4096bit
+      Plaintext randr = Plaintext(0, 512U);  // init with 4096bit
       randr.FromMagBytes(yacl::ByteContainerView((uint8_t *)(scalar[i].r), 512),
                          algorithms::Endian::little);
 
-      Plaintext out;
-      pk_.m_space_->PowMod(*pk_.hs_table_, randr, &out);
+      Plaintext out = pk_.m_space_->PowMod(*pk_.hs_table_, randr);
       (*audit_strs)[i] += ",rn:{" + out.ToHexString() + "}";
     }
   }

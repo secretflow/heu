@@ -18,14 +18,14 @@
 
 #include "msgpack.hpp"
 
+#include "heu/library/algorithms/util/big_int.h"
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::paillier_f {
 
 // todo: define custom Plaintext class.
 //  paillier_float's plaintext is not MPInt, it can be a float
-using Plaintext = MPInt;
+using Plaintext = BigInt;
 
 // Forward declaration
 class PublicKey;
@@ -40,7 +40,7 @@ class Ciphertext : public HeObject<Ciphertext> {
  public:
   Ciphertext() = default;
 
-  explicit Ciphertext(MPInt &&c, int exponent = 0)
+  explicit Ciphertext(BigInt &&c, int exponent = 0)
       : c_(std::move(c)), exponent_(exponent) {}
 
   bool operator==(const Ciphertext &other) const { return c_ == other.c_; }
@@ -54,7 +54,7 @@ class Ciphertext : public HeObject<Ciphertext> {
   }
 
  private:
-  MPInt c_;
+  BigInt c_;
   int exponent_ = 0;
 
  public:

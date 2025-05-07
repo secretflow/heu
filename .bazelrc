@@ -73,6 +73,8 @@ build:ubsan --copt -g
 build:ubsan --copt -fno-omit-frame-pointer
 build:ubsan --linkopt -fsanitize=undefined
 
+build:gmp --define BIGNUM_WITH_GMP=true
+
 test --keep_going
 test --test_output=errors
 test --test_timeout=600

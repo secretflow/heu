@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include "heu/library/algorithms/util/mp_int.h"
+#include "heu/library/algorithms/util/big_int.h"
 
 namespace heu::lib::algorithms::paillier_g {
 
-using Plaintext = yacl::math::MPInt;
+using Plaintext = BigInt;
 
 }  // namespace heu::lib::algorithms::paillier_g

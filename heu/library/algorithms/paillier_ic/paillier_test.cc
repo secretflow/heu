@@ -38,47 +38,47 @@ class IcPaillierTest : public ::testing::Test {
 };
 
 TEST_F(IcPaillierTest, CiphertextEvaluate) {
-  EXPECT_GT(encryptor_->GetRn(), MPInt(1));
+  EXPECT_GT(encryptor_->GetRn(), 1);
 
-  MPInt m0(-12345);
+  BigInt m0(-12345);
   Ciphertext ct0 = encryptor_->Encrypt(m0);
 
   Ciphertext res;
-  MPInt plain;
+  BigInt plain;
 
   res = evaluator_->Add(ct0, ct0);
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-12345 * 2));
-  res = evaluator_->Mul(ct0, MPInt(2));
+  EXPECT_EQ(plain, -12345 * 2);
+  res = evaluator_->Mul(ct0, BigInt(2));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-12345 * 2));
+  EXPECT_EQ(plain, -12345 * 2);
 
   evaluator_->Randomize(&res);
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-12345 * 2));
+  EXPECT_EQ(plain, -12345 * 2);
 
-  MPInt m1(123);
+  BigInt m1(123);
   Ciphertext ct1 = encryptor_->Encrypt(m1);
 
   res = evaluator_->Add(ct1, ct1);
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123 * 2));
-  res = evaluator_->Mul(ct1, MPInt(2));
+  EXPECT_EQ(plain, 123 * 2);
+  res = evaluator_->Mul(ct1, BigInt(2));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123 * 2));
+  EXPECT_EQ(plain, 123 * 2);
 
   res = evaluator_->Add(ct0, ct1);
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-12345 + 123));
+  EXPECT_EQ(plain, -12345 + 123);
 
   // mul
   ct1 = encryptor_->Encrypt(m1);
-  res = evaluator_->Mul(ct1, MPInt(1));
+  res = evaluator_->Mul(ct1, BigInt(1));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123));
+  EXPECT_EQ(plain, 123);
 
   ct1 = encryptor_->Encrypt(m1);
-  res = evaluator_->Mul(ct1, MPInt(0));
+  res = evaluator_->Mul(ct1, BigInt(0));
   decryptor_->Decrypt(res, &plain);
   EXPECT_TRUE(plain.IsZero());
   evaluator_->Randomize(&res);
@@ -87,25 +87,25 @@ TEST_F(IcPaillierTest, CiphertextEvaluate) {
   EXPECT_TRUE(plain.IsZero());
 
   ct1 = encryptor_->Encrypt(m1);
-  res = evaluator_->Mul(ct1, MPInt(-1));
+  res = evaluator_->Mul(ct1, BigInt(-1));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123));
+  EXPECT_EQ(plain, -123);
 
   ct1 = encryptor_->Encrypt(m1);
-  res = evaluator_->Mul(ct1, MPInt(-2));
+  res = evaluator_->Mul(ct1, BigInt(-2));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123 * 2));
+  EXPECT_EQ(plain, -123 * 2);
 }
 
 TEST_F(IcPaillierTest, MinMaxDecrypt) {
-  MPInt plain = pk_.n_;
+  BigInt plain = pk_.n_;
   EXPECT_THROW(encryptor_->Encrypt(plain), std::exception);  // too many bits
 
-  plain = pk_.PlaintextBound() + 1_mp;
+  plain = pk_.PlaintextBound() + 1;
   EXPECT_THROW(encryptor_->Encrypt(plain), std::exception);  // too many bits
 
-  MPInt plain2;
-  plain.DecrOne();  // max
+  BigInt plain2;
+  --plain;  // max
   Ciphertext ct0 = encryptor_->Encrypt(plain);
   decryptor_->Decrypt(ct0, &plain2);
   EXPECT_EQ(plain, plain2);
@@ -115,65 +115,65 @@ TEST_F(IcPaillierTest, MinMaxDecrypt) {
   decryptor_->Decrypt(ct0, &plain2);
   EXPECT_EQ(plain, plain2);
 
-  plain.DecrOne();  // too many bits
+  --plain;  // too many bits
   EXPECT_THROW(encryptor_->Encrypt(plain), std::exception);
 }
 
 TEST_F(IcPaillierTest, PlaintextEvaluate1) {
   // base (m0) 为正数
-  MPInt m0(123);
+  BigInt m0(123);
   Ciphertext ct0 = encryptor_->Encrypt(m0);
 
   Ciphertext res;
-  MPInt plain;
-  res = evaluator_->Add(ct0, MPInt(23));
+  BigInt plain;
+  res = evaluator_->Add(ct0, BigInt(23));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123 + 23));
+  EXPECT_EQ(plain, 123 + 23);
 
-  res = evaluator_->Add(ct0, MPInt(6543212));
+  res = evaluator_->Add(ct0, BigInt(6543212));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123 + 6543212));
+  EXPECT_EQ(plain, 123 + 6543212);
 
-  res = evaluator_->Add(ct0, MPInt(-123));
+  res = evaluator_->Add(ct0, BigInt(-123));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(0));
+  EXPECT_EQ(plain, 0);
 
-  res = evaluator_->Add(ct0, MPInt(-456));
+  res = evaluator_->Add(ct0, BigInt(-456));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(123 - 456));
+  EXPECT_EQ(plain, 123 - 456);
 }
 
 TEST_F(IcPaillierTest, PlaintextEvaluate2) {
   // test case: base (m0) is negative
-  MPInt m0(-123);
+  BigInt m0(-123);
   Ciphertext ct0 = encryptor_->Encrypt(m0);
 
-  MPInt plain;
-  Ciphertext res = evaluator_->Add(ct0, MPInt(23));
+  BigInt plain;
+  Ciphertext res = evaluator_->Add(ct0, BigInt(23));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123 + 23));
+  EXPECT_EQ(plain, -123 + 23);
 
-  res = evaluator_->Add(ct0, MPInt(std::numeric_limits<int64_t>::max()));
+  res = evaluator_->Add(ct0, BigInt(std::numeric_limits<int64_t>::max()));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123 + std::numeric_limits<int64_t>::max()));
+  EXPECT_EQ(plain, -123 + std::numeric_limits<int64_t>::max());
 
-  res = evaluator_->Add(ct0, MPInt(-123));
+  res = evaluator_->Add(ct0, BigInt(-123));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123 * 2));
+  EXPECT_EQ(plain, -123 * 2);
 
-  res = evaluator_->Add(ct0, MPInt(-456));
+  res = evaluator_->Add(ct0, BigInt(-456));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-123 - 456));
+  EXPECT_EQ(plain, -123 - 456);
 
   // test big number
-  ct0 = encryptor_->Encrypt(MPInt(std::numeric_limits<int64_t>::lowest()));
-  res = evaluator_->Add(ct0, MPInt(std::numeric_limits<int64_t>::max()));
+  ct0 = encryptor_->Encrypt(BigInt(std::numeric_limits<int64_t>::lowest()));
+  res = evaluator_->Add(ct0, BigInt(std::numeric_limits<int64_t>::max()));
   decryptor_->Decrypt(res, &plain);
-  EXPECT_EQ(plain, MPInt(-1));
+  EXPECT_EQ(plain, -1);
 
-  res = evaluator_->Add(ct0, MPInt(-1));
+  res = evaluator_->Add(ct0, BigInt(-1));
   decryptor_->Decrypt(res, &plain);
-  // note: MPInt itself does not overflow, but AsInt64() overflows
+  // note: BigInt itself does not overflow, but AsInt64() overflows
   EXPECT_EQ(plain.Get<int64_t>(), std::numeric_limits<int64_t>::max());
 }
 

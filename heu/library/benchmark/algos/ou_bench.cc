@@ -23,20 +23,20 @@
 namespace heu::lib::bench {
 
 namespace ou = algorithms::ou;
-using algorithms::MPInt;
+using algorithms::BigInt;
 
 constexpr static long kTestSize = 10000;
 constexpr static size_t kKeySize = 2048;
 constexpr int kRandomScale = 8011;
 
-MPInt g_plain[kTestSize];
+BigInt g_plain[kTestSize];
 ou::SecretKey g_ou_secret_key;
 ou::PublicKey g_ou_public_key;
 ou::Ciphertext g_ou_ciphertext[kTestSize];
 
 void Initialize() {
   for (int i = 0; i < kTestSize; ++i) {
-    g_plain[i] = MPInt(i * kRandomScale);
+    g_plain[i] = BigInt(i * kRandomScale);
   }
   ou::KeyGenerator::Generate(kKeySize, &g_ou_secret_key, &g_ou_public_key);
 }
@@ -76,7 +76,7 @@ static void OuAddInt(benchmark::State &state) {
   ou::Evaluator evaluator(g_ou_public_key);
   for (auto _ : state) {
     for (int i = 1; i < kTestSize; ++i) {
-      evaluator.AddInplace(&g_ou_ciphertext[i], MPInt(i));
+      evaluator.AddInplace(&g_ou_ciphertext[i], BigInt(i));
     }
   }
 }
@@ -86,7 +86,7 @@ static void OuMulti(benchmark::State &state) {
   ou::Evaluator evaluator(g_ou_public_key);
   for (auto _ : state) {
     for (int i = 1; i < kTestSize; ++i) {
-      evaluator.MulInplace(&g_ou_ciphertext[i], MPInt(i));
+      evaluator.MulInplace(&g_ou_ciphertext[i], BigInt(i));
     }
   }
 }

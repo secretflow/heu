@@ -17,12 +17,12 @@
 #include "absl/types/optional.h"
 
 #include "heu/library/algorithms/paillier_float/public_key.h"
-#include "heu/library/algorithms/util/mp_int.h"
+#include "heu/library/algorithms/util/big_int.h"
 
 namespace heu::lib::algorithms::paillier_f::internal {
 
 struct EncodedNumber {
-  MPInt encoding;
+  BigInt encoding;
   int exponent;
 
   EncodedNumber() : exponent(0) {}
@@ -33,12 +33,12 @@ class Codec {
   static const int kBase = 16;
   static const int kLog2Base = 4;
   static const int kDoubleMantissaBits = 53;
-  static const MPInt kBaseCache;  // cache kBase in MPInt type
+  static const BigInt kBaseCache;  // cache kBase in MPInt type
 
  public:
   explicit Codec(PublicKey pk) : pk_(std::move(pk)) {}
 
-  EncodedNumber Encode(const MPInt &scalar, int exponent = 0) const;
+  EncodedNumber Encode(const BigInt &scalar, int exponent = 0) const;
 
   EncodedNumber Encode(double scalar,
                        absl::optional<float> precision = absl::nullopt,
@@ -46,10 +46,10 @@ class Codec {
 
   void Decode(const EncodedNumber &in, double *out) const;
 
-  void Decode(const EncodedNumber &in, MPInt *out) const;
+  void Decode(const EncodedNumber &in, BigInt *out) const;
 
  private:
-  MPInt GetMantissa(const EncodedNumber &encoded) const;
+  BigInt GetMantissa(const EncodedNumber &encoded) const;
 
  private:
   PublicKey pk_;

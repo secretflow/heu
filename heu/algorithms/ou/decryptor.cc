@@ -33,11 +33,11 @@ Decryptor::Decryptor(const std::shared_ptr<PublicKey> &pk,
 void Decryptor::Decrypt(const Ciphertext &ct, Plaintext *out) const {
   VALIDATE(ct);
 
-  MPInt c(ct.c_);
-  pk_->m_space_->MapBackToZSpace(&c);
-  MPInt::PowMod(c % sk_->p2_, sk_->t_, sk_->p2_, &c);
-  c.DecrOne();
-  MPInt::MulMod(c / sk_->p_, sk_->gp_inv_, sk_->p_, out);
+  BigInt c(ct.c_);
+  pk_->m_space_->MapBackToZSpace(c);
+  c = (c % sk_->p2_).PowMod(sk_->t_, sk_->p2_);
+  --c;
+  *out = (c / sk_->p_).MulMod(sk_->gp_inv_, sk_->p_);
 
   // handle negative numbers
   if (*out > sk_->p_half_) {
@@ -46,7 +46,7 @@ void Decryptor::Decrypt(const Ciphertext &ct, Plaintext *out) const {
 }
 
 Plaintext Decryptor::Decrypt(const Ciphertext &ct) const {
-  MPInt mp;
+  BigInt mp;
   Decrypt(ct, &mp);
   return mp;
 }

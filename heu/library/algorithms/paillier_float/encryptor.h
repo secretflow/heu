@@ -36,12 +36,12 @@ class Encryptor {
 
   Ciphertext Encrypt(int64_t plain) const;
 
-  Ciphertext Encrypt(const MPInt &plain) const;
+  Ciphertext Encrypt(const BigInt &plain) const;
 
   Ciphertext Encrypt(double plain,
                      absl::optional<float> precision = absl::nullopt) const;
 
-  std::pair<Ciphertext, std::string> EncryptWithAudit(const MPInt &m) const;
+  std::pair<Ciphertext, std::string> EncryptWithAudit(const BigInt &m) const;
 
  public:
   const PublicKey &public_key() const { return pk_; }
@@ -57,9 +57,9 @@ class Encryptor {
       absl::optional<uint32_t> rand = absl::nullopt) const;
 
   template <bool audit = false>
-  MPInt EncryptRaw(const MPInt &m,
-                   absl::optional<uint32_t> rand = absl::nullopt,
-                   std::string *audit_str = nullptr) const;
+  BigInt EncryptRaw(const BigInt &m,
+                    absl::optional<uint32_t> rand = absl::nullopt,
+                    std::string *audit_str = nullptr) const;
 
  private:
   PublicKey pk_;

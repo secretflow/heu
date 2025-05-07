@@ -21,39 +21,37 @@ void KeyGenerator::Generate(size_t key_size, SecretKey *sk, PublicKey *pk) {
   YACL_ENFORCE(key_size >= 1024 && key_size <= 3072,
                "Key size must be in [1024, 3072] and 2048 bits is recommended");
 
-  MPInt u, vp, vq;
   // MPINT_ENFORCE_OK(
   //     mp_prime_rand(reinterpret_cast<mp_int*>(&u), 1, l, MP_PRIME_BBS));
-  u = MPInt{65423};  // use the largest l(16)-bit prime instead
-  MPInt::RandPrimeOver(t, &vp);
-  MPInt::RandPrimeOver(t, &vq);
+  BigInt u(65423);  // use the largest l(16)-bit prime instead
+  BigInt vp = BigInt::RandPrimeOver(t);
+  BigInt vq = BigInt::RandPrimeOver(t);
   // Question: can we consider the following generations of p, q secure?
   // TODO: check NIST.FIPS.186-5 Appendix A.1.1
-  MPInt wp, wq, p, q, gcd;
+  BigInt wp, wq, p, q, gcd;
   do {
-    MPInt::RandomMonicExactBits(key_size / 2 - t - l, &wp);
-    MPInt::Gcd(wp, vq, &gcd);
-    wp *= MPInt::_2_;
-    p = u * vp * wp + MPInt::_1_;
-  } while (!p.IsPrime() || gcd != MPInt::_1_);
+    wp = BigInt::RandomMonicExactBits(key_size / 2 - t - l);
+    gcd = wp.Gcd(vq);
+    wp *= 2;
+    p = u * vp * wp + 1;
+  } while (!p.IsPrime() || gcd != 1);
   do {
-    MPInt::RandomMonicExactBits(key_size / 2 - t, &wq);
-    MPInt::Gcd(wq, vp, &gcd);
-    wq *= MPInt::_2_;
-    q = vq * wq + MPInt::_1_;
-  } while (!q.IsPrime() || gcd != MPInt::_1_);
-  MPInt n{p * q}, pp_{p * p.InvertMod(q)};
-  MPInt gp, gq, gn;  // generators of cyclic groups
+    wq = BigInt::RandomMonicExactBits(key_size / 2 - t);
+    gcd = wq.Gcd(vp);
+    wq *= 2;
+    q = vq * wq + 1;
+  } while (!q.IsPrime() || gcd != 1);
+  BigInt n{p * q}, pp_{p * p.InvMod(q)};
+  BigInt gp, gq, gn;  // generators of cyclic groups
   do {
-    MPInt::RandomLtN(p, &gp);
-  } while (gp.PowMod(u * vp, p) == MPInt::_1_ ||
-           gp.PowMod(vp * wp, p) == MPInt::_1_ ||
-           gp.PowMod(wp * u, p) == MPInt::_1_);
+    gp = BigInt::RandomLtN(p);
+  } while (gp.PowMod(u * vp, p) == 1 || gp.PowMod(vp * wp, p) == 1 ||
+           gp.PowMod(wp * u, p) == 1);
   do {
-    MPInt::RandomLtN(q, &gq);
-  } while (gq.PowMod(vq, q) == MPInt::_1_ || gq.PowMod(wq, q) == MPInt::_1_);
+    gq = BigInt::RandomLtN(q);
+  } while (gq.PowMod(vq, q) == 1 || gq.PowMod(wq, q) == 1);
   gn = (gp + (gq - gp) * pp_) % n;
-  MPInt g, h;
+  BigInt g, h;
   g = gn.PowMod(wp * wq, n);
   h = g.PowMod(u, n);
 

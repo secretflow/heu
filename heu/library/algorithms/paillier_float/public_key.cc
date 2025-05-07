@@ -18,14 +18,14 @@
 
 namespace heu::lib::algorithms::paillier_f {
 
-PublicKey::PublicKey(const MPInt &n) : n_(n) { Init(); }
+PublicKey::PublicKey(const BigInt &n) : n_(n) { Init(); }
 
-PublicKey::PublicKey(MPInt &&n) : n_(std::move(n)) { Init(); }
+PublicKey::PublicKey(BigInt &&n) : n_(std::move(n)) { Init(); }
 
 void PublicKey::Init() {
-  g_ = n_ + MPInt::_1_;
-  MPInt::Mul(n_, n_, &n_square_);  // n_square_ = n_ ** 2
-  MPInt::Div3(n_, &max_int_);
+  g_ = n_ + 1;
+  n_square_ = n_ * n_;
+  max_int_ = n_ / 3;
 }
 
 std::string PublicKey::ToString() const {

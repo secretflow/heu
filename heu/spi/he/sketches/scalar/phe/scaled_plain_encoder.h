@@ -38,7 +38,7 @@ class ScaledPlainEncoder : public PlainEncoderSketch<PlaintextT> {
   }
 
   PlaintextT FromStringT(std::string_view pt_str) const override {
-    return PlaintextT((std::string)pt_str);
+    return PlaintextT((std::string)pt_str, 10);  // TODO: support base==0
   }
 
   PlaintextT EncodeT(int64_t message) const override {

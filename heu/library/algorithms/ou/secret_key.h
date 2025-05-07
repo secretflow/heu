@@ -18,20 +18,20 @@
 
 #include "fmt/format.h"
 
+#include "heu/library/algorithms/util/big_int.h"
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::ou {
 
 class SecretKey : public HeObject<SecretKey> {
  public:
-  MPInt p_, q_;   // primes such that log2(p), log2(q) ~ n_bits / 3
-  MPInt t_;       // a big prime factor of p - 1, i.e., p = t * u + 1.
-  MPInt gp_inv_;  // L(g^{p-1} mod p^2))^{-1} mod p
+  BigInt p_, q_;   // primes such that log2(p), log2(q) ~ n_bits / 3
+  BigInt t_;       // a big prime factor of p - 1, i.e., p = t * u + 1.
+  BigInt gp_inv_;  // L(g^{p-1} mod p^2))^{-1} mod p
 
-  MPInt p2_;      // p^2
-  MPInt p_half_;  // p/2
-  MPInt n_;       // n = p^2 * q
+  BigInt p2_;      // p^2
+  BigInt p_half_;  // p/2
+  BigInt n_;       // n = p^2 * q
 
   // for msgpack
   MSGPACK_DEFINE(p_, q_, t_, gp_inv_, p2_, p_half_, n_);

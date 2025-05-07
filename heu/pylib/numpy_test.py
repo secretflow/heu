@@ -324,8 +324,6 @@ class BasicCase(unittest.TestCase):
         arr = self.kit.array([[16, 19], [36, 43]])
         buf1 = arr.serialize(hnp.MatrixSerializeFormat.Interconnection)
         buf2 = arr.serialize()
-        print(buf1)
-        print(buf2)
         self.assertNotEquals(buf1, buf2)
         arr2 = arr.load_from(buf1, hnp.MatrixSerializeFormat.Interconnection)
         self.assert_array_equal(arr2, arr.to_numpy())

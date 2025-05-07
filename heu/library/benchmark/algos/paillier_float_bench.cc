@@ -13,7 +13,6 @@
 // limitations under the License.
 #include <chrono>
 #include <functional>
-#include <iostream>
 
 #include "benchmark/benchmark.h"
 #include "fmt/format.h"
@@ -23,13 +22,13 @@
 namespace heu::lib::bench {
 
 namespace paillier_f = algorithms::paillier_f;
-using algorithms::MPInt;
+using algorithms::BigInt;
 
 constexpr static long kTestSize = 10000;
 constexpr static size_t kKeySize = 2048;
 constexpr int kRandomScale = 8011;
 
-MPInt g_plain[kTestSize];
+BigInt g_plain[kTestSize];
 paillier_f::SecretKey g_paillier_secret_key;
 paillier_f::PublicKey g_paillier_public_key;
 paillier_f::Ciphertext g_paillier_ciphertext[kTestSize];
@@ -114,7 +113,7 @@ void run_serialization_tests() {
 
 void Initialize() {
   for (int i = 0; i < kTestSize; ++i) {
-    g_plain[i] = MPInt(i * kRandomScale);
+    g_plain[i] = BigInt(i * kRandomScale);
   }
   paillier_f::KeyGenerator::Generate(kKeySize, &g_paillier_secret_key,
                                      &g_paillier_public_key);
@@ -145,7 +144,7 @@ static void PaillierAddInt(benchmark::State &state) {
   paillier_f::Evaluator evaluator(g_paillier_public_key);
   for (auto _ : state) {
     for (int i = 1; i < kTestSize; ++i) {
-      evaluator.AddInplace(&g_paillier_ciphertext[i], MPInt(i));
+      evaluator.AddInplace(&g_paillier_ciphertext[i], BigInt(i));
     }
   }
 }
@@ -155,7 +154,7 @@ static void PaillierMulti(benchmark::State &state) {
   paillier_f::Evaluator evaluator(g_paillier_public_key);
   for (auto _ : state) {
     for (int i = 1; i < kTestSize; ++i) {
-      evaluator.MulInplace(&g_paillier_ciphertext[i], MPInt(i));
+      evaluator.MulInplace(&g_paillier_ciphertext[i], BigInt(i));
     }
   }
 }

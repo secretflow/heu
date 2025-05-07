@@ -33,27 +33,27 @@ void KeyGenerator::Generate(size_t key_size, SecretKey *sk, PublicKey *pk) {
   // large.
   do {
     size_t half = key_size / 2;
-    MPInt::RandPrimeOver(half, &p, PrimeType::BBS);
+    p = BigInt::RandPrimeOver(half, PrimeType::BBS);
     do {
-      MPInt::RandPrimeOver(half, &q, PrimeType::BBS);
-      MPInt::Gcd(p - MPInt::_1_, q - MPInt::_1_, &c);
-    } while (c != Plaintext(2) ||
+      q = BigInt::RandPrimeOver(half, PrimeType::BBS);
+      c = (p - 1).Gcd(q - 1);
+    } while (c != 2 ||
              (p - q).BitCount() < key_size / 2 - kPQDifferenceBitLenSub);
-    n = (Plaintext)(p * q);
+    n = p * q;
   } while (n.BitCount() < key_size);
 
-  MPInt x, h;
+  BigInt x, h;
   do {
-    MPInt::RandomLtN(n, &x);
-    MPInt::Gcd(x, n, &c);
-  } while (c != Plaintext(1));
-  h = x * x * -MPInt::_1_ % n;
+    x = BigInt::RandomLtN(n);
+    c = x.Gcd(n);
+  } while (c != 1);
+  h = -x.MulMod(x, n);
 
   // fill secret key
-  sk->p_ = (Plaintext)p;
-  sk->q_ = (Plaintext)q;
-  sk->lambda_ = (Plaintext)(p.DecrOne() * q.DecrOne() / MPInt::_2_);
-  MPInt::InvertMod(sk->lambda_, n, &sk->mu_);
+  sk->p_ = p;
+  sk->q_ = q;
+  sk->lambda_ = (p - 1) * (q - 1) / 2;
+  sk->mu_ = sk->lambda_.InvMod(n);
   sk->Init();
   // fill public key
   pk->h_s_ = (Plaintext)(sk->PowModNSquareCrt(h, n));

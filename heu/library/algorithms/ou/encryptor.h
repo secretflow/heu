@@ -28,20 +28,20 @@ class Encryptor {
   Encryptor(const Encryptor &from);
 
   Ciphertext EncryptZero() const;  // Get Enc(0)
-  Ciphertext Encrypt(const MPInt &m) const;
+  Ciphertext Encrypt(const BigInt &m) const;
 
-  std::pair<Ciphertext, std::string> EncryptWithAudit(const MPInt &m) const;
+  std::pair<Ciphertext, std::string> EncryptWithAudit(const BigInt &m) const;
 
-  MPInt GetHr() const;
+  BigInt GetHr() const;
 
   void SetEnableCache(bool enable_cache) { enable_cache_ = enable_cache; }
 
  private:
   template <bool audit = false>
-  Ciphertext EncryptImpl(const MPInt &m,
+  Ciphertext EncryptImpl(const BigInt &m,
                          std::string *audit_str = nullptr) const;
 
-  std::shared_ptr<MPInt> GetHrUsingCache() const;
+  std::shared_ptr<BigInt> GetHrUsingCache() const;
 
   const PublicKey pk_;
 
@@ -49,8 +49,8 @@ class Encryptor {
   size_t random_bits_;
 
   mutable std::mutex hr_mutex_;
-  mutable std::shared_ptr<MPInt> cache_r_;
-  mutable std::shared_ptr<MPInt> cache_hr_;  // h^(cache_r_)
+  mutable std::shared_ptr<BigInt> cache_r_;
+  mutable std::shared_ptr<BigInt> cache_hr_;  // h^(cache_r_)
 };
 
 }  // namespace heu::lib::algorithms::ou

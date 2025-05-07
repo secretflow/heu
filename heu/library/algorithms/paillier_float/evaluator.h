@@ -29,7 +29,7 @@ class Evaluator {
 
   // c = a + b
   Ciphertext Add(const Ciphertext &a, const Ciphertext &b) const;
-  Ciphertext Add(const Ciphertext &a, const MPInt &b) const;
+  Ciphertext Add(const Ciphertext &a, const BigInt &b) const;
   Ciphertext Add(const Ciphertext &a, double b) const;
 
   Plaintext Add(const Plaintext &a, const Plaintext &b) const { return a + b; };
@@ -40,26 +40,26 @@ class Evaluator {
 
   // a = a + b
   void AddInplace(Ciphertext *a, const Ciphertext &b) const;
-  void AddInplace(Ciphertext *a, const MPInt &b) const;
+  void AddInplace(Ciphertext *a, const BigInt &b) const;
   void AddInplace(Ciphertext *a, double b) const;
 
   void AddInplace(Plaintext *a, const Plaintext &b) const { *a += b; }
 
   // out = a - b
   Ciphertext Sub(const Ciphertext &a, const Ciphertext &b) const;
-  Ciphertext Sub(const Ciphertext &a, const MPInt &b) const;
-  Ciphertext Sub(const MPInt &a, const Ciphertext &b) const;
+  Ciphertext Sub(const Ciphertext &a, const BigInt &b) const;
+  Ciphertext Sub(const BigInt &a, const Ciphertext &b) const;
 
   Plaintext Sub(const Plaintext &a, const Plaintext &b) const { return a - b; };
 
   // a -= b
   void SubInplace(Ciphertext *a, const Ciphertext &b) const;
-  void SubInplace(Ciphertext *a, const MPInt &b) const;
+  void SubInplace(Ciphertext *a, const BigInt &b) const;
 
   void SubInplace(Plaintext *a, const Plaintext &b) const { *a -= b; }
 
   // c = a * b
-  Ciphertext Mul(const Ciphertext &a, const MPInt &b) const;
+  Ciphertext Mul(const Ciphertext &a, const BigInt &b) const;
   Ciphertext Mul(const Ciphertext &a, double b) const;
 
   Plaintext Mul(const Plaintext &a, const Plaintext &b) const { return a * b; };
@@ -69,7 +69,7 @@ class Evaluator {
   }
 
   // a = a * b
-  void MulInplace(Ciphertext *a, const MPInt &b) const;
+  void MulInplace(Ciphertext *a, const BigInt &b) const;
   void MulInplace(Ciphertext *a, double b) const;
 
   void MulInplace(Plaintext *a, const Plaintext &b) const { *a *= b; };
@@ -80,9 +80,9 @@ class Evaluator {
   void NegateInplace(Ciphertext *a) const;
 
  private:
-  MPInt AddRaw(const MPInt &a, const MPInt &b) const;
+  BigInt AddRaw(const BigInt &a, const BigInt &b) const;
 
-  MPInt MulRaw(const MPInt &a, const MPInt &b) const;
+  BigInt MulRaw(const BigInt &a, const BigInt &b) const;
 
   /// decrease cipher's exponent to new_exp
   /// if new_exp > cipher's exponent, raise exception.

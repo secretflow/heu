@@ -51,24 +51,24 @@ class GPUTest : public ::testing::Test {
 };
 
 TEST_F(GPUTest, EncDecBigintTest) {
-  auto enc_dec_func = [&](const MPInt &plain) {
+  auto enc_dec_func = [&](const BigInt &plain) {
     fmt::print("in = {}\n", plain);
-    std::vector<const MPInt *> in = {&plain};
+    std::vector<const BigInt *> in = {&plain};
     auto cts = encryptor_->Encrypt(in);
     auto plain_dec = decryptor_->Decrypt({&cts[0]});
     fmt::print("out= {}\n", plain_dec[0]);
     EXPECT_EQ(plain, plain_dec[0]);
   };
 
-  enc_dec_func(0_mp);
-  enc_dec_func(1_mp);
-  enc_dec_func(100_mp);
-  enc_dec_func(MPInt(iLow));
+  enc_dec_func(BigInt(0));
+  enc_dec_func(BigInt(1));
+  enc_dec_func(BigInt(100));
+  enc_dec_func(BigInt(iLow));
 
   fmt::print("{}\n", pk_.ToString());
 
   auto plain = pk_.PlaintextBound();
-  enc_dec_func(plain.DecrOne());
+  enc_dec_func(--plain);
   plain.NegateInplace();
   enc_dec_func(plain);
 }

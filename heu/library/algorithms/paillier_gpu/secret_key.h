@@ -15,8 +15,8 @@
 #pragma once
 
 #include "heu/library/algorithms/paillier_gpu/plaintext.h"
+#include "heu/library/algorithms/util/big_int.h"
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::paillier_g {
 
@@ -36,7 +36,7 @@ class SecretKey : public HeObject<SecretKey> {
 
   void Init();
   // base^exp mod n^2, n = p * q
-  Plaintext PowModNSquareCrt(const MPInt &base, const Plaintext &exp) const;
+  Plaintext PowModNSquareCrt(const BigInt &base, const Plaintext &exp) const;
 
   bool operator==(const SecretKey &other) const {
     return p_ == other.p_ && q_ == other.q_ && lambda_ == other.lambda_ &&

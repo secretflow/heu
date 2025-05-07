@@ -24,7 +24,7 @@ namespace heu::lib::algorithms::paillier_z {
 
 void Evaluator::Randomize(Ciphertext *ct) const {
   VALIDATE(*ct);
-  pk_.m_space_->MulMod(ct->c_, encryptor_.GetRn(), &(ct->c_));
+  ct->c_ = pk_.m_space_->MulMod(ct->c_, encryptor_.GetRn());
 }
 
 Ciphertext Evaluator::Add(const Ciphertext &a, const Ciphertext &b) const {
@@ -32,7 +32,7 @@ Ciphertext Evaluator::Add(const Ciphertext &a, const Ciphertext &b) const {
   VALIDATE(b);
 
   Ciphertext out;
-  pk_.m_space_->MulMod(a.c_, b.c_, &(out.c_));
+  out.c_ = pk_.m_space_->MulMod(a.c_, b.c_);
   return out;
 }
 
@@ -40,10 +40,10 @@ void Evaluator::AddInplace(Ciphertext *a, const Ciphertext &b) const {
   VALIDATE(*a);
   VALIDATE(b);
 
-  pk_.m_space_->MulMod(a->c_, b.c_, &(a->c_));
+  a->c_ = pk_.m_space_->MulMod(a->c_, b.c_);
 }
 
-Ciphertext Evaluator::Add(const Ciphertext &a, const MPInt &p) const {
+Ciphertext Evaluator::Add(const Ciphertext &a, const BigInt &p) const {
   VALIDATE(a);
   YACL_ENFORCE(p.CompareAbs(pk_.PlaintextBound()) <= 0,
                "plaintext out of range, message={}, max (abs)={}",
@@ -51,15 +51,15 @@ Ciphertext Evaluator::Add(const Ciphertext &a, const MPInt &p) const {
 
   // Note: g^m = (1 + n)^m = (1 + n*m) mod n^2
   // It is also correct when m is negative
-  MPInt gm = (pk_.n_ * p).IncrOne();  // no need mod
-  pk_.m_space_->MapIntoMSpace(&gm);
+  BigInt gm = pk_.n_ * p + 1;  // no need mod
+  pk_.m_space_->MapIntoMSpace(gm);
 
   Ciphertext out;
-  pk_.m_space_->MulMod(a.c_, gm, &(out.c_));
+  out.c_ = pk_.m_space_->MulMod(a.c_, gm);
   return out;
 }
 
-void Evaluator::AddInplace(Ciphertext *a, const MPInt &p) const {
+void Evaluator::AddInplace(Ciphertext *a, const BigInt &p) const {
   *a = Add(*a, p);
 }
 
@@ -71,39 +71,39 @@ void Evaluator::SubInplace(Ciphertext *a, const Ciphertext &b) const {
   AddInplace(a, Negate(b));
 }
 
-Ciphertext Evaluator::Sub(const Ciphertext &a, const MPInt &p) const {
+Ciphertext Evaluator::Sub(const Ciphertext &a, const BigInt &p) const {
   return Add(a, -p);
 }
 
-void Evaluator::SubInplace(Ciphertext *a, const MPInt &p) const {
+void Evaluator::SubInplace(Ciphertext *a, const BigInt &p) const {
   AddInplace(a, -p);
 }
 
-Ciphertext Evaluator::Sub(const MPInt &p, const Ciphertext &a) const {
+Ciphertext Evaluator::Sub(const BigInt &p, const Ciphertext &a) const {
   return Add(Negate(a), p);
 }
 
 Ciphertext Evaluator::Negate(const Ciphertext &a) const {
   VALIDATE(a);
 
-  MPInt tmp(a.c_);
-  pk_.m_space_->MapBackToZSpace(&tmp);
+  BigInt tmp(a.c_);
+  pk_.m_space_->MapBackToZSpace(tmp);
   Ciphertext out;
-  MPInt::InvertMod(tmp, pk_.n_square_, &out.c_);
-  pk_.m_space_->MapIntoMSpace(&out.c_);
+  out.c_ = tmp.InvMod(pk_.n_square_);
+  pk_.m_space_->MapIntoMSpace(out.c_);
   return out;
 }
 
 void Evaluator::NegateInplace(Ciphertext *a) const { *a = Negate(*a); }
 
-Ciphertext Evaluator::Mul(const Ciphertext &a, const MPInt &p) const {
+Ciphertext Evaluator::Mul(const Ciphertext &a, const BigInt &p) const {
   // No need to check size of p because ciphertext overflow is allowed
   VALIDATE(a);
 
   // Handle some values specially to speed up computation
   auto p_bits = p.BitCount();
   if (p_bits == 0) {
-    return Ciphertext(pk_.m_space_->GetIdentity());
+    return Ciphertext(pk_.m_space_->Identity());
   } else if (p_bits == 1) {
     if (p.IsNegative()) {
       // p = -1
@@ -115,14 +115,14 @@ Ciphertext Evaluator::Mul(const Ciphertext &a, const MPInt &p) const {
   }
 
   Ciphertext out;
-  MPInt c(a.c_);
-  pk_.m_space_->MapBackToZSpace(&c);
-  MPInt::PowMod(c, p, pk_.n_square_, &out.c_);
-  pk_.m_space_->MapIntoMSpace(&out.c_);
+  BigInt c(a.c_);
+  pk_.m_space_->MapBackToZSpace(c);
+  out.c_ = c.PowMod(p, pk_.n_square_);
+  pk_.m_space_->MapIntoMSpace(out.c_);
   return out;
 }
 
-void Evaluator::MulInplace(Ciphertext *a, const MPInt &p) const {
+void Evaluator::MulInplace(Ciphertext *a, const BigInt &p) const {
   *a = Mul(*a, p);
 }
 

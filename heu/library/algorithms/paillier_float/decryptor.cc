@@ -18,7 +18,7 @@
 
 namespace heu::lib::algorithms::paillier_f {
 
-void Decryptor::Decrypt(const Ciphertext &cipher, MPInt *plain) const {
+void Decryptor::Decrypt(const Ciphertext &cipher, BigInt *plain) const {
   internal::EncodedNumber encoded;
   encoded.exponent = cipher.exponent_;
   DecryptRaw(cipher.c_, &encoded.encoding);
@@ -26,8 +26,8 @@ void Decryptor::Decrypt(const Ciphertext &cipher, MPInt *plain) const {
   internal::Codec(pk_).Decode(encoded, plain);
 }
 
-MPInt Decryptor::Decrypt(const Ciphertext &cipher) const {
-  MPInt plain;
+BigInt Decryptor::Decrypt(const Ciphertext &cipher) const {
+  BigInt plain;
   Decrypt(cipher, &plain);
   return plain;
 }
@@ -40,11 +40,10 @@ void Decryptor::Decrypt(const Ciphertext &cipher, double *plain) const {
   internal::Codec(pk_).Decode(encoded, plain);
 }
 
-void Decryptor::DecryptRaw(const MPInt &c, MPInt *m) const {
-  MPInt::PowMod(c, sk_.lambda_, pk_.n_square_, m);
-  m->DecrOne();
-  MPInt::Div(*m, pk_.n_, m, nullptr);
-  MPInt::MulMod(*m, sk_.x_, pk_.n_, m);
+void Decryptor::DecryptRaw(const BigInt &c, BigInt *m) const {
+  *m = c.PowMod(sk_.lambda_, pk_.n_square_);
+  *m = (--(*m)) / pk_.n_;
+  *m = m->MulMod(sk_.x_, pk_.n_);
 }
 
 }  // namespace heu::lib::algorithms::paillier_f

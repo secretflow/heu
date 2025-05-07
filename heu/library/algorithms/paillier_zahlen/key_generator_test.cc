@@ -30,9 +30,10 @@ TEST_P(KeyGenTest, KeyFieldTest) {
   EXPECT_GE((sk.p_ - sk.q_).Abs().BitCount(), GetParam() / 2 - 2);
   EXPECT_GE(pk.n_.BitCount(), GetParam());
   EXPECT_TRUE(pk.n_square_ == pk.n_ * pk.n_);
-  EXPECT_TRUE(pk.n_ / MPInt::_2_ == pk.n_half_);
+  EXPECT_TRUE(pk.n_ / 2 == pk.n_half_);
   EXPECT_TRUE(pk.hs_table_->exp_max_bits >= pk.key_size_ / 2);
-  EXPECT_TRUE(pk.hs_table_->exp_max_bits < pk.key_size_ / 2 + MP_DIGIT_BIT);
+  size_t word_size = pk.m_space_->GetWordBitSize();
+  EXPECT_TRUE(pk.hs_table_->exp_max_bits < pk.key_size_ / 2 + word_size);
 
   EXPECT_TRUE(sk.lambda_.IsPositive());
   EXPECT_TRUE(sk.mu_.IsPositive());

@@ -14,8 +14,8 @@
 
 #pragma once
 
+#include "heu/library/algorithms/util/big_int.h"
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::paillier_z {
 
@@ -26,10 +26,10 @@ void SetCacheTableDensity(size_t density);
 
 class PublicKey : public HeObject<PublicKey> {
  public:
-  MPInt n_;         // public modulus n = p * q
-  MPInt n_square_;  // n_ * n_
-  MPInt n_half_;    // n_ / 2
-  MPInt h_s_;       // h^n mod n^2
+  BigInt n_;         // public modulus n = p * q
+  BigInt n_square_;  // n_ * n_
+  BigInt n_half_;    // n_ / 2
+  BigInt h_s_;       // h^n mod n^2
 
   size_t key_size_;
 
@@ -49,7 +49,9 @@ class PublicKey : public HeObject<PublicKey> {
   }
 
   // Valid plaintext range: [n_half_, -n_half]
-  [[nodiscard]] inline const MPInt &PlaintextBound() const & { return n_half_; }
+  [[nodiscard]] inline const BigInt &PlaintextBound() const & {
+    return n_half_;
+  }
 };
 
 }  // namespace heu::lib::algorithms::paillier_z
@@ -80,8 +82,8 @@ struct convert<heu::lib::algorithms::paillier_z::PublicKey> {
     if (object.via.array.size != 2) { throw msgpack::type_error(); }
 
     // The order here corresponds to the packer above
-    pk.n_ = object.via.array.ptr[0].as<heu::lib::algorithms::MPInt>();
-    pk.h_s_ = object.via.array.ptr[1].as<heu::lib::algorithms::MPInt>();
+    pk.n_ = object.via.array.ptr[0].as<heu::lib::algorithms::BigInt>();
+    pk.h_s_ = object.via.array.ptr[1].as<heu::lib::algorithms::BigInt>();
     pk.Init();
     return object;
   }

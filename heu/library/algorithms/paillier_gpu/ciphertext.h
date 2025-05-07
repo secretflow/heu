@@ -15,8 +15,8 @@
 #pragma once
 
 #include "heu/library/algorithms/paillier_gpu/gpulib/gpupaillier.h"
+#include "heu/library/algorithms/util/big_int.h"
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 #include "heu/library/algorithms/util/spi_traits.h"
 
 namespace heu::lib::algorithms::paillier_g {
