@@ -96,7 +96,7 @@ TEST_F(EncryptorTest, MultiThread) {
   Ciphertext ct[th_size * case_size];
 
   for (int i = 0; i < th_size; ++i) {
-    threads[i] = std::async([i, &dist, &mt, &mpint, &ct, &encryptor, this]() {
+    threads[i] = std::async([i, &dist, &mt, &mpint, &ct, &encryptor]() {
       for (int j = 0; j < case_size; ++j) {
         mpint[i * case_size + j] = BigInt(dist(mt));
         *(ct + i * case_size + j) = encryptor.Encrypt(mpint[i * case_size + j]);
