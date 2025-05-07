@@ -14,16 +14,11 @@
 
 #pragma once
 
-#include "yacl/math/mpint/montgomery_math.h"
 #include "yacl/math/mpint/mp_int.h"
 
 namespace heu::lib::algorithms {
 
 // MPInt has moved to YACL, we leave a shortcut here ...
 using yacl::math::MPInt;
-using yacl::math::PrimeType;
-
-using yacl::math::BaseTable;
-using yacl::math::MontgomerySpace;
 
 }  // namespace heu::lib::algorithms

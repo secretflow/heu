@@ -14,18 +14,18 @@
 
 #pragma once
 
+#include "heu/library/algorithms/util/big_int.h"
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::dj {
 
 class SecretKey : public HeObject<SecretKey> {
   struct MPInt2 {
-    MPInt P, Q;
+    BigInt P, Q;
   };
 
  public:
-  void Init(const MPInt &p, const MPInt &q, uint32_t s);
+  void Init(const BigInt &p, const BigInt &q, uint32_t s);
 
   const auto &N() const { return n_; }
 
@@ -35,15 +35,15 @@ class SecretKey : public HeObject<SecretKey> {
   bool operator!=(const SecretKey &) const;
   std::string ToString() const override;
 
-  MPInt Decrypt(const MPInt &ct) const;
+  BigInt Decrypt(const BigInt &ct) const;
 
  private:
-  MPInt2 n_;           // (p, q)
-  MPInt lambda_, mu_;  // λ, μ
-  MPInt pmod_;         // n^s
-  uint32_t s_ = 0;     // Updated by Ant Group
-  MPInt pp_;           // p^s * (p^(-s) mod q^s), used for CRT
-  MPInt2 inv_pq_;      // ( q^(-1) mod p^s, p^(-1) mod q^s )
+  MPInt2 n_;            // (p, q)
+  BigInt lambda_, mu_;  // λ, μ
+  BigInt pmod_;         // n^s
+  uint32_t s_ = 0;      // Updated by Ant Group
+  BigInt pp_;           // p^s * (p^(-s) mod q^s), used for CRT
+  MPInt2 inv_pq_;       // ( q^(-1) mod p^s, p^(-1) mod q^s )
 
   struct LUT {
     std::vector<MPInt2> pq_pow;                // {p,q}^j
@@ -82,8 +82,8 @@ struct convert<heu::lib::algorithms::dj::SecretKey> {
     if (object.via.array.size != 3) { throw msgpack::type_error(); }
 
     // The order here corresponds to the packer above
-    auto p = object.via.array.ptr[0].as<heu::lib::algorithms::MPInt>();
-    auto q = object.via.array.ptr[1].as<heu::lib::algorithms::MPInt>();
+    auto p = object.via.array.ptr[0].as<heu::lib::algorithms::BigInt>();
+    auto q = object.via.array.ptr[1].as<heu::lib::algorithms::BigInt>();
     auto s = object.via.array.ptr[2].as<uint32_t>();
     sk.Init(p, q, s);
     return object;

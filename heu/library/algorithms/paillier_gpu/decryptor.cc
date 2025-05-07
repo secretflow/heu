@@ -46,7 +46,7 @@ std::vector<Plaintext> Decryptor::Decrypt(ConstSpan<Ciphertext> cts) const {
   // f. res->std::vector<Ciphertext>
   std::vector<Plaintext> ptx_res(count);
   for (unsigned int i = 0; i < count; i++) {
-    ptx_res[i] = Plaintext(0, 512);
+    ptx_res[i] = Plaintext(0, 512U);
     ptx_res[i].FromMagBytes(
         yacl::ByteContainerView((uint8_t *)(gpts[i].m), 512),
         algorithms::Endian::little);

@@ -15,24 +15,22 @@
 #include "heu/library/algorithms/paillier_ic/pb_utils.h"
 
 namespace heu::lib::algorithms::paillier_ic {
-pb_ns::Bigint MPInt2Bigint(const MPInt &mpint) {
+pb_ns::Bigint BigInt2PbBigint(const BigInt &bigint) {
   pb_ns::Bigint bi;
-  bi.set_is_neg(mpint.IsNegative());
-  auto buf_len = mpint.ToMagBytes(nullptr, 0);
+  bi.set_is_neg(bigint.IsNegative());
+  auto buf_len = bigint.ToMagBytes(nullptr, 0);
   bi.mutable_little_endian_value()->resize(buf_len);
-  mpint.ToMagBytes(reinterpret_cast<unsigned char *>(
-                       bi.mutable_little_endian_value()->data()),
-                   buf_len, yacl::Endian::little);
+  bigint.ToMagBytes(reinterpret_cast<unsigned char *>(
+                        bi.mutable_little_endian_value()->data()),
+                    buf_len, yacl::Endian::little);
   return bi;
 }
 
-MPInt Bigint2MPint(const pb_ns::Bigint &bi) {
-  MPInt mp;
-  mp.FromMagBytes(bi.little_endian_value(), yacl::Endian::little);
+void PbBigint2BigInt(const pb_ns::Bigint &bi, BigInt &bigint) {
+  bigint.FromMagBytes(bi.little_endian_value(), yacl::Endian::little);
   if (bi.is_neg()) {
-    mp.NegateInplace();
+    bigint.NegateInplace();
   }
-  return mp;
 }
 
 }  // namespace heu::lib::algorithms::paillier_ic

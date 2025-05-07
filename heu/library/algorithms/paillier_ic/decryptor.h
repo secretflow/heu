@@ -27,8 +27,8 @@ class Decryptor {
   explicit Decryptor(PublicKey pk, SecretKey sk)
       : pk_(std::move(pk)), sk_(std::move(sk)) {}
 
-  void Decrypt(const Ciphertext &ct, MPInt *out) const;
-  MPInt Decrypt(const Ciphertext &ct) const;
+  void Decrypt(const Ciphertext &ct, BigInt *out) const;
+  BigInt Decrypt(const Ciphertext &ct) const;
 
  private:
   PublicKey pk_;

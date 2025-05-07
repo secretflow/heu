@@ -31,7 +31,7 @@ Ciphertext Encryptor::Encrypt(const Plaintext &m) const {
 
 std::pair<Ciphertext, std::string> Encryptor::EncryptWithAudit(
     const Plaintext &m) const {
-  MPInt g_m{pk_.Encrypt(m)}, h_r{pk_.RandomHr()}, ctR;
+  BigInt g_m{pk_.Encrypt(m)}, h_r{pk_.RandomHr()}, ctR;
   pk_.MulMod(g_m, h_r, &ctR);
   auto audit_str{fmt::format(FMT_COMPILE("p:{},rn:{},c:{}"), m.ToHexString(),
                              h_r.ToHexString(), ctR.ToHexString())};

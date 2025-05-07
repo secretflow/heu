@@ -32,11 +32,11 @@ class Encryptor : public spi::PheEncryptorScalarSketch<Plaintext, Ciphertext> {
                         std::string *audit_out) const override;
 
   // Get R^n
-  MPInt GetRn() const;
+  BigInt GetRn() const;
 
  private:
   template <bool audit = false>
-  Ciphertext EncryptImpl(const MPInt &m,
+  Ciphertext EncryptImpl(const BigInt &m,
                          std::string *audit_str = nullptr) const;
 
   std::shared_ptr<PublicKey> pk_;

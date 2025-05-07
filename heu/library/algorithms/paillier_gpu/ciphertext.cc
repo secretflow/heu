@@ -19,14 +19,14 @@
 namespace heu::lib::algorithms::paillier_g {
 
 std::string Ciphertext::ToString() const {
-  MPInt pt;
+  BigInt pt;
   pt.FromMagBytes(yacl::ByteContainerView((uint8_t *)(ct_.c), 512),
                   algorithms::Endian::little);
   return pt.ToString();
 }
 
 std::string Ciphertext::ToHexString() const {
-  MPInt pt;
+  BigInt pt;
   pt.FromMagBytes(yacl::ByteContainerView((uint8_t *)(ct_.c), 512),
                   algorithms::Endian::little);
   return pt.ToHexString();

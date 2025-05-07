@@ -103,45 +103,45 @@ void HeKit::GenPkSk(size_t key_size) {
                prime_factor_size * 2 * 3 - 2);
 
   sk_ = std::make_shared<SecretKey>();
-  MPInt u, prime_factor;
+  BigInt u, prime_factor;
   do {
-    MPInt::RandPrimeOver(prime_factor_size, &prime_factor);
+    prime_factor = BigInt::RandPrimeOver(prime_factor_size);
     // bits_of(a * b) <= bits_of(a) + bits_of(b),
     // So we add extra two bits to u:
     //    one bit for prime_factor * u; another one bit for p^2;
     // Also, make sure that u > prime_factor
-    MPInt::RandomMonicExactBits(secret_size - prime_factor_size + 2, &u);
-    sk_->p_ = prime_factor * u + MPInt::_1_;  // p - 1 has a large prime factor
+    u = BigInt::RandomMonicExactBits(secret_size - prime_factor_size + 2);
+    sk_->p_ = prime_factor * u + 1;  // p - 1 has a large prime factor
   } while (!sk_->p_.IsPrime());
   // since bits_of(a * b) <= bits_of(a) + bits_of(b)
   // add another 1 bit for q
-  MPInt::RandPrimeOver(secret_size + 1, &sk_->q_);
+  sk_->q_ = BigInt::RandPrimeOver(secret_size + 1);
   sk_->p2_ = sk_->p_ * sk_->p_;
-  sk_->p_half_ = sk_->p_ / MPInt::_2_;
+  sk_->p_half_ = sk_->p_ / 2;
   sk_->t_ = prime_factor;
   sk_->n_ = sk_->p2_ * sk_->q_;
 
   pk_ = std::make_shared<PublicKey>();
   pk_->n_ = sk_->n_;
 
-  MPInt g, g_, gp, check, gcd;
+  BigInt g, g_, gp, check, gcd;
   do {
     do {
-      MPInt::RandomLtN(pk_->n_, &g);
-      MPInt::Gcd(g, sk_->p_, &gcd);
-    } while (gcd != MPInt::_1_);
-    MPInt::PowMod(g % sk_->p2_, sk_->p_ - MPInt::_1_, sk_->p2_, &gp);
-    MPInt::PowMod(gp, sk_->p_, sk_->p2_, &check);
-  } while (check != MPInt::_1_);
+      g = BigInt::RandomLtN(pk_->n_);
+      gcd = g.Gcd(sk_->p_);
+    } while (gcd != 1);
+    gp = (g % sk_->p2_).PowMod(sk_->p_ - 1, sk_->p2_);
+    check = gp.PowMod(sk_->p_, sk_->p2_);
+  } while (check != 1);
 
-  MPInt::InvertMod((gp - MPInt::_1_) / sk_->p_, sk_->p_, &sk_->gp_inv_);
+  sk_->gp_inv_ = ((gp - 1) / sk_->p_).InvMod(sk_->p_);
 
   // make sure 'g_' and 'p^2' are co-prime
   do {
-    MPInt::RandomLtN(pk_->n_, &g_);
-  } while (g_.Mod(sk_->p_).IsZero());
-  MPInt::PowMod(g, u, pk_->n_, &pk_->capital_g_);
-  MPInt::PowMod(g_, pk_->n_ * u, pk_->n_, &pk_->capital_h_);
+    g_ = BigInt::RandomLtN(pk_->n_);
+  } while ((g_ % sk_->p_).IsZero());
+  pk_->capital_g_ = g.PowMod(u, pk_->n_);
+  pk_->capital_h_ = g_.PowMod(pk_->n_ * u, pk_->n_);
 
   // Note 1: About plaintext overflow attack:
   // https://staff.csie.ncu.edu.tw/yensm/techreports/1998/LCIS_TR-98-8B.ps.gz
@@ -155,7 +155,7 @@ void HeKit::GenPkSk(size_t key_size) {
   // public_key.cc as well.
   // Note 3:
   // max_plaintext_ must be a power of 2, for ease of use
-  pk_->max_plaintext_ = MPInt::_1_ << (sk_->p_half_.BitCount() - 1);
+  pk_->max_plaintext_ = BigInt(1) << (sk_->p_half_.BitCount() - 1);
   pk_->Init();
 }
 

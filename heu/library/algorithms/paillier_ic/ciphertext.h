@@ -14,18 +14,18 @@
 
 #pragma once
 
+#include "heu/library/algorithms/util/big_int.h"
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::paillier_ic {
 
-using Plaintext = MPInt;
+using Plaintext = BigInt;
 
 class Ciphertext {
  public:
   Ciphertext() = default;
 
-  explicit Ciphertext(MPInt c) : c_(std::move(c)) {}
+  explicit Ciphertext(BigInt c) : c_(std::move(c)) {}
 
   [[nodiscard]] std::string ToString() const { return c_.ToString(); }
 
@@ -40,7 +40,7 @@ class Ciphertext {
   void Deserialize(yacl::ByteContainerView in);
 
   // TODO: make this private.
-  MPInt c_;
+  BigInt c_;
 };
 
 }  // namespace heu::lib::algorithms::paillier_ic

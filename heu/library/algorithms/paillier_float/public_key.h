@@ -16,8 +16,8 @@
 
 #include <memory>
 
+#include "heu/library/algorithms/util/big_int.h"
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::paillier_f {
 
@@ -38,7 +38,7 @@ class PublicKey : public HeObject<PublicKey> {
   PublicKey() = default;
 
   // Valid plaintext range: [max_int_, -max_int_]
-  [[nodiscard]] const MPInt &PlaintextBound() const & { return max_int_; }
+  [[nodiscard]] const BigInt &PlaintextBound() const & { return max_int_; }
 
   [[nodiscard]] std::string ToString() const override;
 
@@ -55,8 +55,8 @@ class PublicKey : public HeObject<PublicKey> {
   MSGPACK_DEFINE(n_, n_square_, g_, max_int_);
 
  private:
-  explicit PublicKey(const MPInt &n);
-  explicit PublicKey(MPInt &&n);
+  explicit PublicKey(const BigInt &n);
+  explicit PublicKey(BigInt &&n);
 
   // setup bits_, n_square_, g_, max_int_ based on n_
   void Init();
@@ -68,15 +68,15 @@ class PublicKey : public HeObject<PublicKey> {
   friend class Evaluator;
   friend class internal::Codec;
 
-  MPInt n_;         // public modulus n = p * q
-  MPInt n_square_;  // n_ * n_
-  MPInt g_;         // n_ + 1
+  BigInt n_;         // public modulus n = p * q
+  BigInt n_square_;  // n_ * n_
+  BigInt g_;         // n_ + 1
 
   // Maximum int that may safely be stored. This can be increased, if you are
   // happy to redefine "safely" and lower the chance of detecting an integer
   // overflow.
   // Bound: [max_int_, -max_int_]
-  MPInt max_int_;  // n_ / 3
+  BigInt max_int_;  // n_ / 3
 };
 
 }  // namespace heu::lib::algorithms::paillier_f

@@ -31,7 +31,7 @@ class PaillierTest : public testing::Test {
 };
 
 TEST_F(PaillierTest, EncryptMPIntWorks) {
-  MPInt p_10(10);
+  BigInt p_10(10);
 
   // 1. encrypt
   Encryptor encryptor(pub_key_);
@@ -46,7 +46,7 @@ TEST_F(PaillierTest, EncryptMPIntWorks) {
 
   // 2. decrypt
   Decryptor decryptor(pub_key_, sec_key_);
-  MPInt p1(0), p2(0), pa(0);
+  BigInt p1(0), p2(0), pa(0);
 
   decryptor.Decrypt(c1, &p1);
   decryptor.Decrypt(c2, &p2);
@@ -80,9 +80,9 @@ TEST_F(PaillierTest, EncryptDoubleWorks) {
 }
 
 TEST_F(PaillierTest, EncryptedAddWorks) {
-  MPInt p1(59);
-  MPInt p2(3540);
-  MPInt p3 = p1 + p2;
+  BigInt p1(59);
+  BigInt p2(3540);
+  BigInt p3 = p1 + p2;
 
   // encrypt p1 -> c1, p2 -> c2
   Encryptor encryptor(pub_key_);
@@ -95,16 +95,16 @@ TEST_F(PaillierTest, EncryptedAddWorks) {
 
   // decrypt
   Decryptor decryptor(pub_key_, sec_key_);
-  MPInt sum(0);
+  BigInt sum(0);
   decryptor.Decrypt(c1, &sum);
 
   EXPECT_EQ(sum, p3);
 }
 
 TEST_F(PaillierTest, CipherAddPlainMPIntWorks) {
-  MPInt p1(59);
-  MPInt p2(3540);
-  MPInt p3 = p1 + p2;
+  BigInt p1(59);
+  BigInt p2(3540);
+  BigInt p3 = p1 + p2;
 
   Encryptor encryptor(pub_key_);
   Ciphertext c1 = encryptor.Encrypt(p1);
@@ -113,16 +113,16 @@ TEST_F(PaillierTest, CipherAddPlainMPIntWorks) {
   evaluator.AddInplace(&c1, p2);
 
   Decryptor decryptor(pub_key_, sec_key_);
-  MPInt sum(0);
+  BigInt sum(0);
   decryptor.Decrypt(c1, &sum);
 
   EXPECT_EQ(sum, p3);
 }
 
 TEST_F(PaillierTest, CipherMultiplyPlainMPIntWorks) {
-  MPInt p1(59);
-  MPInt p2(3540);
-  MPInt p3 = p1 * p2;
+  BigInt p1(59);
+  BigInt p2(3540);
+  BigInt p3 = p1 * p2;
 
   Encryptor encryptor(pub_key_);
   Ciphertext c1 = encryptor.Encrypt(p1);
@@ -131,14 +131,14 @@ TEST_F(PaillierTest, CipherMultiplyPlainMPIntWorks) {
   evaluator.MulInplace(&c1, p2);
 
   Decryptor decryptor(pub_key_, sec_key_);
-  MPInt product(0);
+  BigInt product(0);
   decryptor.Decrypt(c1, &product);
 
   EXPECT_EQ(product, p3);
 }
 
 TEST_F(PaillierTest, CipherMultiplyDoubleWorks) {
-  MPInt p1(125);
+  BigInt p1(125);
   double p2 = 0.1;
 
   Encryptor encryptor(pub_key_);
@@ -148,7 +148,7 @@ TEST_F(PaillierTest, CipherMultiplyDoubleWorks) {
   evaluator.MulInplace(&c1, p2);
 
   Decryptor decryptor(pub_key_, sec_key_);
-  MPInt product;
+  BigInt product;
   decryptor.Decrypt(c1, &product);
 
   EXPECT_EQ(product.Get<int64_t>(),
@@ -175,12 +175,12 @@ TEST_P(NegateInplaceTest, TestNegate) {
 
   int in = GetParam();
 
-  Ciphertext ct0 = encryptor.Encrypt(MPInt(in));
+  Ciphertext ct0 = encryptor.Encrypt(BigInt(in));
   evaluator.NegateInplace(&ct0);
 
-  MPInt plain;
+  BigInt plain;
   decryptor.Decrypt(ct0, &plain);
-  EXPECT_EQ(plain, MPInt(-in));
+  EXPECT_EQ(plain, BigInt(-in));
 }
 
 }  // namespace heu::lib::algorithms::paillier_f::test

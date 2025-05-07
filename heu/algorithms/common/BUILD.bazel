@@ -28,8 +28,7 @@ yacl_cc_library(
     name = "type_alias",
     hdrs = ["type_alias.h"],
     deps = [
-        "@yacl//yacl/math/mpint",
-        "@yacl//yacl/math/mpint:montgomery_math",
+        "@yacl//yacl/math/bigint",
     ],
 )
 

@@ -20,37 +20,37 @@ namespace {
 constexpr size_t kExpUnitBits = 10;
 }  // namespace
 
-void PublicKey::Init(const MPInt &n, uint32_t s, const MPInt &hs) {
+void PublicKey::Init(const BigInt &n, uint32_t s, const BigInt &hs) {
   n_ = n;
   s_ = s;
   hs_ = hs;
   pmod_ = n.Pow(s);
   cmod_ = pmod_ * n;
-  bound_ = pmod_ / MPInt::_2_;
+  bound_ = pmod_ / 2;
 
   if (hs.IsZero()) {
-    MPInt x, h, gcd;
+    BigInt x, gcd;
     do {
-      MPInt::RandomLtN(n, &x);
-      MPInt::Gcd(x, n, &gcd);
-    } while (gcd != MPInt::_1_);
-    h = x * x * -MPInt::_1_ % n;
+      x = BigInt::RandomLtN(n);
+      gcd = x.Gcd(n);
+    } while (gcd != 1);
+    BigInt h = -x.MulMod(x, n);
     hs_ = h.PowMod(pmod_, cmod_);
   }
 
   lut_ = std::make_shared<LUT>();
-  lut_->m_space = std::make_unique<MontgomerySpace>(cmod_);
+  lut_->m_space = BigInt::CreateMontgomerySpace(cmod_);
   lut_->hs_pow = std::make_unique<BaseTable>();
   lut_->m_space->MakeBaseTable(hs_, kExpUnitBits, n_.BitCount() / 2,
                                lut_->hs_pow.get());
   lut_->n_pow.resize(s + 1);
-  lut_->n_pow[0] = MPInt::_1_;
+  lut_->n_pow[0] = BigInt(1);
   lut_->precomp.resize(s + 1);
-  lut_->precomp[0] = lut_->m_space->GetIdentity();
+  lut_->precomp[0] = lut_->m_space->Identity();
   for (auto i = 1u; i <= s; ++i) {
     lut_->n_pow[i] = lut_->n_pow[i - 1] * n;
     lut_->precomp[i] = lut_->precomp[i - 1].MulMod(n, cmod_).MulMod(
-        MPInt{i}.InvertMod(cmod_), cmod_);
+        BigInt{i}.InvMod(cmod_), cmod_);
   }
 }
 
@@ -67,32 +67,31 @@ std::string PublicKey::ToString() const {
       PlaintextBound().BitCount());
 }
 
-MPInt PublicKey::RandomHsR() const {
-  MPInt r, hs_r;
-  MPInt::RandomExactBits(n_.BitCount() / 2, &r);
-  lut_->m_space->PowMod(*lut_->hs_pow, r, &hs_r);
+BigInt PublicKey::RandomHsR() const {
+  BigInt r = BigInt::RandomExactBits(n_.BitCount() / 2);
+  BigInt hs_r = lut_->m_space->PowMod(*lut_->hs_pow, r);
   return hs_r;
 }
 
-MPInt PublicKey::Encrypt(const MPInt &m) const {
-  MPInt ctR{lut_->m_space->GetIdentity()}, tmp{1}, prodR;
+BigInt PublicKey::Encrypt(const BigInt &m) const {
+  BigInt ctR{lut_->m_space->Identity()}, tmp{1}, prodR;
   for (auto i = 1u; i <= s_; ++i) {
-    MPInt::MulMod(tmp, m - MPInt{i - 1}, lut_->n_pow[s_ - i + 1], &tmp);
-    lut_->m_space->MulMod(MapIntoMSpace(tmp), lut_->precomp[i], &prodR);
+    tmp = tmp.MulMod(m - (i - 1), lut_->n_pow[s_ - i + 1]);
+    prodR = lut_->m_space->MulMod(MapIntoMSpace(tmp), lut_->precomp[i]);
     ctR += prodR;
   }
   return ctR % cmod_;
 }
 
-MPInt PublicKey::MapIntoMSpace(const MPInt &x) const {
-  MPInt xR{x};
-  lut_->m_space->MapIntoMSpace(&xR);
+BigInt PublicKey::MapIntoMSpace(const BigInt &x) const {
+  BigInt xR{x};
+  lut_->m_space->MapIntoMSpace(xR);
   return xR;
 }
 
-MPInt PublicKey::MapBackToZSpace(const MPInt &xR) const {
-  MPInt x{xR};
-  lut_->m_space->MapBackToZSpace(&x);
+BigInt PublicKey::MapBackToZSpace(const BigInt &xR) const {
+  BigInt x{xR};
+  lut_->m_space->MapBackToZSpace(x);
   return x;
 }
 

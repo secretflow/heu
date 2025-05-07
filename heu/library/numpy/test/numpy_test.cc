@@ -18,6 +18,8 @@
 
 namespace heu::lib::numpy::test {
 
+using algorithms::BigInt;
+
 class NumpyTest : public ::testing::Test {
  protected:
   HeKit he_kit_ = HeKit(phe::HeKit(phe::SchemaType::OU, 2048));
@@ -138,11 +140,11 @@ TEST_F(NumpyTest, SelectSumWorks) {
 
   // ciphertext case from scql
   PMatrix plain_in(5, 1);
-  plain_in(0, 0) = 0_mp;
-  plain_in(1, 0) = 0_mp;
-  plain_in(2, 0) = 1000000_mp;
-  plain_in(3, 0) = 1000000_mp;
-  plain_in(4, 0) = 0_mp;
+  plain_in(0, 0) = BigInt(0);
+  plain_in(1, 0) = BigInt(0);
+  plain_in(2, 0) = BigInt(1000000);
+  plain_in(3, 0) = BigInt(1000000);
+  plain_in(4, 0) = BigInt(0);
 
   CMatrix encrypted_in = he_kit_.GetEncryptor()->Encrypt(plain_in);
   auto buf = encrypted_in.Serialize();

@@ -16,21 +16,19 @@
 
 #include "yacl/base/exception.h"
 
-#include "heu/library/algorithms/util/mp_int.h"
-
 namespace heu::lib::algorithms::dj {
 
 void KeyGenerator::Generate(size_t key_size, SecretKey *sk, PublicKey *pk) {
   YACL_ENFORCE(key_size % 2 == 0, "Key size must be even");
 
-  MPInt p, q, gcd;
-  MPInt::RandPrimeOver(key_size / 2, &p, PrimeType::BBS);
+  BigInt q, gcd;
+  BigInt p = BigInt::RandPrimeOver(key_size / 2, PrimeType::BBS);
   do {
-    MPInt::RandPrimeOver(key_size / 2, &q, PrimeType::BBS);
-    MPInt::Gcd(p - MPInt::_1_, q - MPInt::_1_, &gcd);
-  } while (gcd != MPInt::_2_);
+    q = BigInt::RandPrimeOver(key_size / 2, PrimeType::BBS);
+    gcd = (p - 1).Gcd(q - 1);
+  } while (gcd != 2);
   sk->Init(p, q, s_);
-  pk->Init(p * q, s_);
+  pk->Init(p * q, s_, BigInt{0});
 }
 
 void KeyGenerator::Generate(SecretKey *sk, PublicKey *pk) {

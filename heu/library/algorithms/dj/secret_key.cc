@@ -16,13 +16,13 @@
 
 namespace heu::lib::algorithms::dj {
 
-void SecretKey::Init(const MPInt &p, const MPInt &q, uint32_t s) {
+void SecretKey::Init(const BigInt &p, const BigInt &q, uint32_t s) {
   auto n{p * q};
   n_ = {p, q};
   s_ = s;
   pmod_ = n.Pow(s);
-  lambda_ = ((p - MPInt::_1_) * (q - MPInt::_1_) / MPInt::_2_);
-  mu_ = lambda_.InvertMod(pmod_);
+  lambda_ = (p - 1) * (q - 1) / 2;
+  mu_ = lambda_.InvMod(pmod_);
 
   lut_ = std::make_shared<LUT>();
   lut_->pq_pow.resize(s + 2);
@@ -31,21 +31,21 @@ void SecretKey::Init(const MPInt &p, const MPInt &q, uint32_t s) {
     lut_->pq_pow[i] = {lut_->pq_pow[i - 1].P * p, lut_->pq_pow[i - 1].Q * q};
   }
   const auto &[ps, qs] = lut_->pq_pow[s];
-  pp_ = ps * ps.InvertMod(qs);
-  inv_pq_ = {q.InvertMod(ps), p.InvertMod(qs)};
+  pp_ = ps * ps.InvMod(qs);
+  inv_pq_ = {q.InvMod(ps), p.InvMod(qs)};
   lut_->precomp.resize(s + 1);
   for (auto j = 2u; j <= s; ++j) {
     lut_->precomp[j].resize(j + 1);
   }
   if (s > 1) {
-    lut_->precomp[s][1] = {MPInt::_1_, MPInt::_1_};
+    lut_->precomp[s][1] = {BigInt(1), BigInt(1)};
   }
   for (auto i = 2u; i <= s; ++i) {
     for (auto j = i; j <= s; ++j) {
       lut_->precomp[j][i] = {lut_->precomp[s][i - 1].P.MulMod(n, ps).MulMod(
-                                 MPInt{i}.InvertMod(ps), ps),
+                                 BigInt{i}.InvMod(ps), ps),
                              lut_->precomp[s][i - 1].Q.MulMod(n, qs).MulMod(
-                                 MPInt{i}.InvertMod(qs), qs)};
+                                 BigInt{i}.InvMod(qs), qs)};
     }
   }
 }
@@ -62,15 +62,15 @@ std::string SecretKey::ToString() const {
                      n_.Q.BitCount(), s_);
 }
 
-MPInt SecretKey::Decrypt(const MPInt &ct) const {
+BigInt SecretKey::Decrypt(const BigInt &ct) const {
   MPInt2 z, ls;
   // compute z = c^d mod n^(s+1)
   const auto &[ps1, qs1] = lut_->pq_pow[s_ + 1];
   z = {(ct % ps1).PowMod(lambda_, ps1), (ct % qs1).PowMod(lambda_, qs1)};
   //  compute ls = L(z) mod n^s
   const auto &[ps, qs] = lut_->pq_pow[s_];
-  ls = {inv_pq_.P.MulMod((z.P - MPInt::_1_) / n_.P, ps),
-        inv_pq_.Q.MulMod((z.Q - MPInt::_1_) / n_.Q, qs)};
+  ls = {inv_pq_.P.MulMod((z.P - 1) / n_.P, ps),
+        inv_pq_.Q.MulMod((z.Q - 1) / n_.Q, qs)};
 
   MPInt2 ind{ls.P % lut_->pq_pow[1].P, ls.Q % lut_->pq_pow[1].Q};
   MPInt2 l, tmp;
@@ -80,10 +80,8 @@ MPInt SecretKey::Decrypt(const MPInt &ct) const {
     // compute ind mod n^j
     tmp = ind;
     for (auto i = 2u; i <= j; ++i) {
-      MPInt::MulMod(tmp.P, ind.P - MPInt{i - 1}, lut_->pq_pow[j - i + 1].P,
-                    &tmp.P);
-      MPInt::MulMod(tmp.Q, ind.Q - MPInt{i - 1}, lut_->pq_pow[j - i + 1].Q,
-                    &tmp.Q);
+      tmp.P = tmp.P.MulMod(ind.P - (i - 1), lut_->pq_pow[j - i + 1].P);
+      tmp.Q = tmp.Q.MulMod(ind.Q - (i - 1), lut_->pq_pow[j - i + 1].Q);
       l.P -= tmp.P.MulMod(lut_->precomp[j][i].P, lut_->pq_pow[j].P);
       l.Q -= tmp.Q.MulMod(lut_->precomp[j][i].Q, lut_->pq_pow[j].Q);
     }

@@ -27,16 +27,16 @@ void SetCacheTableDensity(size_t density) {
 
 void PublicKey::Init() {
   n_square_ = n_ * n_;
-  n_half_ = n_ / MPInt::_2_;
+  n_half_ = n_ >> 1;
   key_size_ = n_.BitCount();
 
-  m_space_ = std::make_shared<MontgomerySpace>(n_square_);
+  m_space_ = BigInt::CreateMontgomerySpace(n_square_);
   hs_table_ = std::make_shared<BaseTable>();
+  size_t word_size = m_space_->GetWordBitSize();
   m_space_->MakeBaseTable(
       h_s_, kExpUnitBits,
-      // make max_exp_bits divisible by MP_DIGIT_BIT
-      (key_size_ / 2 + MP_DIGIT_BIT - 1) / MP_DIGIT_BIT * MP_DIGIT_BIT,
-      hs_table_.get());
+      // make max_exp_bits divisible by word_size
+      (key_size_ / 2 + word_size - 1) / word_size * word_size, hs_table_.get());
 }
 
 std::string PublicKey::ToString() const {

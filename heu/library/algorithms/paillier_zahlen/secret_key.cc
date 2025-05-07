@@ -20,48 +20,45 @@ void SecretKey::Init() {
   p_square_ = p_ * p_;  // p^2
   q_square_ = q_ * q_;  // q^2
   n_square_ = p_square_ * q_square_;
-  MPInt q_square_inv;
-  MPInt::InvertMod(q_square_, p_square_, &q_square_inv);
+  BigInt q_square_inv = q_square_.InvMod(p_square_);
   q_square_inv_mul_q_square_ =
-      q_square_inv * q_square_;             // [(q^2)^{-1} mod p^2] * q^2
-  MPInt::InvertMod(p_, q_, &p_inv_mod_q_);  // p^{-1} mod q
-  phi_p_square_ = p_ * (p_ - MPInt::_1_);   // p(p-1)
-  phi_q_square_ = q_ * (q_ - MPInt::_1_);   // q(q-1)
-  phi_p_ = p_ - 1_mp;                       // p-1
-  phi_q_ = q_ - 1_mp;                       // q-1
+      q_square_inv * q_square_;   // [(q^2)^{-1} mod p^2] * q^2
+  p_inv_mod_q_ = p_.InvMod(q_);   // p^{-1} mod q
+  phi_p_square_ = p_ * (p_ - 1);  // p(p-1)
+  phi_q_square_ = q_ * (q_ - 1);  // q(q-1)
+  phi_p_ = p_ - 1;                // p-1
+  phi_q_ = q_ - 1;                // q-1
 
   // Precompute hp
-  MPInt n = p_ * q_;
-  MPInt g = n + 1_mp;
-  MPInt::PowMod(g, phi_p_, p_square_, &hp_);
-  hp_ = hp_.DecrOne() / p_;
-  MPInt::InvertMod(hp_, p_, &hp_);
+  BigInt n = p_ * q_;
+  BigInt g = n + 1;
+  hp_ = g.PowMod(phi_p_, p_square_);
+  hp_ = (hp_ - 1) / p_;
+  hp_ = hp_.InvMod(p_);
 
   // Precompute hq
-  MPInt::PowMod(g, phi_q_, q_square_, &hq_);
-  hq_ = hq_.DecrOne() / q_;
-  MPInt::InvertMod(hq_, q_, &hq_);
+  hq_ = g.PowMod(phi_q_, q_square_);
+  hq_ = (hq_ - 1) / q_;
+  hq_ = hq_.InvMod(q_);
 }
 
-MPInt SecretKey::PowModNSquareCrt(const MPInt &base, const MPInt &exp) const {
+BigInt SecretKey::PowModNSquareCrt(const BigInt &base,
+                                   const BigInt &exp) const {
   // smaller exponents: exp mod p(p-1), exp mod q(q-1)
-  MPInt pexp = exp % phi_p_square_;
-  MPInt qexp = exp % phi_q_square_;
+  BigInt pexp = exp % phi_p_square_;
+  BigInt qexp = exp % phi_q_square_;
 
   // smaller bases: mod p^2, q^2
-  MPInt pbase = base % p_square_;
-  MPInt qbase = base % q_square_;
+  BigInt pbase = base % p_square_;
+  BigInt qbase = base % q_square_;
 
   // smaller exponentiations of base mod p^2, q^2
-  MPInt pbase_exp, qbase_exp;
-  MPInt::PowMod(pbase, pexp, p_square_, &pbase_exp);
-  MPInt::PowMod(qbase, qexp, q_square_, &qbase_exp);
+  BigInt pbase_exp = pbase.PowMod(pexp, p_square_);
+  BigInt qbase_exp = qbase.PowMod(qexp, q_square_);
 
   // CRT to calculate base^exp mod n^2
-  MPInt result =
-      ((pbase_exp - qbase_exp) * q_square_inv_mul_q_square_ + qbase_exp) %
-      n_square_;
-  return result;
+  return ((pbase_exp - qbase_exp) * q_square_inv_mul_q_square_ + qbase_exp) %
+         n_square_;
 }
 
 std::string SecretKey::ToString() const {

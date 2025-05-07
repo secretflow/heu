@@ -31,13 +31,13 @@ inline constexpr size_t kRandomBits2048 = 110;
 inline constexpr size_t kRandomBits3072 = 128;
 }  // namespace internal_params
 
-using Plaintext = MPInt;
+using Plaintext = BigInt;
 
 class Ciphertext : spi::PtCtSketch<Ciphertext> {
  public:
   Ciphertext() = default;
 
-  explicit Ciphertext(MPInt c) : c_(std::move(c)) {}
+  explicit Ciphertext(BigInt c) : c_(std::move(c)) {}
 
   bool operator==(const Ciphertext &other) const override {
     return c_ == other.c_;
@@ -54,18 +54,18 @@ class Ciphertext : spi::PtCtSketch<Ciphertext> {
   }
 
  public:
-  MPInt c_;
+  BigInt c_;
 };
 
 class SecretKey : public spi::KeySketch<spi::HeKeyType::SecretKey> {
  public:
-  MPInt p_, q_;   // primes such that log2(p), log2(q) ~ n_bits / 3
-  MPInt t_;       // a big prime factor of p - 1, i.e., p = t * u + 1.
-  MPInt gp_inv_;  // L(g^{p-1} mod p^2))^{-1} mod p
+  BigInt p_, q_;   // primes such that log2(p), log2(q) ~ n_bits / 3
+  BigInt t_;       // a big prime factor of p - 1, i.e., p = t * u + 1.
+  BigInt gp_inv_;  // L(g^{p-1} mod p^2))^{-1} mod p
 
-  MPInt p2_;      // p^2
-  MPInt p_half_;  // p/2
-  MPInt n_;       // n = p^2 * q
+  BigInt p2_;      // p^2
+  BigInt p_half_;  // p/2
+  BigInt n_;       // n = p^2 * q
 
   bool operator==(const SecretKey &other) const {
     return p_ == other.p_ && q_ == other.q_ && t_ == other.t_ &&
@@ -95,12 +95,12 @@ class SecretKey : public spi::KeySketch<spi::HeKeyType::SecretKey> {
 
 class PublicKey : public spi::KeySketch<spi::HeKeyType::PublicKey> {
  public:
-  MPInt n_;          // n = p^2 * q
-  MPInt capital_g_;  // G = g^u mod n for some random g \in [0, n)
-  MPInt capital_h_;  // H = g'^{n*u} mod n for some random g' \in [0, n)
+  BigInt n_;          // n = p^2 * q
+  BigInt capital_g_;  // G = g^u mod n for some random g \in [0, n)
+  BigInt capital_h_;  // H = g'^{n*u} mod n for some random g' \in [0, n)
 
-  MPInt capital_g_inv_;  // G^{-1} mod n
-  MPInt max_plaintext_;  // always power of 2, e.g. max_plaintext_ == 2^681
+  BigInt capital_g_inv_;  // G^{-1} mod n
+  BigInt max_plaintext_;  // always power of 2, e.g. max_plaintext_ == 2^681
 
   std::shared_ptr<MontgomerySpace> m_space_;
   // Cache table of bases (底数缓存表).
@@ -123,7 +123,9 @@ class PublicKey : public spi::KeySketch<spi::HeKeyType::PublicKey> {
   }
 
   // Valid plaintext range: [max_plaintext_, -max_plaintext_]
-  [[nodiscard]] const MPInt &PlaintextBound() const & { return max_plaintext_; }
+  [[nodiscard]] const BigInt &PlaintextBound() const & {
+    return max_plaintext_;
+  }
 
   [[nodiscard]] size_t Serialize(uint8_t *buf, size_t buf_len) const {
     return yacl::SerializeVarsTo(buf, buf_len, n_, capital_g_, capital_h_,
@@ -135,7 +137,7 @@ class PublicKey : public spi::KeySketch<spi::HeKeyType::PublicKey> {
     size_t max_bits;
     yacl::DeserializeVarsTo(in, &pk->n_, &pk->capital_g_, &pk->capital_h_,
                             &max_bits);
-    pk->max_plaintext_ = MPInt(1) << max_bits;
+    pk->max_plaintext_ = BigInt(1) << max_bits;
     pk->Init();
     return pk;
   }

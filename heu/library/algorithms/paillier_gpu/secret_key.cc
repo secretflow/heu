@@ -17,18 +17,17 @@
 namespace heu::lib::algorithms::paillier_g {
 
 void SecretKey::Init() {
-  p_square_ = (Plaintext)(p_ * p_);  // p^2
-  q_square_ = (Plaintext)(q_ * q_);  // q^2
-  n_square_ = (Plaintext)(p_square_ * q_square_);
-  Plaintext q_square_inv;
-  MPInt::InvertMod(q_square_, p_square_, &q_square_inv);
+  p_square_ = p_ * p_;  // p^2
+  q_square_ = q_ * q_;  // q^2
+  n_square_ = p_square_ * q_square_;
+  Plaintext q_square_inv = q_square_.InvMod(p_square_);
   q_square_inv_mul_q_square_ =
-      (Plaintext)(q_square_inv * q_square_);  // [(q^2)^{-1} mod p^2] * q^2
-  phi_p_square_ = (Plaintext)(p_ * (p_ - MPInt::_1_));  // p(p-1)
-  phi_q_square_ = (Plaintext)(q_ * (q_ - MPInt::_1_));  // q(q-1)
+      q_square_inv * q_square_;   // [(q^2)^{-1} mod p^2] * q^2
+  phi_p_square_ = p_ * (p_ - 1);  // p(p-1)
+  phi_q_square_ = q_ * (q_ - 1);  // q(q-1)
 }
 
-Plaintext SecretKey::PowModNSquareCrt(const MPInt &base,
+Plaintext SecretKey::PowModNSquareCrt(const BigInt &base,
                                       const Plaintext &exp) const {
   // smaller exponents: exp mod p(p-1), exp mod q(q-1)
   Plaintext pexp = (Plaintext)(exp % phi_p_square_);
@@ -39,9 +38,8 @@ Plaintext SecretKey::PowModNSquareCrt(const MPInt &base,
   Plaintext qbase = (Plaintext)(base % q_square_);
 
   // smaller exponentiations of base mod p^2, q^2
-  Plaintext pbase_exp, qbase_exp;
-  MPInt::PowMod(pbase, pexp, p_square_, &pbase_exp);
-  MPInt::PowMod(qbase, qexp, q_square_, &qbase_exp);
+  Plaintext pbase_exp = pbase.PowMod(pexp, p_square_);
+  Plaintext qbase_exp = qbase.PowMod(qexp, q_square_);
 
   // CRT to calculate base^exp mod n^2
   Plaintext result =

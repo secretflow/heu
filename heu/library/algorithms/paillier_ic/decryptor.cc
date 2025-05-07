@@ -22,23 +22,19 @@ namespace heu::lib::algorithms::paillier_ic {
   HE_ASSERT(!(ct).c_.IsNegative() && (ct).c_ < pk_.n_square_, \
             "Decryptor: Invalid ciphertext")
 
-void Decryptor::Decrypt(const Ciphertext &ct, MPInt *out) const {
+void Decryptor::Decrypt(const Ciphertext &ct, BigInt *out) const {
   VALIDATE(ct);
 
-  MPInt mp;
-  MPInt::PowMod(ct.c_, sk_.phi_p_, sk_.p_square_, &mp);
-  mp = mp.DecrOne() / sk_.p_;
-  MPInt::MulMod(mp, sk_.hp_, sk_.p_, &mp);
+  BigInt mp = ct.c_.PowMod(sk_.phi_p_, sk_.p_square_);
+  mp = ((mp - 1) / sk_.p_).MulMod(sk_.hp_, sk_.p_);
 
-  MPInt mq;
-  MPInt::PowMod(ct.c_, sk_.phi_q_, sk_.q_square_, &mq);
-  mq = mq.DecrOne() / sk_.q_;
-  MPInt::MulMod(mq, sk_.hq_, sk_.q_, &mq);
+  BigInt mq = ct.c_.PowMod(sk_.phi_q_, sk_.q_square_);
+  mq = ((mq - 1) / sk_.q_).MulMod(sk_.hq_, sk_.q_);
 
   // Apply the CRT
-  MPInt::MulMod(mq - mp, sk_.p_inv_mod_q_, sk_.q_, out);
-  MPInt::Mul(*out, sk_.p_, out);
-  MPInt::Add(*out, mp, out);
+  *out = (mq - mp).MulMod(sk_.p_inv_mod_q_, sk_.q_);
+  *out *= sk_.p_;
+  *out += mp;
 
   // Handle negative numbers
   if (*out > pk_.n_half_) {
@@ -46,8 +42,8 @@ void Decryptor::Decrypt(const Ciphertext &ct, MPInt *out) const {
   }
 }
 
-MPInt Decryptor::Decrypt(const Ciphertext &ct) const {
-  MPInt mp;
+BigInt Decryptor::Decrypt(const Ciphertext &ct) const {
+  BigInt mp;
   Decrypt(ct, &mp);
   return mp;
 }

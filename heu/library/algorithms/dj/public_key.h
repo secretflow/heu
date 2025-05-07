@@ -14,27 +14,27 @@
 
 #pragma once
 
+#include "heu/library/algorithms/util/big_int.h"
 #include "heu/library/algorithms/util/he_object.h"
-#include "heu/library/algorithms/util/mp_int.h"
 
 namespace heu::lib::algorithms::dj {
 
 class PublicKey : public HeObject<PublicKey> {
  public:
-  void Init(const MPInt &n, uint32_t s, const MPInt &hs = MPInt{0});
+  void Init(const BigInt &n, uint32_t s, const BigInt &hs);
 
-  const MPInt &N() const { return n_; }
+  const BigInt &N() const { return n_; }
 
   uint32_t S() const { return s_; }
 
   // hs = h^(n^s) mod n^(s+1): h is a generator of Zn*
-  const MPInt &Hs() const { return hs_; }
+  const BigInt &Hs() const { return hs_; }
 
-  const MPInt &PlainModule() const { return pmod_; }
+  const BigInt &PlainModule() const { return pmod_; }
 
-  const MPInt &PlaintextBound() const & { return bound_; }
+  const BigInt &PlaintextBound() const & { return bound_; }
 
-  const MPInt &CipherModule() const { return cmod_; }
+  const BigInt &CipherModule() const { return cmod_; }
 
   bool operator==(const PublicKey &) const;
   bool operator!=(const PublicKey &) const;
@@ -42,25 +42,25 @@ class PublicKey : public HeObject<PublicKey> {
 
  public:
   // Random Zn* element of form r^(n^s) mod n^(s+1)
-  MPInt RandomHsR() const;
+  BigInt RandomHsR() const;
   // Deterministic encryption
-  MPInt Encrypt(const MPInt &) const;
-  MPInt MapIntoMSpace(const MPInt &) const;
-  MPInt MapBackToZSpace(const MPInt &) const;
+  BigInt Encrypt(const BigInt &) const;
+  BigInt MapIntoMSpace(const BigInt &) const;
+  BigInt MapBackToZSpace(const BigInt &) const;
 
-  void MulMod(const MPInt &a, const MPInt &b, MPInt *dst) const {
-    lut_->m_space->MulMod(a, b, dst);
+  void MulMod(const BigInt &a, const BigInt &b, BigInt *dst) const {
+    *dst = lut_->m_space->MulMod(a, b);
   }
 
  private:
-  MPInt n_, hs_, pmod_, cmod_, bound_;
+  BigInt n_, hs_, pmod_, cmod_, bound_;
   uint32_t s_ = 0;  // Updated by Ant Group
 
   struct LUT {
     std::unique_ptr<MontgomerySpace> m_space;  // m-space for mod n^(s+1)
     std::unique_ptr<BaseTable> hs_pow;         // powers of h^(n^s) mod n^(s+1)
-    std::vector<MPInt> n_pow;                  // powers of n
-    std::vector<MPInt> precomp;                // n^i/i! mod n^(s+1)
+    std::vector<BigInt> n_pow;                 // powers of n
+    std::vector<BigInt> precomp;               // n^i/i! mod n^(s+1)
   };
 
   std::shared_ptr<LUT> lut_;
@@ -95,9 +95,9 @@ struct convert<heu::lib::algorithms::dj::PublicKey> {
     if (object.via.array.size != 3) { throw msgpack::type_error(); }
 
     // The order here corresponds to the packer above
-    auto n = object.via.array.ptr[0].as<heu::lib::algorithms::MPInt>();
+    auto n = object.via.array.ptr[0].as<heu::lib::algorithms::BigInt>();
     auto s = object.via.array.ptr[1].as<uint32_t>();
-    auto hs = object.via.array.ptr[2].as<heu::lib::algorithms::MPInt>();
+    auto hs = object.via.array.ptr[2].as<heu::lib::algorithms::BigInt>();
     pk.Init(n, s, hs);
     return object;
   }

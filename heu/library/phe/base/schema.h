@@ -93,6 +93,7 @@ enum class SchemaType : uint8_t {
 // MPInt to store plaintext, so MPInt only appears once.
 #define PLAINTEXT_FOR_EACH(func_or_macro, ...)                                   \
   func_or_macro(::heu::lib::algorithms, MPInt, ##__VA_ARGS__)                    \
+  INVOKE(true, func_or_macro, ::heu::lib::algorithms, BigInt, ##__VA_ARGS__)                    \
   INVOKE(true, func_or_macro, ::heu::lib::algorithms::mock, Plaintext, ##__VA_ARGS__)                 \
   INVOKE(ENABLE_IPCL, func_or_macro, ::heu::lib::algorithms::paillier_ipcl, Plaintext, ##__VA_ARGS__) \
   INVOKE(ENABLE_CLUSTAR_FPGA, func_or_macro, ::heu::lib::algorithms::paillier_clustar_fpga, Plaintext, ##__VA_ARGS__) \

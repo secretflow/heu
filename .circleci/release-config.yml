@@ -54,6 +54,11 @@ jobs:
       - run:
           name: "build package and publish"
           command: |
+            conda install -c conda-forge gmp -y
+            cp $CONDA_PREFIX/include/gmp.h $CONDA_PREFIX/include/gmpxx.h /usr/local/include/
+            export CPLUS_INCLUDE_PATH=/usr/local/include
+            export ENABLE_GMP=TRUE
+
             conda create -n build python=<< parameters.python_ver >> -y
             conda activate build
 
@@ -74,7 +79,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            brew install bazelisk cmake ninja libomp wget
+            brew install bazelisk cmake ninja libomp wget gmp
       - run:
           name: Install Miniconda
           command: |
@@ -85,6 +90,9 @@ jobs:
       - run:
           name: "build package and publish"
           command: |
+            cp /opt/homebrew/include/gmp* /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/
+            export ENABLE_GMP=TRUE
+
             conda create -n build python=<< parameters.python_ver >> -y
             conda activate build
 

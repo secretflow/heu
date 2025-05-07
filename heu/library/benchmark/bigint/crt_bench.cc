@@ -15,25 +15,25 @@
 #include "benchmark/benchmark.h"
 
 #include "heu/library/algorithms/paillier_zahlen/paillier.h"
+#include "heu/library/algorithms/util/big_int.h"
 
 namespace heu::lib::bench {
-
 namespace paillier = algorithms::paillier_z;
-using algorithms::MPInt;
+using algorithms::BigInt;
 
 paillier::SecretKey g_sk;
-MPInt g_base;
+BigInt g_base;
 algorithms::BaseTable g_base_table;
-MPInt g_res;
+BigInt g_res;
 
 std::shared_ptr<algorithms::MontgomerySpace> ms;
 
 void Initialize(int base_bits) {
   paillier::PublicKey pk;
   paillier::KeyGenerator::Generate(2048, &g_sk, &pk);
-  MPInt::RandomRoundUp(base_bits, &g_base);
+  g_base = BigInt::RandomMonicExactBits(base_bits);
 
-  ms = std::make_shared<algorithms::MontgomerySpace>(g_sk.n_square_);
+  ms = BigInt::CreateMontgomerySpace(g_sk.n_square_);
   ms->MakeBaseTable(g_base, 11, 4 << 10, &g_base_table);
 
   benchmark::AddCustomContext("Base bits", "4096");
@@ -42,26 +42,23 @@ void Initialize(int base_bits) {
 }
 
 void PowModCrt(benchmark::State &state) {
-  MPInt exp;
-  MPInt::RandomExactBits(state.range(0), &exp);
+  BigInt exp = BigInt::RandomExactBits(state.range(0));
   for (auto _ : state) {
     g_res = g_sk.PowModNSquareCrt(g_base, exp);
   }
 }
 
 void PowModCacheTable(benchmark::State &state) {
-  MPInt exp;
-  MPInt::RandomExactBits(state.range(0), &exp);
+  BigInt exp = BigInt::RandomExactBits(state.range(0));
   for (auto _ : state) {
-    ms->PowMod(g_base_table, exp, &g_res);
+    g_res = ms->PowMod(g_base_table, exp);
   }
 }
 
 void PowModTommath(benchmark::State &state) {
-  MPInt exp;
-  MPInt::RandomExactBits(state.range(0), &exp);
+  BigInt exp = BigInt::RandomExactBits(state.range(0));
   for (auto _ : state) {
-    MPInt::PowMod(g_base, exp, g_sk.n_square_, &g_res);
+    g_res = g_base.PowMod(exp, g_sk.n_square_);
   }
 }
 
@@ -83,7 +80,6 @@ BENCHMARK(PowModTommath)
     ->Arg(1024)
     ->Arg(2048)
     ->Arg(4096);
-
 }  // namespace heu::lib::bench
 
 int main() {

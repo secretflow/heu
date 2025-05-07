@@ -22,7 +22,7 @@
 namespace heu::lib::bench {
 
 namespace ou = algorithms::ou;
-using algorithms::MPInt;
+using algorithms::BigInt;
 
 const int kEncKeySize = 2048;
 
@@ -42,9 +42,9 @@ static void BM_PowMod64(benchmark::State &state) {
 
   uint64_t r = dis(gen);
 
-  MPInt m(r), gm;
+  BigInt m(r), gm;
   for (auto _ : state) {
-    MPInt::PowMod(ctx.pk.capital_g_, m, ctx.pk.n_, &gm);
+    gm = ctx.pk.capital_g_.PowMod(m, ctx.pk.n_);
   }
 }
 
@@ -55,9 +55,9 @@ static void BM_PowMod64Mont(benchmark::State &state) {
 
   uint64_t r = dis(gen);
 
-  MPInt m(r), gm;
+  BigInt m(r), gm;
   for (auto _ : state) {
-    ctx.pk.m_space_->PowMod(*ctx.pk.cg_table_, m, &gm);
+    gm = ctx.pk.m_space_->PowMod(*ctx.pk.cg_table_, m);
   }
 }
 
@@ -75,59 +75,59 @@ static void BM_PowMod128(benchmark::State &state) {
   } while (r < 0);
 #endif
 
-  MPInt r, gm;
-  MPInt::RandomMonicExactBits(128, &r);
+  BigInt r, gm;
+  r = BigInt::RandomMonicExactBits(128);
 
   for (auto _ : state) {
-    MPInt::PowMod(ctx.pk.capital_g_, r, ctx.pk.n_, &gm);
+    gm = ctx.pk.capital_g_.PowMod(r, ctx.pk.n_);
   }
 }
 
 static void BM_PowMod128Mont(benchmark::State &state) {
-  MPInt r, gm;
-  MPInt::RandomMonicExactBits(128, &r);
+  BigInt r, gm;
+  r = BigInt::RandomMonicExactBits(128);
 
   for (auto _ : state) {
-    ctx.pk.m_space_->PowMod(*ctx.pk.cg_table_, r, &gm);
+    gm = ctx.pk.m_space_->PowMod(*ctx.pk.cg_table_, r);
   }
 }
 
 static void BM_PowMod2048(benchmark::State &state) {
-  MPInt r, gm;
-  MPInt::RandomLtN(ctx.pk.n_, &r);
+  BigInt r, gm;
+  BigInt::RandomLtN(ctx.pk.n_, &r);
 
   for (auto _ : state) {
-    MPInt::PowMod(ctx.pk.capital_h_, r, ctx.pk.n_, &gm);
+    gm = ctx.pk.capital_h_.PowMod(r, ctx.pk.n_);
   }
 }
 
 static void BM_MulMod2048(benchmark::State &state) {
-  MPInt gm;
+  BigInt gm;
   for (auto _ : state) {
-    MPInt::MulMod(ctx.pk.capital_g_, ctx.pk.capital_h_, ctx.pk.n_, &gm);
+    gm = ctx.pk.capital_g_.MulMod(ctx.pk.capital_h_, ctx.pk.n_);
   }
 }
 
 static void BM_InvertMod2048(benchmark::State &state) {
-  MPInt gm;
+  BigInt gm;
   for (auto _ : state) {
-    MPInt::InvertMod(ctx.pk.capital_g_, ctx.pk.n_, &gm);
+    gm = ctx.pk.capital_g_.InvMod(ctx.pk.n_);
   }
 }
 
-static void BM_SafePrime(benchmark::State &state) {
+static void BM_NormalPrime(benchmark::State &state) {
   auto bits = state.range(0);
-  MPInt p;
+  BigInt p;
   for (auto _ : state) {
-    MPInt::RandPrimeOver(bits, &p, heu::lib::algorithms::PrimeType::Safe);
+    p = BigInt::RandPrimeOver(bits, algorithms::PrimeType::Normal);
   }
 }
 
-static void BM_FastSafePrime(benchmark::State &state) {
+static void BM_BbsPrime(benchmark::State &state) {
   auto bits = state.range(0);
-  MPInt p;
+  BigInt p;
   for (auto _ : state) {
-    MPInt::RandPrimeOver(bits, &p, algorithms::PrimeType::FastSafe);
+    p = BigInt::RandPrimeOver(bits, heu::lib::algorithms::PrimeType::BBS);
   }
 }
 
@@ -138,12 +138,12 @@ BENCHMARK(BM_PowMod128Mont)->Unit(benchmark::kMillisecond);
 BENCHMARK(BM_PowMod2048)->Unit(benchmark::kMillisecond);
 BENCHMARK(BM_MulMod2048)->Unit(benchmark::kMillisecond);
 BENCHMARK(BM_InvertMod2048)->Unit(benchmark::kMillisecond);
-BENCHMARK(BM_FastSafePrime)
+BENCHMARK(BM_NormalPrime)
     ->Unit(benchmark::kMillisecond)
     ->Arg(512)
     ->Arg(1024)
     ->Arg(2048);
-BENCHMARK(BM_SafePrime)
+BENCHMARK(BM_BbsPrime)
     ->Unit(benchmark::kMillisecond)
     ->Arg(512)
     ->Arg(1024)

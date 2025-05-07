@@ -33,7 +33,7 @@ class Encryptor {
   const PublicKey &public_key() const { return pk_; }
 
   // Get R^n
-  MPInt GetRn() const;
+  BigInt GetRn() const;
 
   // vector interface
   std::vector<Ciphertext> Encrypt(ConstSpan<Plaintext> pts) const;

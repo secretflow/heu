@@ -21,13 +21,14 @@ constexpr size_t kExpUnitBits = 10;
 constexpr size_t kRandExpBits = 400;  // 2.5t
 }  // namespace
 
-PublicKey::LUT::LUT(const PublicKey *pub) : m_space{pub->n_} {
-  m_space.MakeBaseTable(pub->g_, kExpUnitBits, pub->u_.BitCount(), &g_pow);
-  m_space.MakeBaseTable(pub->h_, kExpUnitBits, kRandExpBits, &h_pow);
+PublicKey::LUT::LUT(const PublicKey *pub)
+    : m_space{BigInt::CreateMontgomerySpace(pub->n_)} {
+  m_space->MakeBaseTable(pub->g_, kExpUnitBits, pub->u_.BitCount(), &g_pow);
+  m_space->MakeBaseTable(pub->h_, kExpUnitBits, kRandExpBits, &h_pow);
 }
 
-void PublicKey::Init(const MPInt &n, const MPInt &g, const MPInt &h,
-                     const MPInt &u) {
+void PublicKey::Init(const BigInt &n, const BigInt &g, const BigInt &h,
+                     const BigInt &u) {
   n_ = n;
   g_ = g;
   h_ = h;
@@ -49,28 +50,24 @@ std::string PublicKey::ToString() const {
       PlaintextBound().ToHexString(), PlaintextBound().BitCount());
 }
 
-MPInt PublicKey::RandomHr() const {
-  MPInt r, hr;
-  MPInt::RandomExactBits(kRandExpBits, &r);
-  lut_->m_space.PowMod(lut_->h_pow, r, &hr);
-  return hr;
+BigInt PublicKey::RandomHr() const {
+  BigInt r = BigInt::RandomExactBits(kRandExpBits);
+  return lut_->m_space->PowMod(lut_->h_pow, r);
 }
 
-MPInt PublicKey::Encrypt(const MPInt &m) const {
-  MPInt gm;
-  lut_->m_space.PowMod(lut_->g_pow, m % u_, &gm);
-  return gm;
+BigInt PublicKey::Encrypt(const BigInt &m) const {
+  return lut_->m_space->PowMod(lut_->g_pow, m % u_);
 }
 
-MPInt PublicKey::MapIntoMSpace(const MPInt &x) const {
-  MPInt xR{x};
-  lut_->m_space.MapIntoMSpace(&xR);
+BigInt PublicKey::MapIntoMSpace(const BigInt &x) const {
+  BigInt xR{x};
+  lut_->m_space->MapIntoMSpace(xR);
   return xR;
 }
 
-MPInt PublicKey::MapBackToZSpace(const MPInt &xR) const {
-  MPInt x{xR};
-  lut_->m_space.MapBackToZSpace(&x);
+BigInt PublicKey::MapBackToZSpace(const BigInt &xR) const {
+  BigInt x{xR};
+  lut_->m_space->MapBackToZSpace(x);
   return x;
 }
 

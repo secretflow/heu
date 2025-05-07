@@ -57,22 +57,22 @@ TEST_F(CodecTest, EncodeNegativeDoubleWorks) {
 }
 
 TEST_F(CodecTest, EncodePositiveIntegerWorks) {
-  MPInt x(1233456);
+  BigInt x(1233456);
 
   internal::EncodedNumber encoded_number = codec_->Encode(x);
 
-  MPInt value;
+  BigInt value;
   codec_->Decode(encoded_number, &value);
 
   EXPECT_EQ(value, x);
 }
 
 TEST_F(CodecTest, EncodeNegativeIntegerWorks) {
-  MPInt x((int64_t)-12344356778);
+  BigInt x((int64_t)-12344356778);
 
   internal::EncodedNumber encoded_number = codec_->Encode(x);
 
-  MPInt value;
+  BigInt value;
   codec_->Decode(encoded_number, &value);
 
   EXPECT_EQ(value, x);

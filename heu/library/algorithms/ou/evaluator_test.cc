@@ -45,10 +45,10 @@ TEST_P(NegateInplaceTest, TestNegate) {
   Decryptor decryptor(pk_, sk_);
 
   Ciphertext ct0;
-  MPInt plain;
+  BigInt plain;
   int64_t in = GetParam();
 
-  ct0 = encryptor.Encrypt(MPInt(in));
+  ct0 = encryptor.Encrypt(BigInt(in));
   evaluator.NegateInplace(&ct0);
   decryptor.Decrypt(ct0, &plain);
   EXPECT_EQ(plain.Get<int64_t>(), -in);
@@ -60,15 +60,15 @@ TEST_P(NegateInplaceTest, CriticalValue) {
   Decryptor decryptor(pk_, sk_);
 
   int64_t in = GetParam();
-  MPInt m(in);
+  BigInt m(in);
   Ciphertext ct = encryptor.Encrypt(m);
-  Ciphertext ct0 = evaluator.Mul(ct, MPInt(0));
-  Ciphertext ct1 = evaluator.Mul(ct, MPInt(1));
-  Ciphertext ct2 = evaluator.Mul(ct, MPInt(-1));
-  Ciphertext ct3 = evaluator.Mul(ct, MPInt(2));
-  Ciphertext ct4 = evaluator.Mul(ct, MPInt(-2));
+  Ciphertext ct0 = evaluator.Mul(ct, BigInt(0));
+  Ciphertext ct1 = evaluator.Mul(ct, BigInt(1));
+  Ciphertext ct2 = evaluator.Mul(ct, BigInt(-1));
+  Ciphertext ct3 = evaluator.Mul(ct, BigInt(2));
+  Ciphertext ct4 = evaluator.Mul(ct, BigInt(-2));
 
-  MPInt res;
+  BigInt res;
   decryptor.Decrypt(ct0, &res);
   EXPECT_EQ(res.Get<int64_t>(), 0);
   decryptor.Decrypt(ct1, &res);

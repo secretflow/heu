@@ -78,7 +78,7 @@ sudo cmake --install build
 
        ```C++
        std::unordered_map<size_t, ckks::EvaluationKey> gpu_evks;
-
+  
        for (size_t i = 0; i < galois_keys.data().size(); i++)
        {
            if (galois_keys.has_key(i))

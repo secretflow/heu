@@ -186,7 +186,7 @@ void GPUTest::CiphertextsAddInplace(int128_t a, int128_t b, int128_t c) {
   evaluator_->AddInplace(ct0, ct1);
 
   std::vector<Plaintext> apts = decryptor_->Decrypt(ct0);
-  EXPECT_EQ(apts[0], MPInt(c));
+  EXPECT_EQ(apts[0], c);
 }
 
 TEST_F(GPUTest, CiphertextsAddInplaceTest) {
@@ -210,7 +210,7 @@ void GPUTest::CiphertextsRandomize(int128_t a, int128_t b) {
 
   std::vector<Plaintext> apts = decryptor_->Decrypt(ct0);
 
-  EXPECT_EQ(apts[0], MPInt(b));
+  EXPECT_EQ(apts[0], b);
   EXPECT_NE(res2[0], *ct0[0]);
 }
 
@@ -238,8 +238,8 @@ void GPUTest::PlaintextsAdd(int128_t a, int128_t b, int128_t c, int128_t d,
 
   std::vector<Plaintext> res = evaluator_->Add(pts1, pts2);
 
-  EXPECT_EQ(res[0], MPInt(e));
-  EXPECT_EQ(res[1], MPInt(f));
+  EXPECT_EQ(res[0], e);
+  EXPECT_EQ(res[1], f);
 }
 
 TEST_F(GPUTest, PlaintextsAddTest) {
@@ -265,8 +265,8 @@ void GPUTest::PlaintextsAddInplace(int128_t a, int128_t b, int128_t c,
 
   std::cout << "PlaintextsAddInplace " << *pts1[0] << " -- " << *pts1[1]
             << " -- " << *pts2[0] << " -- " << *pts2[1] << std::endl;
-  EXPECT_EQ(*pts1[0], MPInt(e));
-  EXPECT_EQ(*pts1[1], MPInt(f));
+  EXPECT_EQ(*pts1[0], e);
+  EXPECT_EQ(*pts1[1], f);
 }
 
 TEST_F(GPUTest, PlaintextsAddInplace) {
@@ -298,7 +298,7 @@ void GPUTest::CiphertextsAddPlaintexts(int128_t a, int128_t b, int128_t c) {
       absl::MakeConstSpan(ccts, 1);  // create the constspan for GPU call
   std::vector<Plaintext> apts = decryptor_->Decrypt(cts);
 
-  EXPECT_EQ(apts[0], MPInt(c));
+  EXPECT_EQ(apts[0], c);
 }
 
 TEST_F(GPUTest, CiphertextsAddPlaintexts) {
@@ -331,7 +331,7 @@ void GPUTest::PlaintextsAddCiphertexts(int128_t a, int128_t b, int128_t c) {
   ConstSpan<Ciphertext> cts =
       absl::MakeConstSpan(ccts, 1);  // create the constspan for GPU call
   std::vector<Plaintext> apts = decryptor_->Decrypt(cts);
-  EXPECT_EQ(apts[0], Plaintext(c));
+  EXPECT_EQ(apts[0], c);
 }
 
 TEST_F(GPUTest, PlaintextsAddCiphertextsTest) {
@@ -364,7 +364,7 @@ void GPUTest::PlaintextsAddCiphertextsInplace(int128_t a, int128_t b,
   ConstSpan<Ciphertext> cts =
       absl::MakeConstSpan(ccts, 1);  // create the constspan for GPU call
   std::vector<Plaintext> apts = decryptor_->Decrypt(cts);
-  EXPECT_EQ(apts[0], Plaintext(c));
+  EXPECT_EQ(apts[0], c);
 }
 
 TEST_F(GPUTest, PlaintextsAddCiphertextsInplaceTest) {
@@ -397,7 +397,7 @@ void GPUTest::CtsMulPts(int128_t a, int128_t b, int128_t c) {
   ConstSpan<Ciphertext> cts =
       absl::MakeConstSpan(ccts, 1);  // create the constspan for GPU call
   std::vector<Plaintext> apts = decryptor_->Decrypt(cts);
-  EXPECT_EQ(apts[0], Plaintext(c));
+  EXPECT_EQ(apts[0], c);
 }
 
 TEST_F(GPUTest, CtsMulPtsTest) {
@@ -428,7 +428,7 @@ void GPUTest::PtsMulCts(int128_t a, int128_t b, int128_t c) {
   ConstSpan<Ciphertext> cts =
       absl::MakeConstSpan(ccts, 1);  // create the constspan for GPU call
   std::vector<Plaintext> apts = decryptor_->Decrypt(cts);
-  EXPECT_EQ(apts[0], Plaintext(c));
+  EXPECT_EQ(apts[0], c);
 }
 
 TEST_F(GPUTest, PtsMulCtsTest) {
@@ -451,8 +451,8 @@ void GPUTest::PtsMulPts(int128_t a, int128_t b, int128_t c, int128_t d,
   ConstSpan<Plaintext> cts2 = absl::MakeConstSpan(ppts2, 2);
 
   std::vector<Plaintext> product = evaluator_->Mul(cts1, cts2);
-  EXPECT_EQ(product[0], Plaintext(e));
-  EXPECT_EQ(product[1], Plaintext(f));
+  EXPECT_EQ(product[0], e);
+  EXPECT_EQ(product[1], f);
 }
 
 TEST_F(GPUTest, PtsMulPtsTest) {
@@ -480,7 +480,7 @@ void GPUTest::CtsMulPtsInplace(int128_t a, int128_t b, int128_t c) {
 
   // make the constSpan for vector Decrypt
   std::vector<Plaintext> apts = decryptor_->Decrypt(ct0);
-  EXPECT_EQ(apts[0], Plaintext(c));
+  EXPECT_EQ(apts[0], c);
 }
 
 TEST_F(GPUTest, CtsMulPtsInplaceTest) {
@@ -503,8 +503,8 @@ void GPUTest::PtsMulPtsInplace(int128_t a, int128_t b, int128_t c, int128_t d,
   ConstSpan<Plaintext> cts2 = absl::MakeConstSpan(ppts2, 2);
 
   evaluator_->MulInplace(cts1, cts2);
-  EXPECT_EQ(*cts1[0], Plaintext(e));
-  EXPECT_EQ(*cts1[1], Plaintext(f));
+  EXPECT_EQ(*cts1[0], e);
+  EXPECT_EQ(*cts1[1], f);
 }
 
 TEST_F(GPUTest, PtsMulPtsInplaceTest) {
@@ -529,7 +529,7 @@ void GPUTest::CiphertextsNegate(int128_t a, int128_t b) {
   Span<Ciphertext> cts_neg = absl::MakeSpan(ctArray, 1);
   std::vector<Plaintext> ptvec = decryptor_->Decrypt(cts_neg);
 
-  EXPECT_EQ(ptvec[0], Plaintext(b));
+  EXPECT_EQ(ptvec[0], b);
 }
 
 TEST_F(GPUTest, CiphertextsNegateTest) {
@@ -551,7 +551,7 @@ void GPUTest::CiphertextsNegateInplace(int128_t a, int128_t b) {
 
   std::vector<Plaintext> ptvec = decryptor_->Decrypt(cts);
 
-  EXPECT_EQ(ptvec[0], Plaintext(b));
+  EXPECT_EQ(ptvec[0], b);
 }
 
 TEST_F(GPUTest, CiphertextsNegateInplaceTest) {
@@ -589,7 +589,7 @@ void GPUTest::CiphertextsSub(int128_t a, int128_t b, int128_t c) {
       absl::MakeConstSpan(ccts, 1);  // create the constspan for GPU call
   std::vector<Plaintext> apts = decryptor_->Decrypt(cts);
 
-  EXPECT_EQ(apts[0], Plaintext(c));
+  EXPECT_EQ(apts[0], c);
 }
 
 TEST_F(GPUTest, CiphertextsSubTest) {
@@ -622,7 +622,7 @@ void GPUTest::CtsSubPts(int128_t a, int128_t b, int128_t c) {
       absl::MakeConstSpan(ccts, 1);  // create the constspan for GPU call
   std::vector<Plaintext> apts = decryptor_->Decrypt(cts);
 
-  EXPECT_EQ(apts[0], Plaintext(c));
+  EXPECT_EQ(apts[0], c);
 }
 
 TEST_F(GPUTest, CtsSubPtsTest) {
@@ -654,7 +654,7 @@ void GPUTest::PtsSubCts(int128_t a, int128_t b, int128_t c) {
       absl::MakeConstSpan(ccts, 1);  // create the constspan for GPU call
   std::vector<Plaintext> apts = decryptor_->Decrypt(cts);
 
-  EXPECT_EQ(apts[0], Plaintext(c));
+  EXPECT_EQ(apts[0], c);
 }
 
 TEST_F(GPUTest, PtsSubCtsTest) {
@@ -675,7 +675,7 @@ void GPUTest::PtsSubPts(int128_t a, int128_t b, int128_t c) {
   std::vector<Plaintext> sum =
       evaluator_->Sub(pts1, pts2);  // Sub: ciphertext - ciphertext
 
-  EXPECT_EQ(sum[0], Plaintext(c));
+  EXPECT_EQ(sum[0], c);
 }
 
 TEST_F(GPUTest, PtsSubPtsTest) {
@@ -705,7 +705,7 @@ void GPUTest::CiphertextsSubInplace(int128_t a, int128_t b, int128_t c) {
 
   std::vector<Plaintext> apts = decryptor_->Decrypt(ct0);
 
-  EXPECT_EQ(apts[0], Plaintext(c));
+  EXPECT_EQ(apts[0], c);
 }
 
 TEST_F(GPUTest, CiphertextsSubInplaceTest) {
@@ -732,7 +732,7 @@ void GPUTest::CtsSubPtsInplace(int128_t a, int128_t b, int128_t c) {
 
   std::vector<Plaintext> apts = decryptor_->Decrypt(ct0);
 
-  EXPECT_EQ(apts[0], Plaintext(c));
+  EXPECT_EQ(apts[0], c);
 }
 
 TEST_F(GPUTest, CtsSubPtsInplaceTest) {
@@ -751,7 +751,7 @@ void GPUTest::PtsSubPtsInplace(int128_t a, int128_t b, int128_t c) {
   ConstSpan<Plaintext> pts2 = absl::MakeConstSpan(ppts2, 1);
   evaluator_->SubInplace(pts1, pts2);  // Sub: ciphertext - ciphertext
 
-  EXPECT_EQ(*pts1[0], Plaintext(c));
+  EXPECT_EQ(*pts1[0], c);
 }
 
 TEST_F(GPUTest, PtsSubPtsInplaceTest) {

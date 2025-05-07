@@ -35,7 +35,7 @@ header: # <1>
     - "**/*.bat"
     - "LICENSE"
     - "NOTICE"
-    - ".bazelversion"
+    - ".bazeliskrc"
     - ".bazelignore"
     - ".clang-format"
     - ".gitattributes"

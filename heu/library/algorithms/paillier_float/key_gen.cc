@@ -16,24 +16,24 @@
 
 #include "spdlog/spdlog.h"
 
-#include "heu/library/algorithms/util/mp_int.h"
+#include "heu/library/algorithms/util/big_int.h"
 
 namespace heu::lib::algorithms::paillier_f {
 
 void KeyGenerator::Generate(size_t key_bits, SecretKey *sk, PublicKey *pk) {
-  MPInt p;
-  MPInt q;
-  MPInt n;
+  BigInt p;
+  BigInt q;
+  BigInt n;
 
   size_t n_len = 0;
   while (n_len != key_bits) {
     SPDLOG_DEBUG("generate random prime p");
-    MPInt::RandPrimeOver(key_bits / 2, &p);
+    p = BigInt::RandPrimeOver(key_bits / 2);
     do {
-      MPInt::RandPrimeOver(key_bits / 2, &q);
+      q = BigInt::RandPrimeOver(key_bits / 2);
       SPDLOG_DEBUG("generate random prime p");
-    } while (p.Compare(q) == 0);
-    MPInt::Mul(p, q, &n);
+    } while (p == q);
+    n = p * q;
     n_len = n.BitCount();
   }
 

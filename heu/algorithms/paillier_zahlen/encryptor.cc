@@ -33,18 +33,15 @@ void Encryptor::EncryptWithAudit(const Plaintext &m, Ciphertext *ct_out,
   *ct_out = EncryptImpl<true>(m, audit_out);
 }
 
-MPInt Encryptor::GetRn() const {
-  MPInt r;
-  MPInt::RandomExactBits(pk_->key_size_ / 2, &r);
+BigInt Encryptor::GetRn() const {
+  BigInt r = BigInt::RandomExactBits(pk_->key_size_ / 2);
 
   // (h_s_)^r
-  MPInt out;
-  pk_->m_space_->PowMod(*pk_->hs_table_, r, &out);
-  return out;
+  return pk_->m_space_->PowMod(*pk_->hs_table_, r);
 }
 
 template <bool audit>
-Ciphertext Encryptor::EncryptImpl(const MPInt &m,
+Ciphertext Encryptor::EncryptImpl(const BigInt &m,
                                   std::string *audit_str) const {
   YACL_ENFORCE(m.CompareAbs(pk_->PlaintextBound()) <= 0,
                "message number out of range, message={}, max (abs)={}", m,
@@ -52,12 +49,12 @@ Ciphertext Encryptor::EncryptImpl(const MPInt &m,
 
   // Note: g^m = (1 + n)^m = (1 + n*m) mod n^2
   // It is also correct when m is negative
-  MPInt gm = (pk_->n_ * m).IncrOne();  // no need mod
+  BigInt gm = pk_->n_ * m + 1;  // no need mod
 
-  pk_->m_space_->MapIntoMSpace(&gm);
+  pk_->m_space_->MapIntoMSpace(gm);
   Ciphertext ct;
   auto rn = GetRn();
-  pk_->m_space_->MulMod(gm, rn, &ct.c_);
+  ct.c_ = pk_->m_space_->MulMod(gm, rn);
   if constexpr (audit) {
     YACL_ENFORCE(audit_str != nullptr);
     *audit_str = fmt::format(FMT_COMPILE("p:{},rn:{},c:{}"), m.ToHexString(),

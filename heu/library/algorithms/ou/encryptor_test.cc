@@ -45,16 +45,16 @@ TEST_F(EncryptorTest, SingleThread) {
       std::numeric_limits<int64_t>::max());
 
   for (int i = 0; i < 1000; ++i) {
-    MPInt mpint(dist(mt));
+    BigInt mpint(dist(mt));
     {
       Ciphertext ct = encryptor.Encrypt(mpint);
-      MPInt out;
+      BigInt out;
       decryptor.Decrypt(ct, &out);
       ASSERT_EQ(mpint, out);
     }
     {
       auto cta = encryptor.EncryptWithAudit(mpint);
-      MPInt out;
+      BigInt out;
       decryptor.Decrypt(cta.first, &out);
       ASSERT_EQ(mpint, out);
     }
@@ -62,16 +62,16 @@ TEST_F(EncryptorTest, SingleThread) {
 
   encryptor.SetEnableCache(true);
   for (int i = 0; i < 5000; ++i) {
-    MPInt mpint(dist(mt));
+    BigInt mpint(dist(mt));
     {
       Ciphertext ct = encryptor.Encrypt(mpint);
-      MPInt out;
+      BigInt out;
       decryptor.Decrypt(ct, &out);
       ASSERT_EQ(mpint, out);
     }
     {
       auto cta = encryptor.EncryptWithAudit(mpint);
-      MPInt out;
+      BigInt out;
       decryptor.Decrypt(cta.first, &out);
       ASSERT_EQ(mpint, out);
     }
@@ -92,13 +92,13 @@ TEST_F(EncryptorTest, MultiThread) {
   constexpr int th_size = 10;
   constexpr int case_size = 4000;
   std::future<void> threads[th_size];
-  MPInt mpint[th_size * case_size];
+  BigInt mpint[th_size * case_size];
   Ciphertext ct[th_size * case_size];
 
   for (int i = 0; i < th_size; ++i) {
-    threads[i] = std::async([i, &dist, &mt, &mpint, &ct, &encryptor]() {
+    threads[i] = std::async([i, &dist, &mt, &mpint, &ct, &encryptor, this]() {
       for (int j = 0; j < case_size; ++j) {
-        mpint[i * case_size + j] = MPInt(dist(mt));
+        mpint[i * case_size + j] = BigInt(dist(mt));
         *(ct + i * case_size + j) = encryptor.Encrypt(mpint[i * case_size + j]);
       }
     });
@@ -107,7 +107,7 @@ TEST_F(EncryptorTest, MultiThread) {
   for (int i = 0; i < th_size; ++i) {
     threads[i].wait();
     for (int j = 0; j < case_size; ++j) {
-      MPInt out;
+      BigInt out;
       decryptor.Decrypt(ct[i * case_size + j], &out);
       ASSERT_EQ(mpint[i * case_size + j], out);
     }

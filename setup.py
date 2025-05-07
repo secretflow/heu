@@ -35,6 +35,7 @@ BAZEL_MAX_JOBS = os.getenv("BAZEL_MAX_JOBS")
 ROOT_DIR = os.path.dirname(__file__)
 SKIP_BAZEL_CLEAN = os.getenv("SKIP_BAZEL_CLEAN")
 ENABLE_GPU = os.getenv("ENABLE_GPU")
+ENABLE_GMP = os.getenv("ENABLE_GMP")
 
 pyd_suffix = ".so"
 
@@ -130,6 +131,9 @@ def build():
 
     if ENABLE_GPU is not None:
         bazel_flags.extend(["--config", "gpu"])
+
+    if ENABLE_GMP is not None:
+        bazel_flags.extend(["--config", "gmp"])
 
     return bazel_invoke(
         subprocess.check_call,

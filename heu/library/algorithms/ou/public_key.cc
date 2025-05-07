@@ -26,10 +26,10 @@ void SetCacheTableDensity(size_t density) {
 }
 
 void PublicKey::Init() {
-  MPInt::InvertMod(capital_g_, n_, &capital_g_inv_);
+  capital_g_inv_ = capital_g_.InvMod(n_);
 
   // make cache table
-  m_space_ = std::make_shared<MontgomerySpace>(n_);
+  m_space_ = BigInt::CreateMontgomerySpace(n_);
   cg_table_ = std::make_shared<BaseTable>();
   cgi_table_ = std::make_shared<BaseTable>();
   ch_table_ = std::make_shared<BaseTable>();

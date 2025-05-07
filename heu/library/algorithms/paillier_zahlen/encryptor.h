@@ -29,17 +29,17 @@ class Encryptor {
   Encryptor(const Encryptor &from);
 
   Ciphertext EncryptZero() const;  // Get Enc(0)
-  Ciphertext Encrypt(const MPInt &m) const;
-  std::pair<Ciphertext, std::string> EncryptWithAudit(const MPInt &m) const;
+  Ciphertext Encrypt(const BigInt &m) const;
+  std::pair<Ciphertext, std::string> EncryptWithAudit(const BigInt &m) const;
 
   const PublicKey &public_key() const { return pk_; }
 
   // Get R^n
-  MPInt GetRn() const;
+  BigInt GetRn() const;
 
  private:
   template <bool audit = false>
-  Ciphertext EncryptImpl(const MPInt &m,
+  Ciphertext EncryptImpl(const BigInt &m,
                          std::string *audit_str = nullptr) const;
 
  private:
