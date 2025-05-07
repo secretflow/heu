@@ -21,7 +21,7 @@
 
 module(
     name = "heu",
-    version = "0.6.0.dev20250123",
+    version = "0.6.0.dev20250507",
     compatibility_level = 1,
 )
 
