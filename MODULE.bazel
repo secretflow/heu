@@ -25,7 +25,7 @@ module(
     compatibility_level = 1,
 )
 
-bazel_dep(name = "yacl", version = "0.4.5b11-nightly-20250428")
+bazel_dep(name = "yacl", version = "0.4.5b11-nightly-20250514")
 bazel_dep(name = "seal", version = "3.6.6")
 bazel_dep(name = "spdlog", version = "1.14.1")
 bazel_dep(name = "fmt", version = "11.0.2")
