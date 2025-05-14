@@ -90,7 +90,7 @@ jobs:
       - run:
           name: "build package and publish"
           command: |
-            cp /opt/homebrew/include/gmp* /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/
+            sudo cp /opt/homebrew/include/gmp* /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/
             export ENABLE_GMP=TRUE
 
             conda create -n build python=<< parameters.python_ver >> -y
