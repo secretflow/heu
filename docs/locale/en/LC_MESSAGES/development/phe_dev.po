@@ -512,10 +512,10 @@ msgstr ""
 "<https://github.com/secretflow/heu/blob/main/heu/library/algorithms/mock/BUILD.bazel>`_"
 
 #: ../../development/phe_dev.rst:260
-msgid "更多 Bazel 教程可以参考 `Bazel 官方文档 <bazel.build>`_"
+msgid "更多 Bazel 教程可以参考 `Bazel 官方文档 <https://bazel.build>`_"
 msgstr ""
 "For more Bazel tutorials, please refer to `Bazel official documentation "
-"<bazel.build>`_"
+"<https://bazel.build>`_"
 
 #: ../../development/phe_dev.rst:262
 msgid "Bazel 脚本编写完成后，请把您的算法作为依赖项加入到 ``schema.h/cc`` 对应的 ``BUILD.bazel`` 文件中。"
@@ -541,13 +541,13 @@ msgstr "Develop your own unit tests (optional)"
 
 #: ../../development/phe_dev.rst:279
 msgid ""
-"HEU 单元测试使用 `GoogleTest <github.com/google/googletest>`_ 框架，有关 GoogleTest "
-"的用法请查阅 `GoogleTest 官方文档 <google.github.io/googletest/>`_"
+"HEU 单元测试使用 `GoogleTest <https://github.com/google/googletest>`_ 框架，有关 GoogleTest "
+"的用法请查阅 `GoogleTest 官方文档 <https://google.github.io/googletest/>`_"
 msgstr ""
 "HEU unit tests are based on the `GoogleTest "
-"<github.com/google/googletest>`_ framework. For the usage of GoogleTest, "
+"<https://github.com/google/googletest>`_ framework. For the usage of GoogleTest, "
 "please refer to `GoogleTest official documentation "
-"<google.github.io/googletest/>`_."
+"<https://google.github.io/googletest/>`_."
 
 #: ../../development/phe_dev.rst:281
 msgid "单元测试编写完毕后，您可以使用以下命令运行单元测试："

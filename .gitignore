@@ -36,3 +36,6 @@ pylib.name
 
 # MacOS files
 .DS_Store
+
+.venv
+*.mo
