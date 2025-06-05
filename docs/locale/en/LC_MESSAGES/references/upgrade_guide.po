@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-02 20:55+0800\n"
+"POT-Creation-Date: 2025-06-05 11:20+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.17.0\n"
 
 #: ../../references/upgrade_guide.rst:2
 msgid "升级指南"
@@ -33,17 +33,21 @@ msgstr "API changes"
 msgid ""
 "HEU 0.4 版本将 ``phe.BatchEncoder`` 拆分成了2个：``phe.BatchIntegerEncoder`` 和 "
 "``phe.BatchFloatEncoder``。"
-msgstr "In HEU version 0.4, ``phe.BatchEncoder`` has been split into two separate encoders: "
-"``phe.BatchIntegerEncoder`` and ``phe.BatchFloatEncoder``."
+msgstr ""
+"In HEU version 0.4, ``phe.BatchEncoder`` has been split into two separate"
+" encoders: ``phe.BatchIntegerEncoder`` and ``phe.BatchFloatEncoder``."
 
 #: ../../references/upgrade_guide.rst:23
 msgid ""
 "HEU 0.3 中的 ``phe.BatchEncoder`` 并不支持编码浮点数，为了让 BatchEncoder 支持浮点数编码，HEU "
 "0.4 新增了 ``phe.BatchFloatEncoder``，同时为了命名上的清晰性，我们将老旧的 ``phe.BatchEncoder``"
 " 改名成了 ``phe.BatchIntegerEncoder``"
-msgstr "The ``phe.BatchEncoder`` in HEU 0.3 did not support encoding floating-point numbers. "
-"To enable BatchEncoder to support encoding of floating-point numbers, HEU 0.4 introduced ``phe.BatchFloatEncoder``. "
-"For clarity in naming, the old ``phe.BatchEncoder`` has been renamed to ``phe.BatchIntegerEncoder``."
+msgstr ""
+"The ``phe.BatchEncoder`` in HEU 0.3 did not support encoding floating-"
+"point numbers. To enable BatchEncoder to support encoding of floating-"
+"point numbers, HEU 0.4 introduced ``phe.BatchFloatEncoder``. For clarity "
+"in naming, the old ``phe.BatchEncoder`` has been renamed to "
+"``phe.BatchIntegerEncoder``."
 
 #: ../../references/upgrade_guide.rst:26 ../../references/upgrade_guide.rst:109
 msgid "用户代码怎么改"
@@ -51,13 +55,14 @@ msgstr "How to Modify User Code"
 
 #: ../../references/upgrade_guide.rst:28
 msgid "您可以将老代码中的 BatchEncoder 查找替换为 BatchIntegerEncoder 即可，两者功能等价。"
-msgstr "You can simply search and replace `BatchEncoder` with `BatchIntegerEncoder` in your old code, "
-"as the two are functionally equivalent."
+msgstr ""
+"You can simply search and replace `BatchEncoder` with "
+"`BatchIntegerEncoder` in your old code, as the two are functionally "
+"equivalent."
 
 #: ../../references/upgrade_guide.rst:32
-msgid "HEU "
-msgstr "HEU "  // This seems to be an incomplete message ID, so the same text is used for translation.
-
+msgid "HEU 0.2.x → 0.3.x"
+msgstr ""
 
 #: ../../references/upgrade_guide.rst:35
 msgid "背景解释"
@@ -126,8 +131,9 @@ msgstr "matrix operations"
 msgid ""
 "如果编译报错，请将 schema 参数传入即可，例如这一行编译报错：``phe.BigintEncoder()``，改为 "
 "``phe.BigintEncoder(kit.get_schema())`` 即可，具体参考上一节 **API 变更** 内容。"
-msgstr "If you encounter a compilation error, please pass in the schema parameter. "
-"For example, if this line causes a compilation error: ``phe.BigintEncoder()``, "
-"you should change it to ``phe.BigintEncoder(kit.get_schema())``. For more details, refer to the previous section on **API Changes**."
-
-
+msgstr ""
+"If you encounter a compilation error, please pass in the schema "
+"parameter. For example, if this line causes a compilation error: "
+"``phe.BigintEncoder()``, you should change it to "
+"``phe.BigintEncoder(kit.get_schema())``. For more details, refer to the "
+"previous section on **API Changes**."

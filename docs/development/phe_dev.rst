@@ -257,7 +257,7 @@ HEU Dispatcher 会在函数级别探测算法实现了哪些 SPI，因此在同�
 算法开发完毕后，您还需要编写一个编译脚本，HEU 使用的是 bazel 编译系统，您需要在算法同级目录 ``heu/library/algorithms/your_algo/`` 下放置一个 ``BUILD.bazel`` 文件。
 
 - ``BUILD.bazel`` 文件的写法可以参考 `此处 <https://github.com/secretflow/heu/blob/main/heu/library/algorithms/mock/BUILD.bazel>`_
-- 更多 Bazel 教程可以参考 `Bazel 官方文档 <bazel.build>`_
+- 更多 Bazel 教程可以参考 `Bazel 官方文档 <https://bazel.build>`_
 
 Bazel 脚本编写完成后，请把您的算法作为依赖项加入到 ``schema.h/cc`` 对应的 ``BUILD.bazel`` 文件中。
 
@@ -276,7 +276,7 @@ Bazel 脚本编写完成后，请把您的算法作为依赖项加入到 ``schem
 编写自己的单测（可选）
 """""""""""""""""""""""""""""""""""
 
-HEU 单元测试使用 `GoogleTest <github.com/google/googletest>`_ 框架，有关 GoogleTest 的用法请查阅 `GoogleTest 官方文档 <google.github.io/googletest/>`_
+HEU 单元测试使用 `GoogleTest <https://github.com/google/googletest>`_ 框架，有关 GoogleTest 的用法请查阅 `GoogleTest 官方文档 <https://google.github.io/googletest/>`_
 
 单元测试编写完毕后，您可以使用以下命令运行单元测试：
 

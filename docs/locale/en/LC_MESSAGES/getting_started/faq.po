@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HEU \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-25 10:58+0800\n"
+"POT-Creation-Date: 2025-06-05 11:20+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.14.0\n"
+"Generated-By: Babel 2.17.0\n"
 
 #: ../../getting_started/faq.rst:2
 msgid "常见问题"
@@ -65,12 +65,10 @@ msgid "HEU 是否支持其它的 Python 版本？"
 msgstr "Docs HEU support other versions of Python"
 
 #: ../../getting_started/faq.rst:25
-msgid ""
-"支持。对于 dev 版本，您也可以自助 :doc:`从源码编译<./installation>` 所需的 Python 版本的二进制包"
+msgid "支持。对于 dev 版本，您也可以自助 :doc:`从源码编译<./installation>` 所需的 Python 版本的二进制包"
 msgstr ""
-"Supported. For the "
-"dev version, you can also self-help by :doc:`compiling from "
-"source<./installation>` the binary package for the required Python "
+"Supported. For the dev version, you can also self-help by :doc:`compiling"
+" from source<./installation>` the binary package for the required Python "
 "version."
 
 #: ../../getting_started/faq.rst:30
@@ -104,8 +102,8 @@ msgstr ""
 "decryption, plaintext-ciphertext addition and subtraction, and "
 "ciphertext-plaintext multiplication calculations. It provides APIs in "
 "both C++ and Python. You can use HEU as a pure library, or you can use it"
-" as a secure computing device through the Secretflow "
-"<https://github.com/secretflow/secretflow>__ programming framework."
+" as a secure computing device through the `Secretflow "
+"<https://github.com/secretflow/secretflow>`__ programming framework."
 
 #: ../../getting_started/faq.rst:41
 msgid "FHE 功能的支持在路上，届时将额外支持密文乘法、密文比较等操作，敬请关注。"
@@ -116,8 +114,9 @@ msgstr ""
 
 #: ../../getting_started/faq.rst:45
 msgid "请问HEU支持硬件加速的详细说明在哪？"
-msgstr "Where can I find detailed information on hardware acceleration support in HEU?"
-
+msgstr ""
+"Where can I find detailed information on hardware acceleration support in"
+" HEU?"
 
 #: ../../getting_started/faq.rst:46
 msgid ""
@@ -135,12 +134,12 @@ msgstr ""
 ":doc:`here<./algo_choice>`."
 
 #: ../../getting_started/faq.rst:47
-msgid "如果您是开发者：假如您有一些硬件加速卡想让隐语兼容，可参考这个接入文档：https://www.secretflow.org.cn/docs/heu/zh_CN/development/phe_dev.html"
+msgid "如果您是开发者：假如您有一些硬件加速卡想让隐语兼容，可参考这个接入文档：:doc:`/development/phe_dev`"
 msgstr ""
 "If you are a developer: If you have some hardware acceleration cards that"
 " you would like to make compatible with HEU, you can refer to this "
 "integration document: "
-"https://www.secretflow.org.cn/docs/heu/zh_CN/development/phe_dev.html"
+":doc:`/development/phe_dev`"
 
 #: ../../getting_started/faq.rst:51
 msgid "FPaillier 和 ZPaillier 代表了什么？"
