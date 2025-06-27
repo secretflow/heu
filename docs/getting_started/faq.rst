@@ -44,7 +44,7 @@ FHE 功能的支持在路上，届时将额外支持密文乘法、密文比较�
 请问HEU支持硬件加速的详细说明在哪？
 """"""""""""""""""""""""""""""""""""""""""
 - 如果您是使用者：HEU 是否使用硬件加速是由 SchemaType 参数决定的，比如 HEU 目前接入了 Intel IPCL 库，支持 avx512ifma 以及 QAT 加速，在机器上已经安装相应硬件，且创建`HeKit`对象时`SchemaType`选择`IPCL`，那么 IPCL 支持的硬件加速能力即可启用，关于详细的算法能力可参考 :doc:`此处<./algo_choice>`。
-- 如果您是开发者：假如您有一些硬件加速卡想让隐语兼容，可参考这个接入文档：https://www.secretflow.org.cn/docs/heu/zh_CN/development/phe_dev.html
+- 如果您是开发者：假如您有一些硬件加速卡想让隐语兼容，可参考这个接入文档：:doc:`/development/phe_dev`
 
 
 FPaillier 和 ZPaillier 代表了什么？
