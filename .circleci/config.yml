@@ -94,12 +94,6 @@ workflows:
             requirements.txt build-and-run true
             .circleci/continue-config.yml build-and-run true
       - lint
-      - docs_publish:
-          filters:
-            branches:
-              only: main
-            tags:
-              only: /^v.*/
   publish-workflow:
     when:
       equal: [ "release", << pipeline.parameters.GHA_Event >> ]
