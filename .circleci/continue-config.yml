@@ -123,7 +123,7 @@ jobs:
       - run:
           name: Setup BuildBuddy Cache
           command: |
-            ../devtools/bazel_cache_setup.py --min_download
+            ../devtools/bazel_cache_setup.py
       - run:
           name: "bazel test"
           command: |
