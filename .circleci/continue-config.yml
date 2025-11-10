@@ -102,7 +102,7 @@ jobs:
           path: test_logs.tar.gz
   macOS_ut:
     macos:
-      xcode: 15.1
+      xcode: 16.0.0
     resource_class: m4pro.medium
     steps:
       - checkout
