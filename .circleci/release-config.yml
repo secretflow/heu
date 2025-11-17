@@ -69,8 +69,8 @@ jobs:
             python3 -m twine upload -r pypi -u __token__ -p ${PYPI_TWINE_TOKEN} dist/*.whl
   macOS_arm64_publish:
     macos:
-      xcode: 15.1.0
-    resource_class: macos.m1.large.gen1
+      xcode: 16.4.0
+    resource_class: m4pro.medium
     parameters:
       python_ver:
         type: string

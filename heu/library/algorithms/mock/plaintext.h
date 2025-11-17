@@ -48,7 +48,7 @@ class Plaintext {
   // [SPI: Critical]
   template <typename T>
   void Set(T value) {
-    bn_.template Set(value);
+    bn_.template Set<T>(value);
   }
 
   // [SPI: Critical]
