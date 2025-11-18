@@ -57,7 +57,7 @@ py_test(
     imports = ["."],
     deps = [
         ":heu_modules",
-        "@pypi//numpy:pkg",
+        "@heu_pypi//numpy:pkg",
     ],
 )
 
@@ -67,6 +67,6 @@ py_test(
     imports = ["."],
     deps = [
         ":heu_modules",
-        "@pypi//numpy:pkg",
+        "@heu_pypi//numpy:pkg",
     ],
 )

@@ -55,11 +55,11 @@ pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
 pip.parse(
     extra_pip_args = [
     ],
-    hub_name = "pypi",
+    hub_name = "heu_pypi",
     python_version = "3.10",
     requirements_lock = "//:requirements_lock.txt",
 )
-use_repo(pip, "pypi")
+use_repo(pip, "heu_pypi")
 
 cuda = use_extension("@rules_cuda//cuda:extensions.bzl", "toolchain")
 cuda.local_toolchain(
