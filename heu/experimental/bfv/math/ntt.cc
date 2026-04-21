@@ -241,8 +241,8 @@ std::optional<NttOperator> NttOperator::New(const zq::Modulus &p, size_t size) {
 void NttOperator::ForwardCore(uint64_t *data, bool reduce_output) const {
   uint64_t *__restrict a_ptr = data;
   a_ptr = (uint64_t *)__builtin_assume_aligned(a_ptr, 64);
+  const uint64_t pmod = impl_->p.P();
   size_t l = impl_->size >> 1;
-
   size_t m = 1;
   size_t k = 1;
   while (l > 0) {
