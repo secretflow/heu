@@ -8,6 +8,8 @@
 
 ## [Unreleased]
 
+- [Feature/experimental] Add an experimental BFV stack under `heu/experimental/bfv`, including C++ libraries, unit tests, demos, benchmarks, and planning utilities.
+
 ## [0.5.1]
 
 - [other] Update yacl version

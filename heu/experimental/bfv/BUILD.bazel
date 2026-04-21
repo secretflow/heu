@@ -1,0 +1,767 @@
+# Copyright 2024 Ant Group Co., Ltd.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+package(default_visibility = ["//visibility:public"])
+
+config_setting(
+    name = "bfv_mul_aux_base",
+    values = {"define": "bfv_mul=aux_base"},
+)
+
+config_setting(
+    name = "bfv_mul_projection",
+    values = {"define": "bfv_mul=projection"},
+)
+
+config_setting(
+    name = "bfv_profile_enabled",
+    values = {"define": "bfv_profile=1"},
+)
+
+MUL_SCHEME_DEFINES = select({
+    ":bfv_mul_projection": ["HEU_BFV_MUL_USE_AUX_BASE=0"],
+    "//conditions:default": ["HEU_BFV_MUL_USE_AUX_BASE=1"],
+})
+
+PROFILER_DEFINES = select({
+    ":bfv_profile_enabled": ["ENABLE_PROFILER=1"],
+    "//conditions:default": ["ENABLE_PROFILER=0"],
+})
+
+BFV_DEFINES = MUL_SCHEME_DEFINES + PROFILER_DEFINES
+
+# Common optimization flags for all platforms
+COMMON_OPTIMIZATION_COPTS = [
+    "-O3",                      # Maximum optimization level
+    "-DNDEBUG",                 # Disable debug assertions (Release mode)
+    "-DRELEASE",                # Additional Release mode flag
+    "-ffast-math",              # Enable fast math optimizations
+    "-funroll-loops",           # Unroll loops for better performance
+    "-finline-functions",       # Aggressive function inlining
+    "-ftree-vectorize",         # Enable auto-vectorization
+] + select({
+    ":bfv_profile_enabled": [
+        "-g",
+        "-fno-omit-frame-pointer",
+    ],
+    "//conditions:default": [],
+})
+
+# x86_64 specific optimization flags (Linux/Intel Mac)
+X86_64_COPTS = [
+    "-march=native",            # Optimize for current CPU architecture
+    "-mtune=native",            # Tune for current CPU
+    "-mavx2",                   # Enable AVX2 SIMD instructions
+    "-mfma",                    # Enable FMA instructions
+    "-msse4.2",                 # Enable SSE4.2 instructions
+    "-fvect-cost-model=unlimited", # Aggressive vectorization
+]
+
+# ARM64 specific optimization flags (Apple Silicon Mac)
+ARM64_COPTS = [
+    "-mcpu=apple-m1",           # Optimize for Apple Silicon
+]
+
+# Platform-conditional optimization flags
+OPTIMIZATION_COPTS = COMMON_OPTIMIZATION_COPTS + select({
+    "@platforms//cpu:x86_64": X86_64_COPTS,
+    "@platforms//cpu:aarch64": ARM64_COPTS,
+    "@platforms//cpu:arm64": ARM64_COPTS,
+    "//conditions:default": [],
+})
+
+OPTIMIZATION_LINKOPTS = [
+    "-O3",
+]
+
+# Math libraries - zq (modular arithmetic)
+cc_library(
+    name = "zq",
+    srcs = [
+        "math/modulus_runtime.cc",
+        "math/modulus.cc",
+        "math/prime_search.cc",
+        "math/primes.cc",
+    ],
+    hdrs = [
+        "math/arch.h",
+        "math/modulus.h",
+        "math/modulus_runtime.h",
+        "math/prime_search.h",
+        "math/primes.h",
+    ],
+    copts = OPTIMIZATION_COPTS,
+    strip_include_prefix = ".",
+)
+
+# Math libraries - ntt (number theoretic transform)
+cc_library(
+    name = "ntt",
+    srcs = [
+        "math/ntt.cc",
+        "math/ntt_harvey.cc",
+        "math/ntt_layout.cc",
+        "math/ntt_optimized.cc",
+        "math/ntt_tables.cc",
+    ],
+    hdrs = [
+        "math/ntt.h",
+        "math/ntt_harvey.h",
+        "math/ntt_layout.h",
+        "math/ntt_optimized.h",
+        "math/ntt_tables.h",
+    ],
+    copts = OPTIMIZATION_COPTS,
+    defines = ["PULSAR_NTT_OPTIMIZED=1"],
+    strip_include_prefix = ".",
+    deps = [
+        ":zq",
+    ],
+)
+
+# Math libraries - rns (residue number system)
+cc_library(
+    name = "rns",
+    srcs = [
+        "math/base_change_plan.cc",
+        "math/base_converter.cc",
+        "math/biguint.cc",
+        "math/carry_window_plan.cc",
+        "math/decode_bridge_backend.cc",
+        "math/rns_batch_transfer_kernel.cc",
+        "math/rns_context.cc",
+        "math/rns_context_layout.cc",
+        "math/rns_projection_terms.cc",
+        "math/rns_scaler.cc",
+        "math/rns_scalar_transfer_kernel.cc",
+        "math/rns_transfer_backend.cc",
+        "math/rns_transfer_executor.cc",
+        "math/rns_transfer_plan.cc",
+        "math/scaling_factor.cc",
+        "math/shenoy_kumaresan.cc",
+    ],
+    hdrs = [
+        "math/base_change_plan.h",
+        "math/base_converter.h",
+        "math/biguint.h",
+        "math/rns_context.h",
+        "math/rns_context_layout.h",
+        "math/residue_transfer_engine.h",
+        "math/rns_scaler.h",
+        "math/rns_transfer_arithmetic.h",
+        "math/rns_transfer_backend.h",
+        "math/rns_transfer_executor.h",
+        "math/rns_transfer_plan.h",
+        "math/scaling_factor.h",
+        "math/shenoy_kumaresan.h",
+        "math/test_support.h",
+    ],
+    copts = OPTIMIZATION_COPTS,
+    defines = BFV_DEFINES,
+    strip_include_prefix = ".",
+    deps = [
+        ":zq",
+        "@yacl//yacl/math/mpint",
+        ":math_utils",
+    ],
+)
+
+# Math libraries - rq (polynomial ring)
+cc_library(
+    name = "rq",
+    srcs = [
+        "math/aux_basis_converter_plan.cc",
+        "math/aux_base_plan.cc",
+        "math/aux_base_extender.cc",
+        "math/aux_correction_plan.cc",
+        "math/basis_transfer_route.cc",
+        "math/context.cc",
+        "math/context_layout.cc",
+        "math/exceptions.cc",
+        "math/poly.cc",
+        "math/poly_codec.cc",
+        "math/poly_storage.cc",
+        "math/poly_transform.cc",
+        "math/representation.cc",
+        "math/basis_mapper.cc",
+        "math/substitution_exponent.cc",
+        "math/context_transfer.cc",
+    ],
+    hdrs = [
+        "math/aux_base_plan.h",
+        "math/aux_base_plan_internal.h",
+        "math/aux_base_extender.h",
+        "math/basis_transfer_route.h",
+        "math/context.h",
+        "math/context_layout.h",
+        "math/exceptions.h",
+        "math/poly.h",
+        "math/poly_storage.h",
+        "math/representation.h",
+        "math/basis_mapper.h",
+        "math/substitution_exponent.h",
+        "math/context_transfer.h",
+        "math/test_support.h",
+        "math/traits.h",
+    ],
+    copts = OPTIMIZATION_COPTS,
+    defines = BFV_DEFINES,
+    strip_include_prefix = ".",
+    deps = [
+        ":math_utils",
+        ":ntt",
+        ":rns",
+        ":zq",
+    ],
+)
+
+# Math utilities
+cc_library(
+    name = "math_utils",
+    srcs = [
+        "math/sample_vec_cbd.cc",
+    ],
+    hdrs = [
+        "math/sample_vec_cbd.h",
+        "util/arena_allocator.h",
+        "util/profiler.h",
+    ],
+    copts = OPTIMIZATION_COPTS,
+    strip_include_prefix = ".",
+    deps = [
+        ":zq",
+    ],
+)
+
+# Parameter Advisor
+cc_library(
+    name = "bfv_param_advisor",
+    srcs = ["util/bfv_param_advisor.cc"],
+    hdrs = ["util/bfv_param_advisor.h"],
+    copts = OPTIMIZATION_COPTS,
+    strip_include_prefix = ".",
+    deps = [
+        ":bfv_crypto",
+        ":zq",
+    ],
+)
+
+cc_test(
+    name = "bfv_param_advisor_test",
+    srcs = ["util/bfv_param_advisor_test.cc"],
+    copts = OPTIMIZATION_COPTS,
+    deps = [
+        ":bfv_param_advisor",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_library(
+    name = "backend_autotuner",
+    srcs = ["util/backend_autotuner.cc"],
+    hdrs = ["util/backend_autotuner.h"],
+    copts = OPTIMIZATION_COPTS,
+    strip_include_prefix = ".",
+    deps = [
+        ":bfv_crypto",
+        ":rns",
+    ],
+)
+
+cc_test(
+    name = "backend_autotuner_test",
+    srcs = ["util/backend_autotuner_test.cc"],
+    copts = OPTIMIZATION_COPTS,
+    deps = [
+        ":backend_autotuner",
+        ":bfv_param_advisor",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_library(
+    name = "bfv_deployment_planner",
+    srcs = ["util/bfv_deployment_planner.cc"],
+    hdrs = ["util/bfv_deployment_planner.h"],
+    copts = OPTIMIZATION_COPTS,
+    strip_include_prefix = ".",
+    deps = [
+        ":backend_autotuner",
+        ":bfv_param_advisor",
+        ":bfv_crypto",
+    ],
+)
+
+cc_test(
+    name = "bfv_deployment_planner_test",
+    srcs = ["util/bfv_deployment_planner_test.cc"],
+    copts = OPTIMIZATION_COPTS,
+    deps = [
+        ":bfv_deployment_planner",
+        "@googletest//:gtest_main",
+    ],
+)
+
+
+# Serialization library (msgpack-based)
+cc_library(
+    name = "bfv_serialization",
+    srcs = [
+        "crypto/serialization/serialization_exceptions.cc",
+    ],
+    hdrs = [
+        "crypto/serialization/msgpack_adaptors.h",
+        "crypto/serialization/serialization_exceptions.h",
+    ],
+    copts = OPTIMIZATION_COPTS,
+    strip_include_prefix = ".",
+    deps = [
+        ":bfv_crypto_headers",
+        "@msgpack-c//:msgpack",
+        "@yacl//yacl/base:byte_container_view",
+    ],
+)
+
+# Crypto headers only (to break circular dependency)
+cc_library(
+    name = "bfv_crypto_headers",
+    hdrs = [
+        "crypto/bfv_parameters.h",
+        "crypto/bulk_serialization.h",
+        "crypto/ciphertext.h",
+        "crypto/dot_product.h",
+        "crypto/dot_product_impl.h",
+        "crypto/encoding.h",
+        "crypto/evaluation_key.h",
+        "crypto/evaluation_key_impl.h",
+        "crypto/exceptions.h",
+        "crypto/galois_key.h",
+        "crypto/galois_key_impl.h",
+        "crypto/keyset_planner.h",
+        "crypto/key_switching_key.h",
+        "crypto/key_switching_key_impl.h",
+        "crypto/multiplicator.h",
+        "crypto/operations.h",
+        "crypto/operations_impl.h",
+        "crypto/operators.h",
+        "crypto/plaintext.h",
+        "crypto/public_key.h",
+        "crypto/public_key_impl.h",
+        "crypto/relinearization_key.h",
+        "crypto/relinearization_key_impl.h",
+        "crypto/rgsw_ciphertext.h",
+        "crypto/secret_key.h",
+        "crypto/secret_key_impl.h",
+    ],
+    copts = OPTIMIZATION_COPTS,
+    strip_include_prefix = ".",
+    deps = [
+        ":math_utils",
+        ":ntt",
+        ":rns",
+        ":rq",
+        ":zq",
+    ],
+)
+
+# Crypto library - BFV implementation
+cc_library(
+    name = "bfv_crypto",
+    srcs = [
+        "crypto/bfv_parameters.cc",
+        "crypto/bulk_serialization.cc",
+        "crypto/ciphertext.cc",
+        "crypto/encoding.cc",
+        "crypto/evaluation_key.cc",
+        "crypto/exceptions.cc",
+        "crypto/galois_key.cc",
+        "crypto/keyset_planner.cc",
+        "crypto/key_switching_key.cc",
+        "crypto/multiplicator.cc",
+        "crypto/operators.cc",
+        "crypto/plaintext.cc",
+        "crypto/public_key.cc",
+        "crypto/relinearization_key.cc",
+        "crypto/rgsw_ciphertext.cc",
+        "crypto/secret_key.cc",
+    ],
+    hdrs = [
+        "crypto/bfv_parameters.h",
+        "crypto/bulk_serialization.h",
+        "crypto/ciphertext.h",
+        "crypto/dot_product.h",
+        "crypto/dot_product_impl.h",
+        "crypto/encoding.h",
+        "crypto/evaluation_key.h",
+        "crypto/evaluation_key_impl.h",
+        "crypto/exceptions.h",
+        "crypto/galois_key.h",
+        "crypto/galois_key_impl.h",
+        "crypto/keyset_planner.h",
+        "crypto/key_switching_key.h",
+        "crypto/key_switching_key_impl.h",
+        "crypto/multiplicator.h",
+        "crypto/operations.h",
+        "crypto/operations_impl.h",
+        "crypto/operators.h",
+        "crypto/plaintext.h",
+        "crypto/public_key.h",
+        "crypto/public_key_impl.h",
+        "crypto/relinearization_key.h",
+        "crypto/relinearization_key_impl.h",
+        "crypto/rgsw_ciphertext.h",
+        "crypto/secret_key.h",
+        "crypto/secret_key_impl.h",
+    ],
+    copts = OPTIMIZATION_COPTS,
+    defines = BFV_DEFINES,
+    strip_include_prefix = ".",
+    deps = [
+        ":bfv_serialization", # Added dependency
+        ":math_utils",
+        ":ntt",
+        ":rns",
+        ":rq",
+        ":zq",
+    ],
+)
+
+# Main BFV library
+cc_library(
+    name = "bfv",
+    deps = [
+        ":bfv_crypto",
+        ":bfv_serialization", # Added dependency
+        ":math_utils",
+        ":ntt",
+        ":rns",
+        ":rq",
+        ":zq",
+    ],
+)
+
+# Tests for math/zq
+cc_test(
+    name = "zq_test",
+    srcs = [
+        "math/modulus_test.cc",
+        "math/primes_test.cc",
+    ],
+    copts = OPTIMIZATION_COPTS,
+    deps = [
+        ":zq",
+        "@googletest//:gtest_main",
+    ],
+)
+
+# Tests for math/ntt
+cc_test(
+    name = "ntt_test",
+    srcs = [
+        "math/ntt_harvey_test.cc",
+        "math/ntt_optimized_test.cc",
+        "math/ntt_tables_test.cc",
+        "math/ntt_test.cc",
+        "math/ntt_variants_test.cc",
+    ],
+    copts = OPTIMIZATION_COPTS,
+    deps = [
+        ":ntt",
+        "@googletest//:gtest_main",
+    ],
+)
+
+# Tests for math/rns
+cc_test(
+    name = "rns_test",
+    srcs = [
+        "math/biguint_test.cc",
+        "math/rns_test.cc",
+        "math/test_support.h",
+    ],
+    copts = OPTIMIZATION_COPTS,
+    deps = [
+        ":rns",
+        "@googletest//:gtest_main",
+    ],
+)
+
+# Tests for math/rq
+cc_test(
+    name = "rq_test",
+    srcs = [
+        "math/context_test.cc",
+        "math/poly_test.cc",
+        "math/representation_test.cc",
+        "math/basis_mapper_test.cc",
+        "math/context_transfer_test.cc",
+        "math/test_support.h",
+    ],
+    copts = OPTIMIZATION_COPTS,
+    deps = [
+        ":rq",
+        "@googletest//:gtest_main",
+    ],
+)
+
+# Tests for math/utils
+cc_test(
+    name = "math_utils_test",
+    srcs = [
+        "math/sample_vec_cbd_test.cc",
+    ],
+    copts = OPTIMIZATION_COPTS,
+    deps = [
+        ":math_utils",
+        "@googletest//:gtest_main",
+    ],
+)
+
+# Tests for crypto
+cc_test(
+    name = "crypto_test",
+    srcs = [
+        "crypto/test/test_bfv_parameters.cc",
+        "crypto/test/test_ciphertext.cc",
+        "crypto/test/test_encoding.cc",
+        "crypto/test/test_evaluation_key.cc",
+        "crypto/test/test_galois_key.cc",
+        "crypto/test/test_key_switching_key.cc",
+        "crypto/test/test_multiplicator.cc",
+        "crypto/test/test_operators.cc",
+        "crypto/test/test_plaintext.cc",
+        "crypto/test/test_public_key.cc",
+        "crypto/test/test_relinearization_key.cc",
+        "crypto/test/test_rgsw_ciphertext.cc",
+        "crypto/test/test_secret_key.cc",
+    ],
+    copts = OPTIMIZATION_COPTS,
+    deps = [
+        ":bfv",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "keyset_planner_test",
+    srcs = [
+        "crypto/test/test_keyset_planner.cc",
+    ],
+    copts = OPTIMIZATION_COPTS,
+    deps = [
+        ":bfv",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "bulk_serialization_test",
+    srcs = [
+        "crypto/test/test_bulk_serialization.cc",
+    ],
+    copts = OPTIMIZATION_COPTS,
+    deps = [
+        ":bfv",
+        "@googletest//:gtest_main",
+    ],
+)
+
+# Benchmarks
+cc_binary(
+    name = "zq_benchmark",
+    srcs = ["benchmark/zq_benchmark.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":zq",
+        "@google_benchmark//:benchmark_main",
+    ],
+)
+
+cc_binary(
+    name = "ntt_benchmark",
+    srcs = ["benchmark/ntt_benchmark.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":ntt",
+        "@google_benchmark//:benchmark_main",
+    ],
+)
+
+cc_binary(
+    name = "rns_benchmark",
+    srcs = ["benchmark/rns_benchmark.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":rns",
+        "@google_benchmark//:benchmark_main",
+    ],
+)
+
+cc_binary(
+    name = "rq_benchmark",
+    srcs = ["benchmark/rq_benchmark.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":rq",
+        "@google_benchmark//:benchmark_main",
+    ],
+)
+
+cc_binary(
+    name = "bench_add",
+    srcs = ["benchmark/bench_add.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":bfv",
+        "@google_benchmark//:benchmark_main",
+    ],
+)
+
+cc_binary(
+    name = "bench_dec",
+    srcs = ["benchmark/bench_dec.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":bfv",
+        "@google_benchmark//:benchmark_main",
+    ],
+)
+
+cc_binary(
+    name = "bench_ntt",
+    srcs = ["benchmark/bench_ntt.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":bfv",
+        "@google_benchmark//:benchmark_main",
+    ],
+)
+
+cc_binary(
+    name = "bench_mul",
+    srcs = ["benchmark/bench_mul.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":bfv",
+        "@google_benchmark//:benchmark_main",
+    ],
+)
+
+cc_binary(
+    name = "bfv_benchmark",
+    srcs = ["benchmark/bfv_bench_cmp_with_seal.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":bfv",
+        "@google_benchmark//:benchmark_main",
+        "@seal//:seal",
+    ],
+)
+
+cc_binary(
+    name = "math_reference_benchmark",
+    srcs = ["benchmark/math_reference_benchmark.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":ntt",
+        ":rq",
+        ":rns",
+        ":zq",
+        "@google_benchmark//:benchmark_main",
+        "@seal//:seal",
+    ],
+)
+
+cc_binary(
+    name = "test_galois_perf",
+    srcs = ["math/test_galois_perf.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":rq",
+        ":zq",
+    ],
+)
+
+cc_binary(
+    name = "param_advisor_demo",
+    srcs = ["examples/param_advisor_demo.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":bfv_param_advisor",
+        ":bfv_crypto",
+    ],
+)
+
+cc_binary(
+    name = "deployment_planner_demo",
+    srcs = ["examples/deployment_planner_demo.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":bfv_crypto",
+        ":bfv_deployment_planner",
+    ],
+)
+
+cc_binary(
+    name = "keyset_planner_demo",
+    srcs = ["examples/keyset_planner_demo.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":bfv_crypto",
+    ],
+)
+
+cc_binary(
+    name = "multiplicator_demo",
+    srcs = ["examples/multiplicator_demo.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":bfv_crypto",
+    ],
+)
+
+cc_binary(
+    name = "rgsw_demo",
+    srcs = ["examples/rgsw_demo.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":bfv_crypto",
+    ],
+)
+
+cc_binary(
+    name = "bulk_serialization_demo",
+    srcs = ["examples/bulk_serialization_demo.cc"],
+    copts = OPTIMIZATION_COPTS,
+    linkopts = OPTIMIZATION_LINKOPTS,
+    deps = [
+        ":bfv_crypto",
+    ],
+)
