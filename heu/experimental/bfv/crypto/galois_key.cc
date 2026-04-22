@@ -11,6 +11,7 @@
 #include "crypto/serialization/msgpack_adaptors.h"
 #include "math/context.h"
 #include "math/context_transfer.h"
+#include "math/exceptions.h"
 #include "math/modulus.h"
 #include "math/ntt_harvey.h"
 #include "math/poly.h"
@@ -236,6 +237,13 @@ GaloisKey GaloisKey::create(const SecretKey &secret_key, size_t exponent,
 
     return GaloisKey(std::move(impl));
 
+  } catch (const ParameterException &) {
+    throw;
+  } catch (const ::bfv::math::rq::DefaultException &e) {
+    throw ParameterException(e.what());
+  } catch (const ::bfv::math::rq::RqException &e) {
+    throw MathException("Failed to generate Galois key: " +
+                        std::string(e.what()));
   } catch (const std::exception &e) {
     throw MathException("Failed to generate Galois key: " +
                         std::string(e.what()));

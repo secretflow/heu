@@ -223,7 +223,10 @@ bool PublicKey::operator==(const PublicKey &other) const {
   if (!pImpl && !other.pImpl) return true;
   if (!pImpl || !other.pImpl) return false;
 
-  return pImpl->par == other.pImpl->par && pImpl->c == other.pImpl->c;
+  const bool params_equal =
+      (!pImpl->par && !other.pImpl->par) ||
+      (pImpl->par && other.pImpl->par && *pImpl->par == *other.pImpl->par);
+  return params_equal && pImpl->c == other.pImpl->c;
 }
 
 bool PublicKey::operator!=(const PublicKey &other) const {

@@ -3,6 +3,7 @@
 #include "crypto/bfv_parameters.h"
 #include "crypto/ciphertext.h"
 #include "crypto/plaintext.h"
+#include "crypto/rng_bridge.h"
 #include "crypto/secret_key.h"
 #include "math/poly.h"
 #include "math/sample_vec_cbd.h"
@@ -43,9 +44,9 @@ Ciphertext SecretKey::encrypt(const Plaintext &plaintext, RNG &rng) const {
 template <typename RNG>
 Ciphertext SecretKey::encrypt_poly(const ::bfv::math::rq::Poly &poly,
                                    RNG &rng) const {
-  // Delegate to the std::mt19937_64 implementation
-  std::mt19937_64 mt_rng(rng());
-  return encrypt_poly_impl(poly, mt_rng);
+  return detail::WithMt19937_64(rng, [&](std::mt19937_64 &std_rng) {
+    return encrypt_poly_impl(poly, std_rng);
+  });
 }
 
 }  // namespace bfv

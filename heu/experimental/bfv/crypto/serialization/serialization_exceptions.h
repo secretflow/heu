@@ -31,8 +31,8 @@ class SerializationException : public std::exception {
   const char *what() const noexcept override { return message_.c_str(); }
 
   /**
-   * @brief Get the raw error message without prefix
-   * @return The original error message
+   * @brief Get the stored error message, including the class-specific prefix
+   * @return The formatted error message
    */
   const std::string &get_message() const noexcept { return message_; }
 };

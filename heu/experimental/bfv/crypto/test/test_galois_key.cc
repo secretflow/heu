@@ -62,7 +62,8 @@ TEST_F(GaloisKeyTest, Relinearization) {
       for (size_t i = 1; i < 2 * params->degree(); ++i) {
         if ((i & 1) == 0) {
           // Even exponents should fail
-          EXPECT_THROW(GaloisKey::create(sk, i, 0, 0, rng_), std::exception);
+          EXPECT_THROW(GaloisKey::create(sk, i, 0, 0, rng_),
+                       ParameterException);
         } else {
           // Odd exponents should succeed
           auto gk = GaloisKey::create(sk, i, 0, 0, rng_);

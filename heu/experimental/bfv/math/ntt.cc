@@ -240,8 +240,9 @@ std::optional<NttOperator> NttOperator::New(const zq::Modulus &p, size_t size) {
 
 void NttOperator::ForwardCore(uint64_t *data, bool reduce_output) const {
   uint64_t *__restrict a_ptr = data;
-  a_ptr = (uint64_t *)__builtin_assume_aligned(a_ptr, 64);
+#ifdef __AVX512F__
   const uint64_t pmod = impl_->p.P();
+#endif
   size_t l = impl_->size >> 1;
   size_t m = 1;
   size_t k = 1;
@@ -278,8 +279,8 @@ void NttOperator::ForwardCore(uint64_t *data, bool reduce_output) const {
             __builtin_prefetch(u_ptr + kk + pf_elems, 1, 2);
             __builtin_prefetch(v_ptr + kk + pf_elems, 1, 2);
           }
-          __m512i u = _mm512_load_si512(u_ptr + kk);
-          __m512i v = _mm512_load_si512(v_ptr + kk);
+          __m512i u = _mm512_loadu_si512(u_ptr + kk);
+          __m512i v = _mm512_loadu_si512(v_ptr + kk);
           u = Fold2PV(u, impl_->p_twice);
           v = Fold2PV(v, impl_->p_twice);
           __m512i t = LazyMulShoupV(v, omega, omega_shoup, pmod);
@@ -289,8 +290,8 @@ void NttOperator::ForwardCore(uint64_t *data, bool reduce_output) const {
           v = Fold2PV(v_new, impl_->p_twice);
           __m512i u_new = _mm512_add_epi64(u, t);
           u = Fold2PV(u_new, impl_->p_twice);
-          _mm512_store_si512(u_ptr + kk, u);
-          _mm512_store_si512(v_ptr + kk, v);
+          _mm512_storeu_si512(u_ptr + kk, u);
+          _mm512_storeu_si512(v_ptr + kk, v);
         }
 #else
 #pragma GCC ivdep
@@ -341,8 +342,8 @@ void NttOperator::ForwardCore(uint64_t *data, bool reduce_output) const {
             __builtin_prefetch(u_ptr + kk + pf_elems, 1, 2);
             __builtin_prefetch(v_ptr + kk + pf_elems, 1, 2);
           }
-          __m512i u = _mm512_load_si512(u_ptr + kk);
-          __m512i v = _mm512_load_si512(v_ptr + kk);
+          __m512i u = _mm512_loadu_si512(u_ptr + kk);
+          __m512i v = _mm512_loadu_si512(v_ptr + kk);
           u = Fold2PV(u, impl_->p_twice);
           v = Fold2PV(v, impl_->p_twice);
           __m512i t = LazyMulShoupV(v, omega, omega_shoup, pmod);
@@ -354,8 +355,8 @@ void NttOperator::ForwardCore(uint64_t *data, bool reduce_output) const {
           u = Fold2PV(u_new, impl_->p_twice);
           u = Reduce3V(u, pmod, impl_->p_twice);
           v = Reduce3V(v, pmod, impl_->p_twice);
-          _mm512_store_si512(u_ptr + kk, u);
-          _mm512_store_si512(v_ptr + kk, v);
+          _mm512_storeu_si512(u_ptr + kk, u);
+          _mm512_storeu_si512(v_ptr + kk, v);
         }
 #else
 #pragma GCC ivdep
@@ -415,7 +416,6 @@ void NttOperator::ForwardCore(uint64_t *data, bool reduce_output) const {
 
 void NttOperator::BackwardCore(uint64_t *data, bool reduce_output) const {
   uint64_t *__restrict a_ptr = data;
-  a_ptr = (uint64_t *)__builtin_assume_aligned(a_ptr, 64);
   const uint64_t pmod = impl_->p.P();
   const uint64_t size_inv = impl_->size_inv;
   const uint64_t size_inv_shoup = impl_->size_inv_shoup;
@@ -453,8 +453,8 @@ void NttOperator::BackwardCore(uint64_t *data, bool reduce_output) const {
             size_t pv = kk + pf_elems;
             if (pv < l) __builtin_prefetch(v_ptr + pv, 1, 1);
           }
-          __m512i u = _mm512_load_si512(u_ptr + kk);
-          __m512i v = _mm512_load_si512(v_ptr + kk);
+          __m512i u = _mm512_loadu_si512(u_ptr + kk);
+          __m512i v = _mm512_loadu_si512(v_ptr + kk);
           __m512i p_twice_v = _mm512_set1_epi64(impl_->p_twice);
           __m512i u_add = _mm512_add_epi64(u, v);
           u_add = Fold2PV(u_add, impl_->p_twice);
@@ -463,8 +463,8 @@ void NttOperator::BackwardCore(uint64_t *data, bool reduce_output) const {
           d = Fold2PV(d, impl_->p_twice);
           v = LazyMulShoupV(d, zeta_inv, zeta_inv_shoup, pmod);
           u = u_add;
-          _mm512_store_si512(u_ptr + kk, u);
-          _mm512_store_si512(v_ptr + kk, v);
+          _mm512_storeu_si512(u_ptr + kk, u);
+          _mm512_storeu_si512(v_ptr + kk, v);
         }
 #else
 #pragma GCC ivdep
@@ -549,8 +549,8 @@ void NttOperator::BackwardCore(uint64_t *data, bool reduce_output) const {
             size_t pv = kk + pf_elems;
             if (pv < l) __builtin_prefetch(v_ptr + pv, 1, 1);
           }
-          __m512i u = _mm512_load_si512(u_ptr + kk);
-          __m512i v = _mm512_load_si512(v_ptr + kk);
+          __m512i u = _mm512_loadu_si512(u_ptr + kk);
+          __m512i v = _mm512_loadu_si512(v_ptr + kk);
           __m512i p_twice_v = _mm512_set1_epi64(impl_->p_twice);
           __m512i u_add = _mm512_add_epi64(u, v);
           u_add = Fold2PV(u_add, impl_->p_twice);
@@ -567,8 +567,8 @@ void NttOperator::BackwardCore(uint64_t *data, bool reduce_output) const {
             u = LazyMulShoupV(FoldPV(u_add, pmod), size_inv, size_inv_shoup,
                               pmod);
           }
-          _mm512_store_si512(u_ptr + kk, u);
-          _mm512_store_si512(v_ptr + kk, v);
+          _mm512_storeu_si512(u_ptr + kk, u);
+          _mm512_storeu_si512(v_ptr + kk, v);
         }
 #else
 #pragma GCC ivdep
@@ -752,11 +752,7 @@ std::vector<uint64_t> NttOperator::Forward(
     const std::vector<uint64_t> &input) const {
   std::vector<uint64_t> a = input;
   assert(a.size() == impl_->size);
-  if (impl_->ntt_tables_.has_value()) {
-    HarveyNTT::HarveyNtt(a.data(), *impl_->ntt_tables_);
-    return a;
-  }
-  ForwardCore(a.data(), true);
+  ForwardInPlace(a.data());
   return a;
 }
 
@@ -764,11 +760,7 @@ std::vector<uint64_t> NttOperator::ForwardVtLazy(
     const std::vector<uint64_t> &input) const {
   std::vector<uint64_t> a = input;
   assert(a.size() == impl_->size);
-  if (impl_->ntt_tables_.has_value()) {
-    HarveyNTT::HarveyNttLazy(a.data(), *impl_->ntt_tables_);
-    return a;
-  }
-  ForwardCore(a.data(), false);
+  ForwardInPlaceLazy(a.data());
   return a;
 }
 
@@ -783,7 +775,7 @@ std::vector<uint64_t> NttOperator::Backward(
     const std::vector<uint64_t> &input) const {
   std::vector<uint64_t> a = input;
   assert(a.size() == impl_->size);
-  BackwardCore(a.data(), true);
+  BackwardInPlace(a.data());
   return a;
 }
 

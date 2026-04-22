@@ -1,6 +1,7 @@
 #pragma once
 
 #include "crypto/key_switching_key.h"
+#include "crypto/rng_bridge.h"
 #include "crypto/secret_key.h"
 
 namespace crypto {
@@ -21,11 +22,9 @@ template <typename RNG>
 KeySwitchingKey KeySwitchingKey::create_with_std_rng_bridge(
     const SecretKey &secret_key, const ::bfv::math::rq::Poly &from,
     size_t ciphertext_level, size_t ksk_level, RNG &rng) {
-  // Forward to the std::mt19937_64 implementation
-  std::mt19937_64 mt_rng;
-  // Copy state from the input RNG (simplified approach)
-  mt_rng.seed(rng());
-  return create(secret_key, from, ciphertext_level, ksk_level, mt_rng);
+  return detail::WithMt19937_64(rng, [&](std::mt19937_64 &std_rng) {
+    return create(secret_key, from, ciphertext_level, ksk_level, std_rng);
+  });
 }
 
 }  // namespace bfv

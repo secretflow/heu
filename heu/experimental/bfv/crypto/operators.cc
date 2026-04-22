@@ -1,6 +1,7 @@
 #include "crypto/operators.h"
 
 #include <algorithm>
+#include <memory>
 #include <mutex>
 #include <stdexcept>
 #include <unordered_map>
@@ -230,28 +231,28 @@ Ciphertext operator-(const Plaintext &lhs, const Ciphertext &rhs) {
 }
 
 static std::mutex cache_mutex;
-static std::unordered_map<size_t, std::unique_ptr<Multiplicator>> *cache_ptr =
+static std::unordered_map<size_t, std::shared_ptr<Multiplicator>> *cache_ptr =
     nullptr;
 
 // Cached multiplicator to avoid repeated construction overhead
-static Multiplicator *get_cached_multiplicator(
+static std::shared_ptr<Multiplicator> get_cached_multiplicator(
     const std::shared_ptr<BfvParameters> &params, size_t level) {
   const size_t key = (reinterpret_cast<size_t>(params.get()) ^
                       (level * 0x9e3779b97f4a7c15ULL));
   std::lock_guard<std::mutex> lock(cache_mutex);
   if (!cache_ptr) {
     cache_ptr =
-        new std::unordered_map<size_t, std::unique_ptr<Multiplicator>>();
+        new std::unordered_map<size_t, std::shared_ptr<Multiplicator>>();
   }
 
   auto it = cache_ptr->find(key);
   if (it != cache_ptr->end()) {
-    return it->second.get();
+    return it->second;
   }
-  auto mult = create_basic_multiplicator(params, level);
-  auto *raw_ptr = mult.get();
-  cache_ptr->emplace(key, std::move(mult));
-  return raw_ptr;
+  auto mult = std::shared_ptr<Multiplicator>(
+      create_basic_multiplicator(params, level).release());
+  cache_ptr->emplace(key, mult);
+  return mult;
 }
 
 // Multiplication: Ciphertext * Ciphertext
@@ -264,7 +265,7 @@ Ciphertext operator*(const Ciphertext &lhs, const Ciphertext &rhs) {
   }
 
   // Use cached multiplicator to avoid repeated heavy construction
-  auto *multiplicator = get_cached_multiplicator(lhs.parameters(), lhs.level());
+  auto multiplicator = get_cached_multiplicator(lhs.parameters(), lhs.level());
 
   // Handle self-multiplication (aliasing) by copying rhs
   if (&lhs == &rhs) {
