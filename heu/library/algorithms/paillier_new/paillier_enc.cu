@@ -3403,6 +3403,7 @@ __global__ void XYfixWarp(uint64_t *inout, uint64_t *inoutA, uint64_t *negmodn,
     register uint64_t new_regs4[8];
     register uint64_t sum[8];
     register uint64_t prev_sum[8];
+    // clang-format off
     register uint64_t tail[8];
     __shared__ volatile uint64_t carry_32[32];
     __shared__ volatile uint64_t sum_carry_32;
@@ -3412,6 +3413,7 @@ __global__ void XYfixWarp(uint64_t *inout, uint64_t *inoutA, uint64_t *negmodn,
     // register uint64_t fres[8];
     __shared__ volatile uint64_t carry;
     // uint64_t carrySum=0;
+    // clang-format on
     __shared__ volatile uint64_t retail[2];
 
     // register uint64_t regs_carry;
