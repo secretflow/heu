@@ -3417,18 +3417,16 @@ __global__ void XYfixWarp(uint64_t *inout, uint64_t *inoutA, uint64_t *negmodn,
     register uint64_t new_regs4[8];
     register uint64_t sum[8];
     register uint64_t prev_sum[8];
-    // clang-format off
     register uint64_t tail[8];
-    __shared__ volatile uint64_t carry_32[32];
-    __shared__ volatile uint64_t sum_carry_32;
+    volatile __shared__ uint64_t carry_32[32];
+    volatile __shared__ uint64_t sum_carry_32;
 
-    __shared__ volatile uint64_t data_tail[256];
+    volatile __shared__ uint64_t data_tail[256];
 
     // register uint64_t fres[8];
-    __shared__ volatile uint64_t carry;
+    volatile __shared__ uint64_t carry;
     // uint64_t carrySum=0;
-    // clang-format on
-    __shared__ volatile uint64_t retail[2];
+    volatile __shared__ uint64_t retail[2];
 
     // register uint64_t regs_carry;
     // new_regs3[0]=new_regs3[1]=0;
@@ -18693,8 +18691,8 @@ void generate_H_table(
 //                                              OU_HR_EXP_LIMBS=2 个 uint64_t）
 // =============================================================================
 // 保留参数兼容调用处，128-bit 时不需要 p
-static void ou_gen_r_prime(const uint64_t * /*ou_p_limbs17*/,
-                           int batch, uint64_t *h_r_prime) {
+static void ou_gen_r_prime(const uint64_t * /*ou_p_limbs17*/, int batch,
+                           uint64_t *h_r_prime) {
   // 生成 batch 个 OU_HR_TAU=128 bit 随机数，每个用 OU_HR_EXP_LIMBS=2 个
   // uint64_t 存储。 rand() 在 Windows 下返回 15-bit 值（RAND_MAX=32767）， 用 4
   // 次 rand() 拼装 60-bit，再补高位，得到足够随机的 64-bit 值。
