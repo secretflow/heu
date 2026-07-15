@@ -117,6 +117,13 @@ FHE 里程碑
 - [ ] Tensor Lib 开放 FHE 接口
 - [ ] PyLib 开放 FHE 接口
 
+### 实验性 FHE 工作
+
+HEU 也在 `heu/experimental` 下保留了早期 FHE 探索代码。其中
+[`heu/experimental/bfv`](heu/experimental/bfv/README.md) 已提供一套实验性的
+BFV 实现，包含 C++ 库、单元测试、可运行 demo 和 benchmark，主要用于评估和
+集成验证；它目前还没有接入 SPI、PyLib，也不属于 HEU 稳定公开 API 的一部分。
+
 
 ## 编译和安装
 
@@ -167,4 +174,3 @@ bazel test heu/...
 
 隐语是一个非常包容和开放的社区，我们欢迎任何形式的贡献，如果您想要改进
 HEU，请参考[贡献指南](CONTRIBUTING.md)
-

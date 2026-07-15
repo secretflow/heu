@@ -127,6 +127,14 @@ FHE Milestones:
 - [ ] Provides FHE interfaces in Tensor Lib.
 - [ ] Provides FHE interfaces in PyLib.
 
+### Experimental FHE Work
+
+HEU also contains early FHE work under `heu/experimental`. In particular,
+[`heu/experimental/bfv`](heu/experimental/bfv/README.md) provides an
+experimental BFV stack with C++ libraries, unit tests, runnable demos, and
+benchmarks for evaluation and integration work. It is not yet wired into SPI,
+PyLib, or HEU's stable public APIs.
+
 ## Compile and install
 
 ### Environmental requirements
