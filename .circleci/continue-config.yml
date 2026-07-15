@@ -29,7 +29,7 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       - image: secretflow/heu-ci:latest
-    resource_class: 2xlarge
+    resource_class: large
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     shell: /bin/bash --login -eo pipefail
@@ -49,7 +49,7 @@ jobs:
             declare -i test_status
 
             pip install numpy
-            bazel test //heu/... --test_timeout=1800 --test_output=errors --verbose_failures; test_status=${PIPESTATUS[0]}
+            bazel test --jobs=4 //heu/... --test_timeout=1800 --test_output=errors --verbose_failures; test_status=${PIPESTATUS[0]}
 
             sh ../devtools/rename-junit-xml.sh
             find bazel-bin/ -executable -type f -name "*_test"  -print0 | xargs -0 tar -cvzf test_binary.tar.gz
@@ -67,7 +67,7 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       - image: secretflow/heu-ci:latest
-    resource_class: arm-xlarge
+    resource_class: arm.large
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     shell: /bin/bash --login -eo pipefail
